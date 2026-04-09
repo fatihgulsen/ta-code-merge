@@ -16,6 +16,9 @@ class MatchType:
     STRIPPED_EXACT = "STRIPPED_EXACT"
     # Synonym ve suffixler temizlendiğinde birebir aynı olanlar
 
+    SUFFIX_FUZZY = "SUFFIX_FUZZY"
+    # Suffix kısmı fuzzy eşleşme, name kısmı exact
+
     TOKEN_COVERAGE = "TOKEN_COVERAGE"
     # Anlamlı token'ların simetrik örtüşmesi eşik üstünde
 
@@ -85,6 +88,9 @@ ES_PHONE_WEIGHT = 20  # Phone eşleşirse _score'a eklenir
 # --- Eşik Değerleri ve Sabitler ---
 LENGTH_RATIO_THRESHOLD = 0.4
 TOKEN_COVERAGE_THRESHOLD = 0.8  # Token'ların en az %80'i örtüşmeli
+
+SUFFIX_FUZZY_MIN_SCORE = 1.5   # ES score eşiği — prod testleriyle kalibre edilmeli
+SUFFIX_FUZZY_SCORE     = 85    # match sonucu skoru
 
 # --- ES Rescore Score Tier Sabitleri ---
 # interpret_match_result() _score değerinden match_type belirler
@@ -157,22 +163,29 @@ STAGES = [
         "enabled": True,
     },
     {
-        "name": "TOKEN_COVERAGE",
+        "name": "SUFFIX_FUZZY",
         "order": 4,
+        "query_fn": "SUFFIX_FUZZY",
+        "min_score": 1.5,
+        "enabled": True,
+    },
+    {
+        "name": "TOKEN_COVERAGE",
+        "order": 5,
         "query_fn": "TOKEN_COVERAGE",
         "min_score": 3.0,
         "enabled": True,
     },
     {
         "name": "FUZZY_PHRASE",
-        "order": 5,
+        "order": 6,
         "query_fn": "FUZZY_PHRASE",
         "min_score": 5.0,
         "enabled": True,
     },
     {
         "name": "NGRAM_MATCH",
-        "order": 6,
+        "order": 7,
         "query_fn": "NGRAM_MATCH",
         "min_score": 3.0,
         "enabled": True,

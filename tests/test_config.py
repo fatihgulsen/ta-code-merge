@@ -39,3 +39,26 @@ def test_stage_names_unique():
     """Verify stage names are unique."""
     names = [s["name"] for s in config.STAGES]
     assert len(names) == len(set(names)), "STAGES listesinde tekrarlı isim var"
+
+
+def test_suffix_fuzzy_match_type_exists():
+    assert hasattr(config.MatchType, "SUFFIX_FUZZY")
+    assert config.MatchType.SUFFIX_FUZZY == "SUFFIX_FUZZY"
+
+
+def test_suffix_fuzzy_constants_exist():
+    assert hasattr(config, "SUFFIX_FUZZY_MIN_SCORE")
+    assert hasattr(config, "SUFFIX_FUZZY_SCORE")
+    assert config.SUFFIX_FUZZY_SCORE == 85
+
+
+def test_suffix_fuzzy_stage_in_stages():
+    names = [s["name"] for s in config.STAGES]
+    assert "SUFFIX_FUZZY" in names
+
+
+def test_suffix_fuzzy_stage_order_between_stripped_and_token_coverage():
+    """SUFFIX_FUZZY, STRIPPED_EXACT'tan sonra TOKEN_COVERAGE'dan önce gelmeli."""
+    stages_by_name = {s["name"]: s["order"] for s in config.STAGES}
+    assert stages_by_name["SUFFIX_FUZZY"] > stages_by_name["STRIPPED_EXACT"]
+    assert stages_by_name["SUFFIX_FUZZY"] < stages_by_name["TOKEN_COVERAGE"]

@@ -17,10 +17,27 @@ import logging
 
 from elasticsearch import Elasticsearch
 
-from config import ES_INDEX, SUFFIX_TYPO_MAP
+from config import SUFFIX_TYPO_MAP
 from synonym_loader import get_company_type_tokens, get_all_country_codes
 
 logger = logging.getLogger(__name__)
+
+
+def _pl(token: str) -> str:
+    """Token'ı Painless tek-tırnaklı string literal için escape eder.
+
+    Painless'te tek-tırnak string içinde:
+      - '  →  \'
+      - \\  →  \\\\
+    Boşluk içeren (çok-kelimeli) token'lar eşleşmeye katkı sağlamaz —
+    güvenle bırakılabilir, ancak escape yine gerekli.
+    """
+    return token.replace("\\", "\\\\").replace("'", "\\'")
+
+
+def _pl_str(token: str) -> str:
+    """Escape edilmiş token'ı tek-tırnaklı Painless literal olarak döner: 'value'"""
+    return f"'{_pl(token)}'"
 
 
 def pipeline_name(country_code: str) -> str:
@@ -37,12 +54,12 @@ def _build_clean_script(country_code: str) -> str:
     Unicode karakterler için /regex/ literal kullanılır.
     """
     tokens = get_company_type_tokens(country_code)
-    known = sorted(t for t in tokens if t.isalpha() and len(t) <= 6)
-    known_literal = ", ".join(f"'{t}'" for t in known)
+    known = sorted(t for t in tokens if t.isalpha() and " " not in t and len(t) <= 6)
+    known_literal = ", ".join(_pl_str(t) for t in known)
 
     # SUFFIX_TYPO_MAP'i Painless map literal'e dönüştür
     typo_entries = ", ".join(
-        f"'{k}': '{v}'" for k, v in SUFFIX_TYPO_MAP.items()
+        f"{_pl_str(k)}: {_pl_str(v)}" for k, v in SUFFIX_TYPO_MAP.items()
     )
 
     # Script'i raw string olarak oluştur (f-string escape karmaşasından kaçın)
@@ -161,8 +178,9 @@ def _build_stripped_script(country_code: str) -> str:
     variations_stripped array'ini oluşturur.
     """
     # Generic token'ları Painless list literal olarak oluştur
-    tokens = list(get_company_type_tokens(country_code))
-    tokens_literal = ", ".join(f"'{t}'" for t in tokens)
+    # Boşluk içeren çok-kelimeli token'lar split sonrası hiç eşleşmez — filtrele
+    tokens = [t for t in get_company_type_tokens(country_code) if " " not in t]
+    tokens_literal = ", ".join(_pl_str(t) for t in tokens)
 
     script_parts = [
         "List genericTokens = [" + tokens_literal + "];",
@@ -197,7 +215,8 @@ def _build_suffix_script(generic_tokens: list[str]) -> str:
     variations_suffix array'ini oluşturur. _build_stripped_script() tersine —
     generic SET'te OLAN token'ları tutar, position-independent (sorted, deduped).
     """
-    tokens_literal = ", ".join(f"'{t}'" for t in generic_tokens)
+    # Boşluk içeren çok-kelimeli token'lar split sonrası eşleşmez — filtrele ve escape et
+    tokens_literal = ", ".join(_pl_str(t) for t in generic_tokens if " " not in t)
 
     script_parts = [
         "List genericTokens = [" + tokens_literal + "];",

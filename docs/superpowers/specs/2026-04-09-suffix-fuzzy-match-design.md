@@ -21,7 +21,6 @@ Firma isimlerindeki suffix/company type token'larında yazım hataları olabilir
 
 | Tip | Skor | Açıklama |
 |-----|------|----------|
-| TAX_MATCH | 100 | Vergi numarası kesin eşleşmesi |
 | CANONICAL_EXACT | 100 | Synonym-aware canonical tam eşleşme |
 | STRIPPED_EXACT | 100 | Suffix temizlendikten sonra tam eşleşme |
 | **SUFFIX_FUZZY** | **85** | **Name kısmı tam, suffix fuzzy eşleşme** |
@@ -182,7 +181,7 @@ Gevşek görünen bu eşik iki mekanizma ile korunur:
 ```
 CANONICAL_EXACT kontrolü → başarısız
 STRIPPED_EXACT kontrolü  → başarısız
-SUFFIX_FUZZY kontrolü    → ?
+SUFFIX_FUZZY kontrolü    → ?  (TAX_MATCH kapsam dışı)
   ├─ name token coverage ≥ 85% ?
   ├─ ES score ≥ SUFFIX_FUZZY_MIN_SCORE ?
   └─ ✓ → SUFFIX_FUZZY
@@ -228,12 +227,12 @@ def check_suffix_fuzzy(query_name: str, doc: dict, es_score: float, country_code
 
 ```python
 class MatchType:
-    TAX_MATCH       = "TAX_MATCH"
     CANONICAL_EXACT = "CANONICAL_EXACT"
     STRIPPED_EXACT  = "STRIPPED_EXACT"
     SUFFIX_FUZZY    = "SUFFIX_FUZZY"    # YENİ
     TOKEN_COVERAGE  = "TOKEN_COVERAGE"
     NEW_MASTER      = "NEW_MASTER"
+    # TAX_MATCH kapsam dışı — bu implementation'da kullanılmıyor
 
 SUFFIX_FUZZY_MIN_SCORE = 1.5   # ES score eşiği — başlangıç değeri, prod testleriyle kalibre edilmeli
 SUFFIX_FUZZY_SCORE     = 85    # match sonucu skoru

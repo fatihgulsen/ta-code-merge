@@ -1,6 +1,7 @@
 # tests/test_es_queries.py
 import pytest
 import es_queries
+from es_manager import build_index_settings
 
 
 def _get_country_filter(query_dict: dict) -> str | None:
@@ -106,6 +107,71 @@ def test_all_queries_include_country_filter():
         lambda: es_queries.TOKEN_COVERAGE(name, country),
         lambda: es_queries.FUZZY_PHRASE(name, country),
         lambda: es_queries.NGRAM_MATCH(name, country),
+        lambda: es_queries.SUFFIX_FUZZY(name, country),
     ]
     for fn in fns:
         assert _get_country_filter(fn()) == country, f"{fn} country filter eksik"
+
+
+def test_suffix_fuzzy_structure():
+    """SUFFIX_FUZZY query'si must + should içermeli."""
+    q = es_queries.SUFFIX_FUZZY("komerci limted", "TR")
+    bool_q = q["query"]["bool"]
+    assert "must" in bool_q, "must clause eksik"
+    assert "should" in bool_q, "should clause eksik"
+    assert _get_country_filter(q) == "TR"
+    assert q.get("size") == 1
+
+
+def test_suffix_fuzzy_must_queries_variations_stripped():
+    """must clause variations_stripped alanını sorgulamalı."""
+    q = es_queries.SUFFIX_FUZZY("komerci limted", "TR")
+    must = q["query"]["bool"]["must"]
+    stripped_clauses = [
+        c["match"]["variations_stripped"]
+        for c in must
+        if "match" in c and "variations_stripped" in c["match"]
+    ]
+    assert stripped_clauses, "variations_stripped match clause yok"
+    clause = stripped_clauses[0]
+    assert clause["query"] == "komerci limted"
+    assert clause["analyzer"] == "stripped_search_analyzer"
+    assert clause["operator"] == "or"
+    assert clause["minimum_should_match"] == 1
+
+
+def test_suffix_fuzzy_should_queries_variations_suffix_with_fuzziness():
+    """should clause variations_suffix alanını fuzzy sorgulamalı."""
+    q = es_queries.SUFFIX_FUZZY("komerci limted", "TR")
+    should = q["query"]["bool"]["should"]
+    suffix_clauses = [
+        c["match"]["variations_suffix"]
+        for c in should
+        if "match" in c and "variations_suffix" in c["match"]
+    ]
+    assert suffix_clauses, "variations_suffix fuzzy clause yok"
+    clause = suffix_clauses[0]
+    assert clause["fuzziness"] == "AUTO:4,7"
+    assert clause["operator"] == "or"
+
+
+def test_suffix_fuzzy_includes_country_filter():
+    """SUFFIX_FUZZY country filter içermeli."""
+    q = es_queries.SUFFIX_FUZZY("acme limted", "DE")
+    assert _get_country_filter(q) == "DE"
+
+
+def test_variations_suffix_mapping_has_explicit_search_analyzer():
+    """variations_suffix alanı hem analyzer hem search_analyzer'ı açıkça tanımlamalı.
+
+    Index-time: standard analyzer (ingest pipeline tarafından önceden normalize edilmiş token'lar)
+    Search-time: standard analyzer (query-time synonym expansion gerekmez)
+    Açık search_analyzer, intent'i belgeler ve ES varsayılan davranışına güvenmez.
+    """
+    settings = build_index_settings(es=None)
+    props = settings["mappings"]["properties"]
+    suffix_field = props["variations_suffix"]
+    assert suffix_field["analyzer"] == "standard"
+    assert suffix_field.get("search_analyzer") == "standard", (
+        "variations_suffix alanında açık search_analyzer tanımlanmamış"
+    )

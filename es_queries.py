@@ -99,6 +99,48 @@ def STRIPPED_EXACT(name: str, country: str, **kwargs) -> dict:
     }
 
 
+def SUFFIX_FUZZY(name: str, country: str, **kwargs) -> dict:
+    """
+    Suffix fuzzy eşleştirme:
+      - must: variations_stripped'a operator:or match (name kısmının doğru olduğunu garanti eder)
+      - should: variations_suffix'e fuzziness AUTO:4,7 (suffix typo'larını yakalar)
+
+    Örnek: "Komerci Limted" → "Komerci Limited" eşleşir (suffix typo)
+           "Kommerci Limted" → "Komerci Limited" eşleşmez (name typo)
+    """
+    return {
+        "query": {
+            "bool": {
+                "must": [
+                    {
+                        "match": {
+                            "variations_stripped": {
+                                "query": name,
+                                "analyzer": "stripped_search_analyzer",
+                                "operator": "or",
+                                "minimum_should_match": 1,
+                            }
+                        }
+                    }
+                ],
+                "should": [
+                    {
+                        "match": {
+                            "variations_suffix": {
+                                "query": name,
+                                "fuzziness": "AUTO:4,7",
+                                "operator": "or",
+                            }
+                        }
+                    }
+                ],
+                "filter": [{"term": {"country_code": country.upper()}}],
+            }
+        },
+        "size": 1,
+    }
+
+
 def TOKEN_COVERAGE(name: str, country: str, **kwargs) -> dict:
     """
     Tüm anlamlı token'ların presence kontrolü (operator:and).

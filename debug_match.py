@@ -120,7 +120,7 @@ def analyze_pair(name_a: str, name_b: str, country: str) -> dict:
             tc = t.rstrip('.,')
             if not tc or (len(tc) <= 1 and not tc.isalnum()):
                 continue
-            if tc in (_ARTICLE_STOPWORDS | _get_ctt(cc)) or tc in country_toks:
+            if tc in _ARTICLE_STOPWORDS or tc in country_toks:
                 continue
             norm = _SUFFIX_NORMALIZE.get(tc, _SUFFIX_NORMALIZE.get(t, tc))
             norm_list.append(norm)

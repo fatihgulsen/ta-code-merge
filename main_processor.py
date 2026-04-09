@@ -619,7 +619,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
             tc = t.rstrip('.,')
             if not tc or (len(tc) <= 1 and not tc.isalnum()):
                 continue
-            if tc in (_ARTICLE_STOPWORDS | get_company_type_tokens(rec["country"])):
+            if tc in _ARTICLE_STOPWORDS:
                 continue
             if tc in _COUNTRY_NAME_TOKENS.get(rec["country"].upper(), frozenset()):
                 continue

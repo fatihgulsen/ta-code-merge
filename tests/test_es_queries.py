@@ -1,5 +1,4 @@
 # tests/test_es_queries.py
-import pytest
 import es_queries
 from es_manager import build_index_settings
 
@@ -65,6 +64,22 @@ def test_stripped_exact_structure():
         if "match_phrase" in c and "variations_stripped" in c["match_phrase"]
     ]
     assert "apple trading" in must_phrases
+
+
+def test_stripped_exact_uses_country_analyzer():
+    """STRIPPED_EXACT bilinen ülke için stripped_search_analyzer_{cc} kullanmalı."""
+    query = es_queries.STRIPPED_EXACT("Acme Limited", "TR")
+    match_phrase = query["query"]["bool"]["must"][0]["match_phrase"]
+    analyzer = match_phrase["variations_stripped"]["analyzer"]
+    assert analyzer == "stripped_search_analyzer_tr"
+
+
+def test_stripped_exact_uses_global_analyzer_for_unknown_country():
+    """STRIPPED_EXACT bilinmeyen ülke için global fallback analyzer kullanmalı."""
+    query = es_queries.STRIPPED_EXACT("Acme Limited", "XX")
+    match_phrase = query["query"]["bool"]["must"][0]["match_phrase"]
+    analyzer = match_phrase["variations_stripped"]["analyzer"]
+    assert analyzer == "stripped_search_analyzer"
 
 
 def test_token_coverage_uses_and_operator():

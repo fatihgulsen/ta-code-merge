@@ -25,7 +25,12 @@ import logging
 from elasticsearch import Elasticsearch
 
 from config import ES_HOST, ES_INDEX
-from synonym_loader import get_all_country_codes, load_synonyms_for_country
+from synonym_loader import (
+    get_all_country_codes,
+    get_all_company_type_tokens,
+    get_company_type_tokens,
+    load_synonyms_for_country,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -98,23 +103,31 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
         "filter": ["lowercase", "synonym_filter_common"],
     }
 
-    # ── Stripped Search Analyzer (variations_stripped sorgu zamanı için) ──
-    # Generic company suffix'lerini stopword olarak kaldırır.
+    # ── Per-country Stripped Search Analyzer ──
+    # Her ülke için common + ülke company_types tokenlarından stopword filter.
     # variations_stripped alanının search_analyzer'ı olarak kullanılır.
-    common_generic_tokens = [
-        "ltd", "limited", "inc", "incorporated", "corp", "corporation",
-        "llc", "gmbh", "ag", "sa", "srl", "bv", "nv", "plc", "co",
-        "company", "pty", "pvt", "private", "public", "holding",
-        "holdings", "group", "international", "intl", "and",
-        "the", "of", "a", "an",
-    ]
-    filters["generic_stopwords"] = {
+    for cc in get_all_country_codes():
+        cc_tokens = list(get_company_type_tokens(cc))
+        filter_name = f"generic_stopwords_{cc.lower()}"
+        analyzer_name = f"stripped_search_analyzer_{cc.lower()}"
+        filters[filter_name] = {
+            "type": "stop",
+            "stopwords": cc_tokens,
+        }
+        analyzers[analyzer_name] = {
+            "tokenizer": "standard",
+            "filter": ["lowercase", filter_name],
+        }
+
+    # Global fallback stripped analyzer (tüm ülkeler birleşimi)
+    global_tokens = list(get_all_company_type_tokens())
+    filters["generic_stopwords_global"] = {
         "type": "stop",
-        "stopwords": common_generic_tokens,
+        "stopwords": global_tokens,
     }
     analyzers["stripped_search_analyzer"] = {
         "tokenizer": "standard",
-        "filter": ["lowercase", "generic_stopwords"],
+        "filter": ["lowercase", "generic_stopwords_global"],
     }
 
     # ── Ülkeye özgü filter ve analyzer (varsa) ──

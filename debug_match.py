@@ -28,7 +28,7 @@ from main_processor import (
     _symmetric_token_coverage,
     _post_verify,
     _SUFFIX_NORMALIZE,
-    _STOPWORDS,
+    _ARTICLE_STOPWORDS,
     _COUNTRY_NAME_TOKENS,
 )
 from config import STAGES, ES_INDEX
@@ -80,10 +80,13 @@ def analyze_pair(name_a: str, name_b: str, country: str) -> dict:
     meaningful_cov = _symmetric_token_coverage(meaningful_a, meaningful_b)
 
     # Word count
+    from synonym_loader import get_company_type_tokens as _get_ctt
+    _wc_stopwords = _ARTICLE_STOPWORDS | _get_ctt(country)
+
     def _word_count(name: str) -> int:
         return len([
             t for t in _clean_labels(name).lower().split()
-            if t.rstrip('.,') not in _STOPWORDS
+            if t.rstrip('.,') not in _wc_stopwords
             and t.rstrip('.,')
             and t.rstrip('.,').isalnum()
         ])
@@ -117,7 +120,7 @@ def analyze_pair(name_a: str, name_b: str, country: str) -> dict:
             tc = t.rstrip('.,')
             if not tc or (len(tc) <= 1 and not tc.isalnum()):
                 continue
-            if tc in _STOPWORDS or tc in country_toks:
+            if tc in _ARTICLE_STOPWORDS or tc in country_toks:
                 continue
             norm = _SUFFIX_NORMALIZE.get(tc, _SUFFIX_NORMALIZE.get(t, tc))
             norm_list.append(norm)

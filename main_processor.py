@@ -58,7 +58,8 @@ from config import (
     TOKEN_COVERAGE_THRESHOLD,
 )
 from es_manager import create_index, get_es_client
-from es_ingest import register_pipeline
+from es_ingest import register_all_pipelines, pipeline_name
+from synonym_loader import get_company_type_tokens
 import es_queries as _es_queries
 
 logging.basicConfig(
@@ -302,8 +303,8 @@ _SUFFIX_NORMALIZE = {
     "pte": "pte",
 }
 
-# Stopword'ler — firma isminde anlam tasimayan baglac/edat/artikeller
-_STOPWORDS = frozenset({
+# Stopword'ler — firma isminde anlam tasimayan baglac/edat/artikeller (sadece artikeller)
+_ARTICLE_STOPWORDS = frozenset({
     "and", "of", "the", "for", "in", "on", "at", "to", "by",
     "de", "del", "la", "le", "les", "des", "du", "et",  # French/Spanish
     "und", "der", "die", "das", "von",  # German
@@ -333,7 +334,7 @@ def _tokenize(name: str, country: str = "") -> set[str]:
         if t_clean in country_tokens:
             continue
         # Stopword atla
-        if t_clean in _STOPWORDS:
+        if t_clean in _ARTICLE_STOPWORDS:
             continue
         t_norm = _SUFFIX_NORMALIZE.get(t_clean, _SUFFIX_NORMALIZE.get(t, t_clean))
         normalized.add(t_norm)
@@ -411,8 +412,9 @@ def _post_verify(input_name: str, master_source: dict, stage_name: str, country:
 
     # Token tekrar farki kontrolu: "RADHE RADHE CREATION" (3 token) vs "RADHE CREATION" (2 token)
     # Set bazli coverage 1.0 ama gercekte farkli firma isimleri olabilir
-    input_word_count = len([t for t in _clean_labels(input_name).lower().split() if t.rstrip('.,') not in _STOPWORDS and t.rstrip('.,') and t.rstrip('.,').isalnum()])
-    master_word_count = len([t for t in _clean_labels(master_name).lower().split() if t.rstrip('.,') not in _STOPWORDS and t.rstrip('.,') and t.rstrip('.,').isalnum()])
+    _wc_stopwords = _ARTICLE_STOPWORDS | get_company_type_tokens(country)
+    input_word_count = len([t for t in _clean_labels(input_name).lower().split() if t.rstrip('.,') not in _wc_stopwords and t.rstrip('.,') and t.rstrip('.,').isalnum()])
+    master_word_count = len([t for t in _clean_labels(master_name).lower().split() if t.rstrip('.,') not in _wc_stopwords and t.rstrip('.,') and t.rstrip('.,').isalnum()])
     if max(input_word_count, master_word_count) > 0:
         word_count_ratio = min(input_word_count, master_word_count) / max(input_word_count, master_word_count)
     else:
@@ -648,14 +650,13 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
     for rec in records:
         # Dedup key: tokenize + sirali tuple — tekrarlari korur
         # "C & C OVERSEAS" → ('c', 'c', 'overseas') vs "C OVERSEAS" → ('c', 'overseas')
-        tokens = _tokenize(rec["raw_name"], rec["country"])
         raw_tokens = _clean_labels(rec["raw_name"]).lower().split()
         norm_list = []
         for t in raw_tokens:
             tc = t.rstrip('.,')
             if not tc or (len(tc) <= 1 and not tc.isalnum()):
                 continue
-            if tc in _STOPWORDS:
+            if tc in _ARTICLE_STOPWORDS:
                 continue
             if tc in _COUNTRY_NAME_TOKENS.get(rec["country"].upper(), frozenset()):
                 continue
@@ -694,6 +695,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
                 "_index": ES_INDEX,
                 "_id": master_id,
                 "_routing": rec["country"].upper(),
+                "pipeline": pipeline_name(rec["country"]),
                 "_source": {
                     "master_id": master_id,
                     "variations": [rec["raw_name"]],
@@ -714,7 +716,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
 
         if es_docs:
             try:
-                helpers.bulk(es, es_docs, raise_on_error=True, pipeline="company_name_clean")
+                helpers.bulk(es, es_docs, raise_on_error=True)
             except helpers.BulkIndexError as e:
                 failed_ids = set()
                 for err in e.errors:
@@ -908,11 +910,11 @@ def _index_new_master(es, rec: dict) -> str:
             id=master_id,
             routing=rec["country"].upper(),
             body=doc,
-            pipeline="company_name_clean",
+            pipeline=pipeline_name(rec["country"]),
         )
-    except Exception:
+    except Exception as exc:
         # Pipeline hatasi — pipeline olmadan dene
-        logger.debug(f"Pipeline hatasi, pipeline olmadan index'leniyor: {rec['raw_name'][:50]}")
+        logger.warning(f"Pipeline ile index hatasi ({exc!r}), pipeline olmadan deneniyor: {rec['raw_name'][:50]}")
         es.index(
             index=ES_INDEX,
             id=master_id,
@@ -956,7 +958,7 @@ def process_all_data() -> None:
     create_index(es)
 
     logger.info("Ingest pipeline kontrol ediliyor...")
-    register_pipeline(es)
+    register_all_pipelines(es)
 
     logger.info("Veritabanina baglaniliyor...")
     read_conn = get_db_connection()

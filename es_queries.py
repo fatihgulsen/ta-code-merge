@@ -36,6 +36,16 @@ def _get_analyzer(country: str) -> str:
     return "clean_analyzer_common"
 
 
+def _get_stripped_analyzer(country: str) -> str:
+    global _KNOWN_COUNTRY_CODES
+    if _KNOWN_COUNTRY_CODES is None:
+        _KNOWN_COUNTRY_CODES = get_all_country_codes()
+    cc = country.upper()
+    if cc in _KNOWN_COUNTRY_CODES:
+        return f"stripped_search_analyzer_{cc.lower()}"
+    return "stripped_search_analyzer"
+
+
 def _normalize_tax(tax: str) -> str:
     return re.sub(r"[^\w]", "", tax).upper()
 
@@ -90,6 +100,7 @@ def STRIPPED_EXACT(name: str, country: str, **kwargs) -> dict:
     variations_stripped alanı ingest pipeline tarafından doldurulur.
     Sorgu search_analyzer ile query-time'da da stripped forma dönüştürülür.
     """
+    analyzer = _get_stripped_analyzer(country)
     return {
         "query": {
             "bool": {
@@ -98,7 +109,7 @@ def STRIPPED_EXACT(name: str, country: str, **kwargs) -> dict:
                         "match_phrase": {
                             "variations_stripped": {
                                 "query": name,
-                                "analyzer": "stripped_search_analyzer",
+                                "analyzer": analyzer,
                             }
                         }
                     }

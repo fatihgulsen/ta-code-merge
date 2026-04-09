@@ -1,10 +1,15 @@
 # tests/test_main_processor.py
-from unittest.mock import MagicMock, patch
-import pytest
+from unittest.mock import MagicMock
 
 
-def _make_es_hit(master_id: str, score: float = 80.0) -> dict:
-    return {"_source": {"master_id": master_id}, "_score": score}
+def _make_es_hit(master_id: str, score: float = 80.0, variations: list[str] | None = None) -> dict:
+    return {
+        "_source": {
+            "master_id": master_id,
+            "variations": variations if variations is not None else [],
+        },
+        "_score": score,
+    }
 
 
 def _make_msearch_response(hits_per_query: list[list[dict]]) -> dict:
@@ -30,8 +35,8 @@ def test_run_stage_returns_matched_and_unmatched():
 
     mock_es = MagicMock()
     mock_es.msearch.return_value = _make_msearch_response([
-        [_make_es_hit("master-001", score=80.0)],  # record 1 eşleşti
-        [],                                          # record 2 eşleşmedi
+        [_make_es_hit("master-001", score=80.0, variations=["Acme Ltd"])],  # record 1 eşleşti
+        [],                                                                   # record 2 eşleşmedi
     ])
 
     matched, unmatched = mp.run_stage(mock_es, records, stage)
@@ -96,10 +101,6 @@ def test_post_verify_suffix_fuzzy_passes_when_name_matches():
     """SUFFIX_FUZZY: name token'ları doc stripped'da >= 85% örtüşünce True döner."""
     import main_processor as mp
 
-    # "Komerci Limted" → doc variations_stripped = ["komerci"]
-    # input_meaningful = {"komerci", "limted"} (limted stays, not a known suffix)
-    # doc_name_tokens = {"komerci"}
-    # coverage = |{"komerci","limted"} ∩ {"komerci"}| / 1 = 1.0 >= 0.85 → True
     doc_source = {
         "variations": ["komerci limited"],
         "variations_stripped": ["komerci"],
@@ -112,9 +113,6 @@ def test_post_verify_suffix_fuzzy_fails_when_name_differs():
     """SUFFIX_FUZZY: name token'ları < 85% örtüşünce False döner."""
     import main_processor as mp
 
-    # "Kommerci Limted" → input_meaningful includes "kommerci" (not "komerci")
-    # doc_name_tokens = {"komerci"}
-    # coverage = 0.0 < 0.85 → False
     doc_source = {
         "variations": ["komerci limited"],
         "variations_stripped": ["komerci"],
@@ -127,9 +125,6 @@ def test_post_verify_suffix_fuzzy_passes_with_multiple_name_tokens():
     """SUFFIX_FUZZY: çok tokenlı isimde yüksek coverage True döner."""
     import main_processor as mp
 
-    # "Komerci Trading Limted" → input_meaningful = {"komerci", "trading", "limted"}
-    # doc stripped = "komerci trading"
-    # coverage = |{"komerci","trading","limted"} ∩ {"komerci","trading"}| / 2 = 2/2 = 1.0 → True
     doc_source = {
         "variations": ["komerci trading limited"],
         "variations_stripped": ["komerci trading"],
@@ -148,3 +143,28 @@ def test_post_verify_suffix_fuzzy_fails_when_doc_stripped_empty():
     }
     result = mp._post_verify("Komerci Limted", doc_source, "SUFFIX_FUZZY", "TR")
     assert result is False
+
+
+def test_article_stopwords_exists():
+    """_ARTICLE_STOPWORDS olmali, _STOPWORDS olmamali."""
+    import main_processor as mp
+    assert hasattr(mp, "_ARTICLE_STOPWORDS")
+    assert not hasattr(mp, "_STOPWORDS")
+    assert "and" in mp._ARTICLE_STOPWORDS
+    assert "of" in mp._ARTICLE_STOPWORDS
+
+
+def test_post_verify_word_count_excludes_company_suffixes():
+    """Word count 'ltd', 'inc' gibi company suffix tokenlarini saymamali."""
+    from main_processor import _clean_labels, _ARTICLE_STOPWORDS
+    from synonym_loader import get_company_type_tokens
+    cc = "TR"
+    stopwords = _ARTICLE_STOPWORDS | get_company_type_tokens(cc)
+    # "ACME LTD" → 1 meaningful word (ltd filtered)
+    word_count = len([
+        t for t in _clean_labels("ACME LTD").lower().split()
+        if t.rstrip(".,") not in stopwords
+        and t.rstrip(".,")
+        and t.rstrip(".,").isalnum()
+    ])
+    assert word_count == 1, f"Expected 1, got {word_count}"

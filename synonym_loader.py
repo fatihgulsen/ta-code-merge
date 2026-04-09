@@ -142,6 +142,70 @@ def get_generic_tokens_for_country(country_code: str) -> frozenset:
     return frozenset(generics)
 
 
+def _parse_company_type_tokens(paths: list) -> frozenset:
+    """
+    Verilen Path listesindeki dosyaların 'company_types' kurallarından
+    tüm tokenları çıkarır. Her iki taraftaki (=> solundaki ve sağındaki)
+    tokenlar dahil edilir. Noktalar tamamen silinir, her şey küçük harfe çevrilir.
+    """
+    tokens: set[str] = set()
+
+    for path in paths:
+        if not path.exists():
+            continue
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+
+        for rule in data.get("company_types", []):
+            rule_norm = normalize_text(rule)
+            if "=>" in rule_norm:
+                left, right = rule_norm.split("=>", 1)
+                all_parts = left.split(",") + [right]
+            else:
+                all_parts = rule_norm.split(",")
+
+            for part in all_parts:
+                t = part.strip().lower().replace(".", "")
+                if t:
+                    tokens.add(t)
+
+    return frozenset(tokens)
+
+
+@lru_cache(maxsize=None)
+def get_company_type_tokens(country_code: str) -> frozenset:
+    """
+    Verilen ülke kodu için tüm company_type tokenlarını döner.
+    Ortak dosyalar (common.json, countries.json, other.json) + ülke dosyası
+    birleştirilerek hesaplanır.
+
+    Dönüş: frozenset (lru_cache için hashable, immutable)
+    """
+    country_code = country_code.upper()
+    paths = [SYNONYMS_DIR / f for f in COMMON_FILES]
+    country_file = SYNONYMS_DIR / f"{country_code.lower()}.json"
+    if country_file.exists():
+        paths.append(country_file)
+
+    return _parse_company_type_tokens(paths)
+
+
+@lru_cache(maxsize=None)
+def get_all_company_type_tokens() -> frozenset:
+    """
+    Tüm ülke dosyaları + ortak dosyalar dahil olmak üzere
+    tüm company_type tokenlarının birleşimini döner.
+
+    Dönüş: frozenset (lru_cache için hashable, immutable)
+    """
+    paths = [SYNONYMS_DIR / f for f in COMMON_FILES]
+    for f in SYNONYMS_DIR.glob("*.json"):
+        if f.stem.lower() not in {"common", "countries", "other"}:
+            paths.append(f)
+
+    return _parse_company_type_tokens(paths)
+
+
 def get_all_country_codes() -> list[str]:
     """
     synonyms_data/ klasöründeki tüm ülke dosyalarının kodlarını döner.

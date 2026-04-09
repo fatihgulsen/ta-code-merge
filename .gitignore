@@ -1,4 +1,5 @@
 .agents
+.worktrees
 .venv
 .vscode
 __pycache__

@@ -1,4 +1,5 @@
 # Firma Eşleştirme Sistemi - Python Bağımlılıkları
 elasticsearch>=8.0.0,<9.0.0
-psycopg2-binary>=2.9.0
+psycopg2-binary>=2.9.11
 text-unidecode>=1.3
+tqdm

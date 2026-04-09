@@ -132,12 +132,27 @@ def analyze_pair(name_a: str, name_b: str, country: str) -> dict:
     }
 
     # 6. Her stage icin post-verify
+    # SUFFIX_FUZZY icin variations_stripped da gerekli
+    suffix_set = set(_SUFFIX_NORMALIZE.values())
+
+    def _stripped_form(name: str) -> str:
+        tokens = _clean_labels(name).lower().split()
+        return " ".join(
+            t.rstrip('.,') for t in tokens
+            if t.rstrip('.,') and t.rstrip('.,') not in suffix_set
+            and t.rstrip('.,') not in _STOPWORDS
+        )
+
+    stripped_b = _stripped_form(name_b)
+    stripped_a = _stripped_form(name_a)
+
+    master_source_b = {"variations": [name_b.lower()], "variations_stripped": [stripped_b]}
+    master_source_a = {"variations": [name_a.lower()], "variations_stripped": [stripped_a]}
+
     stage_results = {}
-    for stage_name in ["CANONICAL_EXACT", "STRIPPED_EXACT", "TOKEN_COVERAGE", "FUZZY_PHRASE", "NGRAM_MATCH"]:
-        # A → B yonunde (A input, B master)
-        pass_ab = _post_verify(name_a, {"variations": [name_b.lower()]}, stage_name, country)
-        # B → A yonunde (B input, A master)
-        pass_ba = _post_verify(name_b, {"variations": [name_a.lower()]}, stage_name, country)
+    for stage_name in ["CANONICAL_EXACT", "STRIPPED_EXACT", "SUFFIX_FUZZY", "TOKEN_COVERAGE", "FUZZY_PHRASE", "NGRAM_MATCH"]:
+        pass_ab = _post_verify(name_a, master_source_b, stage_name, country)
+        pass_ba = _post_verify(name_b, master_source_a, stage_name, country)
         stage_results[stage_name] = {
             "a_to_b": pass_ab,
             "b_to_a": pass_ba,
@@ -208,7 +223,7 @@ def print_analysis(result: dict) -> None:
     print(f"\n[6] Stage Post-Verify Sonuclari:")
     print(f"  {'Stage':<20s} {'A->B':>8s} {'B->A':>8s}  Sonuc")
     print(f"  {'-'*55}")
-    for stage_name in ["CANONICAL_EXACT", "STRIPPED_EXACT", "TOKEN_COVERAGE", "FUZZY_PHRASE", "NGRAM_MATCH"]:
+    for stage_name in ["CANONICAL_EXACT", "STRIPPED_EXACT", "SUFFIX_FUZZY", "TOKEN_COVERAGE", "FUZZY_PHRASE", "NGRAM_MATCH"]:
         sr = s[stage_name]
         ab = "GECTI" if sr["a_to_b"] else "RED"
         ba = "GECTI" if sr["b_to_a"] else "RED"
@@ -243,6 +258,7 @@ def search_es(name: str, country: str) -> None:
     stages = [
         ("CANONICAL_EXACT", es_queries.CANONICAL_EXACT),
         ("STRIPPED_EXACT", es_queries.STRIPPED_EXACT),
+        ("SUFFIX_FUZZY", es_queries.SUFFIX_FUZZY),
         ("TOKEN_COVERAGE", es_queries.TOKEN_COVERAGE),
         ("FUZZY_PHRASE", es_queries.FUZZY_PHRASE),
         ("NGRAM_MATCH", es_queries.NGRAM_MATCH),

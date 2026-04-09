@@ -38,6 +38,8 @@ from config import (
     RAW_TABLE_NAME,
     STAGES,
     MSEARCH_CHUNK_SIZE,
+    SUFFIX_FUZZY_COVERAGE_THRESHOLD,
+    SUFFIX_FUZZY_SCORE,
     TOKEN_COVERAGE_THRESHOLD,
 )
 from es_manager import create_index, get_es_client
@@ -203,7 +205,7 @@ def run_stage(
             matched.append({
                 **rec,
                 "master_id": top_hit["_source"]["master_id"],
-                "es_score": top_score,
+                "es_score": SUFFIX_FUZZY_SCORE if stage_name == "SUFFIX_FUZZY" else top_score,
                 "stage_name": stage_name,
                 "stage_order": stage_order,
             })
@@ -380,7 +382,7 @@ def _post_verify(input_name: str, master_source: dict, stage_name: str, country:
         if not doc_name_tokens:
             return False
         coverage = len(input_meaningful & doc_name_tokens) / len(doc_name_tokens)
-        return coverage >= 0.85
+        return coverage >= SUFFIX_FUZZY_COVERAGE_THRESHOLD
 
     if min_meaningful < 2:
         # Tek anlamli token — tam token eslesmesi varsa CANONICAL/STRIPPED'da kabul et

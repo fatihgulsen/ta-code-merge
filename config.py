@@ -90,7 +90,8 @@ LENGTH_RATIO_THRESHOLD = 0.4
 TOKEN_COVERAGE_THRESHOLD = 0.8  # Token'ların en az %80'i örtüşmeli
 
 SUFFIX_FUZZY_MIN_SCORE = 1.5  # ES score eşiği — prod testleriyle kalibre edilmeli
-SUFFIX_FUZZY_SCORE = 85  # match sonucu skoru
+SUFFIX_FUZZY_SCORE = 85  # match sonucu skoru (normalised tier score)
+SUFFIX_FUZZY_COVERAGE_THRESHOLD = 0.85  # name token coverage eşiği (_post_verify)
 
 # --- ES Rescore Score Tier Sabitleri ---
 # interpret_match_result() _score değerinden match_type belirler

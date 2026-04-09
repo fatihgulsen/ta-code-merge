@@ -11,11 +11,14 @@
 # ============================================================================
 
 import json
+import logging
 import unicodedata
 from functools import lru_cache
 from pathlib import Path
 
 from config import BUSINESS_DESCRIPTORS
+
+logger = logging.getLogger(__name__)
 
 # synonyms_data/ klasörünün yolu (bu dosyayla aynı dizinde)
 SYNONYMS_DIR = Path(__file__).parent / "synonyms_data"
@@ -68,10 +71,17 @@ def load_synonyms_for_country(country_code: str) -> tuple[str, ...]:
         path = SYNONYMS_DIR / filename
         rules.extend(_extract_rules_from_file(path))
 
-    # 2. Ülkeye özgü dosya — varsa ekle, yoksa sadece ortak kurallar yeterli
+    # 2. Ülkeye özgü dosya — varsa ekle, yoksa ortak kurallarla devam et
     country_file = SYNONYMS_DIR / f"{country_code.lower()}.json"
     if country_file.exists():
         rules.extend(_extract_rules_from_file(country_file))
+    elif country_code not in ("__COMMON__", "__common__"):
+        logger.warning(
+            "Ulke '%s' icin synonym dosyasi bulunamadi (%s). "
+            "Ortak synonymler (common) kullaniliyor.",
+            country_code.upper(),
+            country_file.name,
+        )
 
     # Boş ve tekrarlı kuralları temizle
     seen = set()

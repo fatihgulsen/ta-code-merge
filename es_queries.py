@@ -9,10 +9,14 @@
 #   2. config.STAGES listesine yeni dict ekle (query_fn = fonksiyon adı)
 # ============================================================================
 
+import logging
 import re
 from synonym_loader import get_all_country_codes
 
+logger = logging.getLogger(__name__)
+
 _KNOWN_COUNTRY_CODES = None
+_WARNED_COUNTRIES: set[str] = set()
 
 
 def _get_analyzer(country: str) -> str:
@@ -22,6 +26,13 @@ def _get_analyzer(country: str) -> str:
     cc = country.upper()
     if cc in _KNOWN_COUNTRY_CODES:
         return f"clean_analyzer_{cc}"
+    if cc not in _WARNED_COUNTRIES:
+        _WARNED_COUNTRIES.add(cc)
+        logger.warning(
+            "Ulke '%s' icin ozgul analyzer bulunamadi (synonym dosyasi eksik). "
+            "clean_analyzer_common kullaniliyor.",
+            cc,
+        )
     return "clean_analyzer_common"
 
 

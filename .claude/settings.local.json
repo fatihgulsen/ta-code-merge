@@ -39,7 +39,15 @@
       "Bash(/c/Users/fatih/AppData/Local/Programs/Python/Python312/python.exe -m pip install pytest --target /c/All-project/ta-code-merge/.venv/Lib/site-packages/)",
       "Bash(.venv/Scripts/python.exe -m pytest tests/ -v)",
       "Bash(ls -la *.py)",
-      "Bash(ls c:/All-project/ta-code-merge/*.py)"
+      "Bash(ls c:/All-project/ta-code-merge/*.py)",
+      "Bash(ls c:/All-project/ta-code-merge/.worktrees/feat-per-country-pipeline/requirements*.txt)",
+      "Bash(python3 -c ':*)",
+      "Bash(python3)",
+      "Bash(ls c:\\\\All-project\\\\ta-code-merge/*.py)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Read(//c/Users/fatih/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.7/skills/subagent-driven-development/**)",
+      "Bash(git stash:*)"
     ]
   }
 }

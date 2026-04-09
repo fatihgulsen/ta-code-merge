@@ -238,6 +238,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
                 "variations_suffix": {
                     "type": "text",
                     "analyzer": "standard",
+                    "search_analyzer": "standard",
                     "fields": {
                         "keyword": {"type": "keyword", "ignore_above": 512},
                     },

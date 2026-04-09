@@ -23,8 +23,23 @@ from elasticsearch import helpers
 try:
     from tqdm import tqdm
 except ImportError:  # pragma: no cover
-    def tqdm(iterable=None, **kwargs):  # type: ignore[misc]
-        return iterable if iterable is not None else range(0)
+    class tqdm:  # type: ignore[misc]
+        """No-op tqdm stub — install tqdm for a real progress bar."""
+
+        def __init__(self, iterable=None, **kwargs):
+            self._iterable = iterable
+
+        def __iter__(self):
+            return iter(self._iterable) if self._iterable is not None else iter([])
+
+        def update(self, n=1):
+            pass
+
+        def set_postfix_str(self, s="", refresh=True):
+            pass
+
+        def close(self):
+            pass
 
 from config import (
     BATCH_SIZE,

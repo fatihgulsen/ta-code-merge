@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls /c/All-project/ta-code-merge/synonyms_data/*.json)",
+      "Bash(wc -l /c/All-project/ta-code-merge/*.py)",
+      "WebSearch",
+      "Bash(ls -la /c/All-project/ta-code-merge/*.py)",
+      "Bash(grep -n \"TODO\\\\|FIXME\\\\|BUG\\\\|PAIN\\\\|Note:\\\\|Warning:\\\\|Limitation\\\\|Issue\" /c/All-project/ta-code-merge/*.py)",
+      "Bash(grep:*)",
+      "Bash(wc -l /c/All-project/ta-code-merge/synonyms_data/*.json)"
+    ]
+  }
+}

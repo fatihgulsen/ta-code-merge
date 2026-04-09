@@ -1,0 +1,26 @@
+{
+  "company_types": [
+    "AS,aktsiaselts=>aktsiaselts",
+    "OÜ,osaühing=>osaühing",
+    "TÜ,täisühing=>täisühing",
+    "UÜ,usaldusühing=>usaldusühing",
+    "FIE,füüsilisest isikust ettevõtja=>füüsilisest isikust ettevõtja",
+    "TÜH,tulundusühistu=>tulundusühistu",
+    "MTÜ,mittetulundusühing=>mittetulundusühing",
+    "SA,sihtasutus=>sihtasutus"
+  ],
+  "address_terms": [
+    "tn,tänav=>tänav",
+    "mnt,maantee=>maantee",
+    "pst,puiestee=>puiestee",
+    "tee=>tee",
+    "vljk,väljak=>väljak",
+    "k,küla=>küla",
+    "linn=>linn",
+    "alevik=>alevik",
+    "vald=>vald",
+    "maakond=>maakond",
+    "kr,krt,korter=>korter",
+    "h,hn,hoone=>hoone"
+  ]
+}

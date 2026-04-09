@@ -1,0 +1,53 @@
+{
+  "company_types": [
+    "with limited liability,sharika that masouliya mahdooda,sharika that masuliyah mahdudah,wll,w.l.l.,شركة ذات مسؤولية محدودة,شركة ذات مسئولية محدودة,ذ.م.م.=>wll",
+    "kuwait shareholding company,sharikat musahama kuwaitia,sharikat musahamah kuwaitiyah,ksc,k.s.c,شركة مساهمة كويتية,شركة مساهمة كويتيه=>ksc",
+    "kuwait shareholding company (public),kscp,k.s.c.p,شركة مساهمة كويتية عامة,شركة مساهمة كويتيه عامه=>kscp",
+    "kuwait shareholding company (closed),kscc,k.s.c.c,شركة مسahama kwaitiya maqfula,شركة مسahamah kwaitiyah maqfulah,شركة مساهمة كويتية مقفلة,شركة مساهمة كويتيه مقفله=>kscc",
+    "single person company,sharikat al shakhs al wahid,sharikat al shakhs al wahid,spc,s.p.c,شركة الشخص الواحد,شركة الشخص الواحد=>spc",
+    "holding company,sharika qabida,sharika qabidah,holding,شركة قابضة,شركة قابضه=>holding",
+    "general partnership,sharikat tadhamun,sharikat tadhamun,tadhamun,شركة تضامن,شركة تضامن=>tadhamun",
+    "limited partnership,sharikat tawsiya basita,sharikat tawsiya basitah,tawsiya basita,شركة توصية بسيطة,شركة توصية بسيطه=>tawsiya basita",
+    "establishment,muasasa,muasasah,est,مؤسسة,مؤسسة,مؤسسة فردية,مؤسسة فرديه=>est",
+    "foreign entity,foreign establishment,اجنبية,اجنبيه,شركة أجنبية,شركة اجنبية,فرع أجنبي,فرع اجنبي=>foreign entity",
+    "kuwait llp,kllp,kuwait limited liability partnership=>kuwait llp",
+    "kuwait free zone company,kwefzc,free zone company,شركة منطقة حرة كويتية,شركة منطقة حره كويتيه=>kuwait free zone company",
+    "group,grp,مجموعة,مجموعه=>group"
+  ],
+  "address_terms": [
+    "governorate,muhafaza,muhafazah,محافظة,محافظه,م.=>muhafaza",
+    "area,mintaqa,mintaqah,منطقة,منطقه=>mintaqa",
+    "block,qit'a,qitaa,قطعة,قطعه,ق.=>block",
+    "street,sharia,shari',شارع,شارع,ش.=>sharia",
+    "jadda,jaddah,avenue,ave,جادة,جاده=>jadda",
+    "building,mabna,mabnaa,binaya,bldg,مبنى,مبنى,بناية,بنايه=>building",
+    "floor,dor,دور,طابق=>floor",
+    "apartment,shaqa,shaqqah,apt,شقة,شقه=>apartment",
+    "house,manzel,bait,منزل,منزل,بيت=>house",
+    "p.o. box,post office box,ص.ب,ص.ب=>p.o. box",
+    "number,no,no.,raqm,رقم,نمرة=>number",
+    "building number,رقم المبنى,رقم المبنى=>building number",
+    "unit,وحدة,وحده=>unit",
+    "office,ofc,مكتب,مكتب=>office",
+    "postcode,zip code,الرمز البريدي,الرمز البريدي=>postcode",
+    "al,el,ال,ال=>al",
+    "boulevard,blvd,blvd.,بوليفارد,بوليفارد=>boulevard",
+    "road,rd,rd.,طريق,طريق=>road"
+  ],
+  "cities": [
+    "kuwait city,madīnat al-kuwayt,مدينة الكويت=>kuwait city",
+    "hawalli,hawallī,حولي=>hawalli",
+    "farwaniya,farwānīyah,الفروانية=>farwaniya",
+    "ahmadi,al-aḥmadī,الأحمدي=>ahmadi",
+    "mubarak al-kabeer,mubārak al-kabīr,مبارك الكبير=>mubarak al-kabeer",
+    "jahra,al-jahrā',الجهراء=>jahra"
+  ],
+  "regions": [
+    "hawalli governorate,محافظة حولي=>hawalli governorate",
+    "farwaniya governorate,محافظة الفروانية=>farwaniya governorate",
+    "ahmadi governorate,محافظة الأحمدي=>ahmadi governorate",
+    "mubarak al-kabeer governorate,محافظة مبارك الكبير=>mubarak al-kabeer governorate",
+    "jahra governorate,محافظة الجهراء=>jahra governorate",
+    "capital governorate,محافظة العاصمة=>capital governorate"
+  ]
+}

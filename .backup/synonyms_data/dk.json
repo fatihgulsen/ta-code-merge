@@ -1,0 +1,37 @@
+{
+  "company_types": [
+    "Ltd.,ApS,aps,anpartsselskab,Anpartsselskab,LLC=>ApS",
+    "Iværksætterselskab,IVS,ivsv=>IVS",
+    "Inc.,A/S,a/s,aktieselskab,Aktieselskab,plc=>aktieselskab",
+    "Corp.,selskab,selsk.=>selskab",
+    "General Partnership,I/S,i/s,interessentskab,Interessentskab=>interessentskab",
+    "Foundation,fond,fondet,stiftelse=>fond",
+    "Association,forening,for.,assoc.=>forening",
+    "Cooperative,andelsforening,andel,afd.=>andelsforening",
+    "Group,gruppe,grp.,koncern=>koncern",
+    "Holding,hold.,holding=>holding",
+    "Limited Partnership,partnerskab,partn.,kommanditselskab,K/S,k/s,Kommanditselskab=>kommanditselskab",
+    "enkeltmandsvirksomhed,enkeltm.,enk.v.,ev=>enkeltmandsvirksomhed",
+    "partrederi,partred.,pr=>partrederi",
+    "Partnerselskab,P/S=>Partnerselskab"
+  ],
+  "address_terms": [
+    "Street,st.,str.,gade,g.,gd.=>gade",
+    "Road,rd.,vej,vj.,v.=>vej",
+    "Avenue,ave,av.,allé,alle,alléen,al.=>allé",
+    "Boulevard,blvd.,boulv.,boulev.,bd.,bv.,boulevard=>boulevard",
+    "torv,trv.,torvet,Market Square=>torvet",
+    "Square,sq.,plads=>plads",
+    "Lane,ln.,vejsti,sti=>sti",
+    "Drive,dr.,driv=>vej",
+    "Terrace,terr.,trc.,terrasse=>terrasse",
+    "Place,plc.=>plads",
+    "Highway,hwy.,motorvej,mv.=>motorvej",
+    "Way,wy.=>vej",
+    "Alley,aly.,passage,pasg.,stræde,str.=>stræde",
+    "Park,pk.,park=>park"
+  ],
+  "cities": [
+    "Copenhagen,København=>Copenhagen"
+  ]
+}

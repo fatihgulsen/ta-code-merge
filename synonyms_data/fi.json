@@ -1,0 +1,34 @@
+{
+  "company_types": [
+    "oy,o.y.,osakeyhtiö=>osakeyhtiö",
+    "oyj,o.y.j.,julkinen osakeyhtiö=>julkinen osakeyhtiö",
+    "ky,k.y.,kommandiittiyhtiö=>kommandiittiyhtiö",
+    "ay,a.y.,avoin yhtiö=>avoin yhtiö",
+    "tmi,t.m.i.,toiminimi=>toiminimi",
+    "ry,r.y.,yhdistys=>yhdistys",
+    "osk,osuuskunta=>osuuskunta",
+    "säätiö=>säätiö"
+  ],
+  "address_terms": [
+    "kt,k.,katu=>katu",
+    "t.,tie=>tie",
+    "p.,polku=>polku",
+    "kj,kuja=>kuja",
+    "kaari=>kaari",
+    "ranta=>ranta",
+    "tori=>tori",
+    "pk,puistokatu=>puistokatu",
+    "asema=>asema",
+    "rak,rakennus=>rakennus",
+    "hsto,huoneisto=>huoneisto",
+    "krs,kerros=>kerros",
+    "pnro,postinumero=>postinumero",
+    "kaupunki=>kaupunki",
+    "kunta=>kunta",
+    "maakunta=>maakunta",
+    "oso.,osoite=>osoite"
+  ],
+  "cities": [
+    "Helsinki,Helsingfors=>Helsinki"
+  ]
+}

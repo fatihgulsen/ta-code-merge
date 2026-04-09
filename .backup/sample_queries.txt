@@ -1,0 +1,579 @@
+--- FİRMA: Toyota Motor Limited (TR) ---
+{
+  "bool": {
+    "must": [
+      {
+        "bool": {
+          "should": [
+            {
+              "match_phrase": {
+                "variations": {
+                  "query": "toyota motor limited",
+                  "analyzer": "clean_analyzer_TR"
+                }
+              }
+            },
+            {
+              "match_phrase": {
+                "variations.unidecode": {
+                  "query": "toyota motor limited",
+                  "analyzer": "standard"
+                }
+              }
+            }
+          ],
+          "minimum_should_match": 1
+        }
+      }
+    ],
+    "should": [
+      {
+        "term": {
+          "tax_number": {
+            "value": "123456789",
+            "boost": 10
+          }
+        }
+      },
+      {
+        "term": {
+          "phone_number": {
+            "value": "905554443322",
+            "boost": 5
+          }
+        }
+      }
+    ],
+    "filter": [
+      {
+        "term": {
+          "country_code": "TR"
+        }
+      }
+    ]
+  }
+}
+
+==================================================
+
+--- FİRMA: Samsung Electronics Co., Ltd. (KR) ---
+{
+  "bool": {
+    "must": [
+      {
+        "bool": {
+          "should": [
+            {
+              "match_phrase": {
+                "variations": {
+                  "query": "samsung electronics co., ltd.",
+                  "analyzer": "clean_analyzer_common"
+                }
+              }
+            },
+            {
+              "match_phrase": {
+                "variations.unidecode": {
+                  "query": "samsung electronics co., ltd.",
+                  "analyzer": "standard"
+                }
+              }
+            }
+          ],
+          "minimum_should_match": 1
+        }
+      }
+    ],
+    "should": [
+      {
+        "term": {
+          "tax_number": {
+            "value": "123456789",
+            "boost": 10
+          }
+        }
+      },
+      {
+        "term": {
+          "phone_number": {
+            "value": "905554443322",
+            "boost": 5
+          }
+        }
+      }
+    ],
+    "filter": [
+      {
+        "term": {
+          "country_code": "KR"
+        }
+      }
+    ]
+  }
+}
+
+==================================================
+
+--- FİRMA: Siemens Gmbh (DE) ---
+{
+  "bool": {
+    "must": [
+      {
+        "bool": {
+          "should": [
+            {
+              "match_phrase": {
+                "variations": {
+                  "query": "siemens gmbh",
+                  "analyzer": "clean_analyzer_DE"
+                }
+              }
+            },
+            {
+              "match_phrase": {
+                "variations.unidecode": {
+                  "query": "siemens gmbh",
+                  "analyzer": "standard"
+                }
+              }
+            }
+          ],
+          "minimum_should_match": 1
+        }
+      }
+    ],
+    "should": [
+      {
+        "term": {
+          "tax_number": {
+            "value": "123456789",
+            "boost": 10
+          }
+        }
+      },
+      {
+        "term": {
+          "phone_number": {
+            "value": "905554443322",
+            "boost": 5
+          }
+        }
+      }
+    ],
+    "filter": [
+      {
+        "term": {
+          "country_code": "DE"
+        }
+      }
+    ]
+  }
+}
+
+==================================================
+
+--- FİRMA: Apple Inc. (US) ---
+{
+  "bool": {
+    "must": [
+      {
+        "bool": {
+          "should": [
+            {
+              "match_phrase": {
+                "variations": {
+                  "query": "apple inc.",
+                  "analyzer": "clean_analyzer_US"
+                }
+              }
+            },
+            {
+              "match_phrase": {
+                "variations.unidecode": {
+                  "query": "apple inc.",
+                  "analyzer": "standard"
+                }
+              }
+            }
+          ],
+          "minimum_should_match": 1
+        }
+      }
+    ],
+    "should": [
+      {
+        "term": {
+          "tax_number": {
+            "value": "123456789",
+            "boost": 10
+          }
+        }
+      },
+      {
+        "term": {
+          "phone_number": {
+            "value": "905554443322",
+            "boost": 5
+          }
+        }
+      }
+    ],
+    "filter": [
+      {
+        "term": {
+          "country_code": "US"
+        }
+      }
+    ]
+  }
+}
+
+==================================================
+
+--- FİRMA: Société Générale (FR) ---
+{
+  "bool": {
+    "must": [
+      {
+        "bool": {
+          "should": [
+            {
+              "match_phrase": {
+                "variations": {
+                  "query": "société générale",
+                  "analyzer": "clean_analyzer_FR"
+                }
+              }
+            },
+            {
+              "match_phrase": {
+                "variations.unidecode": {
+                  "query": "societe generale",
+                  "analyzer": "standard"
+                }
+              }
+            }
+          ],
+          "minimum_should_match": 1
+        }
+      }
+    ],
+    "should": [
+      {
+        "term": {
+          "tax_number": {
+            "value": "123456789",
+            "boost": 10
+          }
+        }
+      },
+      {
+        "term": {
+          "phone_number": {
+            "value": "905554443322",
+            "boost": 5
+          }
+        }
+      }
+    ],
+    "filter": [
+      {
+        "term": {
+          "country_code": "FR"
+        }
+      }
+    ]
+  }
+}
+
+==================================================
+
+--- FİRMA: KOC HOLDING A.S. (TR) ---
+{
+  "bool": {
+    "must": [
+      {
+        "bool": {
+          "should": [
+            {
+              "match_phrase": {
+                "variations": {
+                  "query": "koc holding a.s.",
+                  "analyzer": "clean_analyzer_TR"
+                }
+              }
+            },
+            {
+              "match_phrase": {
+                "variations.unidecode": {
+                  "query": "koc holding a.s.",
+                  "analyzer": "standard"
+                }
+              }
+            }
+          ],
+          "minimum_should_match": 1
+        }
+      }
+    ],
+    "should": [
+      {
+        "term": {
+          "tax_number": {
+            "value": "123456789",
+            "boost": 10
+          }
+        }
+      },
+      {
+        "term": {
+          "phone_number": {
+            "value": "905554443322",
+            "boost": 5
+          }
+        }
+      }
+    ],
+    "filter": [
+      {
+        "term": {
+          "country_code": "TR"
+        }
+      }
+    ]
+  }
+}
+
+==================================================
+
+--- FİRMA: Mitsubishi Corporation (JP) ---
+{
+  "bool": {
+    "must": [
+      {
+        "bool": {
+          "should": [
+            {
+              "match_phrase": {
+                "variations": {
+                  "query": "mitsubishi corporation",
+                  "analyzer": "clean_analyzer_common"
+                }
+              }
+            },
+            {
+              "match_phrase": {
+                "variations.unidecode": {
+                  "query": "mitsubishi corporation",
+                  "analyzer": "standard"
+                }
+              }
+            }
+          ],
+          "minimum_should_match": 1
+        }
+      }
+    ],
+    "should": [
+      {
+        "term": {
+          "tax_number": {
+            "value": "123456789",
+            "boost": 10
+          }
+        }
+      },
+      {
+        "term": {
+          "phone_number": {
+            "value": "905554443322",
+            "boost": 5
+          }
+        }
+      }
+    ],
+    "filter": [
+      {
+        "term": {
+          "country_code": "JP"
+        }
+      }
+    ]
+  }
+}
+
+==================================================
+
+--- FİRMA: Volkswagen AG (DE) ---
+{
+  "bool": {
+    "must": [
+      {
+        "bool": {
+          "should": [
+            {
+              "match_phrase": {
+                "variations": {
+                  "query": "volkswagen ag",
+                  "analyzer": "clean_analyzer_DE"
+                }
+              }
+            },
+            {
+              "match_phrase": {
+                "variations.unidecode": {
+                  "query": "volkswagen ag",
+                  "analyzer": "standard"
+                }
+              }
+            }
+          ],
+          "minimum_should_match": 1
+        }
+      }
+    ],
+    "should": [
+      {
+        "term": {
+          "tax_number": {
+            "value": "123456789",
+            "boost": 10
+          }
+        }
+      },
+      {
+        "term": {
+          "phone_number": {
+            "value": "905554443322",
+            "boost": 5
+          }
+        }
+      }
+    ],
+    "filter": [
+      {
+        "term": {
+          "country_code": "DE"
+        }
+      }
+    ]
+  }
+}
+
+==================================================
+
+--- FİRMA: LG Electronics (KR) ---
+{
+  "bool": {
+    "must": [
+      {
+        "bool": {
+          "should": [
+            {
+              "match_phrase": {
+                "variations": {
+                  "query": "lg electronics",
+                  "analyzer": "clean_analyzer_common"
+                }
+              }
+            },
+            {
+              "match_phrase": {
+                "variations.unidecode": {
+                  "query": "lg electronics",
+                  "analyzer": "standard"
+                }
+              }
+            }
+          ],
+          "minimum_should_match": 1
+        }
+      }
+    ],
+    "should": [
+      {
+        "term": {
+          "tax_number": {
+            "value": "123456789",
+            "boost": 10
+          }
+        }
+      },
+      {
+        "term": {
+          "phone_number": {
+            "value": "905554443322",
+            "boost": 5
+          }
+        }
+      }
+    ],
+    "filter": [
+      {
+        "term": {
+          "country_code": "KR"
+        }
+      }
+    ]
+  }
+}
+
+==================================================
+
+--- FİRMA: British Petroleum (GB) ---
+{
+  "bool": {
+    "must": [
+      {
+        "bool": {
+          "should": [
+            {
+              "match_phrase": {
+                "variations": {
+                  "query": "british petroleum",
+                  "analyzer": "clean_analyzer_common"
+                }
+              }
+            },
+            {
+              "match_phrase": {
+                "variations.unidecode": {
+                  "query": "british petroleum",
+                  "analyzer": "standard"
+                }
+              }
+            }
+          ],
+          "minimum_should_match": 1
+        }
+      }
+    ],
+    "should": [
+      {
+        "term": {
+          "tax_number": {
+            "value": "123456789",
+            "boost": 10
+          }
+        }
+      },
+      {
+        "term": {
+          "phone_number": {
+            "value": "905554443322",
+            "boost": 5
+          }
+        }
+      }
+    ],
+    "filter": [
+      {
+        "term": {
+          "country_code": "GB"
+        }
+      }
+    ]
+  }
+}
+
+==================================================

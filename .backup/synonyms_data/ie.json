@@ -1,0 +1,49 @@
+{
+  "company_types": [
+    "limited company,ltd,ltd.,limited,co. limited,company limited by shares=>ltd",
+    "designated activity company,dac,d.a.c.=>dac",
+    "unlimited company,ulc,u.l.c.=>ulc",
+    "public limited company,plc,p.l.c.=>plc",
+    "company limited by guarantee,clg,c.l.g.=>clg",
+    "sole trader,individual,proprietor=>sole trader",
+    "partnership=>partnership",
+    "branch,foreign branch=>branch"
+  ],
+  "address_terms": [
+    "street,st,st.=>street",
+    "road,rd,rd.=>road",
+    "avenue,ave,ave.=>avenue",
+    "close,cl,cl.=>close",
+    "lane,ln,ln.=>lane",
+    "place,pl,pl.=>place",
+    "court,ct,ct.=>court",
+    "square,sq,sq.=>square",
+    "park,pk,pk.=>park",
+    "estate=>estate",
+    "terrace,terr,terr.=>terrace",
+    "drive,dr,dr.=>drive",
+    "green=>green",
+    "walk=>walk",
+    "apartment,apt,apt.=>apartment",
+    "building,bldg,bldg.=>building",
+    "floor,fl,fl.=>floor",
+    "unit=>unit",
+    "county,co,co.=>county",
+    "townland=>townland",
+    "post office,po,p.o.=>post office",
+    "postal code,eircode=>postal code",
+    "boulevard,blvd,blvd.=>boulevard"
+  ],
+  "cities": [
+    "dublin=>dublin",
+    "cork=>cork",
+    "limerick=>limerick",
+    "galway=>galway",
+    "waterford=>waterford",
+    "drogheda=>drogheda",
+    "dundalk=>dundalk",
+    "bray=>bray",
+    "swords=>swords",
+    "navan=>navan"
+  ]
+}

@@ -89,8 +89,8 @@ ES_PHONE_WEIGHT = 20  # Phone eşleşirse _score'a eklenir
 LENGTH_RATIO_THRESHOLD = 0.4
 TOKEN_COVERAGE_THRESHOLD = 0.8  # Token'ların en az %80'i örtüşmeli
 
-SUFFIX_FUZZY_MIN_SCORE = 1.5   # ES score eşiği — prod testleriyle kalibre edilmeli
-SUFFIX_FUZZY_SCORE     = 85    # match sonucu skoru
+SUFFIX_FUZZY_MIN_SCORE = 1.5  # ES score eşiği — prod testleriyle kalibre edilmeli
+SUFFIX_FUZZY_SCORE = 85  # match sonucu skoru
 
 # --- ES Rescore Score Tier Sabitleri ---
 # interpret_match_result() _score değerinden match_type belirler
@@ -166,7 +166,7 @@ STAGES = [
         "name": "SUFFIX_FUZZY",
         "order": 4,
         "query_fn": "SUFFIX_FUZZY",
-        "min_score": 1.5,
+        "min_score": SUFFIX_FUZZY_MIN_SCORE,
         "enabled": True,
     },
     {

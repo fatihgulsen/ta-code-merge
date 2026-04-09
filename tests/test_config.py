@@ -50,6 +50,7 @@ def test_suffix_fuzzy_constants_exist():
     assert hasattr(config, "SUFFIX_FUZZY_MIN_SCORE")
     assert hasattr(config, "SUFFIX_FUZZY_SCORE")
     assert config.SUFFIX_FUZZY_SCORE == 85
+    assert config.SUFFIX_FUZZY_MIN_SCORE == 1.5
 
 
 def test_suffix_fuzzy_stage_in_stages():

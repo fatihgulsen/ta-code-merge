@@ -17,13 +17,17 @@ import logging
 from elasticsearch import Elasticsearch
 
 from config import ES_INDEX, SUFFIX_TYPO_MAP
+from synonym_loader import get_company_type_tokens, get_all_country_codes
 
 logger = logging.getLogger(__name__)
 
-PIPELINE_NAME = "company_name_clean"
+
+def pipeline_name(country_code: str) -> str:
+    """Ülkeye özgü ingest pipeline ismini döner."""
+    return f"company_name_{country_code.lower()}"
 
 
-def _build_clean_script() -> str:
+def _build_clean_script(country_code: str) -> str:
     """
     Painless script: variations array'indeki her name için light_clean uygular.
     Temizlenmiş name'leri variations'a yazar.
@@ -31,6 +35,10 @@ def _build_clean_script() -> str:
     NOT: Painless "..." string'lerinde sadece \\\\ ve \\" escape geçerli.
     Unicode karakterler için /regex/ literal kullanılır.
     """
+    tokens = get_company_type_tokens(country_code)
+    known = sorted(t for t in tokens if t.isalpha() and len(t) <= 6)
+    known_literal = ", ".join(f"'{t}'" for t in known)
+
     # SUFFIX_TYPO_MAP'i Painless map literal'e dönüştür
     typo_entries = ", ".join(
         f"'{k}': '{v}'" for k, v in SUFFIX_TYPO_MAP.items()
@@ -87,7 +95,7 @@ def _build_clean_script() -> str:
         "  text = result.toString().trim();",
 
         # 9b. Boşluklu tek harf birleştirme: "l t d" -> "ltd"
-        "  def knownSuffixes = ['ltd', 'inc', 'llc', 'bv', 'nv', 'ag', 'sa', 'plc', 'co', 'pvt'];",
+        f"  def knownSuffixes = [{known_literal}];",
         r"  def spTokens = / /.split(text);",
         "  List spResult = new ArrayList();",
         "  int si = 0;",
@@ -146,13 +154,14 @@ def _build_clean_script() -> str:
     return "\n".join(script_parts)
 
 
-def _build_stripped_script(generic_tokens: list[str]) -> str:
+def _build_stripped_script(country_code: str) -> str:
     """
     Painless script: variations'tan generic token'ları kaldırarak
     variations_stripped array'ini oluşturur.
     """
     # Generic token'ları Painless list literal olarak oluştur
-    tokens_literal = ", ".join(f"'{t}'" for t in generic_tokens)
+    tokens = list(get_company_type_tokens(country_code))
+    tokens_literal = ", ".join(f"'{t}'" for t in tokens)
 
     script_parts = [
         "List genericTokens = [" + tokens_literal + "];",
@@ -181,50 +190,57 @@ def _build_stripped_script(generic_tokens: list[str]) -> str:
     return "\n".join(script_parts)
 
 
-def build_pipeline_body() -> dict:
+def build_pipeline_body(country_code: str) -> dict:
     """Ingest pipeline tanımını oluşturur."""
-    # Genel generic tokenlar (en yaygın olanlar — ülke bazlı olanlar
-    # ES synonym analyzer tarafında zaten handle ediliyor)
-    common_generic = [
-        "ltd", "limited", "inc", "incorporated", "corp", "corporation",
-        "llc", "gmbh", "ag", "sa", "srl", "bv", "nv", "plc", "co",
-        "company", "pty", "pvt", "private", "public", "holding",
-        "holdings", "group", "international", "intl", "and",
-    ]
-
     return {
-        "description": "Firma ismi temizleme ve normalizasyon pipeline'i",
+        "description": f"Firma ismi temizleme ve normalizasyon pipeline'i ({country_code.upper()})",
         "processors": [
             {
                 "script": {
-                    "description": "light_clean: lowercase, zero-width, parantez, label, ampersand, ozel karakter, suffix typo",
-                    "source": _build_clean_script(),
+                    "description": f"light_clean for {country_code.upper()}",
+                    "source": _build_clean_script(country_code),
                 }
             },
             {
                 "script": {
-                    "description": "stripped_form: generic token'lari kaldir",
-                    "source": _build_stripped_script(common_generic),
+                    "description": f"stripped_form for {country_code.upper()}",
+                    "source": _build_stripped_script(country_code),
                 }
             },
         ],
     }
 
 
-def register_pipeline(es: Elasticsearch) -> None:
-    """Ingest pipeline'i ES'e kaydeder."""
-    body = build_pipeline_body()
-    es.ingest.put_pipeline(id=PIPELINE_NAME, body=body)
-    logger.info(f"Ingest pipeline '{PIPELINE_NAME}' kaydedildi.")
+def register_pipeline(es: Elasticsearch, country_code: str) -> None:
+    """Tek ülke için ingest pipeline oluşturur/günceller."""
+    name = pipeline_name(country_code)
+    body = build_pipeline_body(country_code)
+    es.ingest.put_pipeline(id=name, body=body)
+    logger.info(f"Ingest pipeline '{name}' kaydedildi.")
 
 
-def delete_pipeline(es: Elasticsearch) -> None:
-    """Ingest pipeline'i siler."""
+def register_all_pipelines(es: Elasticsearch) -> None:
+    """Tüm ülkeler için ingest pipeline'ları oluşturur/günceller."""
+    codes = get_all_country_codes()
+    for cc in codes:
+        register_pipeline(es, cc)
+    logger.info(f"Toplam {len(codes)} ülke pipeline'ı kaydedildi.")
+
+
+def delete_pipeline(es: Elasticsearch, country_code: str) -> None:
+    """Tek ülke pipeline'ını siler."""
+    name = pipeline_name(country_code)
     try:
-        es.ingest.delete_pipeline(id=PIPELINE_NAME)
-        logger.info(f"Ingest pipeline '{PIPELINE_NAME}' silindi.")
+        es.ingest.delete_pipeline(id=name)
+        logger.info(f"Ingest pipeline '{name}' silindi.")
     except Exception:
-        logger.warning(f"Pipeline '{PIPELINE_NAME}' silinemedi (muhtemelen mevcut degil).")
+        logger.warning(f"Pipeline '{name}' silinemedi (muhtemelen mevcut değil).")
+
+
+def delete_all_pipelines(es: Elasticsearch) -> None:
+    """Tüm ülke pipeline'larını siler."""
+    for cc in get_all_country_codes():
+        delete_pipeline(es, cc)
 
 
 # ============================================================================
@@ -232,5 +248,5 @@ if __name__ == "__main__":
     from es_manager import get_es_client
 
     es = get_es_client()
-    register_pipeline(es)
-    print(f"Pipeline '{PIPELINE_NAME}' basariyla kaydedildi.")
+    register_all_pipelines(es)
+    print("Tüm ülke pipeline'ları başarıyla kaydedildi.")

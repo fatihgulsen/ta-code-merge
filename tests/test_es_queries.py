@@ -109,3 +109,19 @@ def test_all_queries_include_country_filter():
     ]
     for fn in fns:
         assert _get_country_filter(fn()) == country, f"{fn} country filter eksik"
+
+
+def test_stripped_exact_uses_country_analyzer():
+    """STRIPPED_EXACT bilinen ülke için stripped_search_analyzer_{cc} kullanmalı."""
+    query = es_queries.STRIPPED_EXACT("Acme Limited", "TR")
+    match_phrase = query["query"]["bool"]["must"][0]["match_phrase"]
+    analyzer = match_phrase["variations_stripped"]["analyzer"]
+    assert analyzer == "stripped_search_analyzer_tr"
+
+
+def test_stripped_exact_uses_global_analyzer_for_unknown_country():
+    """STRIPPED_EXACT bilinmeyen ülke için global fallback analyzer kullanmalı."""
+    query = es_queries.STRIPPED_EXACT("Acme Limited", "XX")
+    match_phrase = query["query"]["bool"]["must"][0]["match_phrase"]
+    analyzer = match_phrase["variations_stripped"]["analyzer"]
+    assert analyzer == "stripped_search_analyzer"

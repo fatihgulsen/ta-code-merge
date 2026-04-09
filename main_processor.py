@@ -612,7 +612,6 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
     for rec in records:
         # Dedup key: tokenize + sirali tuple — tekrarlari korur
         # "C & C OVERSEAS" → ('c', 'c', 'overseas') vs "C OVERSEAS" → ('c', 'overseas')
-        tokens = _tokenize(rec["raw_name"], rec["country"])
         raw_tokens = _clean_labels(rec["raw_name"]).lower().split()
         norm_list = []
         for t in raw_tokens:
@@ -875,9 +874,9 @@ def _index_new_master(es, rec: dict) -> str:
             body=doc,
             pipeline=pipeline_name(rec["country"]),
         )
-    except Exception:
+    except Exception as exc:
         # Pipeline hatasi — pipeline olmadan dene
-        logger.debug(f"Pipeline hatasi, pipeline olmadan index'leniyor: {rec['raw_name'][:50]}")
+        logger.warning(f"Pipeline ile index hatasi ({exc!r}), pipeline olmadan deneniyor: {rec['raw_name'][:50]}")
         es.index(
             index=ES_INDEX,
             id=master_id,

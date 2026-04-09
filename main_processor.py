@@ -20,6 +20,11 @@ from typing import Any
 import psycopg2
 from psycopg2.extras import DictCursor, execute_values
 from elasticsearch import helpers
+try:
+    from tqdm import tqdm
+except ImportError:  # pragma: no cover
+    def tqdm(iterable=None, **kwargs):  # type: ignore[misc]
+        return iterable if iterable is not None else range(0)
 
 from config import (
     BATCH_SIZE,
@@ -361,6 +366,22 @@ def _post_verify(input_name: str, master_source: dict, stage_name: str, country:
     input_meaningful = input_tokens - suffix_tokens
     master_meaningful = master_tokens - suffix_tokens
     min_meaningful = min(len(input_meaningful), len(master_meaningful))
+
+    # SUFFIX_FUZZY: name kısmı (suffix çıkarılmış) doc stripped ile örtüşmeli
+    if stage_name == "SUFFIX_FUZZY":
+        doc_stripped_raw = master_source.get("variations_stripped", [])
+        if isinstance(doc_stripped_raw, list) and doc_stripped_raw:
+            doc_stripped = doc_stripped_raw[0]
+        elif isinstance(doc_stripped_raw, str):
+            doc_stripped = doc_stripped_raw
+        else:
+            doc_stripped = ""
+        doc_name_tokens = set(doc_stripped.split()) if doc_stripped else set()
+        if not doc_name_tokens:
+            return False
+        coverage = len(input_meaningful & doc_name_tokens) / len(doc_name_tokens)
+        return coverage >= 0.85
+
     if min_meaningful < 2:
         # Tek anlamli token — tam token eslesmesi varsa CANONICAL/STRIPPED'da kabul et
         if stage_name in ("CANONICAL_EXACT", "STRIPPED_EXACT"):
@@ -934,7 +955,6 @@ def process_all_data() -> None:
         validate_db_schema(read_conn)
         ensure_stage_log_table(write_conn)
 
-        read_cursor = read_conn.cursor(name="matching_cursor", cursor_factory=DictCursor)
         write_cursor = write_conn.cursor()
 
         col_id = COLUMN_MAPPING["id"]
@@ -950,29 +970,50 @@ def process_all_data() -> None:
         if col_phone:
             select_cols.append(col_phone)
 
-        read_cursor.execute(
-            f"""
-            SELECT {', '.join(select_cols)}
-            FROM {RAW_TABLE_NAME}
-            WHERE {col_master} IS NULL
-            ORDER BY {col_id}
-            """
-        )
+        # Toplam islenmemis kayit sayisi — progress bar icin
+        count_cur = read_conn.cursor()
+        count_cur.execute(f"SELECT COUNT(*) FROM {RAW_TABLE_NAME} WHERE {col_master} IS NULL")
+        total_remaining = count_cur.fetchone()[0]
+        count_cur.close()
+        logger.info(f"Toplam islenmemis kayit: {total_remaining:,}")
 
-        batch_num = 0
         total_processed = 0
         total_matched = 0
         total_new = 0
+        total_skipped = 0
         stage_counts: dict[str, int] = {}
+        last_id = ""  # Sayfalama icin son islenen id
+
+        pbar = tqdm(
+            total=total_remaining,
+            desc="Eslestirme",
+            unit="kayit",
+            bar_format=(
+                "{l_bar}{bar}| {n_fmt}/{total_fmt} "
+                "[{elapsed}<{remaining}, {rate_fmt}] "
+                "{postfix}"
+            ),
+        )
 
         while True:
-            rows = read_cursor.fetchmany(BATCH_SIZE)
-            if not rows:
-                logger.info("Islenecek veri kalmadi.")
-                break
+            # Server-side cursor yerine basit SELECT + LIMIT
+            # Her seferinde master_code IS NULL olan sonraki BATCH_SIZE kaydi cek
+            read_cur = read_conn.cursor(cursor_factory=DictCursor)
+            read_cur.execute(
+                f"""
+                SELECT {', '.join(select_cols)}
+                FROM {RAW_TABLE_NAME}
+                WHERE {col_master} IS NULL AND {col_id} > %s
+                ORDER BY {col_id}
+                LIMIT {BATCH_SIZE}
+                """,
+                (last_id,),
+            )
+            rows = read_cur.fetchall()
+            read_cur.close()
 
-            batch_num += 1
-            logger.info(f"Batch #{batch_num}: {len(rows)} kayit okundu.")
+            if not rows:
+                break
 
             # PG toplu yazim icin biriktiriciler
             pg_updates: list[tuple] = []
@@ -981,6 +1022,7 @@ def process_all_data() -> None:
 
             for row in rows:
                 row_id = row[col_id]
+                last_id = row_id  # Sayfalama icin son id'yi takip et
                 country_from_id = row_id[:2].upper() if row_id and len(row_id) >= 2 else ""
                 country_raw = (row[col_country] or "").strip().upper() if col_country else ""
                 if len(country_from_id) == 2 and country_from_id.isalpha():
@@ -991,6 +1033,8 @@ def process_all_data() -> None:
                     country = "DEFAULT"
                 raw_name = (row[col_name] or "").strip()
                 if not raw_name:
+                    total_skipped += 1
+                    pbar.update(1)
                     continue
 
                 rec = {
@@ -1036,6 +1080,14 @@ def process_all_data() -> None:
 
                 records_since_refresh += 1
                 total_processed += 1
+                pbar.update(1)
+
+                # Progress bar postfix guncelle
+                match_pct = round(100 * total_matched / total_processed, 1) if total_processed else 0
+                pbar.set_postfix_str(
+                    f"eslesen={total_matched:,} ({match_pct}%) yeni={total_new:,}",
+                    refresh=False,
+                )
 
                 # Periyodik ES refresh — yeni master'lar gorunur olsun
                 if records_since_refresh >= ES_REFRESH_INTERVAL:
@@ -1090,21 +1142,20 @@ def process_all_data() -> None:
 
             es.indices.refresh(index=ES_INDEX)
 
-            logger.info(
-                f"Batch #{batch_num} tamamlandi: {len(rows)} kayit, "
-                f"eslesen={sum(v for k, v in stage_counts.items() if k != 'NEW_MASTER')}, "
-                f"yeni_master={total_new}"
-            )
-            # Stage dagilimi logla
-            for sn in sorted(stage_counts.keys()):
-                logger.info(f"  {sn}: {stage_counts[sn]}")
+        pbar.close()
 
-        read_cursor.close()
+        # Final ozet
         write_cursor.close()
-        logger.info(
-            f"Tum veriler islendi: {total_processed:,} kayit, "
-            f"{total_matched:,} eslesti, {total_new:,} yeni master."
-        )
+        logger.info(f"{'='*60}")
+        logger.info(f"TAMAMLANDI: {total_processed:,} kayit islendi")
+        logger.info(f"  Eslesen:     {total_matched:,}")
+        logger.info(f"  Yeni master: {total_new:,}")
+        if total_skipped:
+            logger.info(f"  Atlanan:     {total_skipped:,} (bos isim)")
+        logger.info(f"  Stage dagilimi:")
+        for sn in sorted(stage_counts.keys()):
+            logger.info(f"    {sn}: {stage_counts[sn]:,}")
+        logger.info(f"{'='*60}")
 
     except Exception as e:
         if "read_conn" in locals():

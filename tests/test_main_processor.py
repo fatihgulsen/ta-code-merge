@@ -90,3 +90,61 @@ def test_tax_exact_skips_records_without_tax():
 
     assert len(unmatched) == 1
     assert unmatched[0]["row_id"] == 1
+
+
+def test_post_verify_suffix_fuzzy_passes_when_name_matches():
+    """SUFFIX_FUZZY: name token'ları doc stripped'da >= 85% örtüşünce True döner."""
+    import main_processor as mp
+
+    # "Komerci Limted" → doc variations_stripped = ["komerci"]
+    # input_meaningful = {"komerci", "limted"} (limted stays, not a known suffix)
+    # doc_name_tokens = {"komerci"}
+    # coverage = |{"komerci","limted"} ∩ {"komerci"}| / 1 = 1.0 >= 0.85 → True
+    doc_source = {
+        "variations": ["komerci limited"],
+        "variations_stripped": ["komerci"],
+    }
+    result = mp._post_verify("Komerci Limted", doc_source, "SUFFIX_FUZZY", "TR")
+    assert result is True
+
+
+def test_post_verify_suffix_fuzzy_fails_when_name_differs():
+    """SUFFIX_FUZZY: name token'ları < 85% örtüşünce False döner."""
+    import main_processor as mp
+
+    # "Kommerci Limted" → input_meaningful includes "kommerci" (not "komerci")
+    # doc_name_tokens = {"komerci"}
+    # coverage = 0.0 < 0.85 → False
+    doc_source = {
+        "variations": ["komerci limited"],
+        "variations_stripped": ["komerci"],
+    }
+    result = mp._post_verify("Kommerci Limted", doc_source, "SUFFIX_FUZZY", "TR")
+    assert result is False
+
+
+def test_post_verify_suffix_fuzzy_passes_with_multiple_name_tokens():
+    """SUFFIX_FUZZY: çok tokenlı isimde yüksek coverage True döner."""
+    import main_processor as mp
+
+    # "Komerci Trading Limted" → input_meaningful = {"komerci", "trading", "limted"}
+    # doc stripped = "komerci trading"
+    # coverage = |{"komerci","trading","limted"} ∩ {"komerci","trading"}| / 2 = 2/2 = 1.0 → True
+    doc_source = {
+        "variations": ["komerci trading limited"],
+        "variations_stripped": ["komerci trading"],
+    }
+    result = mp._post_verify("Komerci Trading Limted", doc_source, "SUFFIX_FUZZY", "TR")
+    assert result is True
+
+
+def test_post_verify_suffix_fuzzy_fails_when_doc_stripped_empty():
+    """SUFFIX_FUZZY: doc variations_stripped boşsa False döner."""
+    import main_processor as mp
+
+    doc_source = {
+        "variations": ["limited"],
+        "variations_stripped": [],
+    }
+    result = mp._post_verify("Komerci Limted", doc_source, "SUFFIX_FUZZY", "TR")
+    assert result is False

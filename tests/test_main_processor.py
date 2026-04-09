@@ -3,8 +3,14 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 
-def _make_es_hit(master_id: str, score: float = 80.0) -> dict:
-    return {"_source": {"master_id": master_id}, "_score": score}
+def _make_es_hit(master_id: str, score: float = 80.0, variations: list[str] | None = None) -> dict:
+    return {
+        "_source": {
+            "master_id": master_id,
+            "variations": variations if variations is not None else [],
+        },
+        "_score": score,
+    }
 
 
 def _make_msearch_response(hits_per_query: list[list[dict]]) -> dict:
@@ -30,8 +36,8 @@ def test_run_stage_returns_matched_and_unmatched():
 
     mock_es = MagicMock()
     mock_es.msearch.return_value = _make_msearch_response([
-        [_make_es_hit("master-001", score=80.0)],  # record 1 eşleşti
-        [],                                          # record 2 eşleşmedi
+        [_make_es_hit("master-001", score=80.0, variations=["Acme Ltd"])],  # record 1 eşleşti
+        [],                                                                   # record 2 eşleşmedi
     ])
 
     matched, unmatched = mp.run_stage(mock_es, records, stage)
@@ -90,3 +96,28 @@ def test_tax_exact_skips_records_without_tax():
 
     assert len(unmatched) == 1
     assert unmatched[0]["row_id"] == 1
+
+
+def test_article_stopwords_exists():
+    """_ARTICLE_STOPWORDS olmali, _STOPWORDS olmamali."""
+    import main_processor as mp
+    assert hasattr(mp, "_ARTICLE_STOPWORDS")
+    assert not hasattr(mp, "_STOPWORDS")
+    assert "and" in mp._ARTICLE_STOPWORDS
+    assert "of" in mp._ARTICLE_STOPWORDS
+
+
+def test_post_verify_word_count_excludes_company_suffixes():
+    """Word count 'ltd', 'inc' gibi company suffix tokenlarini saymamali."""
+    from main_processor import _clean_labels, _ARTICLE_STOPWORDS
+    from synonym_loader import get_company_type_tokens
+    cc = "TR"
+    stopwords = _ARTICLE_STOPWORDS | get_company_type_tokens(cc)
+    # "ACME LTD" → 1 meaningful word (ltd filtered)
+    word_count = len([
+        t for t in _clean_labels("ACME LTD").lower().split()
+        if t.rstrip(".,") not in stopwords
+        and t.rstrip(".,")
+        and t.rstrip(".,").isalnum()
+    ])
+    assert word_count == 1, f"Expected 1, got {word_count}"

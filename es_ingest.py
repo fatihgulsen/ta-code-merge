@@ -181,6 +181,46 @@ def _build_stripped_script(generic_tokens: list[str]) -> str:
     return "\n".join(script_parts)
 
 
+def _build_suffix_script(generic_tokens: list[str]) -> str:
+    """
+    Painless script: variations'tan sadece generic (suffix) token'ları toplayarak
+    variations_suffix array'ini oluşturur. _build_stripped_script() tersine —
+    generic SET'te OLAN token'ları tutar, position-independent (sorted).
+    """
+    tokens_literal = ", ".join(f"'{t}'" for t in generic_tokens)
+
+    script_parts = [
+        "List genericTokens = [" + tokens_literal + "];",
+        "Set genericSet = new HashSet(genericTokens);",
+        "if (ctx.variations == null) { return; }",
+        "List suffixes = new ArrayList();",
+        "for (int i = 0; i < ctx.variations.size(); i++) {",
+        "  String text = ctx.variations[i];",
+        r"  def tokens = / /.split(text);",
+        "  List suffixTokens = new ArrayList();",
+        "  for (int t = 0; t < tokens.length; t++) {",
+        "    String token = /[.]/.matcher(tokens[t]).replaceAll('').trim();",
+        "    if (token.length() > 0 && genericSet.contains(token)) {",
+        "      suffixTokens.add(token);",
+        "    }",
+        "  }",
+        "  Collections.sort(suffixTokens);",
+        "  StringBuilder sb = new StringBuilder();",
+        "  for (int s = 0; s < suffixTokens.size(); s++) {",
+        "    if (s > 0) { sb.append(' '); }",
+        "    sb.append(suffixTokens[s]);",
+        "  }",
+        "  String result = sb.toString().trim();",
+        "  if (!suffixes.contains(result)) {",
+        "    suffixes.add(result);",
+        "  }",
+        "}",
+        "ctx.variations_suffix = suffixes;",
+    ]
+
+    return "\n".join(script_parts)
+
+
 def build_pipeline_body() -> dict:
     """Ingest pipeline tanımını oluşturur."""
     # Genel generic tokenlar (en yaygın olanlar — ülke bazlı olanlar
@@ -205,6 +245,12 @@ def build_pipeline_body() -> dict:
                 "script": {
                     "description": "stripped_form: generic token'lari kaldir",
                     "source": _build_stripped_script(common_generic),
+                }
+            },
+            {
+                "script": {
+                    "description": "suffix_form: sadece generic token'lari tut",
+                    "source": _build_suffix_script(common_generic),
                 }
             },
         ],

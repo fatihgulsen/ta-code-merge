@@ -10,6 +10,7 @@
 #      label temizleme, ampersand normalizasyonu, özel karakter temizleme,
 #      nokta-harf pattern normalizasyonu, suffix typo düzeltme
 #   3. variations_stripped alanını otomatik hesapla
+#   4. variations_suffix alanını otomatik hesapla
 # ============================================================================
 
 import logging
@@ -185,7 +186,7 @@ def _build_suffix_script(generic_tokens: list[str]) -> str:
     """
     Painless script: variations'tan sadece generic (suffix) token'ları toplayarak
     variations_suffix array'ini oluşturur. _build_stripped_script() tersine —
-    generic SET'te OLAN token'ları tutar, position-independent (sorted).
+    generic SET'te OLAN token'ları tutar, position-independent (sorted, deduped).
     """
     tokens_literal = ", ".join(f"'{t}'" for t in generic_tokens)
 
@@ -211,7 +212,7 @@ def _build_suffix_script(generic_tokens: list[str]) -> str:
         "    sb.append(suffixTokens[s]);",
         "  }",
         "  String result = sb.toString().trim();",
-        "  if (!suffixes.contains(result)) {",
+        "  if (result.length() > 0 && !suffixes.contains(result)) {",
         "    suffixes.add(result);",
         "  }",
         "}",

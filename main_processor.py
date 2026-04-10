@@ -53,7 +53,6 @@ from config import (
     RAW_TABLE_NAME,
     STAGES,
     MSEARCH_CHUNK_SIZE,
-    SUFFIX_FUZZY_COVERAGE_THRESHOLD,
     SUFFIX_FUZZY_SCORE,
     TOKEN_COVERAGE_THRESHOLD,
 )
@@ -434,10 +433,7 @@ def _post_verify(input_name: str, master_source: dict, stage_name: str, country:
         if input_stripped_ordered != doc_name_tokens_list:
             return False
 
-        # Simetrik coverage: input stripped token seti ile doc token seti
-        input_name_token_set = set(input_stripped_ordered)
-        coverage = _symmetric_token_coverage(input_name_token_set, doc_name_tokens)
-        return coverage >= SUFFIX_FUZZY_COVERAGE_THRESHOLD
+        return True
 
     # ── _tokenize artık suffix + article token'larını dışlar → direkt meaningful token'lar
     input_tokens = _tokenize(input_name, country)
@@ -762,11 +758,11 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
             tc = t.rstrip('.,')
             if not tc or (len(tc) <= 1 and not tc.isalnum()):
                 continue
-            if tc in get_article_stopwords(rec["country"]):  # TODO Task 6: will be refactored
+            if tc in get_article_stopwords(rec["country"]):
                 continue
             if tc in _COUNTRY_NAME_TOKENS.get(rec["country"].upper(), frozenset()):
                 continue
-            if tc in get_company_type_tokens(rec["country"]):  # TODO Task 6: will be refactored
+            if tc in get_company_type_tokens(rec["country"]):
                 continue
             norm_list.append(tc)
         dedup_key = (tuple(sorted(norm_list)), rec["country"])

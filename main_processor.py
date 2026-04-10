@@ -55,6 +55,7 @@ from config import (
     STAGES,
     MSEARCH_CHUNK_SIZE,
     SUFFIX_FUZZY_SCORE,
+    SUFFIX_TYPO_MAP,
     TOKEN_COVERAGE_THRESHOLD,
 )
 from es_manager import create_index, get_es_client
@@ -381,45 +382,6 @@ def _symmetric_token_coverage(input_tokens: set[str], master_tokens: set[str]) -
     return min(input_in_master, master_in_input)
 
 
-def _edit_distance(a: str, b: str) -> int:
-    """Levenshtein edit distance. Dış bağımlılık yok."""
-    if a == b:
-        return 0
-    if not a:
-        return len(b)
-    if not b:
-        return len(a)
-    prev = list(range(len(b) + 1))
-    for i, ca in enumerate(a):
-        curr = [i + 1]
-        for j, cb in enumerate(b):
-            curr.append(min(prev[j + 1] + 1, curr[j] + 1, prev[j] + (0 if ca == cb else 1)))
-        prev = curr
-    return prev[-1]
-
-
-def _is_fuzzy_suffix(token: str, suffix_tokens: frozenset) -> bool:
-    """Token, bilinen bir suffix'e ES AUTO:4,7 eşiğiyle eşleşiyor mu?
-
-    ES fuzziness AUTO:4,7 ile tutarlı eşik:
-      - len < 4  → 0 edit (exact)
-      - len 4-6  → max 1 edit
-      - len 7+   → max 2 edit
-    """
-    if token in suffix_tokens:
-        return True
-    n = len(token)
-    max_edits = 0 if n < 4 else (1 if n < 7 else 2)
-    if max_edits == 0:
-        return False
-    for known in suffix_tokens:
-        if abs(len(known) - n) > max_edits:
-            continue
-        if _edit_distance(token, known) <= max_edits:
-            return True
-    return False
-
-
 def _post_verify(input_name: str, master_source: dict, stage_name: str, country: str = "") -> bool:
     """Post-ES verification: ES sonucunu Python tarafinda dogrular.
 
@@ -474,8 +436,10 @@ def _post_verify(input_name: str, master_source: dict, stage_name: str, country:
                 continue
             if _tc in article_tokens:
                 continue
-            # Fuzzy suffix ise ve doc'ta geçmiyorsa atla; doc'ta geçiyorsa koru
-            if _is_fuzzy_suffix(_tc, suffix_tokens) and _tc not in doc_name_tokens:
+            # Sprint 2: yalnizca exact suffix match + deterministic typo map.
+            # _is_fuzzy_suffix deleted — caused "fine" ↔ "fie" ghost matches.
+            typo_canonical = SUFFIX_TYPO_MAP.get(_tc, _tc)
+            if typo_canonical in suffix_tokens and typo_canonical not in doc_name_tokens:
                 continue
             input_stripped_ordered.append(_tc)
 

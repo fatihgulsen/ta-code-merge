@@ -212,64 +212,8 @@ def test_tokenize_returns_set():
     assert isinstance(result, set)
 
 
-from main_processor import _edit_distance, _is_fuzzy_suffix
-
-
-def test_edit_distance_identical():
-    assert _edit_distance("limited", "limited") == 0
-
-
-def test_edit_distance_one_edit():
-    assert _edit_distance("limted", "limited") == 1
-
-
-def test_edit_distance_two_edits():
-    assert _edit_distance("limtedd", "limited") == 2
-
-
-def test_edit_distance_three_edits():
-    assert _edit_distance("limtddd", "limited") == 3
-
-
-def test_edit_distance_empty():
-    assert _edit_distance("", "ltd") == 3
-    assert _edit_distance("ltd", "") == 3
-
-
-def test_is_fuzzy_suffix_exact_match():
-    suffix_tokens = frozenset(["ltd", "limited", "inc", "corp"])
-    assert _is_fuzzy_suffix("ltd", suffix_tokens) is True
-
-
-def test_is_fuzzy_suffix_one_edit_len6():
-    """'limted' (6 chars) → max 1 edit → 'limited' (distance=1) → True."""
-    suffix_tokens = frozenset(["limited", "ltd", "corp"])
-    assert _is_fuzzy_suffix("limted", suffix_tokens) is True
-
-
-def test_is_fuzzy_suffix_two_edit_len7():
-    """'limtedd' (7 chars) → max 2 edits → 'limited' (distance=2) → True."""
-    suffix_tokens = frozenset(["limited", "ltd"])
-    assert _is_fuzzy_suffix("limtedd", suffix_tokens) is True
-
-
-def test_is_fuzzy_suffix_too_many_edits():
-    """'limtddd' (7 chars) → max 2 edits → 'limited' (distance=3) → False."""
-    suffix_tokens = frozenset(["limited", "ltd"])
-    assert _is_fuzzy_suffix("limtddd", suffix_tokens) is False
-
-
-def test_is_fuzzy_suffix_name_token_not_matched():
-    """'komerci' hiçbir suffix'e benzemez → False."""
-    suffix_tokens = frozenset(["limited", "ltd", "corp", "inc"])
-    assert _is_fuzzy_suffix("komerci", suffix_tokens) is False
-
-
-def test_is_fuzzy_suffix_short_token_exact_only():
-    """3 char → max 0 edit → exact only."""
-    suffix_tokens = frozenset(["ltd", "inc"])
-    assert _is_fuzzy_suffix("ltd", suffix_tokens) is True
-    assert _is_fuzzy_suffix("lte", suffix_tokens) is False
+# Sprint 2 Task 7: _edit_distance and _is_fuzzy_suffix deleted
+# (root cause of "fine" ↔ "fie" ghost FPs). Tests removed accordingly.
 
 
 # ── Task 6: new _post_verify tests ───────────────────────────────────────────

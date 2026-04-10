@@ -4,7 +4,7 @@
 # ES index ayarlarına ülke başına synonym listesi üretir.
 #
 # Kural:
-#   - Tüm ülkeler: common.json + countries.json + other.json
+#   - Tüm ülkeler: common.json + countries.json
 #   - Ülke dosyası varsa (örn. tr.json): üstteki + tr.json
 #
 # ES formatı (Solr): "kaynak1,kaynak2 => hedef"
@@ -59,7 +59,7 @@ def load_synonyms_for_country(country_code: str) -> tuple[str, ...]:
     """
     Verilen ülke kodu için ES synonym listesi döner.
 
-    Her zaman:  common.json + countries.json + other.json
+    Her zaman:  common.json + countries.json
     + Varsa:    {country_code.lower()}.json
 
     Dönüş: tuple (lru_cache için hashable)
@@ -100,7 +100,7 @@ def get_generic_tokens_for_country(country_code: str) -> frozenset:
     """
     Ülkeye özgü 'generic' kelimeleri döner (frozenset — cache-safe).
     Bunlar:
-      1. common.json + countries.json + other.json içindeki 'generic' kategorisi
+      1. common.json + countries.json içindeki 'generic' kategorisi
       2. Ülke dosyasındaki 'generic' kategorisi (varsa)
       3. Tüm 'company_types' kurallarındaki HEDEF (=> sağ tarafı) kelimeler.
     """
@@ -176,7 +176,7 @@ def _parse_company_type_tokens(paths: list) -> frozenset:
 def get_company_type_tokens(country_code: str) -> frozenset:
     """
     Verilen ülke kodu için tüm company_type tokenlarını döner.
-    Ortak dosyalar (common.json, countries.json, other.json) + ülke dosyası
+    Ortak dosyalar (common.json, countries.json) + ülke dosyası
     birleştirilerek hesaplanır.
 
     Dönüş: frozenset (lru_cache için hashable, immutable)
@@ -195,13 +195,18 @@ def get_all_company_type_tokens() -> frozenset:
     """
     Tüm ülke dosyaları + ortak dosyalar dahil olmak üzere
     tüm company_type tokenlarının birleşimini döner.
+    Underscore ile baslayan dosyalar (_template.json) ve
+    ortak dosyalar (common, countries) hariç tutulur.
 
     Dönüş: frozenset (lru_cache için hashable, immutable)
     """
     paths = [SYNONYMS_DIR / f for f in COMMON_FILES]
     for f in SYNONYMS_DIR.glob("*.json"):
-        if f.stem.lower() not in {"common", "countries", "other"}:
-            paths.append(f)
+        if f.stem.startswith("_"):
+            continue  # _template.json, _internal, etc.
+        if f.stem.lower() in {"common", "countries"}:
+            continue
+        paths.append(f)
 
     return _parse_company_type_tokens(paths)
 

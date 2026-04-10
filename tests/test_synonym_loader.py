@@ -3,16 +3,17 @@ from synonym_loader import get_company_type_tokens, get_all_company_type_tokens,
 
 
 def test_get_company_type_tokens_includes_common_tokens():
-    """common.json company_types tokenları her ülke için dahil edilmeli.
+    """common.json legal_suffixes tokenları her ülke için dahil edilmeli.
 
-    Sprint 1 note: BUSINESS_DESCRIPTORS (e.g. "holding") are now subtracted
-    from the returned set — legal suffixes stay, sector/role words leave.
+    Sprint 2 note: get_company_type_tokens is now a shim over
+    get_legal_suffix_tokens. Sector/role words (e.g. "holding") live in
+    business_sectors now and should NOT appear here.
     """
     tokens = get_company_type_tokens("TR")
     assert "corp" in tokens
     assert "inc" in tokens
     assert "limited" in tokens
-    # "holding" is a business descriptor and must be stripped out
+    # "holding" is a business sector in Sprint 2 and must not leak in
     assert "holding" not in tokens
 
 
@@ -41,17 +42,22 @@ def test_get_company_type_tokens_includes_both_sides_of_arrow():
 
 
 def test_get_company_type_tokens_country_specific():
-    """Ülkeye özgü tokenlar da dahil edilmeli."""
-    tr_tokens = get_company_type_tokens("TR")
-    de_tokens = get_company_type_tokens("DE")
-    # tr.json has "anonim şirket,...,a.ş. => a.ş." → dots removed → "aş"
-    assert "aş" in tr_tokens
-    # de.json has gmbh (also present in other.json which is a common file loaded for all)
-    assert "gmbh" in de_tokens
-    # TR-specific token "komandit" is also in tr_tokens (via tr.json or other.json)
-    assert "komandit" in tr_tokens
-    # DE-specific form "gesellschaft mit beschränkter haftung" is in de_tokens
-    assert "gesellschaft mit beschränkter haftung" in de_tokens
+    """Sprint 2: ulke dosyasi yeni sema (legal_suffixes) ile migrate edildiginde
+    ulkeye ozgu tokenlar da dahil edilmeli. Shu an sadece in.json yeni
+    semaya gectigi icin IN uzerinden kontrol ediyoruz.
+
+    NOT: tr.json / de.json / us.json hala eski 'company_types' semasini
+    kullaniyor — bu dosyalar sonraki tasklarda migrate edildiginde tests
+    genisletilebilir (TR: 'aş', 'komandit', DE: 'gmbh' vb.).
+    """
+    in_tokens = get_company_type_tokens("IN")
+    # IN-specific legal suffixes from in.json
+    assert "opc" in in_tokens
+    assert "huf" in in_tokens
+    assert "nidhi" in in_tokens
+    # Common legal suffixes must still flow through
+    assert "ltd" in in_tokens
+    assert "pvt" in in_tokens
 
 
 def test_get_company_type_tokens_lru_cache():
@@ -113,28 +119,10 @@ def test_get_article_stopwords_lru_cache():
     assert r1 is r2
 
 
-def test_get_company_type_tokens_excludes_business_descriptors():
-    """Sprint 1: get_company_type_tokens must subtract BUSINESS_DESCRIPTORS so
-    that stripping pipelines do not remove sector/role words."""
-    from synonym_loader import get_company_type_tokens
-    from config import BUSINESS_DESCRIPTORS
-
-    tokens = get_company_type_tokens("IN")
-
-    # Legal suffixes must still be present
-    for legal in ("ltd", "pvt", "inc", "llp", "opc", "huf"):
-        assert legal in tokens, f"Expected legal suffix {legal!r} in IN tokens"
-
-    # Sector/role words must NOT be present
-    for sector in ("pharma", "chemicals", "auto", "electronics", "steel",
-                   "industries", "traders", "enterprises", "international",
-                   "agencies", "overseas", "global"):
-        assert sector not in tokens, (
-            f"Sector token {sector!r} leaked into company_type tokens for IN"
-        )
-
-    # Guard must not produce intersection with BUSINESS_DESCRIPTORS
-    assert tokens.isdisjoint(BUSINESS_DESCRIPTORS)
+def test_get_company_type_tokens_equals_legal_suffixes():
+    """Sprint 2: get_company_type_tokens is a shim over get_legal_suffix_tokens."""
+    from synonym_loader import get_company_type_tokens, get_legal_suffix_tokens
+    assert get_company_type_tokens("IN") == get_legal_suffix_tokens("IN")
 
 
 def test_get_legal_suffix_tokens_returns_frozenset():

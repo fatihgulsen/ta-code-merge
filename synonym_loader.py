@@ -16,8 +16,6 @@ import unicodedata
 from functools import lru_cache
 from pathlib import Path
 
-from config import BUSINESS_DESCRIPTORS
-
 logger = logging.getLogger(__name__)
 
 # synonyms_data/ klasörünün yolu (bu dosyayla aynı dizinde)
@@ -93,83 +91,6 @@ def load_synonyms_for_country(country_code: str) -> tuple[str, ...]:
             clean_rules.append(rule)
 
     return tuple(clean_rules)
-
-
-@lru_cache(maxsize=128)
-def get_generic_tokens_for_country(country_code: str) -> frozenset:
-    """
-    Ülkeye özgü 'generic' kelimeleri döner (frozenset — cache-safe).
-    Bunlar:
-      1. common.json + countries.json içindeki 'generic' kategorisi
-      2. Ülke dosyasındaki 'generic' kategorisi (varsa)
-      3. Tüm 'company_types' kurallarındaki HEDEF (=> sağ tarafı) kelimeler.
-    """
-    country_code = country_code.upper()
-    generics: set[str] = set()
-
-    files_to_read = [SYNONYMS_DIR / f for f in COMMON_FILES]
-    country_file = SYNONYMS_DIR / f"{country_code.lower()}.json"
-    if country_file.exists():
-        files_to_read.append(country_file)
-
-    for path in files_to_read:
-        if not path.exists():
-            continue
-        with open(path, encoding="utf-8") as f:
-            data = json.load(f)
-
-        # 'generic' kategorisi — SOL taraftaki her token'ı generic say
-        # Kural formatı: "token1,token2,token3=>hedef"
-        for rule in data.get("generic", []):
-            rule_norm = normalize_text(rule)
-            sources_part = rule_norm.split("=>")[0] if "=>" in rule_norm else rule_norm
-            for token in sources_part.split(","):
-                t = token.strip().lower()
-                if t:
-                    generics.add(t)
-
-        # 'company_types' — HEDEF (sağ taraf) kelimeleri de generic say
-        for rule in data.get("company_types", []):
-            rule_norm = normalize_text(rule)
-            if "=>" in rule_norm:
-                target = rule_norm.split("=>")[1].strip().lower().rstrip(".")
-                if target:
-                    generics.add(target)
-
-    # Business descriptor'ları çıkar — bunlar firma isminin anlamlı parçaları
-    generics -= BUSINESS_DESCRIPTORS
-
-    return frozenset(generics)
-
-
-def _parse_company_type_tokens(paths: list) -> frozenset:
-    """
-    Verilen Path listesindeki dosyaların 'company_types' kurallarından
-    tüm tokenları çıkarır. Her iki taraftaki (=> solundaki ve sağındaki)
-    tokenlar dahil edilir. Noktalar tamamen silinir, her şey küçük harfe çevrilir.
-    """
-    tokens: set[str] = set()
-
-    for path in paths:
-        if not path.exists():
-            continue
-        with open(path, encoding="utf-8") as f:
-            data = json.load(f)
-
-        for rule in data.get("company_types", []):
-            rule_norm = normalize_text(rule)
-            if "=>" in rule_norm:
-                left, right = rule_norm.split("=>", 1)
-                all_parts = left.split(",") + [right]
-            else:
-                all_parts = rule_norm.split(",")
-
-            for part in all_parts:
-                t = part.strip().lower().replace(".", "")
-                if t:
-                    tokens.add(t)
-
-    return frozenset(tokens) - BUSINESS_DESCRIPTORS
 
 
 def _parse_category_tokens(paths: list, category: str) -> frozenset:
@@ -281,29 +202,24 @@ def get_business_sector_canonical_map(country_code: str) -> dict:
 
 @lru_cache(maxsize=None)
 def get_company_type_tokens(country_code: str) -> frozenset:
-    """
-    Verilen ülke kodu için tüm company_type tokenlarını döner.
-    Ortak dosyalar (common.json, countries.json) + ülke dosyası
-    birleştirilerek hesaplanır.
+    """DEPRECATED shim — use get_legal_suffix_tokens directly.
 
-    Dönüş: frozenset (lru_cache için hashable, immutable)
+    Sprint 2: Bu fonksiyon artik yalnizca legal_suffixes kategorisini doner.
+    business_sectors ayri bir kategori haline geldi ve stripping'e girmez.
+    Eski cagrilar icin backward-compat saglamak uzere korunuyor.
     """
-    country_code = country_code.upper()
-    paths = [SYNONYMS_DIR / f for f in COMMON_FILES]
-    country_file = SYNONYMS_DIR / f"{country_code.lower()}.json"
-    if country_file.exists():
-        paths.append(country_file)
-
-    return _parse_company_type_tokens(paths)
+    return get_legal_suffix_tokens(country_code)
 
 
 @lru_cache(maxsize=None)
 def get_all_company_type_tokens() -> frozenset:
     """
     Tüm ülke dosyaları + ortak dosyalar dahil olmak üzere
-    tüm company_type tokenlarının birleşimini döner.
+    tüm legal_suffixes tokenlarının birleşimini döner.
     Underscore ile baslayan dosyalar (_template.json) ve
     ortak dosyalar (common, countries) hariç tutulur.
+
+    Sprint 2: company_types -> legal_suffixes (business sectors ayri).
 
     Dönüş: frozenset (lru_cache için hashable, immutable)
     """
@@ -315,7 +231,7 @@ def get_all_company_type_tokens() -> frozenset:
             continue
         paths.append(f)
 
-    return _parse_company_type_tokens(paths)
+    return _parse_category_tokens(paths, "legal_suffixes")
 
 
 @lru_cache(maxsize=None)
@@ -376,7 +292,9 @@ if __name__ == "__main__":
     codes = get_all_country_codes()
     print(f"Ülke dosyası bulunan ülkeler ({len(codes)}): {codes[:10]}...")
 
-    for cc in ["TR", "US", "DE"]:
-        gt = get_generic_tokens_for_country(cc)
-        print(f"\n--- {cc} için generic tokenlar ({len(gt)}) ---")
-        print(f"  Örnekler: {list(gt)[:10]}")
+    for cc in ["TR", "US", "DE", "IN"]:
+        ls = get_legal_suffix_tokens(cc)
+        bs = get_business_sector_tokens(cc)
+        print(f"\n--- {cc} legal_suffixes ({len(ls)}) / business_sectors ({len(bs)}) ---")
+        print(f"  legal sample:  {sorted(list(ls))[:10]}")
+        print(f"  sector sample: {sorted(list(bs))[:10]}")

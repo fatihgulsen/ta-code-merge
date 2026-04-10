@@ -376,9 +376,9 @@ def _post_verify(input_name: str, master_source: dict, stage_name: str, country:
     TAX_EXACT icin dogrulama yapilmaz (deterministic).
     CANONICAL_EXACT/STRIPPED_EXACT icin yuksek simetrik token coverage (>= 0.9).
     TOKEN_COVERAGE/FUZZY_PHRASE/NGRAM_MATCH icin TOKEN_COVERAGE_THRESHOLD.
+    SUFFIX_FUZZY icin fuzzy suffix detection + phrase order check.
     country verilirse, ayni ulke adi token'lardan cikarilir.
     """
-    # TAX_EXACT: dogrulama gerekmez
     if stage_name == "TAX_EXACT":
         return True
 
@@ -387,76 +387,92 @@ def _post_verify(input_name: str, master_source: dict, stage_name: str, country:
         return False
     master_name = master_variations[0]
 
-    input_tokens = _tokenize(input_name, country)
-    master_tokens = _tokenize(master_name, country)
-
-    if not input_tokens or not master_tokens:
-        return False
-
-    # Suffix tokenlar haric anlamli token sayisi kontrolu
-    # "C & C OVERSEAS" gibi tek anlamli tokene dusen isimler guvenilir eslestirilemez
-    suffix_tokens = get_company_type_tokens(country)  # TODO Task 6: will be refactored
-    input_meaningful = input_tokens - suffix_tokens
-    master_meaningful = master_tokens - suffix_tokens
-    min_meaningful = min(len(input_meaningful), len(master_meaningful))
-
-    # SUFFIX_FUZZY: name kısmı (suffix çıkarılmış) doc stripped ile örtüşmeli
+    # ── SUFFIX_FUZZY ──────────────────────────────────────────────────────────
     if stage_name == "SUFFIX_FUZZY":
         doc_stripped_raw = master_source.get("variations_stripped", [])
-        if isinstance(doc_stripped_raw, list) and doc_stripped_raw:
-            doc_stripped = doc_stripped_raw[0]
+        if isinstance(doc_stripped_raw, list) and len(doc_stripped_raw) > 1:
+            # Liste birden fazla eleman içeriyorsa, her eleman bir token olarak kabul et
+            doc_name_tokens_list = [t for elem in doc_stripped_raw for t in elem.split()]
+        elif isinstance(doc_stripped_raw, list) and doc_stripped_raw:
+            doc_name_tokens_list = doc_stripped_raw[0].split() if doc_stripped_raw[0] else []
         elif isinstance(doc_stripped_raw, str):
-            doc_stripped = doc_stripped_raw
+            doc_name_tokens_list = doc_stripped_raw.split()
         else:
-            doc_stripped = ""
-        doc_name_tokens_list = doc_stripped.split() if doc_stripped else []
+            doc_name_tokens_list = []
         doc_name_tokens = set(doc_name_tokens_list)
-        if not doc_name_tokens or not input_meaningful:
+        if not doc_name_tokens:
             return False
-        # Min 2 anlamli token olmali (tek token esleme cok riskli)
-        if min(len(input_meaningful), len(doc_name_tokens)) < 2:
+
+        # Tek-karakter-only doc token'ları çok belirsiz — reddet
+        # ("a" gibi tek harfli isimler güvenilmez eşleşir)
+        doc_multi_char = [t for t in doc_name_tokens_list if len(t) > 1]
+        if not doc_multi_char:
             return False
-        # Simetrik coverage — her iki yonde de yuksek olmali
-        # "AMBICA STEELS" (meaningful: ambica, steels) vs stripped: "ambica" → 0.5
-        coverage = _symmetric_token_coverage(input_meaningful, doc_name_tokens)
-        # PHRASE CHECK: "d b corp limited" → ["d","b"] ≠ ["b","d"] → engelle
-        # Sıra eşleşmeli; farklı harflerin farklı sırayla gelmesi farklı firmadır
+
+        # PHRASE + FUZZY-SUFFIX CHECK:
+        # input token'larını sırayla tara; suffix token'ı (exact veya fuzzy) veya
+        # article olan token'ları dışla. Eğer token doc_name_tokens_list içindeyse
+        # suffix olsa bile koru (örn. "industries" doc stripped'da geçebilir).
+        # Geri kalanların sırası doc ile eşleşmeli.
+        suffix_tokens = get_company_type_tokens(country)
+        article_tokens = get_article_stopwords(country)
         _cleaned = _clean_labels(input_name).lower()
         input_stripped_ordered = []
         for _t in _cleaned.split():
             _tc = _t.rstrip('.,')
             if not _tc or (len(_tc) <= 1 and not _tc.isalnum()):
                 continue
-            if _tc in get_article_stopwords(country):  # TODO Task 6: will be refactored
+            if _tc in article_tokens:
                 continue
-            if _tc in suffix_tokens:  # TODO Task 6: will be refactored
+            # Fuzzy suffix ise ve doc'ta geçmiyorsa atla; doc'ta geçiyorsa koru
+            if _is_fuzzy_suffix(_tc, suffix_tokens) and _tc not in doc_name_tokens:
                 continue
             input_stripped_ordered.append(_tc)
+
+        if not input_stripped_ordered:
+            return False
         if input_stripped_ordered != doc_name_tokens_list:
             return False
+
+        # Simetrik coverage: input stripped token seti ile doc token seti
+        input_name_token_set = set(input_stripped_ordered)
+        coverage = _symmetric_token_coverage(input_name_token_set, doc_name_tokens)
         return coverage >= SUFFIX_FUZZY_COVERAGE_THRESHOLD
 
-    if min_meaningful < 2:
-        # Tek anlamli token — tam token eslesmesi varsa CANONICAL/STRIPPED'da kabul et
+    # ── _tokenize artık suffix + article token'larını dışlar → direkt meaningful token'lar
+    input_tokens = _tokenize(input_name, country)
+    master_tokens = _tokenize(master_name, country)
+
+    if not input_tokens or not master_tokens:
+        return False
+
+    min_tokens = min(len(input_tokens), len(master_tokens))
+
+    # ── Diğer stage'ler ───────────────────────────────────────────────────────
+    if min_tokens < 2:
         if stage_name in ("CANONICAL_EXACT", "STRIPPED_EXACT"):
             if input_tokens == master_tokens:
                 return True
         return False
 
     coverage = _symmetric_token_coverage(input_tokens, master_tokens)
-    meaningful_coverage = _symmetric_token_coverage(input_meaningful, master_meaningful)
 
-    # Token tekrar farki kontrolu: "RADHE RADHE CREATION" (3 token) vs "RADHE CREATION" (2 token)
-    # Set bazli coverage 1.0 ama gercekte farkli firma isimleri olabilir
-    _wc_stopwords = get_article_stopwords(country) | get_company_type_tokens(country)  # TODO Task 6: will be refactored
-    input_word_count = len([t for t in _clean_labels(input_name).lower().split() if t.rstrip('.,') not in _wc_stopwords and t.rstrip('.,') and t.rstrip('.,').isalnum()])
-    master_word_count = len([t for t in _clean_labels(master_name).lower().split() if t.rstrip('.,') not in _wc_stopwords and t.rstrip('.,') and t.rstrip('.,').isalnum()])
-    if max(input_word_count, master_word_count) > 0:
-        word_count_ratio = min(input_word_count, master_word_count) / max(input_word_count, master_word_count)
-    else:
-        word_count_ratio = 0.0
+    # Token tekrar farkı: "RADHE RADHE CREATION" (3 token) vs "RADHE CREATION" (2 token)
+    _wc_stopwords = get_article_stopwords(country) | get_company_type_tokens(country)
+    input_word_count = len([
+        t for t in _clean_labels(input_name).lower().split()
+        if t.rstrip('.,') not in _wc_stopwords and t.rstrip('.,') and t.rstrip('.,').isalnum()
+    ])
+    master_word_count = len([
+        t for t in _clean_labels(master_name).lower().split()
+        if t.rstrip('.,') not in _wc_stopwords and t.rstrip('.,') and t.rstrip('.,').isalnum()
+    ])
+    word_count_ratio = (
+        min(input_word_count, master_word_count) / max(input_word_count, master_word_count)
+        if max(input_word_count, master_word_count) > 0 else 0.0
+    )
 
-    # Uzunluk orani kontrolu
+    # Uzunluk oranı kontrolu
     len_input = len(_clean_labels(input_name).strip())
     len_master = len(_clean_labels(master_name).strip())
     max_len = max(len_input, len_master)
@@ -464,17 +480,14 @@ def _post_verify(input_name: str, master_source: dict, stage_name: str, country:
     if len_ratio < LENGTH_RATIO_THRESHOLD:
         return False
 
-    # CANONICAL_EXACT / STRIPPED_EXACT: siki kontrol — neredeyse ayni olmali
     if stage_name in ("CANONICAL_EXACT", "STRIPPED_EXACT"):
-        if coverage < 0.9 or meaningful_coverage < 0.9:
+        if coverage < 0.9:
             return False
-        # Token tekrar farki — "RADHE RADHE CREATION" vs "RADHE CREATION"
         if word_count_ratio < 0.8:
             return False
 
-    # TOKEN_COVERAGE, FUZZY_PHRASE, NGRAM_MATCH: standart esik (hem genel hem anlamli)
     if stage_name in ("TOKEN_COVERAGE", "FUZZY_PHRASE", "NGRAM_MATCH"):
-        if coverage < TOKEN_COVERAGE_THRESHOLD or meaningful_coverage < TOKEN_COVERAGE_THRESHOLD:
+        if coverage < TOKEN_COVERAGE_THRESHOLD:
             return False
         if word_count_ratio < 0.7:
             return False

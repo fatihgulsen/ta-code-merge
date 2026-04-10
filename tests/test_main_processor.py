@@ -270,3 +270,84 @@ def test_is_fuzzy_suffix_short_token_exact_only():
     suffix_tokens = frozenset(["ltd", "inc"])
     assert _is_fuzzy_suffix("ltd", suffix_tokens) is True
     assert _is_fuzzy_suffix("lte", suffix_tokens) is False
+
+
+# ── Task 6: new _post_verify tests ───────────────────────────────────────────
+
+from main_processor import _post_verify
+
+
+def _make_master(variations, stripped=None, suffix=None):
+    src = {"variations": variations}
+    if stripped is not None:
+        src["variations_stripped"] = stripped
+    if suffix is not None:
+        src["variations_suffix"] = suffix
+    return src
+
+
+def test_post_verify_suffix_fuzzy_known_typo_passes():
+    """'Komerci Limted' → 'limted' fuzzy-matches 'limited' → stripped match → True."""
+    master = _make_master(
+        variations=["komerci limited"],
+        stripped=["komerci"],
+        suffix=["limited"],
+    )
+    assert _post_verify("Komerci Limted", master, "SUFFIX_FUZZY", "IN") is True
+
+
+def test_post_verify_suffix_fuzzy_exact_suffix_passes():
+    """'Komerci Ltd' → exact suffix match → True."""
+    master = _make_master(
+        variations=["komerci limited"],
+        stripped=["komerci"],
+        suffix=["limited"],
+    )
+    assert _post_verify("Komerci Ltd", master, "SUFFIX_FUZZY", "IN") is True
+
+
+def test_post_verify_suffix_fuzzy_bad_typo_fails():
+    """'Komerci Limtddd' → edit distance 3 > threshold → False."""
+    master = _make_master(
+        variations=["komerci limited"],
+        stripped=["komerci"],
+        suffix=["limited"],
+    )
+    assert _post_verify("Komerci Limtddd", master, "SUFFIX_FUZZY", "IN") is False
+
+
+def test_post_verify_suffix_fuzzy_order_mismatch_fails():
+    """'D B Corp' vs master stripped=['b','d'] → phrase sırası farklı → False."""
+    master = _make_master(
+        variations=["b d industries pvt ltd"],
+        stripped=["b", "d"],
+        suffix=["pvt", "ltd"],
+    )
+    assert _post_verify("D B Corp", master, "SUFFIX_FUZZY", "IN") is False
+
+
+def test_post_verify_suffix_fuzzy_single_token_fails():
+    """Tek meaningful token varsa min 2 şartı sağlanmaz → False."""
+    master = _make_master(
+        variations=["komerci limited"],
+        stripped=["komerci"],
+        suffix=["limited"],
+    )
+    assert _post_verify("Komerci Ltd", master, "SUFFIX_FUZZY", "IN") is True
+    # Sadece 1 token — False olmalı
+    master2 = _make_master(
+        variations=["a limited"],
+        stripped=["a"],
+        suffix=["limited"],
+    )
+    assert _post_verify("A Ltd", master2, "SUFFIX_FUZZY", "IN") is False
+
+
+def test_post_verify_articles_excluded_in_suffix_fuzzy():
+    """'Industries of India Ltd' stripped ordered → ['industries','india'] == doc."""
+    master = _make_master(
+        variations=["industries india limited"],
+        stripped=["industries", "india"],
+        suffix=["limited"],
+    )
+    assert _post_verify("Industries of India Ltd", master, "SUFFIX_FUZZY", "IN") is True

@@ -1,32 +1,38 @@
 {
-  "company_types": [
-    "corporation,corp,corp.,incorporated,inc,inc.,co.,company=>corp.",
+  "_schema_version": "2.0",
+  "_description": "Tum ulkelere yuklenen ortak synonym kurallari. Yalnizca evrensel Ingilizce hukuki formlar (Ltd, Inc, Corp, LLC, LLP) ve evrensel sektor kelimeleri burada yer alir. Ulkeye ozgu hukuki formlar (AB, AS, SA, GmbH, vb.) ilgili ulke dosyasinda tanimlanmalidir.",
+
+  "legal_suffixes": [
+    "corporation,corp,corp.,incorporated,inc,inc.=>corp.",
+    "company,co,co.,comp=>co.",
     "limited liability company,llc,l.l.c,l.l.c.,limited liability=>llc",
     "limited partnership,lp,l.p,l.p.,ltd partnership=>lp",
     "limited liability partnership,llp,l.l.p,l.l.p.=>llp",
-    "sole proprietorship,sole prop,individual,sole trader,sole proprietor,proprietor=>sole proprietor",
-    "cooperative,coop,co-op,co op=>cooperative",
-    "private limited company,pvt ltd,pvt. ltd.,private ltd,lim,ltd,limited,ltd.,ltda,limitada=>ltd.",
     "public limited company,plc,p.l.c,p.l.c.,public ltd=>plc",
     "unlimited company,unlimited,ultd=>unlimited",
+    "private limited company,pvt ltd,pvt. ltd.,private ltd,lim,ltd,limited,ltd.,ltda,limitada=>ltd.",
+    "limited,ltd,ltd.,limited.=>ltd.",
+    "pvt,private,priv,prvt=>pvt",
+    "sole proprietorship,sole prop,individual,sole trader,sole proprietor,proprietor=>sole proprietor",
+    "cooperative,coop,co-op,co op=>cooperative",
     "partnership,partners,p.ship,ptnrs=>partnership",
-    "holding,holdings,hold.,hldg,hldgs=>holding",
+    "brothers,bros,bros.,bro,hnos,hermanos=>bros."
+  ],
+
+  "business_sectors": [
+    "holding,holdings,hold.,hldg,hldgs=>holdings",
     "group,grp,grp.,groupe,grupo=>group",
-    "international,intl,intl,int.,int,inter=>international",
+    "international,intl,int.,int,inter=>international",
     "industries,industry,industrial,ind,ind.=>industries",
     "services,service,svc,svcs,serv.=>services",
     "solutions,solution,sol.,soln=>solutions",
     "technologies,technology,tech,tech.,technol.=>technologies",
     "enterprises,enterprise,ent,ent.,entrp=>enterprises",
-    "trading,trade,trdg,trd=>trading",
+    "trading,traders,trade,trdg,trd=>trading",
     "manufacturing,mfg,mfg.,manuf.,manufact.=>manufacturing",
-    "import export,import,export,imp,exp,imp exp=>import export",
-    "brothers,bros,bros.,bro,hnos,hermanos=>bros.",
-    "and,amp,y,et,und,e=>amp",
-    "pvt,private,priv,prvt=>pvt",
-    "limited, ltd, ltd., ltd, ltd.,ltd,ltd.,ltda,limitada=>ltd.",
-    "company,co,co.,comp=>co."
+    "import export,import,export,imp,exp,imp exp=>import export"
   ],
+
   "address_abbreviations": [
     "street,st,st.,str,str.=>st.",
     "road,rd,rd.=>rd.",
@@ -61,6 +67,7 @@
     "southeast,se,s.e.=>se",
     "post office box,po box,p.o. box,pob,p.o.b.=>p.o. box"
   ],
+
   "articles": [
     "and", "of", "the", "for", "in", "on", "at", "to", "by",
     "de", "del", "la", "le", "les", "des", "du", "et",

@@ -1,0 +1,96 @@
+{
+  "_description": "Ülke başına synonym dosyası şeması. Bu dosya bir şablondur — gerçek bir ülke kodu değildir, loader tarafından okunmaz (underscore prefix). Her kural Solr/ES synonym formatındadır: 'kaynak1,kaynak2,kaynak3=>hedef'. Solda tüm varyasyonlar, sağda canonical form. Kategoriler stripping pipeline'ını belirler — aşağıdaki kurallara dikkat edin.",
+
+  "_categories": {
+    "legal_suffixes": "STRIPPING'E GİRER. Yalnızca tüzel kişi ekleri / hukuki formlar: Ltd, Inc, GmbH, LLC, LLP, Pvt Ltd, Corp, Co., Partnership, Trust, Society, Foundation, Cooperative, vb. Bu kelimeler firma ismini AYIRT ETMEZ — 'Apple Ltd' ve 'Apple Inc' aynı firmadır. ES pipeline `variations_stripped` alanında bunlar silinir, böylece 'apple ltd' ve 'apple inc' ikisi de 'apple' olarak normalize edilir.",
+
+    "business_sectors": "STRIPPING'E GİRMEZ — yalnızca synonym EXPANSION için kullanılır. Sektör / iş kolu kelimeleri: pharma, chemicals, steel, auto, electronics, trading, industries, enterprises, agencies, vb. Bu kelimeler firma ismini AYIRT EDER — 'Apex Industries' ve 'Apex Trading' FARKLI firmalardır. ES search analyzer 'pharma' → 'pharmaceutical' eşanlam açılımı yapar ama stripped form'da her ikisi de korunur.",
+
+    "articles": "Dilsel stopword'ler: the, of, and, in, on, at, de, la, von, vb. Stripping'e girer ama synonym expansion yapılmaz — düz bir liste.",
+
+    "address_terms": "Adres kısaltmaları: street/st, road/rd, avenue/ave, building/bldg, floor/fl, vb. Yalnızca adres alanı analizinde kullanılır — company_name analizinde yoktur.",
+
+    "regions": "Ülke içi bölge / eyalet eşanlamları: Maharashtra/MH, Karnataka/KA, vb. Yalnızca adres veya bölge metadatası için.",
+
+    "cities": "Şehir eşanlamları: Mumbai/Bombay, Bengaluru/Bangalore, vb. Yalnızca adres veya bölge metadatası için."
+  },
+
+  "_classification_rules": [
+    "Bir kelime için 'legal_suffix mi, business_sector mi?' sorusu şuradan ayrılır: 'Aynı marka + farklı bu kelime = aynı firma mı, farklı firma mı?'",
+    "Örnek: 'Apex Ltd' vs 'Apex Inc' → aynı firma (Ltd/Inc legal_suffix)",
+    "Örnek: 'Apex Pharma' vs 'Apex Steel' → farklı firma (pharma/steel business_sector)",
+    "Örnek: 'Apex Group' vs 'Apex Holdings' → farklı firma (group/holdings business_sector — holding company ayrı olabilir)",
+    "Belirsiz durumlar (örn. Meksika'da 'mexicana' hem ulus eki hem marka parçası): iki tarafın da var olduğu kabul edilip business_sector'a koymak daha güvenlidir (false positive'i false negative'e tercih et)."
+  ],
+
+  "legal_suffixes": [
+    "limited,ltd,ltd.,limited.=>ltd.",
+    "private limited,private limited company,pvt. ltd.,pvt ltd,p. ltd.,private ltd.=>pvt. ltd.",
+    "incorporated,inc,inc.=>inc.",
+    "corporation,corp,corp.=>corp.",
+    "company,co,co.,comp.=>co.",
+    "limited liability company,llc,l.l.c.=>llc",
+    "limited liability partnership,llp,l.l.p.=>llp",
+    "public limited company,plc,p.l.c.=>plc",
+    "gesellschaft mit beschränkter haftung,gmbh,g.m.b.h.=>gmbh",
+    "aktiengesellschaft,ag,a.g.=>ag",
+    "société anonyme,sa,s.a.=>sa",
+    "sociedad anónima,s.a. de c.v.,s.a.=>sa",
+    "proprietorship,sole proprietorship,proprietor,prop.=>proprietorship",
+    "partnership,partners,& co.,and co.=>partnership",
+    "cooperative,coop,co-op,co-operative society=>cooperative",
+    "trust,charitable trust,public trust,private trust=>trust",
+    "society,registered society,regd. society=>society",
+    "foundation,charitable foundation=>foundation",
+    "anonim şirketi,a.ş.,as,anonim şirket=>a.ş.",
+    "limited şirketi,ltd. şti.,ltd şti,limited şirket=>ltd. şti."
+  ],
+
+  "business_sectors": [
+    "pharma,pharmaceuticals,pharmaceutical,pharm.=>pharma",
+    "chemicals,chemical,chem.=>chemicals",
+    "industries,industry,industrial,indus.,ind.=>industries",
+    "enterprises,enterprise,enterp.,ent.=>enterprises",
+    "trading,traders,trade,trdg.=>trading",
+    "international,intl.,int.=>international",
+    "group,grp.,groupe,grupo=>group",
+    "holdings,holding,hldgs.=>holdings",
+    "corporation,corporations=>corporation",
+    "steel,steels=>steel",
+    "metals,metal,met.=>metals",
+    "textiles,textile,text.=>textiles",
+    "auto,automobile,automobiles,automotive=>auto",
+    "electronics,electronic,elec.,elect.=>electronics",
+    "engineering,engineers,engineer,engg.=>engineering",
+    "logistics,logistic,logist.=>logistics",
+    "services,service,svc.=>services",
+    "solutions,solution,soln.=>solutions",
+    "technologies,technology,tech.,techno.=>technologies",
+    "systems,system,sys.=>systems",
+    "manufacturers,manufacturer,manufacturing,mfg.=>manufacturers"
+  ],
+
+  "articles": [
+    "and", "or", "of", "the", "for", "in", "on", "at", "to", "by",
+    "de", "del", "la", "le", "les", "des", "du", "et",
+    "und", "der", "die", "das", "von"
+  ],
+
+  "address_terms": [
+    "street,st,st.,str.=>street",
+    "road,rd,rd.=>road",
+    "avenue,ave,ave.=>avenue",
+    "building,bldg,bldg.=>building",
+    "floor,fl,fl.,flr=>floor",
+    "suite,ste,ste.=>suite",
+    "post office box,po box,p.o. box,pob=>p.o. box"
+  ],
+
+  "regions": [
+    "example region,example reg.,ex. reg.=>example region"
+  ],
+
+  "cities": [
+    "example city,example city name=>example city"
+  ]
+}

@@ -1,5 +1,7 @@
 {
-  "company_types": [
+  "_description": "Hindistan (IN) synonym dosyası.  Şema referansı: synonyms_data/_template.json.",
+
+  "legal_suffixes": [
     "private limited,private limited company,pvt. ltd.,pvt ltd.,pvt. ltd,pvt ltd,p. ltd.,p ltd.,p.ltd.,p.v.t. ltd.,private ltd.,priv. ltd.=>pvt. ltd.",
     "public limited,public limited company,ltd.,limited,pub. ltd.,public ltd.=>ltd.",
     "limited liability partnership,llp,l.l.p.=>llp",
@@ -18,6 +20,10 @@
     "micro small medium enterprise,msme,sme,small medium enterprise=>msme",
     "startup,start-up,start up=>startup",
     "incorporated,inc.,inc=>inc.",
+    "company,co,co.,comp=>co."
+  ],
+
+  "business_sectors": [
     "enterprises,enterprise,enterp.,enter.=>enterprises",
     "industries,industry,indus.,ind.=>industries",
     "trading,traders,trade,trdg.=>trading",
@@ -80,6 +86,7 @@
     "shipping,shipp.=>shipping",
     "marine,maritime=>marine"
   ],
+
   "address_terms": [
     "road,rd.=>road",
     "street,st.,str.=>street",
@@ -145,6 +152,7 @@
     "gat,gat no.=>gat",
     "door,d.no.,door no.=>door"
   ],
+
   "regions": [
     "andhra pradesh,ap,a.p.=>andhra pradesh",
     "arunachal pradesh,arunachal=>arunachal pradesh",
@@ -193,6 +201,7 @@
     "greater noida,gr. noida=>greater noida",
     "gurugram,gurgaon,g'gram=>gurugram"
   ],
+
   "cities": [
     "Mumbai,Bombay,Bambai,Mombai,मुंबई=>Mumbai",
     "Delhi,New Delhi,दिल्ली,NCR Delhi=>Delhi",
@@ -300,9 +309,7 @@
     "Kakinada,Kakinada City=>Kakinada",
     "Rajahmundry,Rajamahendravaram,Rajamundri=>Rajahmundry",
     "Bilaspur,Bilaspur City=>Bilaspur",
-    "Bhopal,Bhopal City=>Bhopal",
     "Moradabad,Muradabad=>Moradabad",
-    "Gaya,Gaya City,Bihar Sharif=>Gaya",
     "Agartala,Agartala City=>Agartala",
     "Imphal,Imphal City=>Imphal",
     "Shillong,Shillong City=>Shillong",
@@ -345,13 +352,10 @@
     "Rudrapur,Rudrapur City=>Rudrapur",
     "Muzaffarpur,Muzaffarpur City=>Muzaffarpur",
     "Bhagalpur,Bhagalpur City=>Bhagalpur",
-    "Gaya,Gaya City=>Gaya",
     "Darbhanga,Darbhanga City=>Darbhanga",
     "Bokaro,Bokaro Steel City=>Bokaro",
     "Hazaribagh,Hazaribag=>Hazaribagh",
     "Giridih,Giridih City=>Giridih",
-    "Bhubaneswar,Bhubaneshwar,Bhubhaneshwar=>Bhubaneswar",
-    "Rourkela,Rourkela City=>Rourkela",
     "Berhampur,Brahmapur=>Berhampur",
     "Sambalpur,Sambalpur City=>Sambalpur",
     "Kozhikode,Calicut,Kozhikode City=>Kozhikode",

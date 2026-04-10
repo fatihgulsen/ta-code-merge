@@ -176,7 +176,7 @@ STAGES = [
         "query_fn": "CANONICAL_EXACT",
         "min_score": 3.0,
         "enabled": True,
-        "index_variation": True,   # Synonym-aware tam eşleşme — güvenilir
+        "index_variation": False,  # Sprint 1 (§4.5): cascade freeze
     },
     {
         "name": "SUFFIX_FUZZY",
@@ -184,7 +184,7 @@ STAGES = [
         "query_fn": "SUFFIX_FUZZY",
         "min_score": SUFFIX_FUZZY_MIN_SCORE,
         "enabled": True,
-        "index_variation": True,   # Suffix typo — isim kısmı kesin, variations'a ekle
+        "index_variation": False,  # Sprint 1 (§4.5): cascade freeze
     },
     {
         "name": "TOKEN_COVERAGE",
@@ -192,7 +192,7 @@ STAGES = [
         "query_fn": "TOKEN_COVERAGE",
         "min_score": 3.0,
         "enabled": True,
-        "index_variation": True,   # Yüksek token örtüşmesi — variations'a ekle
+        "index_variation": False,  # Sprint 1 (§4.5): cascade freeze
     },
     {
         "name": "FUZZY_PHRASE",

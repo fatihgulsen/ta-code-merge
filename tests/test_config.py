@@ -99,3 +99,23 @@ def test_business_descriptors_includes_sector_words():
     }
     missing = required - BUSINESS_DESCRIPTORS
     assert not missing, f"Missing descriptor tokens: {sorted(missing)}"
+
+
+def test_stage_index_variation_sprint1_cascade_freeze():
+    """Sprint 1 temkinli mod: yalnızca TAX_EXACT variations listesini besler."""
+    from config import STAGES
+
+    by_name = {s["name"]: s for s in STAGES}
+    # TAX_EXACT alone keeps indexing variations (deterministic, safe)
+    assert by_name["TAX_EXACT"]["index_variation"] is True
+
+    # These three are flipped off as part of Sprint 1 cascade freeze
+    for frozen in ("CANONICAL_EXACT", "SUFFIX_FUZZY", "TOKEN_COVERAGE"):
+        assert by_name[frozen]["index_variation"] is False, (
+            f"{frozen} must be PG-only during Sprint 1 to stop cascade "
+            f"contamination — see audit design §4.5"
+        )
+
+    # Already-frozen stages remain False
+    for always_pg in ("FUZZY_PHRASE", "NGRAM_MATCH", "STRIPPED_EXACT"):
+        assert by_name[always_pg]["index_variation"] is False

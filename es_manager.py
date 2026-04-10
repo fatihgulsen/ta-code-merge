@@ -28,6 +28,7 @@ from config import ES_HOST, ES_INDEX
 from synonym_loader import (
     get_all_country_codes,
     get_all_company_type_tokens,
+    get_article_stopwords,
     get_company_type_tokens,
     load_synonyms_for_country,
 )
@@ -108,11 +109,12 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     # variations_stripped alanının search_analyzer'ı olarak kullanılır.
     for cc in get_all_country_codes():
         cc_tokens = list(get_company_type_tokens(cc))
+        article_tokens = list(get_article_stopwords(cc))
         filter_name = f"generic_stopwords_{cc.lower()}"
         analyzer_name = f"stripped_search_analyzer_{cc.lower()}"
         filters[filter_name] = {
             "type": "stop",
-            "stopwords": cc_tokens,
+            "stopwords": cc_tokens + article_tokens,
         }
         analyzers[analyzer_name] = {
             "tokenizer": "standard",
@@ -121,9 +123,10 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
 
     # Global fallback stripped analyzer (tüm ülkeler birleşimi)
     global_tokens = list(get_all_company_type_tokens())
+    global_articles = list(get_article_stopwords("common"))
     filters["generic_stopwords_global"] = {
         "type": "stop",
-        "stopwords": global_tokens,
+        "stopwords": global_tokens + global_articles,
     }
     analyzers["stripped_search_analyzer"] = {
         "tokenizer": "standard",

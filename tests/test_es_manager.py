@@ -40,3 +40,29 @@ def test_per_country_stripped_analyzers_exist():
             f"stripped_search_analyzer_{cc.lower()} analyzer'ı bulunamadı"
         assert f"generic_stopwords_{cc.lower()}" in filters, \
             f"generic_stopwords_{cc.lower()} filter'ı bulunamadı"
+
+
+def test_build_index_settings_includes_articles_in_stop_filter():
+    """Per-country stop filter article token'larını içermeli."""
+    from es_manager import build_index_settings
+    settings = build_index_settings(es=None)
+    filters = settings["settings"]["analysis"]["filter"]
+
+    # TR için stop filter kontrol et
+    tr_filter = filters.get("generic_stopwords_tr")
+    assert tr_filter is not None
+    stopwords = tr_filter["stopwords"]
+    assert "and" in stopwords
+    assert "of" in stopwords
+    assert "the" in stopwords
+
+
+def test_build_index_settings_global_filter_includes_articles():
+    """Global fallback stop filter da article token'larını içermeli."""
+    from es_manager import build_index_settings
+    settings = build_index_settings(es=None)
+    filters = settings["settings"]["analysis"]["filter"]
+    global_filter = filters.get("generic_stopwords_global")
+    assert global_filter is not None
+    assert "and" in global_filter["stopwords"]
+    assert "von" in global_filter["stopwords"]

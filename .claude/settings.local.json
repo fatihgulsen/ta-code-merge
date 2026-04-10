@@ -47,7 +47,15 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Read(//c/Users/fatih/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.7/skills/subagent-driven-development/**)",
-      "Bash(git stash:*)"
+      "Bash(git stash:*)",
+      "Bash(git merge:*)",
+      "Bash(git worktree:*)",
+      "Bash(git branch:*)",
+      "Bash(.venv/Scripts/pytest tests/ -v)",
+      "Bash(.venv/Scripts/python -c ':*)",
+      "Bash(.venv/Scripts/pytest tests/ -q)",
+      "Bash(.venv/Scripts/python)",
+      "Bash(python3 -c \"from synonym_loader import get_company_type_tokens; tokens = get_company_type_tokens\\('IN'\\); print\\('Total:', len\\(tokens\\)\\); print\\('Sample \\(sorted\\):', sorted\\(list\\(tokens\\)\\)[:30]\\)\")"
     ]
   }
 }

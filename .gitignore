@@ -1,12 +1,12 @@
-.agents
-.worktrees
-.venv
-.vscode
-__pycache__
-*.pyc
-*.pyo
-*.pyd
-.Python
+.agents/
+.worktrees/
+.venv/
+.vscode/
+__pycache__/
+*.pyc/
+*.pyo/
+*.pyd/
+.Python/
 env/
 build/
 develop-eggs/
@@ -20,3 +20,5 @@ parts/
 sdist/
 var/
 *.egg-info/
+.claude/
+superpowers/

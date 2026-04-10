@@ -230,6 +230,12 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
                 "country_code": {"type": "keyword"},
                 "tax_number": {"type": "keyword"},
                 "phone_number": {"type": "keyword"},
+                "address": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {"type": "keyword", "ignore_above": 512},
+                    },
+                },
                 "variations": {
                     "type": "text",
                     "analyzer": "clean_analyzer_common",

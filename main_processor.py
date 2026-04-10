@@ -394,10 +394,31 @@ def _post_verify(input_name: str, master_source: dict, stage_name: str, country:
             doc_stripped = doc_stripped_raw
         else:
             doc_stripped = ""
-        doc_name_tokens = set(doc_stripped.split()) if doc_stripped else set()
-        if not doc_name_tokens:
+        doc_name_tokens_list = doc_stripped.split() if doc_stripped else []
+        doc_name_tokens = set(doc_name_tokens_list)
+        if not doc_name_tokens or not input_meaningful:
             return False
-        coverage = len(input_meaningful & doc_name_tokens) / len(doc_name_tokens)
+        # Min 2 anlamli token olmali (tek token esleme cok riskli)
+        if min(len(input_meaningful), len(doc_name_tokens)) < 2:
+            return False
+        # Simetrik coverage — her iki yonde de yuksek olmali
+        # "AMBICA STEELS" (meaningful: ambica, steels) vs stripped: "ambica" → 0.5
+        coverage = _symmetric_token_coverage(input_meaningful, doc_name_tokens)
+        # PHRASE CHECK: "d b corp limited" → ["d","b"] ≠ ["b","d"] → engelle
+        # Sıra eşleşmeli; farklı harflerin farklı sırayla gelmesi farklı firmadır
+        _cleaned = _clean_labels(input_name).lower()
+        input_stripped_ordered = []
+        for _t in _cleaned.split():
+            _tc = _t.rstrip('.,')
+            if not _tc or (len(_tc) <= 1 and not _tc.isalnum()):
+                continue
+            if _tc in _ARTICLE_STOPWORDS:
+                continue
+            _tn = _SUFFIX_NORMALIZE.get(_tc, _tc)
+            if _tn not in suffix_tokens:
+                input_stripped_ordered.append(_tn)
+        if input_stripped_ordered != doc_name_tokens_list:
+            return False
         return coverage >= SUFFIX_FUZZY_COVERAGE_THRESHOLD
 
     if min_meaningful < 2:
@@ -495,26 +516,38 @@ def _execute_msearch(
 # ─────────────────────────────────────────────────────────────────────
 
 def update_es_variations(es, matched: list[dict]) -> None:
-    """Eslesen kayitlarin varyasyonlarini master ES doc'a ekler.
+    """Eslesen kayitlarin varyasyonlarini ve meta bilgilerini master ES doc'a ekler.
 
-    Her eslesen kaydin raw_name'i, master doc'un variations listesine eklenir
-    (zaten yoksa). Bu sayede gelecekte ayni varyasyon daha hizli eslesir.
+    Her eslesen kaydin raw_name'i variations listesine,
+    tax/phone/address degerleri ilgili listelere eklenir (zaten yoksa).
     """
     if not matched:
         return
 
     # Master bazinda gruplayarak toplu update yap
-    master_updates: dict[str, dict] = {}  # master_id → {variations: set, country: str}
+    master_updates: dict[str, dict] = {}
     for r in matched:
         mid = r["master_id"]
         if mid not in master_updates:
-            master_updates[mid] = {"variations": set(), "country": r["country"]}
+            master_updates[mid] = {
+                "variations": set(),
+                "tax_numbers": set(),
+                "phone_numbers": set(),
+                "addresses": set(),
+                "country": r["country"],
+            }
         master_updates[mid]["variations"].add(r["raw_name"])
+        if r.get("tax"):
+            master_updates[mid]["tax_numbers"].add(r["tax"])
+        if r.get("phone"):
+            master_updates[mid]["phone_numbers"].add(r["phone"])
+        if r.get("address"):
+            master_updates[mid]["addresses"].add(r["address"])
 
     bulk_body = []
     for master_id, info in master_updates.items():
+        # Variations update
         for variation in info["variations"]:
-            # Basit lowercase form (ES'te karsilastirma icin)
             v_lower = variation.lower().strip().rstrip('.,')
             bulk_body.append({
                 "update": {
@@ -536,11 +569,54 @@ def update_es_variations(es, matched: list[dict]) -> None:
                 },
             })
 
+        # Tax, phone, address listelerine ekleme (duplicate kontrollu)
+        _append_list_fields(bulk_body, master_id, info)
+
     if bulk_body:
         try:
             es.bulk(body=bulk_body, refresh=False)
         except Exception:
             logger.debug("ES variations update basarisiz, devam ediliyor")
+
+
+def _append_list_fields(
+    bulk_body: list[dict], master_id: str, info: dict
+) -> None:
+    """tax_number, phone_number, address listelerine yeni degerleri ekler."""
+    field_map = {
+        "tax_number": info["tax_numbers"],
+        "phone_number": info["phone_numbers"],
+        "address": info["addresses"],
+    }
+    country = info["country"].upper()
+
+    for field_name, values in field_map.items():
+        for val in values:
+            val_clean = val.strip()
+            if not val_clean:
+                continue
+            bulk_body.append({
+                "update": {
+                    "_index": ES_INDEX,
+                    "_id": master_id,
+                    "routing": country,
+                }
+            })
+            bulk_body.append({
+                "script": {
+                    "source": (
+                        "String v = params.v; "
+                        "String field = params.field; "
+                        "if (ctx._source[field] == null) { "
+                        "  ctx._source[field] = [v]; "
+                        "} else if (!ctx._source[field].contains(v)) { "
+                        "  ctx._source[field].add(v); "
+                        "}"
+                    ),
+                    "lang": "painless",
+                    "params": {"v": val_clean, "field": field_name},
+                },
+            })
 
 
 def write_matched_to_pg(write_cursor, write_conn, matched: list[dict]) -> None:
@@ -605,7 +681,7 @@ def write_stage_log(
 
 
 def build_new_master_doc(
-    name: str, country: str, tax: str, phone: str
+    name: str, country: str, tax: str, phone: str, address: str = ""
 ) -> tuple[dict, str]:
     master_id = str(uuid.uuid4())
     doc = {
@@ -620,9 +696,11 @@ def build_new_master_doc(
         },
     }
     if tax:
-        doc["_source"]["tax_number"] = tax
+        doc["_source"]["tax_number"] = [tax]
     if phone:
-        doc["_source"]["phone_number"] = phone
+        doc["_source"]["phone_number"] = [phone]
+    if address:
+        doc["_source"]["address"] = [address]
     return doc, master_id
 
 
@@ -704,9 +782,11 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
                 },
             }
             if rec.get("tax"):
-                doc["_source"]["tax_number"] = rec["tax"]
+                doc["_source"]["tax_number"] = [rec["tax"]]
             if rec.get("phone"):
-                doc["_source"]["phone_number"] = rec["phone"]
+                doc["_source"]["phone_number"] = [rec["phone"]]
+            if rec.get("address"):
+                doc["_source"]["address"] = [rec["address"]]
             es_docs.append(doc)
             pg_updates.append((master_id, 100, "NEW_MASTER", rec["row_id"]))
             log_rows.append((
@@ -900,9 +980,11 @@ def _index_new_master(es, rec: dict) -> str:
         "country_code": rec["country"].upper(),
     }
     if rec.get("tax"):
-        doc["tax_number"] = rec["tax"]
+        doc["tax_number"] = [rec["tax"]]
     if rec.get("phone"):
-        doc["phone_number"] = rec["phone"]
+        doc["phone_number"] = [rec["phone"]]
+    if rec.get("address"):
+        doc["address"] = [rec["address"]]
 
     try:
         es.index(
@@ -924,25 +1006,54 @@ def _index_new_master(es, rec: dict) -> str:
     return master_id
 
 
-def _add_variation_to_master(es, master_doc_id: str, variation: str, country: str) -> None:
-    """Eslesen kaydin varyasyonunu master doc'a ekler (variations + stripped otomatik)."""
+def _add_variation_to_master(
+    es, master_doc_id: str, variation: str, country: str, rec: dict | None = None
+) -> None:
+    """Eslesen kaydin varyasyonunu ve meta bilgilerini master doc'a ekler.
+
+    Doc'u okur → variations listesine yeni varyasyonu ekler →
+    tax/phone/address listelerine yeni degerleri ekler →
+    pipeline ile yeniden index'ler.
+    """
     v_lower = variation.lower().strip().rstrip('.,')
+    cc = country.upper()
     try:
-        es.update(
+        doc = es.get(index=ES_INDEX, id=master_doc_id, routing=cc)
+        source = doc["_source"]
+        existing_variations = source.get("variations", [])
+
+        changed = False
+        if v_lower not in existing_variations:
+            existing_variations.append(v_lower)
+            source["variations"] = existing_variations
+            # stripped ve suffix'i sifirla — pipeline yeniden hesaplayacak
+            source["variations_stripped"] = []
+            source["variations_suffix"] = []
+            changed = True
+
+        # tax/phone/address listelerine yeni degerleri ekle
+        if rec:
+            for field, key in [("tax_number", "tax"), ("phone_number", "phone"), ("address", "address")]:
+                val = (rec.get(key) or "").strip()
+                if val:
+                    existing = source.get(field, [])
+                    if not isinstance(existing, list):
+                        existing = [existing] if existing else []
+                    if val not in existing:
+                        existing.append(val)
+                        source[field] = existing
+                        changed = True
+
+        if not changed:
+            return
+
+        pipe = pipeline_name(cc)
+        es.index(
             index=ES_INDEX,
             id=master_doc_id,
-            routing=country.upper(),
-            body={
-                "script": {
-                    "source": (
-                        "if (!ctx._source.variations.contains(params.v)) { "
-                        "  ctx._source.variations.add(params.v) "
-                        "}"
-                    ),
-                    "lang": "painless",
-                    "params": {"v": v_lower},
-                },
-            },
+            routing=cc,
+            body=source,
+            pipeline=pipe,
         )
     except Exception:
         logger.debug(f"Varyasyon ekleme basarisiz: {v_lower[:50]}")
@@ -981,6 +1092,7 @@ def process_all_data() -> None:
         col_country = COLUMN_MAPPING["country_code"]
         col_tax = COLUMN_MAPPING.get("tax_number")
         col_phone = COLUMN_MAPPING.get("phone_number")
+        col_address = COLUMN_MAPPING.get("address")
         col_master = COLUMN_MAPPING["master_code"]
 
         select_cols = [col_id, col_name, col_country]
@@ -988,6 +1100,8 @@ def process_all_data() -> None:
             select_cols.append(col_tax)
         if col_phone:
             select_cols.append(col_phone)
+        if col_address:
+            select_cols.append(col_address)
 
         # Toplam islenmemis kayit sayisi — progress bar icin
         count_cur = read_conn.cursor()
@@ -1062,6 +1176,7 @@ def process_all_data() -> None:
                     "country": country,
                     "tax": row.get(col_tax) or "" if col_tax else "",
                     "phone": row.get(col_phone) or "" if col_phone else "",
+                    "address": row.get(col_address) or "" if col_address else "",
                 }
 
                 # --- Tek kayit eslestirme ---
@@ -1080,8 +1195,8 @@ def process_all_data() -> None:
                         True, master_id, es_score,
                     ))
 
-                    # Varyasyonu master doc'a ekle
-                    _add_variation_to_master(es, result["master_doc_id"], raw_name, country)
+                    # Varyasyonu ve meta bilgileri master doc'a ekle
+                    _add_variation_to_master(es, result["master_doc_id"], raw_name, country, rec)
 
                     total_matched += 1
                     stage_counts[stage_name] = stage_counts.get(stage_name, 0) + 1
@@ -1104,7 +1219,7 @@ def process_all_data() -> None:
                 # Progress bar postfix guncelle
                 match_pct = round(100 * total_matched / total_processed, 1) if total_processed else 0
                 pbar.set_postfix_str(
-                    f"eslesen={total_matched:,} ({match_pct}%) yeni={total_new:,}",
+                    f"eslesen={total_matched:,} ({match_pct}%) yeni={total_new:,},toplam={total_processed:,},skipped={total_skipped:,}",
                     refresh=False,
                 )
 

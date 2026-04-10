@@ -22,7 +22,10 @@
     "manufacturing,mfg,mfg.,manuf.,manufact.=>manufacturing",
     "import export,import,export,imp,exp,imp exp=>import export",
     "brothers,bros,bros.,bro,hnos,hermanos=>bros.",
-    "and,amp,y,et,und,e=>amp"
+    "and,amp,y,et,und,e=>amp",
+    "pvt,private,priv,prvt=>pvt",
+    "limited, ltd, ltd., ltd, ltd.,ltd,ltd.,ltda,limitada=>ltd.",
+    "company,co,co.,comp=>co."
   ],
   "address_abbreviations": [
     "street,st,st.,str,str.=>st.",

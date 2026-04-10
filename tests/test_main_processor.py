@@ -146,20 +146,20 @@ def test_post_verify_suffix_fuzzy_fails_when_doc_stripped_empty():
 
 
 def test_article_stopwords_exists():
-    """_ARTICLE_STOPWORDS olmali, _STOPWORDS olmamali."""
+    """get_article_stopwords 'and', 'of' gibi tokenlari icermeli; _STOPWORDS olmamali."""
     import main_processor as mp
-    assert hasattr(mp, "_ARTICLE_STOPWORDS")
+    from synonym_loader import get_article_stopwords
     assert not hasattr(mp, "_STOPWORDS")
-    assert "and" in mp._ARTICLE_STOPWORDS
-    assert "of" in mp._ARTICLE_STOPWORDS
+    assert "and" in get_article_stopwords("")
+    assert "of" in get_article_stopwords("")
 
 
 def test_post_verify_word_count_excludes_company_suffixes():
     """Word count 'ltd', 'inc' gibi company suffix tokenlarini saymamali."""
-    from main_processor import _clean_labels, _ARTICLE_STOPWORDS
-    from synonym_loader import get_company_type_tokens
+    from main_processor import _clean_labels
+    from synonym_loader import get_company_type_tokens, get_article_stopwords
     cc = "TR"
-    stopwords = _ARTICLE_STOPWORDS | get_company_type_tokens(cc)
+    stopwords = get_article_stopwords(cc) | get_company_type_tokens(cc)
     # "ACME LTD" → 1 meaningful word (ltd filtered)
     word_count = len([
         t for t in _clean_labels("ACME LTD").lower().split()
@@ -168,3 +168,45 @@ def test_post_verify_word_count_excludes_company_suffixes():
         and t.rstrip(".,").isalnum()
     ])
     assert word_count == 1, f"Expected 1, got {word_count}"
+
+
+from main_processor import _tokenize
+
+
+def test_tokenize_excludes_suffix_tokens():
+    """Suffix token'ları (ltd, corp, inc) sonuç setine girmemeli."""
+    result = _tokenize("Komerci Limited", "TR")
+    assert "komerci" in result
+    assert "limited" not in result
+    assert "ltd" not in result
+
+
+def test_tokenize_excludes_article_tokens():
+    """Article token'ları (of, the, and) sonuç setine girmemeli."""
+    result = _tokenize("Acme of the World Corp", "US")
+    assert "acme" in result
+    assert "world" in result
+    assert "of" not in result
+    assert "the" not in result
+    assert "corp" not in result
+
+
+def test_tokenize_keeps_initials():
+    """Tek harfli alfanumerik token'lar (inisyal/rakam) korunmalı."""
+    result = _tokenize("A B Impex Ltd", "IN")
+    assert "a" in result
+    assert "b" in result
+    assert "impex" in result
+
+
+def test_tokenize_drops_single_non_alnum():
+    """Tek harfli non-alnum token'lar (& - .) atlanmalı."""
+    result = _tokenize("A & B Corp", "US")
+    assert "&" not in result
+    assert "a" in result
+    assert "b" in result
+
+
+def test_tokenize_returns_set():
+    result = _tokenize("Komerci Ltd", "TR")
+    assert isinstance(result, set)

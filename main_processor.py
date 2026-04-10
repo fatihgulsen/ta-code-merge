@@ -59,7 +59,7 @@ from config import (
 )
 from es_manager import create_index, get_es_client
 from es_ingest import register_all_pipelines, pipeline_name
-from synonym_loader import get_company_type_tokens
+from synonym_loader import get_company_type_tokens, get_article_stopwords
 import es_queries as _es_queries
 
 logging.basicConfig(
@@ -288,57 +288,33 @@ def _clean_labels(name: str) -> str:
     return _re.sub(r'\s+', ' ', cleaned).strip()
 
 
-# Suffix normalizasyon map — ES synonym kurallariyla tutarli
-_SUFFIX_NORMALIZE = {
-    "limited": "ltd", "ltd.": "ltd", "ltd,": "ltd",
-    "incorporated": "inc", "inc.": "inc", "inc,": "inc",
-    "corporation": "corp", "corp.": "corp", "corp,": "corp",
-    "company": "co", "co.": "co", "co,": "co",
-    "private": "pvt", "pvt.": "pvt",
-    "public": "pub",
-    "gmbh": "gmbh", "g.m.b.h.": "gmbh", "g.m.b.h": "gmbh",
-    "llc": "llc", "l.l.c.": "llc", "l.l.c": "llc",
-    "plc": "plc", "p.l.c.": "plc",
-    "sdn": "sdn", "bhd": "bhd",
-    "pte": "pte",
-}
-
-# Stopword'ler — firma isminde anlam tasimayan baglac/edat/artikeller (sadece artikeller)
-_ARTICLE_STOPWORDS = frozenset({
-    "and", "of", "the", "for", "in", "on", "at", "to", "by",
-    "de", "del", "la", "le", "les", "des", "du", "et",  # French/Spanish
-    "und", "der", "die", "das", "von",  # German
-})
-
-
 def _tokenize(name: str, country: str = "") -> set[str]:
-    """Firma ismini anlamli tokenlara ayirir.
+    """Firma ismini anlamlı tokenlara ayırır.
 
-    - Kucuk harf, suffix normallestirilmis, 1 char haric
-    - country verilirse, ayni ulkenin adi token'lardan cikarilir
+    - Küçük harf
+    - Suffix token'ları dışlanır (get_company_type_tokens)
+    - Article token'ları dışlanır (get_article_stopwords)
+    - Tek char: alfanumerik ise korunur (inisyal/rakam), değilse atlanır
+    - country verilirse, ülke adı token'ları çıkarılır
     """
     cleaned = _clean_labels(name)
     tokens = cleaned.lower().split()
     country_tokens = _COUNTRY_NAME_TOKENS.get(country.upper(), frozenset())
-    normalized = set()
+    suffix_tokens = get_company_type_tokens(country)
+    article_tokens = get_article_stopwords(country)
+    result = set()
     for t in tokens:
         t_clean = t.rstrip('.,')
         if not t_clean:
             continue
-        # Tek karakter: alfanumerik ise koru (inisyal/rakam), degilse atla
-        # "A B IMPEX" → a, b inisyal = koru
-        # "&", "-" → non-alnum = atla
         if len(t_clean) <= 1 and not t_clean.isalnum():
             continue
-        # Ulke adi token'i atla
         if t_clean in country_tokens:
             continue
-        # Stopword atla
-        if t_clean in _ARTICLE_STOPWORDS:
+        if t_clean in suffix_tokens or t_clean in article_tokens:
             continue
-        t_norm = _SUFFIX_NORMALIZE.get(t_clean, _SUFFIX_NORMALIZE.get(t, t_clean))
-        normalized.add(t_norm)
-    return normalized
+        result.add(t_clean)
+    return result
 
 
 def _symmetric_token_coverage(input_tokens: set[str], master_tokens: set[str]) -> float:
@@ -380,7 +356,7 @@ def _post_verify(input_name: str, master_source: dict, stage_name: str, country:
 
     # Suffix tokenlar haric anlamli token sayisi kontrolu
     # "C & C OVERSEAS" gibi tek anlamli tokene dusen isimler guvenilir eslestirilemez
-    suffix_tokens = set(_SUFFIX_NORMALIZE.values())
+    suffix_tokens = get_company_type_tokens(country)  # TODO Task 6: will be refactored
     input_meaningful = input_tokens - suffix_tokens
     master_meaningful = master_tokens - suffix_tokens
     min_meaningful = min(len(input_meaningful), len(master_meaningful))
@@ -412,11 +388,11 @@ def _post_verify(input_name: str, master_source: dict, stage_name: str, country:
             _tc = _t.rstrip('.,')
             if not _tc or (len(_tc) <= 1 and not _tc.isalnum()):
                 continue
-            if _tc in _ARTICLE_STOPWORDS:
+            if _tc in get_article_stopwords(country):  # TODO Task 6: will be refactored
                 continue
-            _tn = _SUFFIX_NORMALIZE.get(_tc, _tc)
-            if _tn not in suffix_tokens:
-                input_stripped_ordered.append(_tn)
+            if _tc in suffix_tokens:  # TODO Task 6: will be refactored
+                continue
+            input_stripped_ordered.append(_tc)
         if input_stripped_ordered != doc_name_tokens_list:
             return False
         return coverage >= SUFFIX_FUZZY_COVERAGE_THRESHOLD
@@ -433,7 +409,7 @@ def _post_verify(input_name: str, master_source: dict, stage_name: str, country:
 
     # Token tekrar farki kontrolu: "RADHE RADHE CREATION" (3 token) vs "RADHE CREATION" (2 token)
     # Set bazli coverage 1.0 ama gercekte farkli firma isimleri olabilir
-    _wc_stopwords = _ARTICLE_STOPWORDS | get_company_type_tokens(country)
+    _wc_stopwords = get_article_stopwords(country) | get_company_type_tokens(country)  # TODO Task 6: will be refactored
     input_word_count = len([t for t in _clean_labels(input_name).lower().split() if t.rstrip('.,') not in _wc_stopwords and t.rstrip('.,') and t.rstrip('.,').isalnum()])
     master_word_count = len([t for t in _clean_labels(master_name).lower().split() if t.rstrip('.,') not in _wc_stopwords and t.rstrip('.,') and t.rstrip('.,').isalnum()])
     if max(input_word_count, master_word_count) > 0:
@@ -734,12 +710,13 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
             tc = t.rstrip('.,')
             if not tc or (len(tc) <= 1 and not tc.isalnum()):
                 continue
-            if tc in _ARTICLE_STOPWORDS:
+            if tc in get_article_stopwords(rec["country"]):  # TODO Task 6: will be refactored
                 continue
             if tc in _COUNTRY_NAME_TOKENS.get(rec["country"].upper(), frozenset()):
                 continue
-            norm = _SUFFIX_NORMALIZE.get(tc, _SUFFIX_NORMALIZE.get(t, tc))
-            norm_list.append(norm)
+            if tc in get_company_type_tokens(rec["country"]):  # TODO Task 6: will be refactored
+                continue
+            norm_list.append(tc)
         dedup_key = (tuple(sorted(norm_list)), rec["country"])
         existing_master_id = seen.get(dedup_key)
         if existing_master_id:

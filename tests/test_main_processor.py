@@ -102,10 +102,10 @@ def test_post_verify_suffix_fuzzy_passes_when_name_matches():
     import main_processor as mp
 
     doc_source = {
-        "variations": ["komerci limited"],
-        "variations_stripped": ["komerci"],
+        "variations": ["komerci trading limited"],
+        "variations_stripped": ["komerci trading"],
     }
-    result = mp._post_verify("Komerci Limted", doc_source, "SUFFIX_FUZZY", "TR")
+    result = mp._post_verify("Komerci Trading Limted", doc_source, "SUFFIX_FUZZY", "TR")
     assert result is True
 
 
@@ -287,23 +287,23 @@ def _make_master(variations, stripped=None, suffix=None):
 
 
 def test_post_verify_suffix_fuzzy_known_typo_passes():
-    """'Komerci Limted' → 'limted' fuzzy-matches 'limited' → stripped match → True."""
+    """'Komerci Trading Limted' → 'limted' fuzzy-matches 'limited' → stripped match → True."""
     master = _make_master(
-        variations=["komerci limited"],
-        stripped=["komerci"],
+        variations=["komerci trading limited"],
+        stripped=["komerci trading"],
         suffix=["limited"],
     )
-    assert _post_verify("Komerci Limted", master, "SUFFIX_FUZZY", "IN") is True
+    assert _post_verify("Komerci Trading Limted", master, "SUFFIX_FUZZY", "IN") is True
 
 
 def test_post_verify_suffix_fuzzy_exact_suffix_passes():
-    """'Komerci Ltd' → exact suffix match → True."""
+    """'Komerci Trading Ltd' → exact suffix match → True."""
     master = _make_master(
-        variations=["komerci limited"],
-        stripped=["komerci"],
+        variations=["komerci trading limited"],
+        stripped=["komerci trading"],
         suffix=["limited"],
     )
-    assert _post_verify("Komerci Ltd", master, "SUFFIX_FUZZY", "IN") is True
+    assert _post_verify("Komerci Trading Ltd", master, "SUFFIX_FUZZY", "IN") is True
 
 
 def test_post_verify_suffix_fuzzy_bad_typo_fails():
@@ -327,13 +327,14 @@ def test_post_verify_suffix_fuzzy_order_mismatch_fails():
 
 
 def test_post_verify_suffix_fuzzy_single_token_fails():
-    """Tek meaningful token varsa min 2 şartı sağlanmaz → False."""
+    """Tek meaningful token varsa min 2 şartı sağlanmaz → False. (Sprint 1 §4.4d)"""
+    # Tek brand token ("komerci") — Sprint 1 temkinli mod reddeder
     master = _make_master(
         variations=["komerci limited"],
         stripped=["komerci"],
         suffix=["limited"],
     )
-    assert _post_verify("Komerci Ltd", master, "SUFFIX_FUZZY", "IN") is True
+    assert _post_verify("Komerci Ltd", master, "SUFFIX_FUZZY", "IN") is False
     # Sadece 1 token — False olmalı
     master2 = _make_master(
         variations=["a limited"],

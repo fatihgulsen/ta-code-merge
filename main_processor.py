@@ -481,6 +481,12 @@ def _post_verify(input_name: str, master_source: dict, stage_name: str, country:
 
         if not input_stripped_ordered:
             return False
+        # Sprint 1 temkinli mod: her iki tarafta da ≥2 anlamlı token olmalı.
+        # Tek-brand eşleşmesi ("ACE AVIATION" vs "ACE INDUSTRIES") yasak. (§4.4d)
+        if len(doc_multi_char) < 2:
+            return False
+        if len(input_stripped_ordered) < 2:
+            return False
         if input_stripped_ordered != doc_name_tokens_list:
             return False
 

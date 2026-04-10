@@ -224,18 +224,16 @@ def get_business_sector_tokens(country_code: str) -> frozenset:
     Bunlar stripping'e GIRMEZ — firma ismini AYIRT eden sektor/is kolu kelimeleridir.
     "Apex Pharma" ve "Apex Steel" farkli firmalardir.
 
-    Legal suffix'lerle cakisma olursa legal suffix kategorisi oncelikli kabul
-    edilir (stripping pipeline'i onu once isler) ve sektor setinden cikarilir.
+    Data integrity: legal_suffixes ve business_sectors kategorilerinin
+    disjoint olmasi JSON seviyesinde garanti edilir (bkz. common.json ve
+    per-country files). Runtime subtraction yok.
     """
     country_code = country_code.upper()
     paths = [SYNONYMS_DIR / f for f in COMMON_FILES]
     country_file = SYNONYMS_DIR / f"{country_code.lower()}.json"
     if country_file.exists():
         paths.append(country_file)
-    sectors = _parse_category_tokens(paths, "business_sectors")
-    # Disjointness guarantee: legal suffixes always win over sectors.
-    legal = get_legal_suffix_tokens(country_code)
-    return sectors - legal
+    return _parse_category_tokens(paths, "business_sectors")
 
 
 @lru_cache(maxsize=None)

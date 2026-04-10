@@ -135,3 +135,39 @@ def test_get_company_type_tokens_excludes_business_descriptors():
 
     # Guard must not produce intersection with BUSINESS_DESCRIPTORS
     assert tokens.isdisjoint(BUSINESS_DESCRIPTORS)
+
+
+def test_get_legal_suffix_tokens_returns_frozenset():
+    """Sprint 2: get_legal_suffix_tokens reads the 'legal_suffixes' category
+    from common.json plus the per-country file."""
+    from synonym_loader import get_legal_suffix_tokens
+
+    tokens = get_legal_suffix_tokens("IN")
+    assert isinstance(tokens, frozenset)
+    # Universal English legal forms from common.json
+    for expected in ("ltd", "inc", "corp", "llc", "llp", "pvt"):
+        assert expected in tokens, f"{expected!r} missing from IN legal suffixes"
+    # IN-specific legal forms from in.json
+    for expected in ("opc", "huf", "nidhi"):
+        assert expected in tokens, f"{expected!r} (IN-specific) missing"
+
+
+def test_get_legal_suffix_tokens_excludes_sectors():
+    """Legal suffixes must NOT contain business sector words."""
+    from synonym_loader import get_legal_suffix_tokens
+
+    tokens = get_legal_suffix_tokens("IN")
+    for sector in ("pharma", "chemicals", "industries", "enterprises",
+                   "trading", "international", "technologies"):
+        assert sector not in tokens, f"{sector!r} leaked into legal_suffixes"
+
+
+def test_get_legal_suffix_tokens_excludes_foreign_suffixes():
+    """Sprint 2 fix: 'ab' (Swedish) and 'as' (Norwegian/Latvian) must NOT
+    appear in IN legal suffixes. other.json is archived."""
+    from synonym_loader import get_legal_suffix_tokens
+
+    tokens = get_legal_suffix_tokens("IN")
+    # These caused the BABA WOOD PRODUCTS false positive before Sprint 2.
+    assert "ab" not in tokens, "Swedish 'ab' leaking into IN suffixes"
+    assert "as" not in tokens, "Norwegian 'as' leaking into IN suffixes"

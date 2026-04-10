@@ -172,6 +172,51 @@ def _parse_company_type_tokens(paths: list) -> frozenset:
     return frozenset(tokens) - BUSINESS_DESCRIPTORS
 
 
+def _parse_category_tokens(paths: list, category: str) -> frozenset:
+    """Verilen JSON dosyalarindan belirli bir kategoriden tum token'lari cikarir.
+
+    Solr synonym format: 'src1,src2,src3=>target'
+    Her iki taraftaki (sol ve sag) her token ayri ayri donulur.
+    Noktalar silinir, kucuk harfe cevrilir.
+    """
+    tokens: set[str] = set()
+    for path in paths:
+        if not path.exists():
+            continue
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        rules = data.get(category, [])
+        if not isinstance(rules, list):
+            continue
+        for rule in rules:
+            rule_norm = normalize_text(rule)
+            if "=>" in rule_norm:
+                left, right = rule_norm.split("=>", 1)
+                all_parts = left.split(",") + [right]
+            else:
+                all_parts = rule_norm.split(",")
+            for part in all_parts:
+                t = part.strip().lower().replace(".", "")
+                if t:
+                    tokens.add(t)
+    return frozenset(tokens)
+
+
+@lru_cache(maxsize=None)
+def get_legal_suffix_tokens(country_code: str) -> frozenset:
+    """Ulkeye ozgu legal_suffixes token'larini doner.
+
+    Hem common.json hem de ulke dosyasindan 'legal_suffixes' kategorisini okur.
+    Bunlar stripping pipeline'inda silinir (tuzel kisi ekleri).
+    """
+    country_code = country_code.upper()
+    paths = [SYNONYMS_DIR / f for f in COMMON_FILES]
+    country_file = SYNONYMS_DIR / f"{country_code.lower()}.json"
+    if country_file.exists():
+        paths.append(country_file)
+    return _parse_category_tokens(paths, "legal_suffixes")
+
+
 @lru_cache(maxsize=None)
 def get_company_type_tokens(country_code: str) -> frozenset:
     """

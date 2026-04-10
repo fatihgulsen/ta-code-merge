@@ -139,3 +139,71 @@ def test_token_coverage_false_positives_rejected(country, input_name, master_var
 
     master = _master_source([master_variation])
     assert mp._post_verify(input_name, master, "TOKEN_COVERAGE", country) is False
+
+
+# ---- Helper unit tests -------------------------------------------------------
+
+def test_first_meaningful_token_strips_leading_articles_and_suffixes():
+    import main_processor as mp
+
+    # "the apex trading co" → "apex" (the = article, trading/co filtered)
+    # Note: trading is in BUSINESS_DESCRIPTORS so it's meaningful, but apex comes first.
+    assert mp._first_meaningful_token("the apex trading co", "IN") == "apex"
+
+
+def test_first_meaningful_token_returns_none_for_empty_or_only_stopwords():
+    import main_processor as mp
+
+    assert mp._first_meaningful_token("", "IN") is None
+    assert mp._first_meaningful_token("and of the", "IN") is None
+    assert mp._first_meaningful_token("ltd pvt", "IN") is None
+
+
+def test_first_meaningful_token_canonicalises_plural_descriptors():
+    """Plural canonicalisation: 'enterprise' and 'enterprises' both return 'enterprises'."""
+    import main_processor as mp
+
+    # Both strings share the same canonical brand token
+    a = mp._first_meaningful_token("acme enterprise", "IN")
+    b = mp._first_meaningful_token("acme enterprises", "IN")
+    assert a == "acme"
+    assert b == "acme"
+
+
+def test_tokenize_canonicalises_plural_descriptors():
+    """_tokenize produces identical token sets for singular/plural descriptor pairs."""
+    import main_processor as mp
+
+    t1 = mp._tokenize("isha enterprise", "IN")
+    t2 = mp._tokenize("isha enterprises", "IN")
+    assert t1 == t2
+    # Canonical form is the plural
+    assert "enterprises" in t1
+    assert "enterprise" not in t1
+
+
+def test_business_descriptor_canonical_map_covers_regular_plurals():
+    """Sanity check: the auto-derived plural map contains every regular +s pair.
+    Irregular plurals (industry/industries, agency/agencies, technology/technologies)
+    are intentionally NOT handled in Sprint 1 — Sprint 2 will add an explicit table."""
+    import main_processor as mp
+
+    m = mp._BUSINESS_DESCRIPTOR_CANONICAL
+    for singular, plural in [
+        ("enterprise", "enterprises"),
+        ("holding", "holdings"),
+        ("service", "services"),
+        ("solution", "solutions"),
+        ("trader", "traders"),
+        ("venture", "ventures"),
+        ("dealer", "dealers"),
+        ("supplier", "suppliers"),
+        ("consultant", "consultants"),
+    ]:
+        assert m.get(singular) == plural, f"{singular} should map to {plural}"
+
+    # Irregular plurals must NOT appear in the map (documented limitation)
+    for irregular in ("industry", "agency", "technology", "commodity", "security"):
+        assert m.get(irregular) is None, (
+            f"{irregular} is irregular and should not auto-map in Sprint 1"
+        )

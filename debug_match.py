@@ -27,10 +27,9 @@ from main_processor import (
     _tokenize,
     _symmetric_token_coverage,
     _post_verify,
-    _SUFFIX_NORMALIZE,
-    _ARTICLE_STOPWORDS,
     _COUNTRY_NAME_TOKENS,
 )
+from synonym_loader import get_article_stopwords, get_company_type_tokens
 from config import STAGES, ES_INDEX
 
 
@@ -64,7 +63,7 @@ def analyze_pair(name_a: str, name_b: str, country: str) -> dict:
     }
 
     # 3. Suffix / meaningful analizi
-    suffix_tokens = set(_SUFFIX_NORMALIZE.values())
+    suffix_tokens = get_company_type_tokens(country)
     meaningful_a = tokens_a - suffix_tokens
     meaningful_b = tokens_b - suffix_tokens
     result["steps"]["3_meaningful"] = {
@@ -80,8 +79,7 @@ def analyze_pair(name_a: str, name_b: str, country: str) -> dict:
     meaningful_cov = _symmetric_token_coverage(meaningful_a, meaningful_b)
 
     # Word count
-    from synonym_loader import get_company_type_tokens as _get_ctt
-    _wc_stopwords = _ARTICLE_STOPWORDS | _get_ctt(country)
+    _wc_stopwords = get_article_stopwords(country) | get_company_type_tokens(country)
 
     def _word_count(name: str) -> int:
         return len([
@@ -120,10 +118,11 @@ def analyze_pair(name_a: str, name_b: str, country: str) -> dict:
             tc = t.rstrip('.,')
             if not tc or (len(tc) <= 1 and not tc.isalnum()):
                 continue
-            if tc in _ARTICLE_STOPWORDS or tc in country_toks:
+            if tc in get_article_stopwords(cc) or tc in country_toks:
                 continue
-            norm = _SUFFIX_NORMALIZE.get(tc, _SUFFIX_NORMALIZE.get(t, tc))
-            norm_list.append(norm)
+            if tc in get_company_type_tokens(cc):
+                continue
+            norm_list.append(tc)
         return tuple(sorted(norm_list))
 
     dk_a = _dedup_key(name_a, country)
@@ -136,14 +135,15 @@ def analyze_pair(name_a: str, name_b: str, country: str) -> dict:
 
     # 6. Her stage icin post-verify
     # SUFFIX_FUZZY icin variations_stripped da gerekli
-    suffix_set = set(_SUFFIX_NORMALIZE.values())
+    suffix_set = get_company_type_tokens(country)
+    article_set = get_article_stopwords(country)
 
     def _stripped_form(name: str) -> str:
         tokens = _clean_labels(name).lower().split()
         return " ".join(
             t.rstrip('.,') for t in tokens
             if t.rstrip('.,') and t.rstrip('.,') not in suffix_set
-            and t.rstrip('.,') not in _STOPWORDS
+            and t.rstrip('.,') not in article_set
         )
 
     stripped_b = _stripped_form(name_b)
@@ -346,7 +346,7 @@ def quality_report() -> None:
         problem = False
         for v in variations[1:]:
             v_tokens = _tokenize(v, cc)
-            suffix_tokens = set(_SUFFIX_NORMALIZE.values())
+            suffix_tokens = get_company_type_tokens(cc)
             base_m = base_tokens - suffix_tokens
             v_m = v_tokens - suffix_tokens
             cov = _symmetric_token_coverage(base_m, v_m)

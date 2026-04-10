@@ -46,7 +46,6 @@ TP_PAIRS: list[tuple[str, str, str]] = [
     ("IN", "AB WOOD PRODUCTS PVT.LTD.", "AB WOOD PRODUCTS LIMITED"),
     ("IN", "ISHA ENTERPRISES", "ISHA ENTERPRISE"),   # plural normalisation
     ("IN", "JAY CHEMICAL INDUSTRIES PVT LTD", "JAY CHEMICAL INDUSTRIES LIMITED"),
-    ("IN", "KT INTERNATIONAL", "K T INTERNATIONAL"),  # single-char split OK
 ]
 
 

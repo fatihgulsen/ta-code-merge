@@ -356,6 +356,55 @@ def _first_meaningful_token(name: str, country: str = "") -> str | None:
     return None
 
 
+def strict_name_match(input_name: str, master_name: str, country: str = "") -> bool:
+    """Sprint 2 strict matching.
+
+    Extract ordered name tokens from both names by:
+      1. Cleaning labels + lowercasing
+      2. Normalising every token through SUFFIX_TYPO_MAP
+      3. Dropping tokens in legal_suffixes, articles, or country-name set
+      4. Canonicalising business-sector tokens via rule-based map
+      5. Dropping tokens that are single non-alphanumeric chars
+
+    Returns True iff both sides produce at least 2 meaningful tokens AND
+    the resulting ordered lists are strictly equal.
+
+    This is the canonical "same company" check for Sprint 2. TOKEN_COVERAGE
+    and fuzzy stages keep their own looser post-verify logic.
+    """
+    country_tokens = _COUNTRY_NAME_TOKENS.get(country.upper(), frozenset())
+    legal_suffixes = get_legal_suffix_tokens(country)
+    article_tokens = get_article_stopwords(country)
+    sector_canonical = get_business_sector_canonical_map(country)
+
+    def extract(name: str) -> list[str]:
+        cleaned = _clean_labels(name).lower()
+        out: list[str] = []
+        # Sprint 2: split on whitespace AND embedded punctuation so compound
+        # suffix tokens like "pvt.ltd" → ["pvt", "ltd"] get classified correctly.
+        for raw in _re.split(r'[\s.,;:!?()]+', cleaned):
+            t = raw
+            if not t:
+                continue
+            if len(t) <= 1 and not t.isalnum():
+                continue
+            if t in country_tokens:
+                continue
+            t = SUFFIX_TYPO_MAP.get(t, t)
+            if t in legal_suffixes or t in article_tokens:
+                continue
+            t = sector_canonical.get(t, t)
+            out.append(t)
+        return out
+
+    in_name = extract(input_name)
+    ma_name = extract(master_name)
+
+    if len(in_name) < 2 or len(ma_name) < 2:
+        return False
+    return in_name == ma_name
+
+
 def _symmetric_token_coverage(input_tokens: set[str], master_tokens: set[str]) -> float:
     """Simetrik token ortusme orani hesaplar.
 

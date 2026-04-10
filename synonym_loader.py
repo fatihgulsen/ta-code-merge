@@ -169,7 +169,7 @@ def _parse_company_type_tokens(paths: list) -> frozenset:
                 if t:
                     tokens.add(t)
 
-    return frozenset(tokens)
+    return frozenset(tokens) - BUSINESS_DESCRIPTORS
 
 
 @lru_cache(maxsize=None)

@@ -3,12 +3,17 @@ from synonym_loader import get_company_type_tokens, get_all_company_type_tokens,
 
 
 def test_get_company_type_tokens_includes_common_tokens():
-    """common.json company_types tokenları her ülke için dahil edilmeli."""
+    """common.json company_types tokenları her ülke için dahil edilmeli.
+
+    Sprint 1 note: BUSINESS_DESCRIPTORS (e.g. "holding") are now subtracted
+    from the returned set — legal suffixes stay, sector/role words leave.
+    """
     tokens = get_company_type_tokens("TR")
     assert "corp" in tokens
     assert "inc" in tokens
     assert "limited" in tokens
-    assert "holding" in tokens
+    # "holding" is a business descriptor and must be stripped out
+    assert "holding" not in tokens
 
 
 def test_get_company_type_tokens_strips_dots():
@@ -106,3 +111,27 @@ def test_get_article_stopwords_lru_cache():
     r1 = get_article_stopwords("TR")
     r2 = get_article_stopwords("TR")
     assert r1 is r2
+
+
+def test_get_company_type_tokens_excludes_business_descriptors():
+    """Sprint 1: get_company_type_tokens must subtract BUSINESS_DESCRIPTORS so
+    that stripping pipelines do not remove sector/role words."""
+    from synonym_loader import get_company_type_tokens
+    from config import BUSINESS_DESCRIPTORS
+
+    tokens = get_company_type_tokens("IN")
+
+    # Legal suffixes must still be present
+    for legal in ("ltd", "pvt", "inc", "llp", "opc", "huf"):
+        assert legal in tokens, f"Expected legal suffix {legal!r} in IN tokens"
+
+    # Sector/role words must NOT be present
+    for sector in ("pharma", "chemicals", "auto", "electronics", "steel",
+                   "industries", "traders", "enterprises", "international",
+                   "agencies", "overseas", "global"):
+        assert sector not in tokens, (
+            f"Sector token {sector!r} leaked into company_type tokens for IN"
+        )
+
+    # Guard must not produce intersection with BUSINESS_DESCRIPTORS
+    assert tokens.isdisjoint(BUSINESS_DESCRIPTORS)

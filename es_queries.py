@@ -192,7 +192,7 @@ def TOKEN_COVERAGE(name: str, country: str, **kwargs) -> dict:
 
 def FUZZY_PHRASE(name: str, country: str, **kwargs) -> dict:
     """
-    Kelime sırası toleranslı phrase eşleşmesi (slop=3).
+    Kelime sırası toleranslı phrase eşleşmesi (slop=1).
     Aynı kelimeler ama farklı sırada veya araya kelime girmiş durumları yakalar.
     """
     analyzer = _get_analyzer(country)
@@ -205,7 +205,7 @@ def FUZZY_PHRASE(name: str, country: str, **kwargs) -> dict:
                             "variations": {
                                 "query": name,
                                 "analyzer": analyzer,
-                                "slop": 3,
+                                "slop": 1,
                             }
                         }
                     }

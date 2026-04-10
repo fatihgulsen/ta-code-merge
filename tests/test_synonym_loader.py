@@ -1,5 +1,5 @@
 # tests/test_synonym_loader.py
-from synonym_loader import get_company_type_tokens, get_all_company_type_tokens
+from synonym_loader import get_company_type_tokens, get_all_company_type_tokens, get_article_stopwords
 
 
 def test_get_company_type_tokens_includes_common_tokens():
@@ -69,3 +69,39 @@ def test_get_all_company_type_tokens_nonempty():
     """Global set boş olmamalı."""
     all_tokens = get_all_company_type_tokens()
     assert len(all_tokens) > 20
+
+
+def test_get_article_stopwords_returns_frozenset():
+    result = get_article_stopwords("TR")
+    assert isinstance(result, frozenset)
+
+
+def test_get_article_stopwords_contains_common_articles():
+    """common.json articles her ülke için yüklenmeli."""
+    result = get_article_stopwords("TR")
+    assert "and" in result
+    assert "of" in result
+    assert "the" in result
+    assert "de" in result
+    assert "von" in result
+
+
+def test_get_article_stopwords_unknown_country_returns_common():
+    """Ülke dosyası olmayan ülke için sadece common articles döner."""
+    result = get_article_stopwords("XX")
+    assert "and" in result
+    assert isinstance(result, frozenset)
+
+
+def test_get_article_stopwords_empty_if_no_articles_key():
+    """articles key'i olmayan dosya için boş ek döner (ortak yeterli)."""
+    # Herhangi bir ülke için common articles mutlaka gelir
+    result = get_article_stopwords("US")
+    assert len(result) >= 13  # common.json'daki minimum article sayısı
+
+
+def test_get_article_stopwords_lru_cache():
+    """lru_cache sayesinde aynı nesne döndürülmeli."""
+    r1 = get_article_stopwords("TR")
+    r2 = get_article_stopwords("TR")
+    assert r1 is r2

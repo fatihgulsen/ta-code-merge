@@ -206,6 +206,33 @@ def get_all_company_type_tokens() -> frozenset:
     return _parse_company_type_tokens(paths)
 
 
+@lru_cache(maxsize=None)
+def get_article_stopwords(country_code: str) -> frozenset:
+    """
+    Ülkeye özgü article/stopword listesi döner.
+    common.json articles + ülke dosyası articles birleştirilerek hesaplanır.
+
+    Dönüş: frozenset (lru_cache için hashable, immutable)
+    """
+    stopwords: set[str] = set()
+    paths = [SYNONYMS_DIR / f for f in COMMON_FILES]
+    country_file = SYNONYMS_DIR / f"{country_code.lower()}.json"
+    if country_file.exists():
+        paths.append(country_file)
+
+    for path in paths:
+        if not path.exists():
+            continue
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        for token in data.get("articles", []):
+            t = token.strip().lower()
+            if t:
+                stopwords.add(t)
+
+    return frozenset(stopwords)
+
+
 def get_all_country_codes() -> list[str]:
     """
     synonyms_data/ klasöründeki tüm ülke dosyalarının kodlarını döner.

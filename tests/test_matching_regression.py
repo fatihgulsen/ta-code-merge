@@ -182,28 +182,26 @@ def test_tokenize_canonicalises_plural_descriptors():
     assert "enterprise" not in t1
 
 
-def test_business_descriptor_canonical_map_covers_regular_plurals():
-    """Sanity check: the auto-derived plural map contains every regular +s pair.
-    Irregular plurals (industry/industries, agency/agencies, technology/technologies)
-    are intentionally NOT handled in Sprint 1 — Sprint 2 will add an explicit table."""
-    import main_processor as mp
+def test_business_sector_canonical_map_handles_regular_and_irregular():
+    """Sprint 2: canonical map comes from rule targets, handles both regular
+    and irregular plurals via the synonym JSON."""
+    from synonym_loader import get_business_sector_canonical_map
 
-    m = mp._BUSINESS_DESCRIPTOR_CANONICAL
-    for singular, plural in [
+    m = get_business_sector_canonical_map("IN")
+    # Regular and irregular plurals — both handled because rule targets drive it
+    expected_pairs = [
         ("enterprise", "enterprises"),
-        ("holding", "holdings"),
+        ("enterprises", "enterprises"),
+        ("industry", "industries"),
+        ("industries", "industries"),
+        ("technology", "technologies"),
+        ("technologies", "technologies"),
         ("service", "services"),
-        ("solution", "solutions"),
-        ("trader", "traders"),
-        ("venture", "ventures"),
-        ("dealer", "dealers"),
-        ("supplier", "suppliers"),
-        ("consultant", "consultants"),
-    ]:
-        assert m.get(singular) == plural, f"{singular} should map to {plural}"
+        ("services", "services"),
+    ]
+    for src, tgt in expected_pairs:
+        assert m.get(src) == tgt, f"{src!r} should map to {tgt!r}"
 
-    # Irregular plurals must NOT appear in the map (documented limitation)
-    for irregular in ("industry", "agency", "technology", "commodity", "security"):
-        assert m.get(irregular) is None, (
-            f"{irregular} is irregular and should not auto-map in Sprint 1"
-        )
+    # Abbreviations canonicalise too
+    assert m.get("intl") == "international"
+    assert m.get("tech") == "technologies"

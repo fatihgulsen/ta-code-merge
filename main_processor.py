@@ -43,7 +43,6 @@ except ImportError:  # pragma: no cover
 
 from config import (
     BATCH_SIZE,
-    BUSINESS_DESCRIPTORS,   # added Sprint 1 Task 4
     COLUMN_MAPPING,
     DB_CONFIG,
     ES_INDEX,
@@ -60,7 +59,12 @@ from config import (
 )
 from es_manager import create_index, get_es_client
 from es_ingest import register_all_pipelines, pipeline_name
-from synonym_loader import get_company_type_tokens, get_article_stopwords
+from synonym_loader import (
+    get_article_stopwords,
+    get_business_sector_canonical_map,
+    get_company_type_tokens,
+    get_legal_suffix_tokens,
+)
 import es_queries as _es_queries
 
 logging.basicConfig(
@@ -284,23 +288,6 @@ _COUNTRY_NAME_TOKENS: dict[str, frozenset[str]] = {
 }
 
 
-# Plural canonicalisation for BUSINESS_DESCRIPTORS: map singular → plural so
-# token-set comparisons treat 'enterprise' and 'enterprises' as equal.
-# Derived once from BUSINESS_DESCRIPTORS. Only regular +s plurals are handled;
-# irregular forms (agency/agencies, industry/industries) are not collapsed in
-# Sprint 1 — temkinli mode accepts these as potential recall losses.
-def _build_business_descriptor_canonical_map(descriptors: frozenset) -> dict[str, str]:
-    mapping: dict[str, str] = {}
-    for word in descriptors:
-        plural = word + "s"
-        if plural in descriptors:
-            mapping[word] = plural
-    return mapping
-
-
-_BUSINESS_DESCRIPTOR_CANONICAL = _build_business_descriptor_canonical_map(BUSINESS_DESCRIPTORS)
-
-
 def _clean_labels(name: str) -> str:
     """Nakliye etiketlerini (to order of, c/o, attn, care of) temizler."""
     cleaned = _LABEL_PATTERNS.sub('', name)
@@ -308,21 +295,22 @@ def _clean_labels(name: str) -> str:
 
 
 def _tokenize(name: str, country: str = "") -> set[str]:
-    """Firma ismini anlamlı tokenlara ayırır.
+    """Firma ismini anlamli tokenlara ayirir.
 
-    - Küçük harf
-    - Suffix token'ları dışlanır (get_company_type_tokens)
-    - Article token'ları dışlanır (get_article_stopwords)
-    - Tek char: alfanumerik ise korunur (inisyal/rakam), değilse atlanır
-    - country verilirse, ülke adı token'ları çıkarılır
-    - BUSINESS_DESCRIPTORS içindeki tekil/çoğul çiftleri canonicalise edilir
-      (enterprise → enterprises) — Sprint 1 Task 4
+    Sprint 2 algoritmasi:
+      - lower + strip labels + split
+      - Tek-char (alfanumerik disinda) tokenlari at
+      - Ulke-adi tokenlarini at
+      - Legal suffix'leri at (typo map sonrasi)
+      - Article'lari at
+      - Business sector tokenlari canonical map uzerinden normalize et
     """
     cleaned = _clean_labels(name)
     tokens = cleaned.lower().split()
     country_tokens = _COUNTRY_NAME_TOKENS.get(country.upper(), frozenset())
-    suffix_tokens = get_company_type_tokens(country)
+    legal_suffixes = get_legal_suffix_tokens(country)
     article_tokens = get_article_stopwords(country)
+    sector_canonical = get_business_sector_canonical_map(country)
     result = set()
     for t in tokens:
         t_clean = t.rstrip('.,')
@@ -332,28 +320,27 @@ def _tokenize(name: str, country: str = "") -> set[str]:
             continue
         if t_clean in country_tokens:
             continue
-        if t_clean in suffix_tokens or t_clean in article_tokens:
+        # Deterministik typo canonicalisation (limted -> limited)
+        t_clean = SUFFIX_TYPO_MAP.get(t_clean, t_clean)
+        if t_clean in legal_suffixes or t_clean in article_tokens:
             continue
-        # Sprint 1 Task 4: canonicalise plural business descriptors
-        t_canonical = _BUSINESS_DESCRIPTOR_CANONICAL.get(t_clean, t_clean)
-        result.add(t_canonical)
+        # Business sector canonicalisation (industry -> industries, intl -> international)
+        t_clean = sector_canonical.get(t_clean, t_clean)
+        result.add(t_clean)
     return result
 
 
 def _first_meaningful_token(name: str, country: str = "") -> str | None:
-    """İsmin ilk anlamlı token'ını döner (brand anchor).
+    """Ismin ilk anlamli token'ini doner (brand anchor).
 
-    Label temizliği + article/suffix/ülke-adı çıkarması sonrası kalan
-    ilk alfanumerik token'ı döner. Hiçbir token kalmazsa None döner.
-    BUSINESS_DESCRIPTORS içindeki tekil/çoğul çiftleri canonicalise edilir.
-
-    _post_verify içindeki TOKEN_COVERAGE brand-anchor kontrolü için kullanılır —
-    "BEE KAY" vs "KAY BEE" gibi sıra farklarını yakalar.
+    Sprint 2 — per-country canonical map ile tekil/cogul ve kisaltma
+    normalizasyonu (industry/industries, intl/international, vb.).
     """
     cleaned = _clean_labels(name).lower()
     country_tokens = _COUNTRY_NAME_TOKENS.get(country.upper(), frozenset())
-    suffix_tokens = get_company_type_tokens(country)
+    legal_suffixes = get_legal_suffix_tokens(country)
     article_tokens = get_article_stopwords(country)
+    sector_canonical = get_business_sector_canonical_map(country)
     for raw in cleaned.split():
         t = raw.rstrip('.,')
         if not t:
@@ -362,9 +349,10 @@ def _first_meaningful_token(name: str, country: str = "") -> str | None:
             continue
         if t in country_tokens:
             continue
-        if t in suffix_tokens or t in article_tokens:
+        t = SUFFIX_TYPO_MAP.get(t, t)
+        if t in legal_suffixes or t in article_tokens:
             continue
-        return _BUSINESS_DESCRIPTOR_CANONICAL.get(t, t)
+        return sector_canonical.get(t, t)
     return None
 
 

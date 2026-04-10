@@ -181,8 +181,9 @@ def _build_stripped_script(country_code: str) -> str:
     Painless script: variations'tan generic token'ları kaldırarak
     variations_stripped array'ini oluşturur.
 
-    Hem company type token'ları hem article token'ları çıkarılır —
-    stripped_search_analyzer ile tutarlı olması için.
+    Sprint 2: Hem legal suffix token'ları hem article token'ları çıkarılır —
+    stripped_search_analyzer ile tutarlı olması için. business_sectors
+    kategorisi PRESERVED (firma ismini ayırt eden sektör kelimeleri).
     """
     # Sprint 2: yalnizca legal_suffixes + articles stripping'e girer.
     # business_sectors kategorisi PRESERVED — firma ismini ayirt eden kelimeler.

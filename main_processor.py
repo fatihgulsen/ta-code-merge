@@ -537,6 +537,14 @@ def _post_verify(input_name: str, master_source: dict, stage_name: str, country:
             return False
         if word_count_ratio < 0.7:
             return False
+        # Sprint 1 brand-anchor: ilk anlamlı token'lar her iki tarafta da aynı
+        # olmalı. "BEE KAY" vs "KAY BEE" gibi sıra farklarını yakalar. (§4.4c)
+        input_first = _first_meaningful_token(input_name, country)
+        master_first = _first_meaningful_token(master_name, country)
+        if input_first is None or master_first is None:
+            return False
+        if input_first != master_first:
+            return False
 
     return True
 

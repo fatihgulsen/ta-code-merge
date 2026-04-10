@@ -18,7 +18,7 @@ import logging
 from elasticsearch import Elasticsearch
 
 from config import SUFFIX_TYPO_MAP
-from synonym_loader import get_company_type_tokens, get_all_country_codes
+from synonym_loader import get_company_type_tokens, get_all_country_codes, get_article_stopwords
 
 logger = logging.getLogger(__name__)
 
@@ -176,11 +176,15 @@ def _build_stripped_script(country_code: str) -> str:
     """
     Painless script: variations'tan generic token'ları kaldırarak
     variations_stripped array'ini oluşturur.
+
+    Hem company type token'ları hem article token'ları çıkarılır —
+    stripped_search_analyzer ile tutarlı olması için.
     """
-    # Generic token'ları Painless list literal olarak oluştur
-    # Boşluk içeren çok-kelimeli token'lar split sonrası hiç eşleşmez — filtrele
-    tokens = [t for t in get_company_type_tokens(country_code) if " " not in t]
-    tokens_literal = ", ".join(_pl_str(t) for t in tokens)
+    # Company type + article token'larını birleştir; çok-kelimeli token'lar filtrele
+    suffix_tokens = [t for t in get_company_type_tokens(country_code) if " " not in t]
+    article_tokens = [t for t in get_article_stopwords(country_code) if " " not in t]
+    all_tokens = list(dict.fromkeys(suffix_tokens + article_tokens))  # dedup, order preserved
+    tokens_literal = ", ".join(_pl_str(t) for t in all_tokens)
 
     script_parts = [
         "List genericTokens = [" + tokens_literal + "];",

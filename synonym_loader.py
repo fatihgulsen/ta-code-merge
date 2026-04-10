@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 SYNONYMS_DIR = Path(__file__).parent / "synonyms_data"
 
 # Her zaman yüklenecek ortak dosyalar
-COMMON_FILES = ["common.json", "countries.json", "other.json"]
+COMMON_FILES = ["common.json", "countries.json"]
 
 
 def normalize_text(text: str) -> str:
@@ -237,14 +237,17 @@ def get_article_stopwords(country_code: str) -> frozenset:
 def get_all_country_codes() -> list[str]:
     """
     synonyms_data/ klasöründeki tüm ülke dosyalarının kodlarını döner.
-    Ortak dosyalar (common, countries, other) hariç tutulur.
+    Ortak dosyalar (common, countries) hariç tutulur.
+    Underscore ile baslayan dosyalar (_template.json, _archive/) de hariç.
     """
-    excluded = {"common", "countries", "other"}
+    excluded = {"common", "countries"}
     codes = []
     for f in SYNONYMS_DIR.glob("*.json"):
-        stem = f.stem.upper()
-        if f.stem.lower() not in excluded:
-            codes.append(stem)
+        if f.stem.startswith("_"):
+            continue  # _template.json, _internal, etc.
+        if f.stem.lower() in excluded:
+            continue
+        codes.append(f.stem.upper())
     return sorted(codes)
 
 

@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-04-10T11:40:18.842728+00:00",
+  "total_rows": 18452901,
+  "unmatched": 18430850,
+  "unique_masters": 17066,
+  "matches_by_type": {
+    "NEW_MASTER": 18879,
+    "CANONICAL_EXACT": 2012,
+    "STRIPPED_EXACT": 913,
+    "SUFFIX_FUZZY": 243,
+    "FUZZY_PHRASE": 2,
+    "NGRAM_MATCH": 2
+  }
+}

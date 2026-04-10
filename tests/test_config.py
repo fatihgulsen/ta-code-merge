@@ -58,8 +58,9 @@ def test_suffix_fuzzy_stage_in_stages():
     assert "SUFFIX_FUZZY" in names
 
 
-def test_suffix_fuzzy_stage_order_between_stripped_and_token_coverage():
-    """SUFFIX_FUZZY, STRIPPED_EXACT'tan sonra TOKEN_COVERAGE'dan önce gelmeli."""
+def test_stage_order():
+    """STRIPPED_EXACT en sonda olmalı; SUFFIX_FUZZY CANONICAL_EXACT'tan sonra TOKEN_COVERAGE'dan önce gelmeli."""
     stages_by_name = {s["name"]: s["order"] for s in config.STAGES}
-    assert stages_by_name["SUFFIX_FUZZY"] > stages_by_name["STRIPPED_EXACT"]
+    assert stages_by_name["CANONICAL_EXACT"] < stages_by_name["SUFFIX_FUZZY"]
     assert stages_by_name["SUFFIX_FUZZY"] < stages_by_name["TOKEN_COVERAGE"]
+    assert stages_by_name["STRIPPED_EXACT"] > stages_by_name["NGRAM_MATCH"]

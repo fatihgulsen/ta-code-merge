@@ -148,6 +148,7 @@ STAGES = [
         "query_fn": "TAX_EXACT",
         "min_score": 1.0,
         "enabled": True,
+        "index_variation": True,   # Vergi no kesin eşleşme — variations'a ekle
     },
     {
         "name": "CANONICAL_EXACT",
@@ -155,6 +156,7 @@ STAGES = [
         "query_fn": "CANONICAL_EXACT",
         "min_score": 3.0,
         "enabled": True,
+        "index_variation": True,   # Synonym-aware tam eşleşme — güvenilir
     },
     {
         "name": "SUFFIX_FUZZY",
@@ -162,6 +164,7 @@ STAGES = [
         "query_fn": "SUFFIX_FUZZY",
         "min_score": SUFFIX_FUZZY_MIN_SCORE,
         "enabled": True,
+        "index_variation": True,   # Suffix typo — isim kısmı kesin, variations'a ekle
     },
     {
         "name": "TOKEN_COVERAGE",
@@ -169,6 +172,7 @@ STAGES = [
         "query_fn": "TOKEN_COVERAGE",
         "min_score": 3.0,
         "enabled": True,
+        "index_variation": True,   # Yüksek token örtüşmesi — variations'a ekle
     },
     {
         "name": "FUZZY_PHRASE",
@@ -176,6 +180,7 @@ STAGES = [
         "query_fn": "FUZZY_PHRASE",
         "min_score": 5.0,
         "enabled": True,
+        "index_variation": False,  # Fuzzy phrase — zayıf, silsile riski, sadece PG
     },
     {
         "name": "NGRAM_MATCH",
@@ -183,6 +188,7 @@ STAGES = [
         "query_fn": "NGRAM_MATCH",
         "min_score": 3.0,
         "enabled": True,
+        "index_variation": False,  # N-gram — en zayıf, silsile riski, sadece PG
     },
     {
         "name": "STRIPPED_EXACT",
@@ -190,5 +196,6 @@ STAGES = [
         "query_fn": "STRIPPED_EXACT",
         "min_score": 3.0,
         "enabled": True,
+        "index_variation": False,  # Suffix temizlenmiş — fazla geniş, sadece PG
     },
 ]

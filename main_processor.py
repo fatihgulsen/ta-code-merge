@@ -223,6 +223,7 @@ def run_stage(
                 "es_score": SUFFIX_FUZZY_SCORE if stage_name == "SUFFIX_FUZZY" else top_score,
                 "stage_name": stage_name,
                 "stage_order": stage_order,
+                "index_variation": stage.get("index_variation", True),
             })
         else:
             unmatched.append(rec)
@@ -990,6 +991,7 @@ def match_single_record(es, rec: dict, active_stages: list[dict]) -> dict:
             "es_score": top_score,
             "stage_name": stage["name"],
             "stage_order": stage["order"],
+            "index_variation": stage.get("index_variation", True),
         }
 
     return {"matched": False}
@@ -1220,8 +1222,9 @@ def process_all_data() -> None:
                         True, master_id, es_score,
                     ))
 
-                    # Varyasyonu ve meta bilgileri master doc'a ekle
-                    _add_variation_to_master(es, result["master_doc_id"], raw_name, country, rec)
+                    # Yüksek güven stage'leri variations'a ekler (silsile önleme)
+                    if result.get("index_variation", True):
+                        _add_variation_to_master(es, result["master_doc_id"], raw_name, country, rec)
 
                     total_matched += 1
                     stage_counts[stage_name] = stage_counts.get(stage_name, 0) + 1

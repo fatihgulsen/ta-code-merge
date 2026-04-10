@@ -496,10 +496,9 @@ def _post_verify(input_name: str, master_source: dict, stage_name: str, country:
     min_tokens = min(len(input_tokens), len(master_tokens))
 
     # ── Diğer stage'ler ───────────────────────────────────────────────────────
+    # Sprint 1 temkinli mod: stripping sonrası tek anlamlı token'a inen
+    # eşleşmeler ret. Brand-only çakışmalar riskli (§4.4a).
     if min_tokens < 2:
-        if stage_name in ("CANONICAL_EXACT", "STRIPPED_EXACT"):
-            if input_tokens == master_tokens:
-                return True
         return False
 
     coverage = _symmetric_token_coverage(input_tokens, master_tokens)
@@ -530,7 +529,7 @@ def _post_verify(input_name: str, master_source: dict, stage_name: str, country:
     if stage_name in ("CANONICAL_EXACT", "STRIPPED_EXACT"):
         if coverage < 0.9:
             return False
-        if word_count_ratio < 0.8:
+        if word_count_ratio < 0.9:  # Sprint 1: 0.8 → 0.9 (§4.4b)
             return False
 
     if stage_name in ("TOKEN_COVERAGE", "FUZZY_PHRASE", "NGRAM_MATCH"):

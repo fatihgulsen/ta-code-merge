@@ -27,16 +27,16 @@ def test_run_stage_returns_matched_and_unmatched():
     import main_processor as mp
 
     records = [
-        {"row_id": 1, "raw_name": "Acme Ltd", "country": "TR", "tax": "", "phone": ""},
-        {"row_id": 2, "raw_name": "Beta Corp", "country": "TR", "tax": "", "phone": ""},
+        {"row_id": 1, "raw_name": "Acme Global Ltd", "country": "TR", "tax": "", "phone": ""},
+        {"row_id": 2, "raw_name": "Beta Holdings Corp", "country": "TR", "tax": "", "phone": ""},
     ]
     stage = {"name": "CANONICAL_EXACT", "order": 2, "query_fn": "CANONICAL_EXACT",
              "min_score": 50.0, "enabled": True}
 
     mock_es = MagicMock()
     mock_es.msearch.return_value = _make_msearch_response([
-        [_make_es_hit("master-001", score=80.0, variations=["Acme Ltd"])],  # record 1 eşleşti
-        [],                                                                   # record 2 eşleşmedi
+        [_make_es_hit("master-001", score=80.0, variations=["Acme Global Ltd"])],  # record 1 eşleşti
+        [],                                                                          # record 2 eşleşmedi
     ])
 
     matched, unmatched = mp.run_stage(mock_es, records, stage)

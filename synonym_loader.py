@@ -218,6 +218,70 @@ def get_legal_suffix_tokens(country_code: str) -> frozenset:
 
 
 @lru_cache(maxsize=None)
+def get_business_sector_tokens(country_code: str) -> frozenset:
+    """Ulkeye ozgu business_sector token'larini doner.
+
+    Bunlar stripping'e GIRMEZ — firma ismini AYIRT eden sektor/is kolu kelimeleridir.
+    "Apex Pharma" ve "Apex Steel" farkli firmalardir.
+
+    Legal suffix'lerle cakisma olursa legal suffix kategorisi oncelikli kabul
+    edilir (stripping pipeline'i onu once isler) ve sektor setinden cikarilir.
+    """
+    country_code = country_code.upper()
+    paths = [SYNONYMS_DIR / f for f in COMMON_FILES]
+    country_file = SYNONYMS_DIR / f"{country_code.lower()}.json"
+    if country_file.exists():
+        paths.append(country_file)
+    sectors = _parse_category_tokens(paths, "business_sectors")
+    # Disjointness guarantee: legal suffixes always win over sectors.
+    legal = get_legal_suffix_tokens(country_code)
+    return sectors - legal
+
+
+@lru_cache(maxsize=None)
+def get_business_sector_canonical_map(country_code: str) -> dict:
+    """Ulkeye ozgu business_sectors kurallarindan {source: target} map'i doner.
+
+    Her kural 'src1,src2,src3=>target' formatinda. Soldaki her token ve
+    target'in kendisi target'a map edilir. Hem cogul normalizasyonu
+    (industry -> industries) hem de kisaltma normalizasyonu (intl ->
+    international) tek bir yerden yonetilir.
+
+    Donus: dict (NOT frozenset — bu bir map)
+    """
+    country_code = country_code.upper()
+    paths = [SYNONYMS_DIR / f for f in COMMON_FILES]
+    country_file = SYNONYMS_DIR / f"{country_code.lower()}.json"
+    if country_file.exists():
+        paths.append(country_file)
+
+    mapping: dict[str, str] = {}
+    for path in paths:
+        if not path.exists():
+            continue
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        rules = data.get("business_sectors", [])
+        if not isinstance(rules, list):
+            continue
+        for rule in rules:
+            rule_norm = normalize_text(rule)
+            if "=>" not in rule_norm:
+                continue
+            left, right = rule_norm.split("=>", 1)
+            target = right.strip().lower().replace(".", "")
+            if not target:
+                continue
+            for src in left.split(","):
+                src_token = src.strip().lower().replace(".", "")
+                if src_token:
+                    mapping[src_token] = target
+            # Target also maps to itself (idempotent canonicalisation)
+            mapping[target] = target
+    return mapping
+
+
+@lru_cache(maxsize=None)
 def get_company_type_tokens(country_code: str) -> frozenset:
     """
     Verilen ülke kodu için tüm company_type tokenlarını döner.

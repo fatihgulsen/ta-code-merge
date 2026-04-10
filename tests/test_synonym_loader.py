@@ -171,3 +171,52 @@ def test_get_legal_suffix_tokens_excludes_foreign_suffixes():
     # These caused the BABA WOOD PRODUCTS false positive before Sprint 2.
     assert "ab" not in tokens, "Swedish 'ab' leaking into IN suffixes"
     assert "as" not in tokens, "Norwegian 'as' leaking into IN suffixes"
+
+
+def test_get_business_sector_tokens_returns_frozenset():
+    """Sprint 2: business sector tokens are preserved, not stripped."""
+    from synonym_loader import get_business_sector_tokens
+
+    tokens = get_business_sector_tokens("IN")
+    assert isinstance(tokens, frozenset)
+    # Universal sectors from common.json
+    for expected in ("industries", "enterprises", "trading", "international",
+                     "technologies", "services", "solutions"):
+        assert expected in tokens
+    # IN-specific sectors
+    for expected in ("pharma", "chemicals", "auto", "electronics", "steel"):
+        assert expected in tokens
+
+
+def test_get_business_sector_tokens_excludes_legal_suffixes():
+    """Business sectors and legal suffixes are disjoint."""
+    from synonym_loader import (
+        get_business_sector_tokens,
+        get_legal_suffix_tokens,
+    )
+
+    sectors = get_business_sector_tokens("IN")
+    legal = get_legal_suffix_tokens("IN")
+    overlap = sectors & legal
+    assert not overlap, f"Categories must be disjoint, overlap={sorted(overlap)}"
+
+
+def test_get_business_sector_canonical_map_maps_to_rule_target():
+    """Each source token on the left of => maps to the rule's canonical target."""
+    from synonym_loader import get_business_sector_canonical_map
+
+    mapping = get_business_sector_canonical_map("IN")
+    # Regular plurals
+    assert mapping.get("enterprise") == "enterprises"
+    assert mapping.get("enterprises") == "enterprises"
+    # Irregular plurals handled via explicit rule target
+    assert mapping.get("industry") == "industries"
+    assert mapping.get("industries") == "industries"
+    assert mapping.get("technology") == "technologies"
+    assert mapping.get("technologies") == "technologies"
+    # Abbreviations canonicalise to full form
+    assert mapping.get("tech") == "technologies"
+    assert mapping.get("intl") == "international"
+    # Sector words from IN-specific file
+    assert mapping.get("pharmaceutical") == "pharma"
+    assert mapping.get("pharmaceuticals") == "pharma"

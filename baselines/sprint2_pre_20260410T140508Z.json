@@ -1,0 +1,15 @@
+{
+  "sprint": 2,
+  "phase": "pre",
+  "timestamp": "2026-04-10T14:05:08.404956+00:00",
+  "total_rows": 18452901,
+  "unmatched": 18437050,
+  "unique_masters": 12760,
+  "matches_by_type": {
+    "NEW_MASTER": 14485,
+    "CANONICAL_EXACT": 1052,
+    "SUFFIX_FUZZY": 311,
+    "TOKEN_COVERAGE": 2,
+    "STRIPPED_EXACT": 1
+  }
+}

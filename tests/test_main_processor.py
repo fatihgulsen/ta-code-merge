@@ -289,10 +289,15 @@ def test_post_verify_suffix_fuzzy_single_token_fails():
 
 
 def test_post_verify_articles_excluded_in_suffix_fuzzy():
-    """'Industries of India Ltd' stripped ordered → ['industries','india'] == doc."""
+    """Articles ('of') are excluded so two names with matching meaningful tokens pass.
+
+    Sprint 2: 'Komerci and Trading Limited' → ['komerci', 'trading'] ==
+    master 'komerci trading limited' → ['komerci', 'trading']. The 'and'
+    article is dropped by strict_name_match on both sides.
+    """
     master = _make_master(
-        variations=["industries india limited"],
-        stripped=["industries", "india"],
+        variations=["komerci trading limited"],
+        stripped=["komerci", "trading"],
         suffix=["limited"],
     )
-    assert _post_verify("Industries of India Ltd", master, "SUFFIX_FUZZY", "IN") is True
+    assert _post_verify("Komerci and Trading Limited", master, "SUFFIX_FUZZY", "IN") is True

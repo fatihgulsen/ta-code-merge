@@ -437,61 +437,11 @@ def _post_verify(input_name: str, master_source: dict, stage_name: str, country:
     master_name = master_variations[0]
 
     # ── SUFFIX_FUZZY ──────────────────────────────────────────────────────────
+    # Sprint 2: delegates to strict_name_match. The ES query still uses the
+    # variations_stripped + variations_suffix fields (see es_queries.SUFFIX_FUZZY)
+    # to surface candidates, but post-verification requires exact name equality.
     if stage_name == "SUFFIX_FUZZY":
-        doc_stripped_raw = master_source.get("variations_stripped", [])
-        if isinstance(doc_stripped_raw, list) and len(doc_stripped_raw) > 1:
-            # Liste birden fazla eleman içeriyorsa, her eleman bir token olarak kabul et
-            doc_name_tokens_list = [t for elem in doc_stripped_raw for t in elem.split()]
-        elif isinstance(doc_stripped_raw, list) and doc_stripped_raw:
-            doc_name_tokens_list = doc_stripped_raw[0].split() if doc_stripped_raw[0] else []
-        elif isinstance(doc_stripped_raw, str):
-            doc_name_tokens_list = doc_stripped_raw.split()
-        else:
-            doc_name_tokens_list = []
-        doc_name_tokens = set(doc_name_tokens_list)
-        if not doc_name_tokens:
-            return False
-
-        # Tek-karakter-only doc token'ları çok belirsiz — reddet
-        # ("a" gibi tek harfli isimler güvenilmez eşleşir)
-        doc_multi_char = [t for t in doc_name_tokens_list if len(t) > 1]
-        if not doc_multi_char:
-            return False
-
-        # PHRASE + FUZZY-SUFFIX CHECK:
-        # input token'larını sırayla tara; suffix token'ı (exact veya fuzzy) veya
-        # article olan token'ları dışla. Eğer token doc_name_tokens_list içindeyse
-        # suffix olsa bile koru (örn. "industries" doc stripped'da geçebilir).
-        # Geri kalanların sırası doc ile eşleşmeli.
-        suffix_tokens = get_company_type_tokens(country)
-        article_tokens = get_article_stopwords(country)
-        _cleaned = _clean_labels(input_name).lower()
-        input_stripped_ordered = []
-        for _t in _cleaned.split():
-            _tc = _t.rstrip('.,')
-            if not _tc or (len(_tc) <= 1 and not _tc.isalnum()):
-                continue
-            if _tc in article_tokens:
-                continue
-            # Sprint 2: yalnizca exact suffix match + deterministic typo map.
-            # _is_fuzzy_suffix deleted — caused "fine" ↔ "fie" ghost matches.
-            typo_canonical = SUFFIX_TYPO_MAP.get(_tc, _tc)
-            if typo_canonical in suffix_tokens and typo_canonical not in doc_name_tokens:
-                continue
-            input_stripped_ordered.append(_tc)
-
-        if not input_stripped_ordered:
-            return False
-        # Sprint 1 temkinli mod: her iki tarafta da ≥2 anlamlı token olmalı.
-        # Tek-brand eşleşmesi ("ACE AVIATION" vs "ACE INDUSTRIES") yasak. (§4.4d)
-        if len(doc_multi_char) < 2:
-            return False
-        if len(input_stripped_ordered) < 2:
-            return False
-        if input_stripped_ordered != doc_name_tokens_list:
-            return False
-
-        return True
+        return strict_name_match(input_name, master_name, country)
 
     # ── _tokenize artık suffix + article token'larını dışlar → direkt meaningful token'lar
     input_tokens = _tokenize(input_name, country)

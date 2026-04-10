@@ -72,6 +72,7 @@ def test_get_all_company_type_tokens_nonempty():
 
 
 def test_get_article_stopwords_returns_frozenset():
+    """Dönüş tipi frozenset olmalı."""
     result = get_article_stopwords("TR")
     assert isinstance(result, frozenset)
 
@@ -93,11 +94,11 @@ def test_get_article_stopwords_unknown_country_returns_common():
     assert isinstance(result, frozenset)
 
 
-def test_get_article_stopwords_empty_if_no_articles_key():
+def test_get_article_stopwords_falls_back_to_common():
     """articles key'i olmayan dosya için boş ek döner (ortak yeterli)."""
     # Herhangi bir ülke için common articles mutlaka gelir
     result = get_article_stopwords("US")
-    assert len(result) >= 13  # common.json'daki minimum article sayısı
+    assert "for" in result and "und" in result
 
 
 def test_get_article_stopwords_lru_cache():

@@ -214,6 +214,7 @@ def get_article_stopwords(country_code: str) -> frozenset:
 
     Dönüş: frozenset (lru_cache için hashable, immutable)
     """
+    country_code = country_code.upper()
     stopwords: set[str] = set()
     paths = [SYNONYMS_DIR / f for f in COMMON_FILES]
     country_file = SYNONYMS_DIR / f"{country_code.lower()}.json"

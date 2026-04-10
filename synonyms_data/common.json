@@ -60,5 +60,10 @@
     "southwest,sw,s.w.=>sw",
     "southeast,se,s.e.=>se",
     "post office box,po box,p.o. box,pob,p.o.b.=>p.o. box"
+  ],
+  "articles": [
+    "and", "of", "the", "for", "in", "on", "at", "to", "by",
+    "de", "del", "la", "le", "les", "des", "du", "et",
+    "und", "der", "die", "das", "von"
   ]
 }

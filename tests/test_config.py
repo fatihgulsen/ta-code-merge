@@ -64,3 +64,38 @@ def test_stage_order():
     assert stages_by_name["CANONICAL_EXACT"] < stages_by_name["SUFFIX_FUZZY"]
     assert stages_by_name["SUFFIX_FUZZY"] < stages_by_name["TOKEN_COVERAGE"]
     assert stages_by_name["STRIPPED_EXACT"] > stages_by_name["NGRAM_MATCH"]
+
+
+def test_business_descriptors_includes_sector_words():
+    """Sprint 1: BUSINESS_DESCRIPTORS must include sector differentiators
+    so that synonym_loader does not strip them from canonical/stripped forms."""
+    from config import BUSINESS_DESCRIPTORS
+
+    required = {
+        # tekil/çoğul
+        "enterprise", "enterprises", "industry", "industries",
+        "holding", "holdings",
+        "service", "services", "solution", "solutions",
+        "technology", "technologies",
+        # ticari roller
+        "trader", "traders", "exports", "imports", "export", "import",
+        "dealers", "distributors", "suppliers", "agency", "agencies",
+        "consultants", "consulting", "associates", "ventures", "systems",
+        "overseas",
+        # sektör
+        "pharma", "pharmaceuticals", "chemicals", "chemical",
+        "textiles", "textile", "steel", "metals", "metal",
+        "plastics", "packaging", "foods", "food", "agro",
+        "auto", "automobile", "automotive",
+        "electronics", "electric", "electrical",
+        "software", "hardware", "media", "communications",
+        "healthcare", "education", "finance", "capital",
+        "investments", "securities", "insurance", "commodities",
+        "power", "energy", "petroleum",
+        "hotel", "hospitality", "resort",
+        "aviation", "shipping", "marine",
+        "logistics", "transport", "engineering", "construction",
+        "infra", "realty", "developers", "retail", "global",
+    }
+    missing = required - BUSINESS_DESCRIPTORS
+    assert not missing, f"Missing descriptor tokens: {sorted(missing)}"

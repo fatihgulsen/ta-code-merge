@@ -105,24 +105,44 @@ MSEARCH_CHUNK_SIZE = 500  # Tek msearch çağrısında max sorgu sayısı
 # Bu kelimeler company_types hedeflerinde yer alsa da firma isminin
 # ANLAMLI parçalarıdır. stripped_form'da kaldırılmamalı.
 # Örnek: "Apple Trading" vs "Apple Manufacturing" = farklı firmalar
+#
+# Sprint 1 (2026-04-10): liste sektör/rol kelimeleriyle genişletildi.
+# Bakınız docs/superpowers/specs/2026-04-10-pg-es-matching-accuracy-audit-design.md §4.1
 BUSINESS_DESCRIPTORS = frozenset({
-    "enterprises",
-    "group",
-    "holding",
-    "industrial",
-    "industries",
-    "internacional",
-    "international",
-    "manufacturing",
-    "prod",
-    "sanayi",
-    "services",
-    "solutions",
-    "technologies",
-    "ticaret",
-    "trading",
-    "comercial",
-    "koncern",
+    # mevcut (eski liste)
+    "comercial", "enterprises", "group", "holding", "industrial", "industries",
+    "internacional", "international", "koncern", "manufacturing", "prod",
+    "sanayi", "services", "solutions", "technologies", "ticaret", "trading",
+    # tekil/çoğul çeşitleri
+    "enterprise", "holdings", "service", "solution", "technology",
+    # tekil/çoğul (ek — industry eksikti)
+    "industry",
+    # ticari rol kelimeleri
+    "trader", "traders", "exports", "imports", "export", "import",
+    "dealers", "dealer", "distributors", "distributor",
+    "suppliers", "supplier", "agency", "agencies",
+    "consultants", "consultant", "consulting",
+    "associates", "associate", "ventures", "venture",
+    "systems", "system", "overseas",
+    # sektör kelimeleri
+    "pharma", "pharmaceuticals", "pharmaceutical",
+    "chemicals", "chemical", "textiles", "textile",
+    "steel", "steels", "metals", "metal",
+    "plastics", "plastic", "packaging",
+    "foods", "food", "agro", "agriculture",
+    "auto", "automobile", "automobiles", "automotive",
+    "electronics", "electronic", "electric", "electrical",
+    "software", "hardware", "media", "communications",
+    "healthcare", "health", "education", "educational",
+    "finance", "financial", "capital", "investments", "investment",
+    "securities", "insurance", "leasing", "commodities", "commodity",
+    "power", "energy", "petroleum", "petro",
+    "hotel", "hotels", "hospitality", "resort", "resorts",
+    "aviation", "shipping", "marine", "maritime",
+    "logistics", "transport", "transportation",
+    "engineering", "engineers", "construction", "constructions",
+    "infra", "infrastructure", "realty", "developers", "developer",
+    "retail", "retails", "global",
 })
 
 SUFFIX_TYPO_MAP = {

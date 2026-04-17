@@ -115,8 +115,7 @@ def _build_clean_script(country_code: str) -> str:
         "    result.append(token);",
         "  }",
         "  text = result.toString().trim();",
-
-        # 9b. Boşluklu tek harf birleştirme: "l t d" -> "ltd"
+        # 9b. Boşluklu tek harf birleştirme: "l t d" -> "ltd"        UÇUR
         f"  def knownSuffixes = [{known_literal}];",
         r"  def spTokens = / /.split(text);",
         "  List spResult = new ArrayList();",
@@ -144,7 +143,6 @@ def _build_clean_script(country_code: str) -> str:
         "    spJoined.append(spResult[spi]);",
         "  }",
         "  text = spJoined.toString().trim();",
-
         # 9c. Birleşik suffix ayırma: "pvtltd" -> "pvt ltd"
         "  def fusedMap = ['pvtltd': 'pvt ltd', 'ltdco': 'ltd co', 'corpltd': 'corp ltd',",
         "    'incltd': 'inc ltd', 'gmbhco': 'gmbh co'];",
@@ -164,7 +162,6 @@ def _build_clean_script(country_code: str) -> str:
         "    fJoined.append(fResult[fi]);",
         "  }",
         "  text = fJoined.toString().trim();",
-
         # Sonuca ekle
         "  if (text.length() > 0 && !cleanedVariations.contains(text)) {",
         "    cleanedVariations.add(text);",
@@ -189,7 +186,9 @@ def _build_stripped_script(country_code: str) -> str:
     # business_sectors kategorisi PRESERVED — firma ismini ayirt eden kelimeler.
     suffix_tokens = [t for t in get_legal_suffix_tokens(country_code) if " " not in t]
     article_tokens = [t for t in get_article_stopwords(country_code) if " " not in t]
-    all_tokens = list(dict.fromkeys(suffix_tokens + article_tokens))  # dedup, order preserved
+    all_tokens = list(
+        dict.fromkeys(suffix_tokens + article_tokens)
+    )  # dedup, order preserved
     tokens_literal = ", ".join(_pl_str(t) for t in all_tokens)
 
     script_parts = [

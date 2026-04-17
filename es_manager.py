@@ -92,6 +92,16 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
             "Kurmak icin: elasticsearch-plugin install analysis-phonetic"
         )
 
+    filters["arabic_norm"] = {
+        "type": "arabic_normalization"
+    }
+
+    base_clean_filters = []
+    if has_icu:
+        base_clean_filters.extend(["icu_normalizer", "icu_folding", "lowercase", "arabic_norm"])
+    else:
+        base_clean_filters.extend(["lowercase", "arabic_norm"])
+
     # ── Ortak (common) filter ve analyzer ──
     common_synonyms = list(load_synonyms_for_country("__common__"))
     filters["synonym_filter_common"] = {
@@ -101,7 +111,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     }
     analyzers["clean_analyzer_common"] = {
         "tokenizer": "standard",
-        "filter": ["lowercase", "synonym_filter_common"],
+        "filter": base_clean_filters + ["synonym_filter_common"],
     }
 
     # ── Per-country Stripped Search Analyzer ──
@@ -118,7 +128,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
         }
         analyzers[analyzer_name] = {
             "tokenizer": "standard",
-            "filter": ["lowercase", filter_name],
+            "filter": base_clean_filters + [filter_name],
         }
 
     # Global fallback stripped analyzer (tüm ülkeler birleşimi)
@@ -130,7 +140,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     }
     analyzers["stripped_search_analyzer"] = {
         "tokenizer": "standard",
-        "filter": ["lowercase", "generic_stopwords_global"],
+        "filter": base_clean_filters + ["generic_stopwords_global"],
     }
 
     # ── Ülkeye özgü filter ve analyzer (varsa) ──
@@ -146,7 +156,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
         }
         analyzers[analyzer_name] = {
             "tokenizer": "standard",
-            "filter": ["lowercase", filter_name],
+            "filter": base_clean_filters + [filter_name],
         }
 
     # ── ICU Analyzer (plugin varsa) ──
@@ -165,11 +175,11 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     }
     analyzers["ngram_analyzer"] = {
         "tokenizer": "ngram_tokenizer",
-        "filter": ["lowercase"],
+        "filter": base_clean_filters,
     }
     analyzers["ngram_search_analyzer"] = {
         "tokenizer": "standard",
-        "filter": ["lowercase"],
+        "filter": base_clean_filters,
     }
 
     # ── Phonetic Analyzer (plugin varsa) ──

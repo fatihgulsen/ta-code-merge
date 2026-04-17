@@ -29,7 +29,7 @@ def normalize_text(text: str) -> str:
     """Metni NFKC formatında normalize eder."""
     if not text:
         return ""
-    return unicodedata.normalize("NFKC", text)
+    return unicodedata.normalize("NFKC", text).casefold()
 
 
 def _extract_rules_from_file(filepath: Path) -> list[str]:

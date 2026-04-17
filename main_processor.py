@@ -15,7 +15,10 @@
 import logging
 import sys
 import uuid
+import unicodedata
 from typing import Any
+
+from unidecode import unidecode
 
 import psycopg2
 from psycopg2.extras import DictCursor, execute_values
@@ -289,7 +292,8 @@ _COUNTRY_NAME_TOKENS: dict[str, frozenset[str]] = {
 
 
 def _clean_labels(name: str) -> str:
-    """Nakliye etiketlerini (to order of, c/o, attn, care of) temizler."""
+    """Nakliye etiketlerini (to order of, c/o, attn, care of) temizler ve ES analyzer ile uyumlandirmak amaciyla kelimeleri Latin harflerine donusturur."""
+    name = unidecode(unicodedata.normalize("NFKC", name))
     cleaned = _LABEL_PATTERNS.sub('', name)
     return _re.sub(r'\s+', ' ', cleaned).strip()
 

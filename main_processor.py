@@ -18,14 +18,14 @@ import uuid
 import unicodedata
 from typing import Any
 
-from unidecode import unidecode
-
 import psycopg2
 from psycopg2.extras import DictCursor, execute_values
 from elasticsearch import helpers
+
 try:
     from tqdm import tqdm
 except ImportError:  # pragma: no cover
+
     class tqdm:  # type: ignore[misc]
         """No-op tqdm stub — install tqdm for a real progress bar."""
 
@@ -43,6 +43,7 @@ except ImportError:  # pragma: no cover
 
         def close(self):
             pass
+
 
 from config import (
     BATCH_SIZE,
@@ -87,6 +88,7 @@ NEW_MASTER_SUBBATCH_SIZE = 200
 # ─────────────────────────────────────────────────────────────────────
 # DB YARDIMCILARI
 # ─────────────────────────────────────────────────────────────────────
+
 
 def get_db_connection():
     return psycopg2.connect(**DB_CONFIG)
@@ -134,7 +136,9 @@ def validate_db_schema(conn) -> None:
     for internal_name in MANDATORY_READ_COLUMNS:
         db_col = COLUMN_MAPPING.get(internal_name)
         if not db_col or db_col not in existing_columns:
-            raise RuntimeError(f"Zorunlu okuma sütunu eksik: {internal_name} → {db_col}")
+            raise RuntimeError(
+                f"Zorunlu okuma sütunu eksik: {internal_name} → {db_col}"
+            )
 
     missing_update = []
     for internal_name in MANDATORY_UPDATE_COLUMNS:
@@ -164,6 +168,7 @@ def validate_db_schema(conn) -> None:
 # ─────────────────────────────────────────────────────────────────────
 # STAGE ORKESTRASYONU
 # ─────────────────────────────────────────────────────────────────────
+
 
 def run_stage(
     es,
@@ -223,17 +228,23 @@ def run_stage(
 
         if top_hit and top_score >= min_score:
             # Post-ES verification: simetrik token coverage kontrolu
-            if not _post_verify(rec["raw_name"], top_hit["_source"], stage_name, rec["country"]):
+            if not _post_verify(
+                rec["raw_name"], top_hit["_source"], stage_name, rec["country"]
+            ):
                 unmatched.append(rec)
                 continue
-            matched.append({
-                **rec,
-                "master_id": top_hit["_source"]["master_id"],
-                "es_score": SUFFIX_FUZZY_SCORE if stage_name == "SUFFIX_FUZZY" else top_score,
-                "stage_name": stage_name,
-                "stage_order": stage_order,
-                "index_variation": stage.get("index_variation", True),
-            })
+            matched.append(
+                {
+                    **rec,
+                    "master_id": top_hit["_source"]["master_id"],
+                    "es_score": SUFFIX_FUZZY_SCORE
+                    if stage_name == "SUFFIX_FUZZY"
+                    else top_score,
+                    "stage_name": stage_name,
+                    "stage_order": stage_order,
+                    "index_variation": stage.get("index_variation", True),
+                }
+            )
         else:
             unmatched.append(rec)
 
@@ -244,7 +255,7 @@ import re as _re
 
 # Nakliye/gumruk belgelerindeki adres ibareleri — firma isminin parcasi degil
 _LABEL_PATTERNS = _re.compile(
-    r'\b(?:to\s+(?:the\s+)?order\s+of|c/?o|attn|care\s+of)\b',
+    r"\b(?:to\s+(?:the\s+)?order\s+of|c/?o|attn|care\s+of)\b",
     _re.IGNORECASE,
 )
 
@@ -293,9 +304,9 @@ _COUNTRY_NAME_TOKENS: dict[str, frozenset[str]] = {
 
 def _clean_labels(name: str) -> str:
     """Nakliye etiketlerini (to order of, c/o, attn, care of) temizler ve ES analyzer ile uyumlandirmak amaciyla kelimeleri Latin harflerine donusturur."""
-    name = unidecode(unicodedata.normalize("NFKC", name))
-    cleaned = _LABEL_PATTERNS.sub('', name)
-    return _re.sub(r'\s+', ' ', cleaned).strip()
+    name = unicodedata.normalize("NFKC", name)
+    cleaned = _LABEL_PATTERNS.sub("", name)
+    return _re.sub(r"\s+", " ", cleaned).strip()
 
 
 def _tokenize(name: str, country: str = "") -> set[str]:
@@ -317,7 +328,7 @@ def _tokenize(name: str, country: str = "") -> set[str]:
     sector_canonical = get_business_sector_canonical_map(country)
     result = set()
     for t in tokens:
-        t_clean = t.rstrip('.,')
+        t_clean = t.rstrip(".,")
         if not t_clean:
             continue
         if len(t_clean) <= 1 and not t_clean.isalnum():
@@ -346,7 +357,7 @@ def _first_meaningful_token(name: str, country: str = "") -> str | None:
     article_tokens = get_article_stopwords(country)
     sector_canonical = get_business_sector_canonical_map(country)
     for raw in cleaned.split():
-        t = raw.rstrip('.,')
+        t = raw.rstrip(".,")
         if not t:
             continue
         if len(t) <= 1 and not t.isalnum():
@@ -386,7 +397,7 @@ def strict_name_match(input_name: str, master_name: str, country: str = "") -> b
         out: list[str] = []
         # Sprint 2: split on whitespace AND embedded punctuation so compound
         # suffix tokens like "pvt.ltd" → ["pvt", "ltd"] get classified correctly.
-        for raw in _re.split(r'[\s.,;:!?()]+', cleaned):
+        for raw in _re.split(r"[\s.,;:!?()]+", cleaned):
             t = raw
             if not t:
                 continue
@@ -423,7 +434,9 @@ def _symmetric_token_coverage(input_tokens: set[str], master_tokens: set[str]) -
     return min(input_in_master, master_in_input)
 
 
-def _post_verify(input_name: str, master_source: dict, stage_name: str, country: str = "") -> bool:
+def _post_verify(
+    input_name: str, master_source: dict, stage_name: str, country: str = ""
+) -> bool:
     """Post-ES verification: ES sonucunu Python tarafinda dogrular.
 
     TAX_EXACT icin dogrulama yapilmaz (deterministic).
@@ -466,17 +479,29 @@ def _post_verify(input_name: str, master_source: dict, stage_name: str, country:
 
     # Token tekrar farkı: "RADHE RADHE CREATION" (3 token) vs "RADHE CREATION" (2 token)
     _wc_stopwords = get_article_stopwords(country) | get_company_type_tokens(country)
-    input_word_count = len([
-        t for t in _clean_labels(input_name).lower().split()
-        if t.rstrip('.,') not in _wc_stopwords and t.rstrip('.,') and t.rstrip('.,').isalnum()
-    ])
-    master_word_count = len([
-        t for t in _clean_labels(master_name).lower().split()
-        if t.rstrip('.,') not in _wc_stopwords and t.rstrip('.,') and t.rstrip('.,').isalnum()
-    ])
+    input_word_count = len(
+        [
+            t
+            for t in _clean_labels(input_name).lower().split()
+            if t.rstrip(".,") not in _wc_stopwords
+            and t.rstrip(".,")
+            and t.rstrip(".,").isalnum()
+        ]
+    )
+    master_word_count = len(
+        [
+            t
+            for t in _clean_labels(master_name).lower().split()
+            if t.rstrip(".,") not in _wc_stopwords
+            and t.rstrip(".,")
+            and t.rstrip(".,").isalnum()
+        ]
+    )
     word_count_ratio = (
-        min(input_word_count, master_word_count) / max(input_word_count, master_word_count)
-        if max(input_word_count, master_word_count) > 0 else 0.0
+        min(input_word_count, master_word_count)
+        / max(input_word_count, master_word_count)
+        if max(input_word_count, master_word_count) > 0
+        else 0.0
     )
 
     # Uzunluk oranı kontrolu
@@ -527,7 +552,7 @@ def _execute_msearch(
     indices = list(range(len(queries)))
 
     for chunk_start in range(0, len(indices), MSEARCH_CHUNK_SIZE):
-        chunk = indices[chunk_start:chunk_start + MSEARCH_CHUNK_SIZE]
+        chunk = indices[chunk_start : chunk_start + MSEARCH_CHUNK_SIZE]
         body: list[dict[str, Any]] = []
 
         for idx in chunk:
@@ -557,6 +582,7 @@ def _execute_msearch(
 # ─────────────────────────────────────────────────────────────────────
 # YAZMA İŞLEMLERİ
 # ─────────────────────────────────────────────────────────────────────
+
 
 def update_es_variations(es, matched: list[dict]) -> None:
     """Eslesen kayitlarin varyasyonlarini ve meta bilgilerini master ES doc'a ekler.
@@ -591,26 +617,30 @@ def update_es_variations(es, matched: list[dict]) -> None:
     for master_id, info in master_updates.items():
         # Variations update
         for variation in info["variations"]:
-            v_lower = variation.lower().strip().rstrip('.,')
-            bulk_body.append({
-                "update": {
-                    "_index": ES_INDEX,
-                    "_id": master_id,
-                    "routing": info["country"].upper(),
+            v_clean = variation.strip().rstrip(".,")
+            bulk_body.append(
+                {
+                    "update": {
+                        "_index": ES_INDEX,
+                        "_id": master_id,
+                        "routing": info["country"].upper(),
+                    }
                 }
-            })
-            bulk_body.append({
-                "script": {
-                    "source": (
-                        "String v = params.v; "
-                        "if (!ctx._source.variations.contains(v)) { "
-                        "  ctx._source.variations.add(v); "
-                        "}"
-                    ),
-                    "lang": "painless",
-                    "params": {"v": v_lower},
-                },
-            })
+            )
+            bulk_body.append(
+                {
+                    "script": {
+                        "source": (
+                            "String v = params.v; "
+                            "if (!ctx._source.variations.contains(v)) { "
+                            "  ctx._source.variations.add(v); "
+                            "}"
+                        ),
+                        "lang": "painless",
+                        "params": {"v": v_clean},
+                    },
+                }
+            )
 
         # Tax, phone, address listelerine ekleme (duplicate kontrollu)
         _append_list_fields(bulk_body, master_id, info)
@@ -622,9 +652,7 @@ def update_es_variations(es, matched: list[dict]) -> None:
             logger.debug("ES variations update basarisiz, devam ediliyor")
 
 
-def _append_list_fields(
-    bulk_body: list[dict], master_id: str, info: dict
-) -> None:
+def _append_list_fields(bulk_body: list[dict], master_id: str, info: dict) -> None:
     """tax_number, phone_number, address listelerine yeni degerleri ekler."""
     field_map = {
         "tax_number": info["tax_numbers"],
@@ -638,28 +666,32 @@ def _append_list_fields(
             val_clean = val.strip()
             if not val_clean:
                 continue
-            bulk_body.append({
-                "update": {
-                    "_index": ES_INDEX,
-                    "_id": master_id,
-                    "routing": country,
+            bulk_body.append(
+                {
+                    "update": {
+                        "_index": ES_INDEX,
+                        "_id": master_id,
+                        "routing": country,
+                    }
                 }
-            })
-            bulk_body.append({
-                "script": {
-                    "source": (
-                        "String v = params.v; "
-                        "String field = params.field; "
-                        "if (ctx._source[field] == null) { "
-                        "  ctx._source[field] = [v]; "
-                        "} else if (!ctx._source[field].contains(v)) { "
-                        "  ctx._source[field].add(v); "
-                        "}"
-                    ),
-                    "lang": "painless",
-                    "params": {"v": val_clean, "field": field_name},
-                },
-            })
+            )
+            bulk_body.append(
+                {
+                    "script": {
+                        "source": (
+                            "String v = params.v; "
+                            "String field = params.field; "
+                            "if (ctx._source[field] == null) { "
+                            "  ctx._source[field] = [v]; "
+                            "} else if (!ctx._source[field].contains(v)) { "
+                            "  ctx._source[field].add(v); "
+                            "}"
+                        ),
+                        "lang": "painless",
+                        "params": {"v": val_clean, "field": field_name},
+                    },
+                }
+            )
 
 
 def write_matched_to_pg(write_cursor, write_conn, matched: list[dict]) -> None:
@@ -680,7 +712,10 @@ def write_matched_to_pg(write_cursor, write_conn, matched: list[dict]) -> None:
         FROM (VALUES %s) AS d(master_code, match_score, match_type, id)
         WHERE t.{col_id} = d.id
         """,
-        [(r["master_id"], int(r["es_score"]), r["stage_name"], r["row_id"]) for r in matched],
+        [
+            (r["master_id"], int(r["es_score"]), r["stage_name"], r["row_id"])
+            for r in matched
+        ],
     )
     write_conn.commit()
 
@@ -695,17 +730,31 @@ def write_stage_log(
     """matched ve unmatched kayıtları match_stages_log'a yazar."""
     rows = []
     for r in matched:
-        rows.append((
-            r["row_id"], r["raw_name"], r["country"],
-            stage["name"], stage["order"],
-            True, r["master_id"], r["es_score"],
-        ))
+        rows.append(
+            (
+                r["row_id"],
+                r["raw_name"],
+                r["country"],
+                stage["name"],
+                stage["order"],
+                True,
+                r["master_id"],
+                r["es_score"],
+            )
+        )
     for r in unmatched:
-        rows.append((
-            r["row_id"], r["raw_name"], r["country"],
-            stage["name"], stage["order"],
-            False, None, None,
-        ))
+        rows.append(
+            (
+                r["row_id"],
+                r["raw_name"],
+                r["country"],
+                stage["name"],
+                stage["order"],
+                False,
+                None,
+                None,
+            )
+        )
 
     if not rows:
         return
@@ -764,8 +813,8 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
 
     # Adim 1: Tum kayitlar icinde exact dedup
     seen: dict[tuple[str, str], str] = {}  # (name_lower, country) → master_id
-    unique_records: list[dict] = []     # ES'e index'lenecek (ilk gorulen)
-    duplicate_updates: list[tuple] = [] # PG update (seen'deki master'a bagla)
+    unique_records: list[dict] = []  # ES'e index'lenecek (ilk gorulen)
+    duplicate_updates: list[tuple] = []  # PG update (seen'deki master'a bagla)
     duplicate_logs: list[tuple] = []
 
     for rec in records:
@@ -774,7 +823,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
         raw_tokens = _clean_labels(rec["raw_name"]).lower().split()
         norm_list = []
         for t in raw_tokens:
-            tc = t.rstrip('.,')
+            tc = t.rstrip(".,")
             if not tc or (len(tc) <= 1 and not tc.isalnum()):
                 continue
             if tc in get_article_stopwords(rec["country"]):
@@ -787,18 +836,30 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
         dedup_key = (tuple(sorted(norm_list)), rec["country"])
         existing_master_id = seen.get(dedup_key)
         if existing_master_id:
-            duplicate_updates.append((existing_master_id, 100, "NEW_MASTER", rec["row_id"]))
-            duplicate_logs.append((
-                rec["row_id"], rec["raw_name"], rec["country"],
-                "NEW_MASTER", 7, True, existing_master_id, 100.0,
-            ))
+            duplicate_updates.append(
+                (existing_master_id, 100, "NEW_MASTER", rec["row_id"])
+            )
+            duplicate_logs.append(
+                (
+                    rec["row_id"],
+                    rec["raw_name"],
+                    rec["country"],
+                    "NEW_MASTER",
+                    7,
+                    True,
+                    existing_master_id,
+                    100.0,
+                )
+            )
         else:
             master_id = str(uuid.uuid4())
             seen[dedup_key] = master_id
             unique_records.append({**rec, "_master_id": master_id})
 
     if duplicate_updates:
-        logger.info(f"  NEW_MASTER dedup: {len(duplicate_updates)} duplike tespit edildi (index sonrasi yazilacak).")
+        logger.info(
+            f"  NEW_MASTER dedup: {len(duplicate_updates)} duplike tespit edildi (index sonrasi yazilacak)."
+        )
 
     # Adim 2: Unique kayitlari sub-batch'ler halinde index'le
     remaining = unique_records
@@ -833,10 +894,18 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
                 doc["_source"]["address"] = [rec["address"]]
             es_docs.append(doc)
             pg_updates.append((master_id, 100, "NEW_MASTER", rec["row_id"]))
-            log_rows.append((
-                rec["row_id"], rec["raw_name"], rec["country"],
-                "NEW_MASTER", 7, True, master_id, 100.0,
-            ))
+            log_rows.append(
+                (
+                    rec["row_id"],
+                    rec["raw_name"],
+                    rec["country"],
+                    "NEW_MASTER",
+                    7,
+                    True,
+                    master_id,
+                    100.0,
+                )
+            )
 
         if es_docs:
             try:
@@ -885,7 +954,12 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
 
         # Adim 3: Kalan kayitlari ES'te arat — onceki sub-batch'lerle eslesiyor mu?
         if remaining:
-            canonical_stage = {"name": "CANONICAL_EXACT", "order": 2, "query_fn": "CANONICAL_EXACT", "min_score": 3.0}
+            canonical_stage = {
+                "name": "CANONICAL_EXACT",
+                "order": 2,
+                "query_fn": "CANONICAL_EXACT",
+                "min_score": 3.0,
+            }
             found_in_es, still_remaining = run_stage(es, remaining, canonical_stage)
             if found_in_es:
                 write_matched_to_pg(write_cursor, write_conn, found_in_es)
@@ -897,11 +971,23 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
                         """INSERT INTO match_stages_log
                             (input_id, input_name, country_code, stage_name, stage_order,
                              matched, master_id, es_score) VALUES %s""",
-                        [(r["row_id"], r["raw_name"], r["country"],
-                          "CANONICAL_EXACT", 2, True, r["master_id"], r["es_score"])],
+                        [
+                            (
+                                r["row_id"],
+                                r["raw_name"],
+                                r["country"],
+                                "CANONICAL_EXACT",
+                                2,
+                                True,
+                                r["master_id"],
+                                r["es_score"],
+                            )
+                        ],
                     )
                 write_conn.commit()
-                logger.info(f"  NEW_MASTER arasi ES eslesmesi: {len(found_in_es)} kayit mevcut master'a baglandi.")
+                logger.info(
+                    f"  NEW_MASTER arasi ES eslesmesi: {len(found_in_es)} kayit mevcut master'a baglandi."
+                )
                 remaining = still_remaining
 
     # Adim 3: Duplicate'larin PG yazimi + ES varyasyon update
@@ -931,10 +1017,14 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
         for upd, log in zip(duplicate_updates, duplicate_logs):
             master_id = upd[0]
             raw_name = log[1]  # input_name
-            country = log[2]   # country_code
-            dedup_variations.append({"master_id": master_id, "raw_name": raw_name, "country": country})
+            country = log[2]  # country_code
+            dedup_variations.append(
+                {"master_id": master_id, "raw_name": raw_name, "country": country}
+            )
         update_es_variations(es, dedup_variations)
-        logger.info(f"  NEW_MASTER dedup: {len(duplicate_updates)} duplike yazildi, varyasyonlar eklendi.")
+        logger.info(
+            f"  NEW_MASTER dedup: {len(duplicate_updates)} duplike yazildi, varyasyonlar eklendi."
+        )
 
 
 # ─────────────────────────────────────────────────────────────────────
@@ -999,7 +1089,9 @@ def match_single_record(es, rec: dict, active_stages: list[dict]) -> dict:
             continue
 
         # Post-ES verification (hafif — sadece critical false positive'leri yakala)
-        if not _post_verify(rec["raw_name"], top_hit["_source"], stage["name"], rec["country"]):
+        if not _post_verify(
+            rec["raw_name"], top_hit["_source"], stage["name"], rec["country"]
+        ):
             continue
 
         return {
@@ -1041,7 +1133,9 @@ def _index_new_master(es, rec: dict) -> str:
         )
     except Exception as exc:
         # Pipeline hatasi — pipeline olmadan dene
-        logger.warning(f"Pipeline ile index hatasi ({exc!r}), pipeline olmadan deneniyor: {rec['raw_name'][:50]}")
+        logger.warning(
+            f"Pipeline ile index hatasi ({exc!r}), pipeline olmadan deneniyor: {rec['raw_name'][:50]}"
+        )
         es.index(
             index=ES_INDEX,
             id=master_id,
@@ -1060,7 +1154,7 @@ def _add_variation_to_master(
     tax/phone/address listelerine yeni degerleri ekler →
     pipeline ile yeniden index'ler.
     """
-    v_lower = variation.lower().strip().rstrip('.,')
+    v_lower = variation.lower().strip().rstrip(".,")
     cc = country.upper()
     try:
         doc = es.get(index=ES_INDEX, id=master_doc_id, routing=cc)
@@ -1078,7 +1172,11 @@ def _add_variation_to_master(
 
         # tax/phone/address listelerine yeni degerleri ekle
         if rec:
-            for field, key in [("tax_number", "tax"), ("phone_number", "phone"), ("address", "address")]:
+            for field, key in [
+                ("tax_number", "tax"),
+                ("phone_number", "phone"),
+                ("address", "address"),
+            ]:
                 val = (rec.get(key) or "").strip()
                 if val:
                     existing = source.get(field, [])
@@ -1107,6 +1205,7 @@ def _add_variation_to_master(
 # ─────────────────────────────────────────────────────────────────────
 # ANA ISLEM DONGUSU (Row-by-Row, ES-Authority)
 # ─────────────────────────────────────────────────────────────────────
+
 
 def process_all_data() -> None:
     es = get_es_client()
@@ -1150,7 +1249,9 @@ def process_all_data() -> None:
 
         # Toplam islenmemis kayit sayisi — progress bar icin
         count_cur = read_conn.cursor()
-        count_cur.execute(f"SELECT COUNT(*) FROM {RAW_TABLE_NAME} WHERE {col_master} IS NULL")
+        count_cur.execute(
+            f"SELECT COUNT(*) FROM {RAW_TABLE_NAME} WHERE {col_master} IS NULL"
+        )
         total_remaining = count_cur.fetchone()[0]
         count_cur.close()
         logger.info(f"Toplam islenmemis kayit: {total_remaining:,}")
@@ -1177,11 +1278,11 @@ def process_all_data() -> None:
             # Server-side cursor yerine basit SELECT + LIMIT
             # Her seferinde master_code IS NULL olan sonraki BATCH_SIZE kaydi cek
             read_cur = read_conn.cursor(cursor_factory=DictCursor)
-            read_cur.execute(
+            read_cur.execute(  # ta_code like 'mx%' OLARAK OKUNDU DEĞİŞTİRİLMESİ LAZIM
                 f"""
-                SELECT {', '.join(select_cols)}
+                SELECT {", ".join(select_cols)}
                 FROM {RAW_TABLE_NAME}
-                WHERE {col_master} IS NULL AND {col_id} > %s
+                WHERE {col_master} IS NULL AND {col_id} > %s and ta_code like 'mx%' 
                 ORDER BY {col_id}
                 LIMIT {BATCH_SIZE}
                 """,
@@ -1201,8 +1302,12 @@ def process_all_data() -> None:
             for row in rows:
                 row_id = row[col_id]
                 last_id = row_id  # Sayfalama icin son id'yi takip et
-                country_from_id = row_id[:2].upper() if row_id and len(row_id) >= 2 else ""
-                country_raw = (row[col_country] or "").strip().upper() if col_country else ""
+                country_from_id = (
+                    row_id[:2].upper() if row_id and len(row_id) >= 2 else ""
+                )
+                country_raw = (
+                    (row[col_country] or "").strip().upper() if col_country else ""
+                )
                 if len(country_from_id) == 2 and country_from_id.isalpha():
                     country = country_from_id
                 elif len(country_raw) == 2 and country_raw.isalpha():
@@ -1234,15 +1339,24 @@ def process_all_data() -> None:
                     es_score = result["es_score"]
 
                     pg_updates.append((master_id, int(es_score), stage_name, row_id))
-                    log_rows.append((
-                        row_id, raw_name, country,
-                        stage_name, result["stage_order"],
-                        True, master_id, es_score,
-                    ))
+                    log_rows.append(
+                        (
+                            row_id,
+                            raw_name,
+                            country,
+                            stage_name,
+                            result["stage_order"],
+                            True,
+                            master_id,
+                            es_score,
+                        )
+                    )
 
                     # Yüksek güven stage'leri variations'a ekler (silsile önleme)
                     if result.get("index_variation", True):
-                        _add_variation_to_master(es, result["master_doc_id"], raw_name, country, rec)
+                        _add_variation_to_master(
+                            es, result["master_doc_id"], raw_name, country, rec
+                        )
 
                     total_matched += 1
                     stage_counts[stage_name] = stage_counts.get(stage_name, 0) + 1
@@ -1251,11 +1365,18 @@ def process_all_data() -> None:
                     master_id = _index_new_master(es, rec)
 
                     pg_updates.append((master_id, 100, "NEW_MASTER", row_id))
-                    log_rows.append((
-                        row_id, raw_name, country,
-                        "NEW_MASTER", 7,
-                        True, master_id, 100.0,
-                    ))
+                    log_rows.append(
+                        (
+                            row_id,
+                            raw_name,
+                            country,
+                            "NEW_MASTER",
+                            7,
+                            True,
+                            master_id,
+                            100.0,
+                        )
+                    )
                     total_new += 1
 
                 records_since_refresh += 1
@@ -1263,7 +1384,11 @@ def process_all_data() -> None:
                 pbar.update(1)
 
                 # Progress bar postfix guncelle
-                match_pct = round(100 * total_matched / total_processed, 1) if total_processed else 0
+                match_pct = (
+                    round(100 * total_matched / total_processed, 1)
+                    if total_processed
+                    else 0
+                )
                 pbar.set_postfix_str(
                     f"eslesen={total_matched:,} ({match_pct}%) yeni={total_new:,},toplam={total_processed:,},skipped={total_skipped:,}",
                     refresh=False,
@@ -1280,8 +1405,8 @@ def process_all_data() -> None:
                             write_cursor,
                             f"""
                             UPDATE {RAW_TABLE_NAME} AS t
-                            SET {col_master} = d.mc, {COLUMN_MAPPING['match_score']} = d.ms,
-                                {COLUMN_MAPPING['match_type']} = d.mt
+                            SET {col_master} = d.mc, {COLUMN_MAPPING["match_score"]} = d.ms,
+                                {COLUMN_MAPPING["match_type"]} = d.mt
                             FROM (VALUES %s) AS d(mc, ms, mt, id)
                             WHERE t.{col_id} = d.id
                             """,
@@ -1304,8 +1429,8 @@ def process_all_data() -> None:
                     write_cursor,
                     f"""
                     UPDATE {RAW_TABLE_NAME} AS t
-                    SET {col_master} = d.mc, {COLUMN_MAPPING['match_score']} = d.ms,
-                        {COLUMN_MAPPING['match_type']} = d.mt
+                    SET {col_master} = d.mc, {COLUMN_MAPPING["match_score"]} = d.ms,
+                        {COLUMN_MAPPING["match_type"]} = d.mt
                     FROM (VALUES %s) AS d(mc, ms, mt, id)
                     WHERE t.{col_id} = d.id
                     """,
@@ -1326,7 +1451,7 @@ def process_all_data() -> None:
 
         # Final ozet
         write_cursor.close()
-        logger.info(f"{'='*60}")
+        logger.info(f"{'=' * 60}")
         logger.info(f"TAMAMLANDI: {total_processed:,} kayit islendi")
         logger.info(f"  Eslesen:     {total_matched:,}")
         logger.info(f"  Yeni master: {total_new:,}")
@@ -1335,7 +1460,7 @@ def process_all_data() -> None:
         logger.info(f"  Stage dagilimi:")
         for sn in sorted(stage_counts.keys()):
             logger.info(f"    {sn}: {stage_counts[sn]:,}")
-        logger.info(f"{'='*60}")
+        logger.info(f"{'=' * 60}")
 
     except Exception as e:
         if "read_conn" in locals():

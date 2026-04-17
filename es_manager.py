@@ -96,6 +96,14 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
         "type": "arabic_normalization"
     }
 
+    char_filters = {
+        "punctuation_remover": {
+            "type": "pattern_replace",
+            "pattern": "[.,]+",
+            "replacement": " "
+        }
+    }
+
     base_clean_filters = []
     if has_icu:
         base_clean_filters.extend(["icu_normalizer", "icu_folding", "lowercase", "arabic_norm"])
@@ -111,6 +119,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     }
     analyzers["clean_analyzer_common"] = {
         "tokenizer": "standard",
+        "char_filter": ["punctuation_remover"],
         "filter": base_clean_filters + ["synonym_filter_common"],
     }
 
@@ -128,6 +137,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
         }
         analyzers[analyzer_name] = {
             "tokenizer": "standard",
+            "char_filter": ["punctuation_remover"],
             "filter": base_clean_filters + [filter_name],
         }
 
@@ -140,6 +150,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     }
     analyzers["stripped_search_analyzer"] = {
         "tokenizer": "standard",
+        "char_filter": ["punctuation_remover"],
         "filter": base_clean_filters + ["generic_stopwords_global"],
     }
 
@@ -156,6 +167,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
         }
         analyzers[analyzer_name] = {
             "tokenizer": "standard",
+            "char_filter": ["punctuation_remover"],
             "filter": base_clean_filters + [filter_name],
         }
 
@@ -163,6 +175,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     if has_icu:
         analyzers["icu_analyzer"] = {
             "tokenizer": "icu_tokenizer",
+            "char_filter": ["punctuation_remover"],
             "filter": ["icu_normalizer", "icu_folding", "lowercase"],
         }
 
@@ -175,10 +188,12 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     }
     analyzers["ngram_analyzer"] = {
         "tokenizer": "ngram_tokenizer",
+        "char_filter": ["punctuation_remover"],
         "filter": base_clean_filters,
     }
     analyzers["ngram_search_analyzer"] = {
         "tokenizer": "standard",
+        "char_filter": ["punctuation_remover"],
         "filter": base_clean_filters,
     }
 
@@ -191,6 +206,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
         }
         analyzers["phonetic_analyzer"] = {
             "tokenizer": "standard",
+            "char_filter": ["punctuation_remover"],
             "filter": ["lowercase", "phonetic_filter"],
         }
 
@@ -230,6 +246,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
             "number_of_replicas": 0,
             "index.max_ngram_diff": 1,
             "analysis": {
+                "char_filter": char_filters,
                 "tokenizer": tokenizers,
                 "filter": filters,
                 "analyzer": analyzers,

@@ -18,7 +18,7 @@
     "hermanos,hnos,hnos.=>hnos",
     "sucursal,suc,suc.=>suc",
     "Public Limited Company,Sociedad Anónima,Sociedad Anonima,sociedad annima,sociedad anionima,S.A.,SA,s a,Corporation,Corp,Incorporated,Inc,s.a.,sa,s.a,soc anónima,soc anonima,soc. anónima=>sa",
-    "Sociedad Anónima de Capital Variable,S.A. de C.V.,SA de CV,s a de c v,sadecv,Sociedad Anonima de Capital Variable,s.a. de c.v,s.a de cv,s.a.b de c.v,sab de cv,s a b de c v,sa d cv,s a d cv,sade cv,sa de cv,sa cv=>sa de cv",
+    "Sociedad Anónima de Capital Variable,S.A. de C.V.,SA de CV,s a de c v,sadecv,Sociedad Anonima de Capital Variable,s.a. de c.v,s.a de cv,s.a.b de c.v,sab de cv,s a b de c v,sa d cv,s a d cv,sade cv,sa de cv,sa cv,s a d c v,sa d c v,sade c v=>sa de cv",
     "Sociedad de Responsabilidad Limitada,sociedad de responsavilidad limitada,sociedad de responsablidad limitada,S. de R.L.,srl,s r l,s.r.l,s.r.l.,S de RL,s de r l,Private Limited Liability Company,Limited Liability Company,LLC=>srl",
     "Sociedad de Responsabilidad Limitada de Capital Variable,S. de R.L. de C.V.,S de RL de CV,s de r l de c v,srl de cv,s d rl d cv,Private Limited Liability Company (Variable Capital)=>s de rl de cv",
     "Sociedad por Acciones Simplificada,S.A.S.,SAS,s a s,s.a.s=>sas",

@@ -57,19 +57,8 @@ def _build_clean_script(country_code: str) -> str:
     NOT: Painless "..." string'lerinde sadece \\\\ ve \\" escape geçerli.
     Unicode karakterler için /regex/ literal kullanılır.
     """
-    tokens = get_legal_suffix_tokens(country_code)
-    known = sorted(t for t in tokens if t.isalpha() and " " not in t and len(t) <= 6)
-    known_literal = ", ".join(_pl_str(t) for t in known)
-
-    # SUFFIX_TYPO_MAP'i Painless map literal'e dönüştür
-    typo_entries = ", ".join(
-        f"{_pl_str(k)}: {_pl_str(v)}" for k, v in SUFFIX_TYPO_MAP.items()
-    )
-
     # Script'i raw string olarak oluştur (f-string escape karmaşasından kaçın)
     script_parts = [
-        # Map tanımı
-        "Map typoMap = [" + typo_entries + "];",
         # Null kontrolü
         "if (ctx.variations == null) { return; }",
         "List cleanedVariations = new ArrayList();",
@@ -81,87 +70,18 @@ def _build_clean_script(country_code: str) -> str:
         "  text = text.toLowerCase();",
         # 2. Zero-width karakter temizligi (regex literal ile)
         r"  text = /[\u200b\u200c\u200d\ufeff\u00ad]/.matcher(text).replaceAll('');",
-        # 3. Parantez icerigi kaldir
-        r"  text = /\([^)]*\)/.matcher(text).replaceAll('');",
-        r"  text = /\[[^\]]*\]/.matcher(text).replaceAll('');",
-        # 4. Label temizligi
+        # 3. Label temizligi
         r"  text = /^(email|attn|tel|phone|web|site)\s*:/.matcher(text).replaceAll('');",
         r"  text = /\bc\/o\b/.matcher(text).replaceAll('');",
         r"  text = /\battn\b/.matcher(text).replaceAll('');",
         r"  text = /\bcare of\b/.matcher(text).replaceAll('');",
         r"  text = /\bto\s+(the\s+)?order\s+of\b/.matcher(text).replaceAll('');",
-        # 5. Ampersand normalizasyonu
+        # 4. Ampersand normalizasyonu
         r"  text = /\s*&\s*/.matcher(text).replaceAll(' and ');",
-        # 6. Ozel karakter temizligi
+        # 5. Ozel karakter temizligi
         r"  text = /[^\w\s&.\-]/.matcher(text).replaceAll(' ');",
-        # 7. Nokta-harf pattern: L.T.D. -> LTD (tekrarlı regex ile)
-        # Painless'te lookbehind yok, tekrarlı replace ile yakala
-        "  String prev = '';",
-        "  while (!text.equals(prev)) {",
-        "    prev = text;",
-        r"    text = /([a-z])\.([a-z])/.matcher(text).replaceAll('$1$2');",
-        "  }",
-        # 8. Cift bosluk temizligi
+        # 6. Cift bosluk temizligi
         r"  text = /\s+/.matcher(text).replaceAll(' ').trim();",
-        # 9. Suffix typo duzeltme
-        r"  def tokens = / /.split(text);",
-        "  StringBuilder result = new StringBuilder();",
-        "  for (int t = 0; t < tokens.length; t++) {",
-        "    String token = /[.]/.matcher(tokens[t]).replaceAll('');",
-        "    if (typoMap.containsKey(token)) {",
-        "      token = (String)typoMap.get(token);",
-        "    }",
-        "    if (t > 0) { result.append(' '); }",
-        "    result.append(token);",
-        "  }",
-        "  text = result.toString().trim();",
-        # 9b. Boşluklu tek harf birleştirme: "l t d" -> "ltd"        UÇUR
-        f"  def knownSuffixes = [{known_literal}];",
-        r"  def spTokens = / /.split(text);",
-        "  List spResult = new ArrayList();",
-        "  int si = 0;",
-        "  while (si < spTokens.length) {",
-        "    if (spTokens[si].length() == 1 && /^[a-z]$/.matcher(spTokens[si]).matches()) {",
-        "      StringBuilder run = new StringBuilder(spTokens[si]);",
-        "      int sj = si + 1;",
-        "      while (sj < spTokens.length && spTokens[sj].length() == 1 && /^[a-z]$/.matcher(spTokens[sj]).matches()) {",
-        "        run.append(spTokens[sj]); sj++;",
-        "      }",
-        "      String joined = run.toString();",
-        "      if (sj > si + 1 && knownSuffixes.contains(joined)) {",
-        "        spResult.add(joined); si = sj;",
-        "      } else {",
-        "        spResult.add(spTokens[si]); si++;",
-        "      }",
-        "    } else {",
-        "      spResult.add(spTokens[si]); si++;",
-        "    }",
-        "  }",
-        "  StringBuilder spJoined = new StringBuilder();",
-        "  for (int spi = 0; spi < spResult.size(); spi++) {",
-        "    if (spi > 0) spJoined.append(' ');",
-        "    spJoined.append(spResult[spi]);",
-        "  }",
-        "  text = spJoined.toString().trim();",
-        # 9c. Birleşik suffix ayırma: "pvtltd" -> "pvt ltd"
-        "  def fusedMap = ['pvtltd': 'pvt ltd', 'ltdco': 'ltd co', 'corpltd': 'corp ltd',",
-        "    'incltd': 'inc ltd', 'gmbhco': 'gmbh co'];",
-        r"  def fTokens = / /.split(text);",
-        "  List fResult = new ArrayList();",
-        "  for (int ft = 0; ft < fTokens.length; ft++) {",
-        "    String ftok = fTokens[ft];",
-        "    if (fusedMap.containsKey(ftok)) {",
-        "      fResult.add((String)fusedMap.get(ftok));",
-        "    } else {",
-        "      fResult.add(ftok);",
-        "    }",
-        "  }",
-        "  StringBuilder fJoined = new StringBuilder();",
-        "  for (int fi = 0; fi < fResult.size(); fi++) {",
-        "    if (fi > 0) fJoined.append(' ');",
-        "    fJoined.append(fResult[fi]);",
-        "  }",
-        "  text = fJoined.toString().trim();",
         # Sonuca ekle
         "  if (text.length() > 0 && !cleanedVariations.contains(text)) {",
         "    cleanedVariations.add(text);",

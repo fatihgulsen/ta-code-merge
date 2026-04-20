@@ -26,7 +26,6 @@ from main_processor import (
     _clean_labels,
     _tokenize,
     _symmetric_token_coverage,
-    _post_verify,
     _COUNTRY_NAME_TOKENS,
 )
 from synonym_loader import get_article_stopwords, get_company_type_tokens
@@ -149,19 +148,6 @@ def analyze_pair(name_a: str, name_b: str, country: str) -> dict:
     stripped_b = _stripped_form(name_b)
     stripped_a = _stripped_form(name_a)
 
-    master_source_b = {"variations": [name_b.lower()], "variations_stripped": [stripped_b]}
-    master_source_a = {"variations": [name_a.lower()], "variations_stripped": [stripped_a]}
-
-    stage_results = {}
-    for stage_name in ["CANONICAL_EXACT", "STRIPPED_EXACT", "SUFFIX_FUZZY", "TOKEN_COVERAGE", "FUZZY_PHRASE", "NGRAM_MATCH"]:
-        pass_ab = _post_verify(name_a, master_source_b, stage_name, country)
-        pass_ba = _post_verify(name_b, master_source_a, stage_name, country)
-        stage_results[stage_name] = {
-            "a_to_b": pass_ab,
-            "b_to_a": pass_ba,
-        }
-    result["steps"]["6_stage_verify"] = stage_results
-
     return result
 
 
@@ -221,33 +207,13 @@ def print_analysis(result: dict) -> None:
     print(f"  B: {s['key_b']}")
     print(f"  Ayni master olur mu? {'EVET — ayni dedup key' if s['same_master'] else 'HAYIR — farkli master'}")
 
-    # 6. Stage sonuclari
-    s = result["steps"]["6_stage_verify"]
-    print(f"\n[6] Stage Post-Verify Sonuclari:")
-    print(f"  {'Stage':<20s} {'A->B':>8s} {'B->A':>8s}  Sonuc")
-    print(f"  {'-'*55}")
-    for stage_name in ["CANONICAL_EXACT", "STRIPPED_EXACT", "SUFFIX_FUZZY", "TOKEN_COVERAGE", "FUZZY_PHRASE", "NGRAM_MATCH"]:
-        sr = s[stage_name]
-        ab = "GECTI" if sr["a_to_b"] else "RED"
-        ba = "GECTI" if sr["b_to_a"] else "RED"
-        if sr["a_to_b"] or sr["b_to_a"]:
-            sonuc = "ESLESIR"
-        else:
-            sonuc = "eslesmez"
-        print(f"  {stage_name:<20s} {ab:>8s} {ba:>8s}  {sonuc}")
-
     # Genel sonuc
-    any_match = any(
-        s[stage]["a_to_b"] or s[stage]["b_to_a"]
-        for stage in s
-    )
     print(f"\n{'='*80}")
-    if any_match:
-        matching_stages = [st for st in s if s[st]["a_to_b"] or s[st]["b_to_a"]]
-        print(f"  SONUC: ESLESIR (ilk eslesen stage: {matching_stages[0]})")
-    else:
-        print(f"  SONUC: ESLESMEZ (hicbir stage'den gecemedi)")
+    print(f"  NOT: _post_verify kaldirildi. Artik 1-1 eslesme ES icindeki")
+    print(f"  token_count filtresi ile yapiliyor. Gercek sonuc icin")
+    print(f"  --search parametresini kullanin.")
     print(f"{'='*80}")
+    print()
     print()
 
 
@@ -285,13 +251,17 @@ def search_es(name: str, country: str) -> None:
         for h in hits[:3]:
             score = h["_score"]
             src = h["_source"]
-            vars_list = src.get("variations", [])
-            stripped = src.get("variations_stripped", [])
+            vars_nested = src.get("variations", [])
+            vars_list = [v.get("name") for v in vars_nested if isinstance(v, dict)]
+            
+            stripped_nested = src.get("variations_stripped", [])
+            stripped_list = [v.get("name") for v in stripped_nested if isinstance(v, dict)]
+            
             mid = h["_id"][:12]
             print(f"    score={score:.1f}  master={mid}...")
             print(f"      variations: {vars_list[:3]}")
-            if stripped:
-                print(f"      stripped:   {stripped[:3]}")
+            if stripped_list:
+                print(f"      stripped:   {stripped_list[:3]}")
 
     print()
 
@@ -337,7 +307,8 @@ def quality_report() -> None:
     sorunlu = []
     dogru = []
     for h in result2["hits"]["hits"]:
-        variations = h["_source"]["variations"]
+        vars_nested = h["_source"].get("variations", [])
+        variations = [v.get("name") for v in vars_nested if isinstance(v, dict)]
         cc = h["_source"]["country_code"]
         if len(variations) < 2:
             continue

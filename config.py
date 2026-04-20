@@ -7,23 +7,14 @@
 class MatchType:
     """Eşleştirme sonucu tip etiketleri."""
 
-    TAX_MATCH = "TAX_MATCH"
-    # Vergi no kesin eşleşme (Path 0, deterministic)
-
     CANONICAL_EXACT = "CANONICAL_EXACT"
-    # Canonical form tam eşleşme
-
     STRIPPED_EXACT = "STRIPPED_EXACT"
-    # Synonym ve suffixler temizlendiğinde birebir aynı olanlar
-
     SUFFIX_FUZZY = "SUFFIX_FUZZY"
-    # Suffix kısmı fuzzy eşleşme, name kısmı exact
-
+    FUZZY_PHRASE = "FUZZY_PHRASE"
     TOKEN_COVERAGE = "TOKEN_COVERAGE"
-    # Anlamlı token'ların simetrik örtüşmesi eşik üstünde
-
+    PHONETIC_MATCH = "PHONETIC_MATCH"
+    NGRAM_MATCH = "NGRAM_MATCH"
     NEW_MASTER = "NEW_MASTER"
-    # Eşleşme yok — yeni master açılır
 
 
 # --- PostgreSQL Bağlantı ---
@@ -38,30 +29,27 @@ DB_CONFIG = {
 # --- Tablo ve Sütun Ayarları ---
 RAW_TABLE_NAME = "p7_firms_v2"
 
+# COUNTRY_CODE_FILTER = "mx"
+COUNTRY_CODE_FILTER = None
+
 # Dahili degisken isimleri -> Veritabani sutun isimleri
 COLUMN_MAPPING = {
-    # Okunacak Sutunlar (Read)
-    "id": "ta_code",
-    "company_name": "company_name",
-    "country_code": "city_state",       # Gercek ulke kodu ta_code prefix'inden turetilir
-    "tax_number": "company_tax_id",
+    "id": "id",
+    "company_name": "name",
+    "country_code": "country_code",
     "phone_number": "tel",
-    # Guncellenecek Sutunlar (Write) — AUTO_CREATE ile olusturulur
     "master_code": "master_code",
     "match_score": "match_score",
     "match_type": "match_type",
-    # Opsiyonel
+    "match_details": "match_details",
     "city": "city_state",
-    "address": "company_address",
+    "address": "address",
 }
 
-# Kodun çalışması için ZORUNLU olan sütunlar (Internal Names)
-# BURAYA COLUMN_MAPPING SÖZLÜĞÜNÜN **ANAHTARLARINI** (SOL TARAF) YAZMALISINIZ.
-# Örnek: COLUMN_MAPPING = {"company_name": "firma_adi"} -> Buraya "company_name" yazılır.
-MANDATORY_READ_COLUMNS = ["id", "company_name", "country_code"]
-MANDATORY_UPDATE_COLUMNS = ["master_code", "match_score", "match_type"]
 
-# Güncellenecek sütunlar (MANDATORY_UPDATE_COLUMNS) tabloda yoksa otomatik oluşturulsun mu?
+MANDATORY_READ_COLUMNS = ["id", "company_name", "country_code"]
+MANDATORY_UPDATE_COLUMNS = ["master_code", "match_score", "match_type", "match_details"]
+
 AUTO_CREATE_UPDATE_COLUMNS = True
 
 # --- Elasticsearch Bağlantı ---
@@ -70,24 +58,16 @@ ES_INDEX = "living_companies_v1"
 
 # --- Eşleştirme Ayarları ---
 
-# Batch büyüklüğü (PostgreSQL cursor)
 BATCH_SIZE = 5000
 
 # --- ES Skor Eşikleri ---
 ES_MIN_SCORE = 3.0  # ES'te min_score filtresi (bu altı hiç dönmez)
-# Not: 4.0'dan 3.0'a düşürüldü — fuzzy match'ler daha düşük skor üretebilir,
-# post-ES verification zaten kesin eşleşme kontrolü yapıyor.
+LOG_ALL_STAGES = False  # Her bir stage sonucunu (failed dahil) logla
 
-# --- ES function_score Ağırlıkları ---
-# Path 0 (tax deterministic) için SCORE_WEIGHTS artık kullanılmıyor.
-# Aşağıdaki değerler ES function_score'daki weight'lere karşılık gelir.
-# _score = name_BM25 + (ES_TAX_WEIGHT if tax_match) + (ES_PHONE_WEIGHT if phone_match)
-ES_TAX_WEIGHT = 100  # Tax eşleşirse _score'a eklenir → adayı öne taşır
-ES_PHONE_WEIGHT = 20  # Phone eşleşirse _score'a eklenir
 
 # --- Eşik Değerleri ve Sabitler ---
 LENGTH_RATIO_THRESHOLD = 0.4
-TOKEN_COVERAGE_THRESHOLD = 0.8  # Token'ların en az %80'i örtüşmeli
+TOKEN_COVERAGE_THRESHOLD = 0.95  # Token'ların en az %95'i örtüşmeli
 
 SUFFIX_FUZZY_MIN_SCORE = 1.5  # ES score eşiği — prod testleriyle kalibre edilmeli
 SUFFIX_FUZZY_SCORE = 85  # match sonucu skoru (normalised tier score)
@@ -101,60 +81,6 @@ RESCORE_WINDOW_SIZE = 20  # Rescore sadece top N adaya uygulanır
 # --- msearch Ayarları ---
 MSEARCH_CHUNK_SIZE = 500  # Tek msearch çağrısında max sorgu sayısı
 
-# --- Business Descriptors (Generic Token'dan Hariç Tutulacaklar) ---
-# Bu kelimeler company_types hedeflerinde yer alsa da firma isminin
-# ANLAMLI parçalarıdır. stripped_form'da kaldırılmamalı.
-# Örnek: "Apple Trading" vs "Apple Manufacturing" = farklı firmalar
-#
-# Sprint 1 (2026-04-10): liste sektör/rol kelimeleriyle genişletildi.
-# Bakınız docs/superpowers/specs/2026-04-10-pg-es-matching-accuracy-audit-design.md §4.1
-BUSINESS_DESCRIPTORS = frozenset({
-    # mevcut (eski liste)
-    "comercial", "enterprises", "group", "holding", "industrial", "industries",
-    "internacional", "international", "koncern", "manufacturing", "prod",
-    "sanayi", "services", "solutions", "technologies", "ticaret", "trading",
-    # tekil/çoğul çeşitleri
-    "enterprise", "holdings", "service", "solution", "technology",
-    # tekil/çoğul (ek — industry eksikti)
-    "industry",
-    # ticari rol kelimeleri
-    "trader", "traders", "exports", "imports", "export", "import",
-    "dealers", "dealer", "distributors", "distributor",
-    "suppliers", "supplier", "agency", "agencies",
-    "consultants", "consultant", "consulting",
-    "associates", "associate", "ventures", "venture",
-    "systems", "system", "overseas",
-    # sektör kelimeleri
-    "pharma", "pharmaceuticals", "pharmaceutical",
-    "chemicals", "chemical", "textiles", "textile",
-    "steel", "steels", "metals", "metal",
-    "plastics", "plastic", "packaging",
-    "foods", "food", "agro", "agriculture",
-    "auto", "automobile", "automobiles", "automotive",
-    "electronics", "electronic", "electric", "electrical",
-    "software", "hardware", "media", "communications",
-    "healthcare", "health", "education", "educational",
-    "finance", "financial", "capital", "investments", "investment",
-    "securities", "insurance", "leasing", "commodities", "commodity",
-    "power", "energy", "petroleum", "petro",
-    "hotel", "hotels", "hospitality", "resort", "resorts",
-    "aviation", "shipping", "marine", "maritime",
-    "logistics", "transport", "transportation",
-    "engineering", "engineers", "construction", "constructions",
-    "infra", "infrastructure", "realty", "developers", "developer",
-    "retail", "retails", "global",
-})
-
-SUFFIX_TYPO_MAP = {
-    "limted": "limited",
-    "limted.": "limited",
-    "ltdl": "ltd",
-    "ltda": "ltd",
-    "incp": "inc",
-    "incc": "inc",
-    "gmhb": "gmbh",
-    "corp.": "corp",
-}
 
 # --- Stage Konfigürasyonu ---
 # Stage eklemek:   Listeye yeni dict ekle + es_queries.py'e aynı isimde fonksiyon yaz
@@ -163,20 +89,20 @@ SUFFIX_TYPO_MAP = {
 
 STAGES = [
     {
-        "name": "TAX_EXACT",
-        "order": 1,
-        "query_fn": "TAX_EXACT",
-        "min_score": 1.0,
-        "enabled": True,
-        "index_variation": True,   # Vergi no kesin eşleşme — variations'a ekle
-    },
-    {
         "name": "CANONICAL_EXACT",
-        "order": 2,
+        "order": 1,
         "query_fn": "CANONICAL_EXACT",
         "min_score": 3.0,
         "enabled": True,
-        "index_variation": False,  # Sprint 1 (§4.5): cascade freeze
+        "index_variation": True,
+    },
+    {
+        "name": "STRIPPED_EXACT",
+        "order": 2,
+        "query_fn": "STRIPPED_EXACT",
+        "min_score": 3.0,
+        "enabled": True,
+        "index_variation": True,
     },
     {
         "name": "SUFFIX_FUZZY",
@@ -184,38 +110,38 @@ STAGES = [
         "query_fn": "SUFFIX_FUZZY",
         "min_score": SUFFIX_FUZZY_MIN_SCORE,
         "enabled": True,
-        "index_variation": False,  # Sprint 1 (§4.5): cascade freeze
-    },
-    {
-        "name": "TOKEN_COVERAGE",
-        "order": 4,
-        "query_fn": "TOKEN_COVERAGE",
-        "min_score": 3.0,
-        "enabled": True,
-        "index_variation": False,  # Sprint 1 (§4.5): cascade freeze
+        "index_variation": False,
     },
     {
         "name": "FUZZY_PHRASE",
-        "order": 5,
+        "order": 4,
         "query_fn": "FUZZY_PHRASE",
         "min_score": 5.0,
         "enabled": True,
-        "index_variation": False,  # Fuzzy phrase — zayıf, silsile riski, sadece PG
+        "index_variation": False,
+    },
+    {
+        "name": "TOKEN_COVERAGE",
+        "order": 5,
+        "query_fn": "TOKEN_COVERAGE",
+        "min_score": 3.0,
+        "enabled": True,
+        "index_variation": False,
+    },
+    {
+        "name": "PHONETIC_MATCH",
+        "order": 6,
+        "query_fn": "PHONETIC_MATCH",
+        "min_score": 3.0,
+        "enabled": True,
+        "index_variation": False,
     },
     {
         "name": "NGRAM_MATCH",
-        "order": 6,
-        "query_fn": "NGRAM_MATCH",
-        "min_score": 3.0,
-        "enabled": True,
-        "index_variation": False,  # N-gram — en zayıf, silsile riski, sadece PG
-    },
-    {
-        "name": "STRIPPED_EXACT",
         "order": 7,
-        "query_fn": "STRIPPED_EXACT",
-        "min_score": 3.0,
+        "query_fn": "NGRAM_MATCH",
+        "min_score": 10.0,
         "enabled": True,
-        "index_variation": False,  # Suffix temizlenmiş — fazla geniş, sadece PG
+        "index_variation": False,
     },
 ]

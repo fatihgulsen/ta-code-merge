@@ -92,21 +92,21 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
             "Kurmak icin: elasticsearch-plugin install analysis-phonetic"
         )
 
-    filters["arabic_norm"] = {
-        "type": "arabic_normalization"
-    }
+    filters["arabic_norm"] = {"type": "arabic_normalization"}
 
     char_filters = {
         "punctuation_remover": {
             "type": "pattern_replace",
             "pattern": "[.,]+",
-            "replacement": " "
+            "replacement": " ",
         }
     }
 
     base_clean_filters = []
     if has_icu:
-        base_clean_filters.extend(["icu_normalizer", "icu_folding", "lowercase", "arabic_norm"])
+        base_clean_filters.extend(
+            ["icu_normalizer", "icu_folding", "lowercase", "arabic_norm"]
+        )
     else:
         base_clean_filters.extend(["lowercase", "arabic_norm"])
 
@@ -214,6 +214,11 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     variations_fields = {
         # Tam eşleşme kontrolü (synonym uygulanmaz)
         "keyword": {"type": "keyword", "ignore_above": 512},
+        # Token Count: Birebir (1-1) eşleşme kontrolü için kelime sayısı
+        "token_count": {
+            "type": "token_count",
+            "analyzer": "clean_analyzer_common",
+        },
         # Fingerprint: token sort + dedup (sırasız eşleşme)
         "fingerprint": {
             "type": "text",
@@ -240,6 +245,26 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
             "analyzer": "phonetic_analyzer",
         }
 
+    # Stripped fields:
+    stripped_fields = {
+        "keyword": {"type": "keyword", "ignore_above": 512},
+        # Token Count: Suffix'ler atıldıktan sonraki kelime sayısı
+        "token_count": {
+            "type": "token_count",
+            "analyzer": "stripped_search_analyzer",
+        },
+        "ngram": {
+            "type": "text",
+            "analyzer": "ngram_analyzer",
+            "search_analyzer": "ngram_search_analyzer",
+        },
+    }
+    if has_phonetic:
+        stripped_fields["phonetic"] = {
+            "type": "text",
+            "analyzer": "phonetic_analyzer",
+        }
+
     settings = {
         "settings": {
             "number_of_shards": 5,
@@ -258,7 +283,6 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
             "properties": {
                 "master_id": {"type": "keyword"},
                 "country_code": {"type": "keyword"},
-                "tax_number": {"type": "keyword"},
                 "phone_number": {"type": "keyword"},
                 "address": {
                     "type": "text",
@@ -267,22 +291,25 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
                     },
                 },
                 "variations": {
-                    "type": "text",
-                    "analyzer": "clean_analyzer_common",
-                    "fields": variations_fields,
+                    "type": "nested",
+                    "properties": {
+                        "name": {
+                            "type": "text",
+                            "analyzer": "clean_analyzer_common",
+                            "fields": variations_fields,
+                        }
+                    }
                 },
                 "variations_stripped": {
-                    "type": "text",
-                    "analyzer": "standard",
-                    "search_analyzer": "stripped_search_analyzer",
-                    "fields": {
-                        "keyword": {"type": "keyword", "ignore_above": 512},
-                        "ngram": {
+                    "type": "nested",
+                    "properties": {
+                        "name": {
                             "type": "text",
-                            "analyzer": "ngram_analyzer",
-                            "search_analyzer": "ngram_search_analyzer",
-                        },
-                    },
+                            "analyzer": "standard",
+                            "search_analyzer": "stripped_search_analyzer",
+                            "fields": stripped_fields,
+                        }
+                    }
                 },
                 "variations_suffix": {
                     "type": "text",
@@ -309,6 +336,7 @@ def create_index(es: Elasticsearch, force_recreate: bool = False) -> None:
             es.indices.delete(index=ES_INDEX, ignore=[404])
             # ES'in delete'i tamamlamasini bekle
             import time
+
             for _ in range(30):
                 if not es.indices.exists(index=ES_INDEX):
                     break

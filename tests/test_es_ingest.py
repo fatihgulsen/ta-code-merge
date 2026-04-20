@@ -55,11 +55,12 @@ def test_build_pipeline_body_suffix_processor_last():
 def test_build_pipeline_body_differs_per_country():
     """Farklı ülkelerin pipeline body'si farklı olmalı (TR vs AE)."""
     from es_ingest import build_pipeline_body
-    body_tr = build_pipeline_body("TR")
-    body_ae = build_pipeline_body("AE")
-    clean_tr = body_tr["processors"][0]["script"]["source"]
-    clean_ae = body_ae["processors"][0]["script"]["source"]
-    assert clean_tr != clean_ae
+    body_tr = build_pipeline_body("MX")
+    body_ae = build_pipeline_body("US")
+    # Sprint 2: clean script is now global, stripped script differs by country (legal_suffixes)
+    stripped_tr = body_tr["processors"][1]["script"]["source"]
+    stripped_ae = body_ae["processors"][1]["script"]["source"]
+    assert stripped_tr != stripped_ae
 
 
 def test_register_all_pipelines_calls_each_country():

@@ -12,45 +12,43 @@ def _get_country_filter(query_dict: dict) -> str | None:
     return None
 
 
-def test_tax_exact_structure():
-    q = es_queries.TAX_EXACT("acme inc", "TR", tax_number="1234567890")
-    filters = q["query"]["bool"]["filter"]
-    tax_filter = next(f["term"]["tax_number"] for f in filters if "term" in f and "tax_number" in f["term"])
-    assert tax_filter == "1234567890"
-    assert _get_country_filter(q) == "TR"
-    assert q.get("size") == 1
-
-
-def test_tax_exact_normalizes_tax():
-    q = es_queries.TAX_EXACT("acme inc", "TR", tax_number="123-456.789/0")
-    filters = q["query"]["bool"]["filter"]
-    tax_val = next(f["term"]["tax_number"] for f in filters if "term" in f and "tax_number" in f["term"])
-    assert tax_val == "1234567890"
-
-
 def test_canonical_exact_structure():
     q = es_queries.CANONICAL_EXACT("apple trading", "TR")
     assert _get_country_filter(q) == "TR"
     bool_q = q["query"]["bool"]
+    
+    # Nested clause kontrolü
+    nested = next(c["nested"] for c in bool_q["must"] if "nested" in c)
+    assert nested["path"] == "variations"
+    
+    inner_must = nested["query"]["bool"]["must"]
     must_phrases = [
-        c["match_phrase"]["variations"]["query"]
-        for c in bool_q.get("must", [])
-        if "match_phrase" in c and "variations" in c["match_phrase"]
+        c["match_phrase"]["variations.name"]["query"]
+        for c in inner_must
+        if "match_phrase" in c and "variations.name" in c["match_phrase"]
     ]
     assert "apple trading" in must_phrases
+    
+    # token_count filtresi kontrolü
+    inner_filters = nested["query"]["bool"]["filter"]
+    assert any("term" in f and "variations.token_count" in f["term"] for f in inner_filters)
 
 
 def test_canonical_exact_uses_country_analyzer():
     q = es_queries.CANONICAL_EXACT("apple trading", "DE")
     must = q["query"]["bool"]["must"]
-    analyzer = must[0]["match_phrase"]["variations"]["analyzer"]
+    nested = next(c["nested"] for c in must if "nested" in c)
+    inner_must = nested["query"]["bool"]["must"]
+    analyzer = inner_must[0]["match_phrase"]["variations.name"]["analyzer"]
     assert analyzer == "clean_analyzer_DE"
 
 
 def test_canonical_exact_fallback_analyzer_for_unknown_country():
     q = es_queries.CANONICAL_EXACT("apple trading", "XX")
     must = q["query"]["bool"]["must"]
-    analyzer = must[0]["match_phrase"]["variations"]["analyzer"]
+    nested = next(c["nested"] for c in must if "nested" in c)
+    inner_must = nested["query"]["bool"]["must"]
+    analyzer = inner_must[0]["match_phrase"]["variations.name"]["analyzer"]
     assert analyzer == "clean_analyzer_common"
 
 
@@ -58,10 +56,15 @@ def test_stripped_exact_structure():
     q = es_queries.STRIPPED_EXACT("apple trading", "US")
     assert _get_country_filter(q) == "US"
     bool_q = q["query"]["bool"]
+    
+    nested = next(c["nested"] for c in bool_q["must"] if "nested" in c)
+    assert nested["path"] == "variations_stripped"
+    
+    inner_must = nested["query"]["bool"]["must"]
     must_phrases = [
-        c["match_phrase"]["variations_stripped"]["query"]
-        for c in bool_q.get("must", [])
-        if "match_phrase" in c and "variations_stripped" in c["match_phrase"]
+        c["match_phrase"]["variations_stripped.name"]["query"]
+        for c in inner_must
+        if "match_phrase" in c and "variations_stripped.name" in c["match_phrase"]
     ]
     assert "apple trading" in must_phrases
 
@@ -69,26 +72,32 @@ def test_stripped_exact_structure():
 def test_stripped_exact_uses_country_analyzer():
     """STRIPPED_EXACT bilinen ülke için stripped_search_analyzer_{cc} kullanmalı."""
     query = es_queries.STRIPPED_EXACT("Acme Limited", "TR")
-    match_phrase = query["query"]["bool"]["must"][0]["match_phrase"]
-    analyzer = match_phrase["variations_stripped"]["analyzer"]
+    must = query["query"]["bool"]["must"]
+    nested = next(c["nested"] for c in must if "nested" in c)
+    match_phrase = nested["query"]["bool"]["must"][0]["match_phrase"]
+    analyzer = match_phrase["variations_stripped.name"]["analyzer"]
     assert analyzer == "stripped_search_analyzer_tr"
 
 
 def test_stripped_exact_uses_global_analyzer_for_unknown_country():
     """STRIPPED_EXACT bilinmeyen ülke için global fallback analyzer kullanmalı."""
     query = es_queries.STRIPPED_EXACT("Acme Limited", "XX")
-    match_phrase = query["query"]["bool"]["must"][0]["match_phrase"]
-    analyzer = match_phrase["variations_stripped"]["analyzer"]
+    must = query["query"]["bool"]["must"]
+    nested = next(c["nested"] for c in must if "nested" in c)
+    match_phrase = nested["query"]["bool"]["must"][0]["match_phrase"]
+    analyzer = match_phrase["variations_stripped.name"]["analyzer"]
     assert analyzer == "stripped_search_analyzer"
 
 
 def test_token_coverage_uses_and_operator():
     q = es_queries.TOKEN_COVERAGE("apple trading limited", "US")
     must = q["query"]["bool"]["must"]
+    nested = next(c["nested"] for c in must if "nested" in c)
+    inner_must = nested["query"]["bool"]["must"]
     match_clause = next(
-        c["match"]["variations"]
-        for c in must
-        if "match" in c and "variations" in c["match"]
+        c["match"]["variations.name"]
+        for c in inner_must
+        if "match" in c and "variations.name" in c["match"]
     )
     assert match_clause["operator"] == "and"
 
@@ -96,10 +105,12 @@ def test_token_coverage_uses_and_operator():
 def test_fuzzy_phrase_has_slop():
     q = es_queries.FUZZY_PHRASE("apple trading", "US")
     must = q["query"]["bool"]["must"]
+    nested = next(c["nested"] for c in must if "nested" in c)
+    inner_must = nested["query"]["bool"]["must"]
     phrase = next(
-        c["match_phrase"]["variations"]
-        for c in must
-        if "match_phrase" in c and "variations" in c["match_phrase"]
+        c["match_phrase"]["variations.name"]
+        for c in inner_must
+        if "match_phrase" in c and "variations.name" in c["match_phrase"]
     )
     assert phrase.get("slop", 0) >= 1
 
@@ -107,9 +118,11 @@ def test_fuzzy_phrase_has_slop():
 def test_ngram_match_queries_ngram_field():
     q = es_queries.NGRAM_MATCH("apple", "US")
     must = q["query"]["bool"]["must"]
+    nested = next(c["nested"] for c in must if "nested" in c)
+    inner_must = nested["query"]["bool"]["must"]
     assert any(
         "match" in c and "variations_stripped.ngram" in c["match"]
-        for c in must
+        for c in inner_must
     )
 
 
@@ -142,17 +155,17 @@ def test_suffix_fuzzy_must_queries_variations_stripped():
     """must clause variations_stripped alanını sorgulamalı."""
     q = es_queries.SUFFIX_FUZZY("komerci limted", "TR")
     must = q["query"]["bool"]["must"]
+    nested = next(c["nested"] for c in must if "nested" in c)
+    inner_must = nested["query"]["bool"]["must"]
     stripped_clauses = [
-        c["match"]["variations_stripped"]
-        for c in must
-        if "match" in c and "variations_stripped" in c["match"]
+        c["match_phrase"]["variations_stripped.name"]
+        for c in inner_must
+        if "match_phrase" in c and "variations_stripped.name" in c["match_phrase"]
     ]
-    assert stripped_clauses, "variations_stripped match clause yok"
+    assert stripped_clauses, "variations_stripped match_phrase clause yok"
     clause = stripped_clauses[0]
     assert clause["query"] == "komerci limted"
-    assert clause["analyzer"] == "stripped_search_analyzer"
-    assert clause["operator"] == "or"
-    assert clause["minimum_should_match"] == 1
+    assert clause["analyzer"] == "stripped_search_analyzer_tr"
 
 
 def test_suffix_fuzzy_should_queries_variations_suffix_with_fuzziness():
@@ -177,16 +190,9 @@ def test_suffix_fuzzy_includes_country_filter():
 
 
 def test_variations_suffix_mapping_has_explicit_search_analyzer():
-    """variations_suffix alanı hem analyzer hem search_analyzer'ı açıkça tanımlamalı.
-
-    Index-time: standard analyzer (ingest pipeline tarafından önceden normalize edilmiş token'lar)
-    Search-time: standard analyzer (query-time synonym expansion gerekmez)
-    Açık search_analyzer, intent'i belgeler ve ES varsayılan davranışına güvenmez.
-    """
+    """variations_suffix alanı hem analyzer hem search_analyzer'ı açıkça tanımlamalı."""
     settings = build_index_settings(es=None)
     props = settings["mappings"]["properties"]
     suffix_field = props["variations_suffix"]
     assert suffix_field["analyzer"] == "standard"
-    assert suffix_field.get("search_analyzer") == "standard", (
-        "variations_suffix alanında açık search_analyzer tanımlanmamış"
-    )
+    assert suffix_field.get("search_analyzer") == "standard"

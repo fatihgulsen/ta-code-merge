@@ -11,6 +11,7 @@
 
 import logging
 import re
+from elasticsearch import Elasticsearch
 from synonym_loader import get_all_country_codes
 
 logger = logging.getLogger(__name__)
@@ -46,43 +47,53 @@ def _get_stripped_analyzer(country: str) -> str:
     return "stripped_search_analyzer"
 
 
-def _normalize_tax(tax: str) -> str:
-    return re.sub(r"[^\w]", "", tax).upper()
+def _get_token_count(es: Elasticsearch, text: str, analyzer: str) -> int:
+    """Elasticsearch _analyze API kullanarak metnin kaç token ürettiğini hesaplar."""
+    if not es or not text:
+        return 0
+    try:
+        # Circular import önlemek için local import
+        from config import ES_INDEX
+        res = es.indices.analyze(index=ES_INDEX, body={"analyzer": analyzer, "text": text})
+        return len(res.get("tokens", []))
+    except Exception:
+        # Hata durumunda (index henüz oluşmamış vb.) 0 döner, match engellenmez (faydalı değil ama güvenli)
+        return 0
 
 
-def TAX_EXACT(name: str, country: str, tax_number: str = "", **kwargs) -> dict:
-    """
-    Vergi no birebir eşleşme — deterministik.
-    tax_number boşsa bu stage atlanır (main_processor tarafından skip edilir).
-    """
-    return {
-        "query": {
-            "bool": {
-                "filter": [
-                    {"term": {"tax_number": _normalize_tax(tax_number)}},
-                    {"term": {"country_code": country.upper()}},
-                ]
-            }
-        },
-        "size": 1,
-    }
-
-
-def CANONICAL_EXACT(name: str, country: str, **kwargs) -> dict:
+def CANONICAL_EXACT(name: str, country: str, es: Elasticsearch = None, **kwargs) -> dict:
     """
     Synonym-aware canonical form tam phrase eşleşmesi.
     Ülkeye özel analyzer arama zamanında canonical form üretir.
+    Nested structure ve token_count filtresi ile 1-1 birebir (identity) eşleşme zorlanır.
     """
     analyzer = _get_analyzer(country)
+    expected_count = _get_token_count(es, name, analyzer)
+
     return {
         "query": {
             "bool": {
                 "must": [
                     {
-                        "match_phrase": {
-                            "variations": {
-                                "query": name,
-                                "analyzer": analyzer,
+                        "nested": {
+                            "path": "variations",
+                            "query": {
+                                "bool": {
+                                    "must": [
+                                        {
+                                            "match_phrase": {
+                                                "variations.name": {
+                                                    "query": name,
+                                                    "analyzer": analyzer,
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "filter": (
+                                        [{"term": {"variations.name.token_count": expected_count}}]
+                                        if expected_count > 0 else []
+                                    )
+                                }
                             }
                         }
                     }
@@ -94,22 +105,39 @@ def CANONICAL_EXACT(name: str, country: str, **kwargs) -> dict:
     }
 
 
-def STRIPPED_EXACT(name: str, country: str, **kwargs) -> dict:
+def STRIPPED_EXACT(name: str, country: str, es: Elasticsearch = None, **kwargs) -> dict:
     """
     Suffix temizlenmiş tam phrase eşleşmesi.
     variations_stripped alanı ingest pipeline tarafından doldurulur.
-    Sorgu search_analyzer ile query-time'da da stripped forma dönüştürülür.
+    Nested structure ve token_count filtresi ile 1-1 birebir (identity) eşleşme zorlanır.
     """
     analyzer = _get_stripped_analyzer(country)
+    expected_count = _get_token_count(es, name, analyzer)
+
     return {
         "query": {
             "bool": {
                 "must": [
                     {
-                        "match_phrase": {
-                            "variations_stripped": {
-                                "query": name,
-                                "analyzer": analyzer,
+                        "nested": {
+                            "path": "variations_stripped",
+                            "query": {
+                                "bool": {
+                                    "must": [
+                                        {
+                                            "match_phrase": {
+                                                "variations_stripped.name": {
+                                                    "query": name,
+                                                    "analyzer": analyzer,
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "filter": (
+                                        [{"term": {"variations_stripped.name.token_count": expected_count}}]
+                                        if expected_count > 0 else []
+                                    )
+                                }
                             }
                         }
                     }
@@ -124,23 +152,24 @@ def STRIPPED_EXACT(name: str, country: str, **kwargs) -> dict:
 def SUFFIX_FUZZY(name: str, country: str, **kwargs) -> dict:
     """
     Suffix fuzzy eşleştirme:
-      - must: variations_stripped'a operator:or match (name kısmının doğru olduğunu garanti eder)
+      - must: variations_stripped'a match_phrase (Ana isim tam eslesmeli)
       - should: variations_suffix'e fuzziness AUTO:4,7 (suffix typo'larını yakalar)
-
-    Örnek: "Komerci Limted" → "Komerci Limited" eşleşir (suffix typo)
-           "Kommerci Limted" → "Komerci Limited" eşleşmez (name typo)
     """
+    analyzer = _get_stripped_analyzer(country)
     return {
         "query": {
             "bool": {
                 "must": [
                     {
-                        "match": {
-                            "variations_stripped": {
-                                "query": name,
-                                "analyzer": "stripped_search_analyzer",
-                                "operator": "or",
-                                "minimum_should_match": 1,
+                        "nested": {
+                            "path": "variations_stripped",
+                            "query": {
+                                "match_phrase": {
+                                    "variations_stripped.name": {
+                                        "query": name,
+                                        "analyzer": analyzer,
+                                    }
+                                }
                             }
                         }
                     }
@@ -174,11 +203,16 @@ def TOKEN_COVERAGE(name: str, country: str, **kwargs) -> dict:
             "bool": {
                 "must": [
                     {
-                        "match": {
-                            "variations": {
-                                "query": name,
-                                "analyzer": analyzer,
-                                "operator": "and",
+                        "nested": {
+                            "path": "variations",
+                            "query": {
+                                "match": {
+                                    "variations.name": {
+                                        "query": name,
+                                        "analyzer": analyzer,
+                                        "operator": "and",
+                                    }
+                                }
                             }
                         }
                     }
@@ -201,11 +235,16 @@ def FUZZY_PHRASE(name: str, country: str, **kwargs) -> dict:
             "bool": {
                 "must": [
                     {
-                        "match_phrase": {
-                            "variations": {
-                                "query": name,
-                                "analyzer": analyzer,
-                                "slop": 1,
+                        "nested": {
+                            "path": "variations",
+                            "query": {
+                                "match_phrase": {
+                                    "variations.name": {
+                                        "query": name,
+                                        "analyzer": analyzer,
+                                        "slop": 1,
+                                    }
+                                }
                             }
                         }
                     }
@@ -220,17 +259,52 @@ def FUZZY_PHRASE(name: str, country: str, **kwargs) -> dict:
 def NGRAM_MATCH(name: str, country: str, **kwargs) -> dict:
     """
     Trigram index-time fuzzy eslesmesi — suffix'ler cikarilmis form uzerinden.
-    variations_stripped.ngram alani kullanilir, boylece "dye chem pvt ltd"
-    gibi suffix token'lari ngram skorunu artifak olarak yukseltmez.
+    minimum_should_match: "75%" eklenerek hatalı kısa eşleşmeler önlenir.
     """
     return {
         "query": {
             "bool": {
                 "must": [
                     {
-                        "match": {
-                            "variations_stripped.ngram": {
-                                "query": name,
+                        "nested": {
+                            "path": "variations_stripped",
+                            "query": {
+                                "match": {
+                                    "variations_stripped.name.ngram": {
+                                        "query": name,
+                                        "minimum_should_match": "75%",
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ],
+                "filter": [{"term": {"country_code": country.upper()}}],
+            }
+        },
+        "size": 1,
+    }
+
+
+def PHONETIC_MATCH(name: str, country: str, **kwargs) -> dict:
+    """
+    Sestese dayalı (phonetic) eşleşme — sadece ana isim üzerinden.
+    Double Metaphone algoritması ile suffix gürültüsü olmadan eşleşir.
+    """
+    return {
+        "query": {
+            "bool": {
+                "must": [
+                    {
+                        "nested": {
+                            "path": "variations_stripped",
+                            "query": {
+                                "match": {
+                                    "variations_stripped.name.phonetic": {
+                                        "query": name,
+                                        "operator": "and",
+                                    }
+                                }
                             }
                         }
                     }

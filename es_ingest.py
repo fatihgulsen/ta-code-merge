@@ -17,7 +17,6 @@ import logging
 
 from elasticsearch import Elasticsearch
 
-from config import SUFFIX_TYPO_MAP
 from synonym_loader import (
     get_all_country_codes,
     get_article_stopwords,
@@ -64,7 +63,8 @@ def _build_clean_script(country_code: str) -> str:
         "List cleanedVariations = new ArrayList();",
         # Ana döngü
         "for (int vi = 0; vi < ctx.variations.size(); vi++) {",
-        "  String text = ctx.variations[vi];",
+        "  def varItem = ctx.variations[vi];",
+        "  String text = varItem instanceof Map ? varItem.name : varItem;",
         "  if (text == null || text.trim().length() == 0) { continue; }",
         # 1. Lowercase
         "  text = text.toLowerCase();",
@@ -83,8 +83,10 @@ def _build_clean_script(country_code: str) -> str:
         # 6. Cift bosluk temizligi
         r"  text = /\s+/.matcher(text).replaceAll(' ').trim();",
         # Sonuca ekle
-        "  if (text.length() > 0 && !cleanedVariations.contains(text)) {",
-        "    cleanedVariations.add(text);",
+        "  if (text.length() > 0) {",
+        "    boolean exists = false;",
+        "    for (v in cleanedVariations) { if (v.name == text) { exists = true; break; } }",
+        "    if (!exists) { cleanedVariations.add(['name': text]); }",
         "  }",
         "}",
         "ctx.variations = cleanedVariations;",
@@ -117,7 +119,8 @@ def _build_stripped_script(country_code: str) -> str:
         "if (ctx.variations == null) { return; }",
         "List stripped = new ArrayList();",
         "for (int i = 0; i < ctx.variations.size(); i++) {",
-        "  String text = ctx.variations[i];",
+        "  def varItem = ctx.variations[i];",
+        "  String text = varItem instanceof Map ? varItem.name : varItem;",
         r"  def tokens = / /.split(text);",
         "  StringBuilder sb = new StringBuilder();",
         "  for (int t = 0; t < tokens.length; t++) {",
@@ -128,8 +131,10 @@ def _build_stripped_script(country_code: str) -> str:
         "    }",
         "  }",
         "  String result = sb.toString().trim();",
-        "  if (result.length() > 0 && !stripped.contains(result)) {",
-        "    stripped.add(result);",
+        "  if (result.length() > 0) {",
+        "    boolean exists = false;",
+        "    for (v in stripped) { if (v.name == result) { exists = true; break; } }",
+        "    if (!exists) { stripped.add(['name': result]); }",
         "  }",
         "}",
         "ctx.variations_stripped = stripped;",
@@ -153,7 +158,8 @@ def _build_suffix_script(generic_tokens: list[str]) -> str:
         "if (ctx.variations == null) { return; }",
         "List suffixes = new ArrayList();",
         "for (int i = 0; i < ctx.variations.size(); i++) {",
-        "  String text = ctx.variations[i];",
+        "  def varItem = ctx.variations[i];",
+        "  String text = varItem instanceof Map ? varItem.name : varItem;",
         r"  def tokens = / /.split(text);",
         "  List suffixTokens = new ArrayList();",
         "  for (int t = 0; t < tokens.length; t++) {",
@@ -216,7 +222,7 @@ def register_pipeline(es: Elasticsearch, country_code: str) -> None:
     name = pipeline_name(country_code)
     body = build_pipeline_body(country_code)
     es.ingest.put_pipeline(id=name, body=body)
-    logger.info(f"Ingest pipeline '{name}' kaydedildi.")
+    logger.debug(f"Ingest pipeline '{name}' kaydedildi.")
 
 
 def register_all_pipelines(es: Elasticsearch) -> None:
@@ -232,7 +238,7 @@ def delete_pipeline(es: Elasticsearch, country_code: str) -> None:
     name = pipeline_name(country_code)
     try:
         es.ingest.delete_pipeline(id=name)
-        logger.info(f"Ingest pipeline '{name}' silindi.")
+        logger.debug(f"Ingest pipeline '{name}' silindi.")
     except Exception:
         logger.warning(f"Pipeline '{name}' silinemedi (muhtemelen mevcut değil).")
 

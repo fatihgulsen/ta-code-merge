@@ -52,7 +52,6 @@ def review_duplicates(es: Elasticsearch, min_count: int = 2) -> None:
                     src = doc["_source"]
                     print(f"  [{mid}]")
                     print(f"    Variations: {src.get('variations', [])[:5]}")
-                    print(f"    Tax: {src.get('tax_number', '-')}")
                     print(f"    Phone: {src.get('phone_number', '-')}")
                 except Exception:
                     print(f"  [{mid}] - Dokuman bulunamadi")

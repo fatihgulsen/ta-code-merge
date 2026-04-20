@@ -15,7 +15,6 @@
 import logging
 import sys
 import uuid
-import unicodedata
 from typing import Any
 
 import psycopg2
@@ -50,25 +49,18 @@ from config import (
     COLUMN_MAPPING,
     DB_CONFIG,
     ES_INDEX,
-    LENGTH_RATIO_THRESHOLD,
     MANDATORY_READ_COLUMNS,
     MANDATORY_UPDATE_COLUMNS,
     AUTO_CREATE_UPDATE_COLUMNS,
     RAW_TABLE_NAME,
+    COUNTRY_CODE_FILTER,
     STAGES,
     MSEARCH_CHUNK_SIZE,
     SUFFIX_FUZZY_SCORE,
-    SUFFIX_TYPO_MAP,
-    TOKEN_COVERAGE_THRESHOLD,
+    LOG_ALL_STAGES,
 )
 from es_manager import create_index, get_es_client
 from es_ingest import register_all_pipelines, pipeline_name
-from synonym_loader import (
-    get_article_stopwords,
-    get_business_sector_canonical_map,
-    get_company_type_tokens,
-    get_legal_suffix_tokens,
-)
 import es_queries as _es_queries
 
 logging.basicConfig(
@@ -227,12 +219,6 @@ def run_stage(
         top_score = top_hit["_score"] if top_hit else 0.0
 
         if top_hit and top_score >= min_score:
-            # Post-ES verification: simetrik token coverage kontrolu
-            if not _post_verify(
-                rec["raw_name"], top_hit["_source"], stage_name, rec["country"]
-            ):
-                unmatched.append(rec)
-                continue
             matched.append(
                 {
                     **rec,
@@ -249,290 +235,6 @@ def run_stage(
             unmatched.append(rec)
 
     return matched, unmatched
-
-
-import re as _re
-
-# Nakliye/gumruk belgelerindeki adres ibareleri — firma isminin parcasi degil
-_LABEL_PATTERNS = _re.compile(
-    r"\b(?:to\s+(?:the\s+)?order\s+of|c/?o|attn|care\s+of)\b",
-    _re.IGNORECASE,
-)
-
-# Ulke kodu → ulke adi token'lari eslesmesi
-# Ayni ulkedeki firma isimlerinde ulke adi geciyorsa yok sayilir
-# Ornek: IN firmasinda "MERIL LIFE SCIENCES INDIA PVT LTD" → "india" yok sayilir
-_COUNTRY_NAME_TOKENS: dict[str, frozenset[str]] = {
-    "IN": frozenset({"india", "indian"}),
-    "US": frozenset({"usa", "america", "american", "united", "states"}),
-    "MY": frozenset({"malaysia", "malaysian"}),
-    "DE": frozenset({"germany", "german", "deutschland"}),
-    "FR": frozenset({"france", "french"}),
-    "BR": frozenset({"brazil", "brazilian", "brasil"}),
-    "TR": frozenset({"turkey", "turkish", "turkiye"}),
-    "AE": frozenset({"emirates", "dubai", "uae"}),
-    "CN": frozenset({"china", "chinese"}),
-    "JP": frozenset({"japan", "japanese"}),
-    "KR": frozenset({"korea", "korean"}),
-    "TW": frozenset({"taiwan", "taiwanese"}),
-    "TH": frozenset({"thailand", "thai"}),
-    "VN": frozenset({"vietnam", "vietnamese"}),
-    "ID": frozenset({"indonesia", "indonesian"}),
-    "PH": frozenset({"philippines", "philippine", "filipino"}),
-    "SG": frozenset({"singapore"}),
-    "AU": frozenset({"australia", "australian"}),
-    "NZ": frozenset({"zealand"}),
-    "GB": frozenset({"britain", "british", "england", "english", "uk"}),
-    "IT": frozenset({"italy", "italian", "italia"}),
-    "ES": frozenset({"spain", "spanish", "espana"}),
-    "NL": frozenset({"netherlands", "dutch", "holland"}),
-    "BE": frozenset({"belgium", "belgian"}),
-    "PL": frozenset({"poland", "polish"}),
-    "RU": frozenset({"russia", "russian"}),
-    "MX": frozenset({"mexico", "mexican"}),
-    "AR": frozenset({"argentina", "argentine"}),
-    "CL": frozenset({"chile", "chilean"}),
-    "CO": frozenset({"colombia", "colombian"}),
-    "ZA": frozenset({"africa", "african"}),
-    "EG": frozenset({"egypt", "egyptian"}),
-    "SA": frozenset({"saudi", "arabia"}),
-    "PK": frozenset({"pakistan", "pakistani"}),
-    "BD": frozenset({"bangladesh", "bangladeshi"}),
-    "LK": frozenset({"lanka", "sri"}),
-}
-
-
-def _clean_labels(name: str) -> str:
-    """Nakliye etiketlerini (to order of, c/o, attn, care of) temizler ve ES analyzer ile uyumlandirmak amaciyla kelimeleri Latin harflerine donusturur."""
-    name = unicodedata.normalize("NFKC", name)
-    cleaned = _LABEL_PATTERNS.sub("", name)
-    return _re.sub(r"\s+", " ", cleaned).strip()
-
-
-def _tokenize(name: str, country: str = "") -> set[str]:
-    """Firma ismini anlamli tokenlara ayirir.
-
-    Sprint 2 algoritmasi:
-      - lower + strip labels + split
-      - Tek-char (alfanumerik disinda) tokenlari at
-      - Ulke-adi tokenlarini at
-      - Legal suffix'leri at (typo map sonrasi)
-      - Article'lari at
-      - Business sector tokenlari canonical map uzerinden normalize et
-    """
-    cleaned = _clean_labels(name)
-    tokens = cleaned.lower().split()
-    country_tokens = _COUNTRY_NAME_TOKENS.get(country.upper(), frozenset())
-    legal_suffixes = get_legal_suffix_tokens(country)
-    article_tokens = get_article_stopwords(country)
-    sector_canonical = get_business_sector_canonical_map(country)
-    result = set()
-    for t in tokens:
-        t_clean = t.rstrip(".,")
-        if not t_clean:
-            continue
-        if len(t_clean) <= 1 and not t_clean.isalnum():
-            continue
-        if t_clean in country_tokens:
-            continue
-        # Deterministik typo canonicalisation (limted -> limited)
-        t_clean = SUFFIX_TYPO_MAP.get(t_clean, t_clean)
-        if t_clean in legal_suffixes or t_clean in article_tokens:
-            continue
-        # Business sector canonicalisation (industry -> industries, intl -> international)
-        t_clean = sector_canonical.get(t_clean, t_clean)
-        result.add(t_clean)
-    return result
-
-
-def _first_meaningful_token(name: str, country: str = "") -> str | None:
-    """Ismin ilk anlamli token'ini doner (brand anchor).
-
-    Sprint 2 — per-country canonical map ile tekil/cogul ve kisaltma
-    normalizasyonu (industry/industries, intl/international, vb.).
-    """
-    cleaned = _clean_labels(name).lower()
-    country_tokens = _COUNTRY_NAME_TOKENS.get(country.upper(), frozenset())
-    legal_suffixes = get_legal_suffix_tokens(country)
-    article_tokens = get_article_stopwords(country)
-    sector_canonical = get_business_sector_canonical_map(country)
-    for raw in cleaned.split():
-        t = raw.rstrip(".,")
-        if not t:
-            continue
-        if len(t) <= 1 and not t.isalnum():
-            continue
-        if t in country_tokens:
-            continue
-        t = SUFFIX_TYPO_MAP.get(t, t)
-        if t in legal_suffixes or t in article_tokens:
-            continue
-        return sector_canonical.get(t, t)
-    return None
-
-
-def strict_name_match(input_name: str, master_name: str, country: str = "") -> bool:
-    """Sprint 2 strict matching.
-
-    Extract ordered name tokens from both names by:
-      1. Cleaning labels + lowercasing
-      2. Normalising every token through SUFFIX_TYPO_MAP
-      3. Dropping tokens in legal_suffixes, articles, or country-name set
-      4. Canonicalising business-sector tokens via rule-based map
-      5. Dropping tokens that are single non-alphanumeric chars
-
-    Returns True iff both sides produce at least 2 meaningful tokens AND
-    the resulting ordered lists are strictly equal.
-
-    This is the canonical "same company" check for Sprint 2. TOKEN_COVERAGE
-    and fuzzy stages keep their own looser post-verify logic.
-    """
-    country_tokens = _COUNTRY_NAME_TOKENS.get(country.upper(), frozenset())
-    legal_suffixes = get_legal_suffix_tokens(country)
-    article_tokens = get_article_stopwords(country)
-    sector_canonical = get_business_sector_canonical_map(country)
-
-    def extract(name: str) -> list[str]:
-        cleaned = _clean_labels(name).lower()
-        out: list[str] = []
-        # Sprint 2: split on whitespace AND embedded punctuation so compound
-        # suffix tokens like "pvt.ltd" → ["pvt", "ltd"] get classified correctly.
-        for raw in _re.split(r"[\s.,;:!?()]+", cleaned):
-            t = raw
-            if not t:
-                continue
-            if len(t) <= 1 and not t.isalnum():
-                continue
-            if t in country_tokens:
-                continue
-            t = SUFFIX_TYPO_MAP.get(t, t)
-            if t in legal_suffixes or t in article_tokens:
-                continue
-            t = sector_canonical.get(t, t)
-            out.append(t)
-        return out
-
-    in_name = extract(input_name)
-    ma_name = extract(master_name)
-
-    if len(in_name) < 2 or len(ma_name) < 2:
-        return False
-    return in_name == ma_name
-
-
-def _symmetric_token_coverage(input_tokens: set[str], master_tokens: set[str]) -> float:
-    """Simetrik token ortusme orani hesaplar.
-
-    Her iki yondeki coverage'in minimumunu dondurur:
-    - input_tokens'in kaci master'da var?
-    - master_tokens'in kaci input'ta var?
-    """
-    if not input_tokens or not master_tokens:
-        return 0.0
-    input_in_master = len(input_tokens & master_tokens) / len(input_tokens)
-    master_in_input = len(master_tokens & input_tokens) / len(master_tokens)
-    return min(input_in_master, master_in_input)
-
-
-def _post_verify(
-    input_name: str, master_source: dict, stage_name: str, country: str = ""
-) -> bool:
-    """Post-ES verification: ES sonucunu Python tarafinda dogrular.
-
-    TAX_EXACT icin dogrulama yapilmaz (deterministic).
-    CANONICAL_EXACT/STRIPPED_EXACT icin yuksek simetrik token coverage (>= 0.9).
-    TOKEN_COVERAGE/FUZZY_PHRASE/NGRAM_MATCH icin TOKEN_COVERAGE_THRESHOLD.
-    SUFFIX_FUZZY icin fuzzy suffix detection + phrase order check.
-    country verilirse, ayni ulke adi token'lardan cikarilir.
-    """
-    if stage_name == "TAX_EXACT":
-        return True
-
-    master_variations = master_source.get("variations", [])
-    if not master_variations:
-        return False
-    master_name = master_variations[0]
-
-    # ── SUFFIX_FUZZY ──────────────────────────────────────────────────────────
-    # Sprint 2: delegates to strict_name_match. The ES query still uses the
-    # variations_stripped + variations_suffix fields (see es_queries.SUFFIX_FUZZY)
-    # to surface candidates, but post-verification requires exact name equality.
-    if stage_name == "SUFFIX_FUZZY":
-        return strict_name_match(input_name, master_name, country)
-
-    # ── _tokenize artık suffix + article token'larını dışlar → direkt meaningful token'lar
-    input_tokens = _tokenize(input_name, country)
-    master_tokens = _tokenize(master_name, country)
-
-    if not input_tokens or not master_tokens:
-        return False
-
-    min_tokens = min(len(input_tokens), len(master_tokens))
-
-    # ── Diğer stage'ler ───────────────────────────────────────────────────────
-    # Sprint 1 temkinli mod: stripping sonrası tek anlamlı token'a inen
-    # eşleşmeler ret. Brand-only çakışmalar riskli (§4.4a).
-    if min_tokens < 2:
-        return False
-
-    coverage = _symmetric_token_coverage(input_tokens, master_tokens)
-
-    # Token tekrar farkı: "RADHE RADHE CREATION" (3 token) vs "RADHE CREATION" (2 token)
-    _wc_stopwords = get_article_stopwords(country) | get_company_type_tokens(country)
-    input_word_count = len(
-        [
-            t
-            for t in _clean_labels(input_name).lower().split()
-            if t.rstrip(".,") not in _wc_stopwords
-            and t.rstrip(".,")
-            and t.rstrip(".,").isalnum()
-        ]
-    )
-    master_word_count = len(
-        [
-            t
-            for t in _clean_labels(master_name).lower().split()
-            if t.rstrip(".,") not in _wc_stopwords
-            and t.rstrip(".,")
-            and t.rstrip(".,").isalnum()
-        ]
-    )
-    word_count_ratio = (
-        min(input_word_count, master_word_count)
-        / max(input_word_count, master_word_count)
-        if max(input_word_count, master_word_count) > 0
-        else 0.0
-    )
-
-    # Uzunluk oranı kontrolu
-    len_input = len(_clean_labels(input_name).strip())
-    len_master = len(_clean_labels(master_name).strip())
-    max_len = max(len_input, len_master)
-    len_ratio = min(len_input, len_master) / max_len if max_len > 0 else 0
-    if len_ratio < LENGTH_RATIO_THRESHOLD:
-        return False
-
-    if stage_name in ("CANONICAL_EXACT", "STRIPPED_EXACT"):
-        if coverage < 0.9:
-            return False
-        if word_count_ratio < 0.9:  # Sprint 1: 0.8 → 0.9 (§4.4b)
-            return False
-
-    if stage_name in ("TOKEN_COVERAGE", "FUZZY_PHRASE", "NGRAM_MATCH"):
-        if coverage < TOKEN_COVERAGE_THRESHOLD:
-            return False
-        if word_count_ratio < 0.7:
-            return False
-        # Sprint 1 brand-anchor: ilk anlamlı token'lar her iki tarafta da aynı
-        # olmalı. "BEE KAY" vs "KAY BEE" gibi sıra farklarını yakalar. (§4.4c)
-        input_first = _first_meaningful_token(input_name, country)
-        master_first = _first_meaningful_token(master_name, country)
-        if input_first is None or master_first is None:
-            return False
-        if input_first != master_first:
-            return False
-
-    return True
 
 
 def _execute_msearch(
@@ -818,22 +520,9 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
     duplicate_logs: list[tuple] = []
 
     for rec in records:
-        # Dedup key: tokenize + sirali tuple — tekrarlari korur
-        # "C & C OVERSEAS" → ('c', 'c', 'overseas') vs "C OVERSEAS" → ('c', 'overseas')
-        raw_tokens = _clean_labels(rec["raw_name"]).lower().split()
-        norm_list = []
-        for t in raw_tokens:
-            tc = t.rstrip(".,")
-            if not tc or (len(tc) <= 1 and not tc.isalnum()):
-                continue
-            if tc in get_article_stopwords(rec["country"]):
-                continue
-            if tc in _COUNTRY_NAME_TOKENS.get(rec["country"].upper(), frozenset()):
-                continue
-            if tc in get_company_type_tokens(rec["country"]):
-                continue
-            norm_list.append(tc)
-        dedup_key = (tuple(sorted(norm_list)), rec["country"])
+        # Basit dedup: lower + strip
+        norm_name = rec["raw_name"].lower().strip()
+        dedup_key = (norm_name, rec["country"])
         existing_master_id = seen.get(dedup_key)
         if existing_master_id:
             duplicate_updates.append(
@@ -881,7 +570,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
                 "pipeline": pipeline_name(rec["country"]),
                 "_source": {
                     "master_id": master_id,
-                    "variations": [rec["raw_name"]],
+                    "variations": [{"name": rec["raw_name"]}],
                     "variations_stripped": [],
                     "country_code": rec["country"].upper(),
                 },
@@ -954,16 +643,12 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
 
         # Adim 3: Kalan kayitlari ES'te arat — onceki sub-batch'lerle eslesiyor mu?
         if remaining:
-            canonical_stage = {
-                "name": "CANONICAL_EXACT",
-                "order": 2,
-                "query_fn": "CANONICAL_EXACT",
-                "min_score": 3.0,
-            }
+            canonical_stage = next(s for s in STAGES if s["name"] == "CANONICAL_EXACT")
             found_in_es, still_remaining = run_stage(es, remaining, canonical_stage)
             if found_in_es:
                 write_matched_to_pg(write_cursor, write_conn, found_in_es)
-                update_es_variations(es, found_in_es)
+                if canonical_stage.get("index_variation", True):
+                    update_es_variations(es, found_in_es)
                 # Stage log'a CANONICAL_EXACT olarak yaz (NEW_MASTER'dan once yakalandi)
                 for r in found_in_es:
                     execute_values(
@@ -1036,75 +721,61 @@ ES_REFRESH_INTERVAL = 50
 
 
 def match_single_record(es, rec: dict, active_stages: list[dict]) -> dict:
-    """Tek bir kaydi tum stage'lerden gecirir.
-
-    Tum stage sorgularini tek bir msearch cagrisinda gonderir.
-    Ilk eslesen stage'den sonuc doner.
-
+    """Tek bir kaydi tum stage'lerden gecirir (msearch ile performansli).
+    Sonuclari islerken ilk eslesenden sonrasini kisa devre yapar (loglamaz).
     Returns:
-        {"matched": True/False, "master_id": ..., "es_score": ...,
-         "stage_name": ..., "stage_order": ...}
+        {"winner": dict or None, "trace": list}
     """
-    # TAX_EXACT icin tax yoksa atla
-    has_tax = bool(rec.get("tax"))
-
-    # Tum stage sorgularini tek msearch body'de topla
     body: list[dict] = []
-    stage_indices: list[dict] = []  # hangi stage hangi response index'inde
+    stage_indices: list[dict] = []
 
     for stage in active_stages:
-        if stage["name"] == "TAX_EXACT" and not has_tax:
-            continue
         query_fn = getattr(_es_queries, stage["query_fn"])
-        q = query_fn(
-            name=rec["raw_name"],
-            country=rec["country"],
-            tax_number=rec.get("tax", ""),
-        )
+        q = query_fn(name=rec["raw_name"], country=rec["country"], es=es)
         body.append({"index": ES_INDEX, "routing": rec["country"].upper()})
         body.append(q)
         stage_indices.append(stage)
 
     if not body:
-        return {"matched": False}
+        return {"winner": None, "trace": []}
 
-    # Tek msearch cagri
     try:
         response = es.msearch(body=body)
     except Exception:
         logger.exception("msearch basarisiz (single record)")
-        return {"matched": False}
+        return {"winner": None, "trace": []}
 
-    # Sonuclari stage oncelik sirasina gore degerlendir
+    trace = []
+    winner = None
+
     for i, stage in enumerate(stage_indices):
         resp = response["responses"][i]
         if "error" in resp:
             continue
+            
         hits = resp["hits"].get("hits", [])
-        if not hits:
-            continue
-        top_hit = hits[0]
-        top_score = top_hit["_score"]
-        if top_score < stage["min_score"]:
-            continue
-
-        # Post-ES verification (hafif — sadece critical false positive'leri yakala)
-        if not _post_verify(
-            rec["raw_name"], top_hit["_source"], stage["name"], rec["country"]
-        ):
-            continue
-
-        return {
-            "matched": True,
-            "master_id": top_hit["_source"]["master_id"],
-            "master_doc_id": top_hit["_id"],
-            "es_score": top_score,
+        top_hit = hits[0] if hits else None
+        top_score = top_hit["_score"] if top_hit else 0.0
+        
+        matched = top_hit is not None and top_score >= stage["min_score"]
+        
+        res = {
             "stage_name": stage["name"],
             "stage_order": stage["order"],
-            "index_variation": stage.get("index_variation", True),
+            "matched": matched,
+            "es_score": top_score,
+            "master_id": top_hit["_source"]["master_id"] if matched else None
         }
-
-    return {"matched": False}
+        trace.append(res)
+        
+        if matched and winner is None:
+            winner = res.copy()
+            winner["master_doc_id"] = top_hit["_id"]
+            winner["index_variation"] = stage.get("index_variation", True)
+            # Kisa devre: Ilk kazanan stage'den sonraki sonuclari (msearch icinden gelmis olsa bile) cope at.
+            break
+            
+    return {"winner": winner, "trace": trace}
 
 
 def _index_new_master(es, rec: dict) -> str:
@@ -1112,12 +783,10 @@ def _index_new_master(es, rec: dict) -> str:
     master_id = str(uuid.uuid4())
     doc = {
         "master_id": master_id,
-        "variations": [rec["raw_name"]],
+        "variations": [{"name": rec["raw_name"]}],
         "variations_stripped": [],
         "country_code": rec["country"].upper(),
     }
-    if rec.get("tax"):
-        doc["tax_number"] = [rec["tax"]]
     if rec.get("phone"):
         doc["phone_number"] = [rec["phone"]]
     if rec.get("address"):
@@ -1162,10 +831,14 @@ def _add_variation_to_master(
         existing_variations = source.get("variations", [])
 
         changed = False
-        if v_lower not in existing_variations:
-            existing_variations.append(v_lower)
+        existing_names = [
+            v.get("name", "").lower()
+            for v in existing_variations
+            if isinstance(v, dict)
+        ]
+        if v_lower not in existing_names:
+            existing_variations.append({"name": variation})
             source["variations"] = existing_variations
-            # stripped ve suffix'i sifirla — pipeline yeniden hesaplayacak
             source["variations_stripped"] = []
             source["variations_suffix"] = []
             changed = True
@@ -1173,7 +846,6 @@ def _add_variation_to_master(
         # tax/phone/address listelerine yeni degerleri ekle
         if rec:
             for field, key in [
-                ("tax_number", "tax"),
                 ("phone_number", "phone"),
                 ("address", "address"),
             ]:
@@ -1248,10 +920,13 @@ def process_all_data() -> None:
             select_cols.append(col_address)
 
         # Toplam islenmemis kayit sayisi — progress bar icin
+        where_clause = f"{col_master} IS NULL"
+        if COUNTRY_CODE_FILTER:
+            where_clause += f" AND {col_country} = '{COUNTRY_CODE_FILTER}'"
+            logger.info(f"Ülke Filtresi Aktif: {COUNTRY_CODE_FILTER}")
+
         count_cur = read_conn.cursor()
-        count_cur.execute(
-            f"SELECT COUNT(*) FROM {RAW_TABLE_NAME} WHERE {col_master} IS NULL"
-        )
+        count_cur.execute(f"SELECT COUNT(*) FROM {RAW_TABLE_NAME} WHERE {where_clause}")
         total_remaining = count_cur.fetchone()[0]
         count_cur.close()
         logger.info(f"Toplam islenmemis kayit: {total_remaining:,}")
@@ -1261,7 +936,7 @@ def process_all_data() -> None:
         total_new = 0
         total_skipped = 0
         stage_counts: dict[str, int] = {}
-        last_id = ""  # Sayfalama icin son islenen id
+        last_id = 0  # Sayfalama icin son islenen id
 
         pbar = tqdm(
             total=total_remaining,
@@ -1278,11 +953,11 @@ def process_all_data() -> None:
             # Server-side cursor yerine basit SELECT + LIMIT
             # Her seferinde master_code IS NULL olan sonraki BATCH_SIZE kaydi cek
             read_cur = read_conn.cursor(cursor_factory=DictCursor)
-            read_cur.execute(  # ta_code like 'mx%' OLARAK OKUNDU DEĞİŞTİRİLMESİ LAZIM
+            read_cur.execute(
                 f"""
                 SELECT {", ".join(select_cols)}
                 FROM {RAW_TABLE_NAME}
-                WHERE {col_master} IS NULL AND {col_id} > %s and ta_code like 'mx%' 
+                WHERE {where_clause} AND {col_id} > %s
                 ORDER BY {col_id}
                 LIMIT {BATCH_SIZE}
                 """,
@@ -1297,22 +972,18 @@ def process_all_data() -> None:
             # PG toplu yazim icin biriktiriciler
             pg_updates: list[tuple] = []
             log_rows: list[tuple] = []
+            audit_rows: list[tuple] = []
             records_since_refresh = 0
 
             for row in rows:
                 row_id = row[col_id]
                 last_id = row_id  # Sayfalama icin son id'yi takip et
-                country_from_id = (
-                    row_id[:2].upper() if row_id and len(row_id) >= 2 else ""
+                country = (
+                    (row[col_country] or "").strip().upper()
+                    if col_country
+                    else "DEFAULT"
                 )
-                country_raw = (
-                    (row[col_country] or "").strip().upper() if col_country else ""
-                )
-                if len(country_from_id) == 2 and country_from_id.isalpha():
-                    country = country_from_id
-                elif len(country_raw) == 2 and country_raw.isalpha():
-                    country = country_raw
-                else:
+                if len(country) != 2 or not country.isalpha():
                     country = "DEFAULT"
                 raw_name = (row[col_name] or "").strip()
                 if not raw_name:
@@ -1330,54 +1001,65 @@ def process_all_data() -> None:
                 }
 
                 # --- Tek kayit eslestirme ---
-                result = match_single_record(es, rec, active_stages)
+                match_res = match_single_record(es, rec, active_stages)
+                winner = match_res["winner"]
+                trace = match_res["trace"]
 
-                if result["matched"]:
-                    # Eslesti — PG guncelle + ES'e varyasyon ekle
-                    master_id = result["master_id"]
-                    stage_name = result["stage_name"]
-                    es_score = result["es_score"]
+                if winner:
+                    master_id = winner["master_doc_id"]
+                    es_score = winner["es_score"]
+                    stage_name = winner["stage_name"]
 
-                    pg_updates.append((master_id, int(es_score), stage_name, row_id))
-                    log_rows.append(
-                        (
-                            row_id,
-                            raw_name,
-                            country,
-                            stage_name,
-                            result["stage_order"],
-                            True,
-                            master_id,
-                            es_score,
-                        )
+                    details = f"[{stage_name}] score: {es_score:.2f}"
+                    pg_updates.append(
+                        (master_id, int(es_score), stage_name, details, row_id)
                     )
 
-                    # Yüksek güven stage'leri variations'a ekler (silsile önleme)
-                    if result.get("index_variation", True):
+                    if winner.get("index_variation", True):
                         _add_variation_to_master(
-                            es, result["master_doc_id"], raw_name, country, rec
+                            es, winner["master_doc_id"], raw_name, country, rec
                         )
 
                     total_matched += 1
                     stage_counts[stage_name] = stage_counts.get(stage_name, 0) + 1
                 else:
-                    # Eslesmedi — yeni master olustur
                     master_id = _index_new_master(es, rec)
+                    details = "NEW_MASTER: No relevant matches found."
+                    pg_updates.append((master_id, 100, "NEW_MASTER", details, row_id))
+                    total_new += 1
+                    stage_name = "NEW_MASTER"
+                    es_score = 100.0
 
-                    pg_updates.append((master_id, 100, "NEW_MASTER", row_id))
+                # --- Audit & Trace Logging ---
+                # 1. match_audit (özet)
+                audit_rows.append(
+                    (
+                        row_id,
+                        raw_name,
+                        country,
+                        master_id,
+                        stage_name,
+                        es_score,
+                        len([t for t in trace if t["matched"]]),
+                    )
+                )
+
+                # 2. match_stages_log (ayrıntı - Tüm stage'leri logla)
+                for t in trace:
+                    if not t["matched"] and not LOG_ALL_STAGES:
+                        continue
                     log_rows.append(
                         (
                             row_id,
                             raw_name,
                             country,
-                            "NEW_MASTER",
-                            7,
-                            True,
-                            master_id,
-                            100.0,
+                            t["stage_name"],
+                            t["stage_order"],
+                            t["matched"],
+                            (t["master_id"] or master_id) if t["matched"] else None,
+                            t["es_score"],
                         )
                     )
-                    total_new += 1
 
                 records_since_refresh += 1
                 total_processed += 1
@@ -1406,8 +1088,8 @@ def process_all_data() -> None:
                             f"""
                             UPDATE {RAW_TABLE_NAME} AS t
                             SET {col_master} = d.mc, {COLUMN_MAPPING["match_score"]} = d.ms,
-                                {COLUMN_MAPPING["match_type"]} = d.mt
-                            FROM (VALUES %s) AS d(mc, ms, mt, id)
+                                {COLUMN_MAPPING["match_type"]} = d.mt, {COLUMN_MAPPING["match_details"]} = d.md
+                            FROM (VALUES %s) AS d(mc, ms, mt, md, id)
                             WHERE t.{col_id} = d.id
                             """,
                             pg_updates,
@@ -1419,9 +1101,17 @@ def process_all_data() -> None:
                                  matched, master_id, es_score) VALUES %s""",
                             log_rows,
                         )
+                        execute_values(
+                            write_cursor,
+                            """INSERT INTO match_audit
+                                (input_id, input_name, country_code, final_master_id,
+                                 final_stage_name, final_score, total_matched_stages) VALUES %s""",
+                            audit_rows,
+                        )
                         write_conn.commit()
                         pg_updates.clear()
                         log_rows.clear()
+                        audit_rows.clear()
 
             # Batch sonu — kalan PG yazimlarini flush et
             if pg_updates:

@@ -1,58 +1,68 @@
 # Firma Eşleştirme Sistemi — AI Development Guide (CLAUDE.md)
 
-This project is an advanced, self-learning entity resolution engine backed by Elasticsearch & PostgreSQL. It deduplicates and merges messy company names globally under a single "Master Record".
+This guide acts as the strict operational runbook and instruction filter for AI agents (Claude, Gemini) developing on this codebase.
 
-**Sprint 2 Architecture Update:** The project has heavily migrated logic *from Python to Elasticsearch Ingest Pipelines and Queries*. The `RapidFuzz` logic was replaced by strict ES-based `match`, `match_phrase`, and strict python post-validation logic (`symmetric_token_coverage` etc.) to guarantee accuracy.
+---
 
-## Mimari (Architecture Workflow)
+## 1. Geliştirici Aforizmaları & Katı Kurallar (Strict AI Guidelines)
 
-```mermaid
-graph LR
-    PG[PostgreSQL (raw)] --> Python[main_processor.py: Batched Read & Dedup]
-    Python --> Msearch[es_queries.py: msearch by Stage]
-    Msearch --> ES_Query[Elasticsearch]
-    ES_Query --> Validate[main_processor.py: Post-Validation]
-    Validate --> UpdateES[main_processor.update_es_variations]
-    UpdateES --> UpdatePG[PG match_stages_log & p7_firms_v2]
-```
-
-## Aşamalı Eşleştirme (Row-by-Row & Msearch)
-
-Sistem karmaşayı ve veri tekrarını önlemek için (aynı batch içinde gelen aynı firmaların ayrı UUID'ler almasını engellemek için) **TEK TEK (Row-by-Row)** çalışır.
-Her bir kayıt için tüm stage (aşama) sorguları tek bir ES `msearch` paketi olarak gönderilir. İlk başarılı olan stage'den (min_score geçen) sonuç alınır.
-
-| Aşama Puanı | Stage Ismi | Karakteristik (ES Sorgusu & Doğrulama) |
-|---|---|---|
-| 1 | TAX_EXACT | Deterministik. `tax_number` uyuşuyorsa 100 verilir, Post-verify yapılmaz. |
-| 2 | CANONICAL_EXACT | ES `match_phrase`. İki metin tamamen aynı sırada eşleşmeli. |
-| 3 | STRIPPED_EXACT | Suffix'ler temizlenmiş (*stripped*) modelde `match_phrase`. |
-| 4 | TOKEN_COVERAGE | Sadece `match`. Kelime sırasında serbestlik vardır. Eşleşme `post_verify()`'da **Symmetric Token Coverage**'dan geçer. |
-| >4 | NEW_MASTER | Hiçbir aşamada threshold'u geçemiyorsa yeni Unique ID üretilip ES'e kaydedilir. |
-
-*Fuzzy sorguları (`SUFFİX_FUZZY` vb.) var ancak Python post-verify `strict_name_match` fonksiyonunu çağırarak ana ismin BİREBİR aynı olup olmadığını kanıtlamanızı ister.*
-
-## Önemli Geliştirme Kuralları (Sprint 2 Mantrası)
+> [!IMPORTANT]
+> **COUNTRY CODE IS A HARD FILTER**:
+> Eşleştirme, indeksleme, arama ve doğrulama süreçlerinin tamamında `country_code` baz alınır. Farklı ülkelerdeki firmalar **ASLA** eşleşemez. `_routing` parametresi her zaman büyük harfli `country_code` olmalıdır.
 
 > [!WARNING]
-> Python tarafında (artık silinen `matcher_logic.py`'deki gibi) Levenshtein veya RapidFuzz çalıştırmak **YASAKTIR.** Fuzzy yeteneğini kısıtladık. 
+> **PYTHON ÜZERİNDE FUZZY/LEVENSHTEIN YASAKTIR**:
+> Python kodu içerisinde `RapidFuzz`, `Levenshtein` vb. ağır kütüphanelerle string benzerliği aramak **KATI BİR ŞEKİLDE YASAKTIR.** Fuzzy yetenekleri Elasticsearch Query DSL (`fuzziness: "AUTO"`) ve Painless script rescore adımları ile ES tarafında çözülür.
 
-1. **COUNTRY CODE IS A HARD FILTER**: Arama, indexleme, doğrulama dahil her şey `country_code` bazlı `_routing` yeteneğiyle yapılır. ASLA farklı ülke kodlu veriler cross-match olamaz.
-2. **First Meaningful Token Limit**: Şirket isminin ilk anlamlı kelimesi EŞİT olmak ZORUNDADIR. (`_first_meaningful_token`). Örneğin: `Kay Bee` ile `Bee Kay` benzer görünse de post-verify'da reddedilir!
-3. **Ingest Pipelines (`es_ingest.py`)**: Elasticsearch, veriyi kaydetmeden hemen önce Painless script çalıştırır. `variations_unidecode`, `variations_stripped` oluşturulması gibi operasyonları Python üzerinde döngüyle yapmak yerine Ingest pipeline sağlar.
-4. **Synonym JSONs Are Immutable**: `synonyms_data/` altındaki json'lara dokunma, onlar kaynak veriler. Düzeltme eklemek gerekiyorsa `config.py` `SUFFIX_TYPO_MAP` eklenebilir.
+1.  **PostgreSQL Güvenliği**: raw string interpolation (`f"SELECT ... '{val}'"`) kullanılmamalıdır. Her zaman parametrik sorgular (`%s`) tercih edilmeli, toplu güncellemelerde `psycopg2.extras.execute_values` kullanılmalıdır.
+2.  **Index Yönetimi**: Elasticsearch index şeması, mapping'leri ve özel analyzer'lar sadece `es_manager.py` üzerinden yönetilmelidir. Ad-hoc veya geçici indeks oluşturmak yasaktır.
+3.  **Hata Yönetimi (Exception Handling)**: Toplu batch eşleştirmeleri sırasında tek bir satırda veya kayıtta hata alınırsa tüm batch işlemi durdurulmamalıdır. Hata loglanmalı, veritabanı rollback edilerek diğer kayıtlar için işlem devam etmelidir.
+4.  **Synonym JSON Dosyalarının Dokunulmazlığı**: `synonyms_data/` altındaki 65 ülke JSON dosyası **SABİTTİR.** İçeriklerindeki hataları düzeltmek veya yeni ekleme yapmak gerekirse `config.py` içerisindeki `SUFFIX_TYPO_MAP` veya kod içi eşleşme kuralları güncellenmelidir.
 
-## Geliştirici Kılavuzu: Dosya Yapısı
+---
 
-| Modül | Sorumluluk |
-| --- | --- |
-| `main_processor.py` | Ana Orkestrasyon! Batch Okuma, Dedup, ES Msearch çağrısı, Post-Verify |
-| `es_queries.py` | Stagelere bağlı Query DSL JSON builder'ları burada |
-| `es_ingest.py` | Elasticsearch Ingest Pipeline Scripts |
-| `synonym_loader.py` | JSON country data ile suffix, article temizleme ve canonicalize etme |
-| `config.py` | Limitler, pipeline isimleri, Veritabanı configleri |
+## 2. Geliştirici Kılavuzu: Dosya Yapısı & Sorumlulukları
 
-## Temel Çalıştırma
+| Modül | Dil | Rolü & Sorumluluğu |
+| :--- | :---: | :--- |
+| `config.py` | Python | Eşik değerleri (`TOKEN_COVERAGE_THRESHOLD`), DB/ES bağlantıları, MatchType listesi ve aktif `STAGES` konfigürasyonları. |
+| `main_processor.py` | Python | **Orkestrasyon**: PG'den veri okuma, her kayıt için `msearch` tetikleme, kazanan eşleşmeyi belirleme, variations/meta update etme ve DB'ye yazma. |
+| `es_queries.py` | Python | Her stage için Elasticsearch Query DSL generator fonksiyonları. |
+| `es_manager.py` | Python | Custom analyzer'ları (fingerprint, ngram, phonetic) ve index mapping'lerini ayağa kaldıran ES yönetimi. |
+| `es_ingest.py` | Python | Doküman indekslenirken Painless scriptler ile veri temizliği yapan ingest pipeline'ları. |
+| `synonym_loader.py` | Python | `synonyms_data/` klasöründeki JSON dosyalarını parse eden ve kelimeleri gruplayan yükleyici. |
+| `es_transform.py` | Python | Arka planda sürekli çalışan ve duplicate adayları bulan ES Transform yönetimi. |
+| `dedup_reviewer.py` | Python | ES Transform çıktılarını insan denetiminde birleştiren interaktif konsol aracı. |
+
+---
+
+## 3. Geliştirme ve Test Komutları
+
+### Eşleştirme Sürecini Çalıştırma
 ```bash
-python es_manager.py       # ES Pipeline ve Index Refresh.
-python main_processor.py   # Eşleştirmeyi çalıştır (Tüm stage'leri döner).
+# Ingest pipeline kur
+python es_ingest.py
+
+# Index kur ve mapping güncelle (synonym değişirse --force kullanın)
+python es_manager.py
+
+# Eşleştirmeyi başlat
+python main_processor.py
 ```
+
+### Testleri Çalıştırma
+```bash
+# Tüm testleri çalıştır
+pytest -v
+
+# Belirli bir testi çalıştır
+pytest tests/test_main_processor.py -v
+```
+
+---
+
+## 4. Bilinen Kısıtlamalar & Legacy Notları
+
+*   **`debug_match.py` ve Eksik Python Helper Fonksiyonları**:
+    `debug_match.py` içerisinde `main_processor.py` dosyasından `_clean_labels`, `_tokenize` ve `_symmetric_token_coverage` fonksiyonları import edilmeye çalışılmaktadır. Ancak Sprint 2 kapsamında bu fonksiyonlar `main_processor.py` üzerinden kaldırılmış, temizleme mantığı tamamen ES Ingest Pipeline (`es_ingest.py`) ve Painless scriptlerine devredilmiştir. 
+    *   *Kural*: `debug_match.py` çalıştırılmak istenirse veya benzerlik analizi offline yapılmak istenirse, offline temizlik algoritmaları için `synonym_loader.py` fonksiyonları referans alınmalı ya da ES'deki analyzer çıktısı `analyze` API'si ile çağrılmalıdır.

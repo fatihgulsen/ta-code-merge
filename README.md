@@ -1,234 +1,116 @@
-# Firma Eslestirme ve Tekillestirme Sistemi
+# Firma Eşleştirme ve Tekilleştirme Sistemi (Company Matching & Deduplication Engine)
 
-Buyuk olcekli firma verilerini analiz ederek "Master" kayitlarla eslestiren, kendi kendini egiten (yeni varyasyonlari ogrenen) ve Elasticsearch gucunu kullanan akilli bir eslestirme motorudur.
+Büyük ölçekli firma verilerini (isim, vergi numarası, telefon, adres vb.) analiz ederek benzersiz "Master" kayıtlarla eşleştiren, kendi kendini eğiten (yeni yazım varyasyonlarını öğrenen) ve Elasticsearch gücünü kullanan akıllı bir eşleştirme motorudur.
 
-## Ozellikler
+---
 
-- **Ulke Izolasyonu (Hard Filter):** Farkli ulkelerdeki ayni isimli firmalar asla eslestirilmez.
-- **Synonym Destegi:** "Co Ltd", "Inc", "A.S." gibi firma tipleri otomatik taninir.
-- **Ogrenen Sistem:** Her yeni yazim sekli, varyasyon havuzuna eklenir.
-- **Hibrit Skorlama:** Isim benzerligi + Vergi No + Telefon ile guclendirmis eslestirme.
-- **Cross-Script:** Korece, Japonca gibi alfabeleri Latin karsiliklariyla eslestirir.
-- **msearch Batch:** Toplu ES sorgusu ile yuksek performansli eslestirme.
-- **ES-Side Scoring:** Post-verification mantigi ES Painless script ile ES tarafinda calisir.
-- **Ingest Pipeline:** Firma ismi temizleme ES tarafinda otomatik uygulanir.
-- **Duplicate Detection:** ES Transform ile surekli duplicate tespiti.
+## 1. Giriş & Temel Prensipler (Core Principles)
 
-## Kurulum
+Sistem aşağıdaki temel mantık ve kurallar çerçevesinde çalışır:
 
-### 1. Python Bagimliliklari
+1.  **Ülke İzolasyonu (Strict Country Filter - HARD FILTER) [CRITICAL]**:
+    Farklı ülkelerdeki firmalar asla eşleştirilemez. Ülke kodu (`country_code`) en kritik "Hard Filter" kriteridir. Arama, indeksleme ve doğrulama süreçlerinin tamamı `country_code` bazlı `_routing` yeteneğiyle izole edilir.
+2.  **Kendi Kendini Eğiten Sistem (Self-Learning Variations Loop)**:
+    Sisteme giren her yeni geçerli eşleşme, Elasticsearch'teki ilgili master dokümanın `variations` listesine dinamik olarak eklenir. Böylece sistem zamanla daha zeki hale gelir ve gelecekteki alternatif yazımları otomatik yakalar.
+3.  **Deterministik vs. Olasılıksal Eşleşme**:
+    *   **Deterministik (Kesin)**: Vergi numarası (`tax_number`) eşleşmesi 'Exact Match' olarak kabul edilir ve post-verification gerektirmeden direkt 100 skorla eşleşir (`TAX_EXACT`).
+    *   **Olasılıksal (İsim Benzerliği)**: Firma adı benzerlikleri Elasticsearch Analyzer'ları (fingerprint, ngram, phonetic) ve Painless rescore scriptleri ile değerlendirilir.
+4.  **First Meaningful Token Limit**:
+    Firma adının ilk anlamlı kelimesi (`_first_meaningful_token`) eşleşen iki kayıt arasında birebir eşit olmak zorundadır. Örneğin: `Kay Bee Corp` ile `Bee Kay Corp` veya `Kay A.S.` ile `Bay A.S.` eşleşemez.
 
+---
+
+## 2. Kurulum ve Altyapı (Installation & Setup)
+
+### 1. Python Bağımlılıkları
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Elasticsearch Plugin'leri (Opsiyonel ama Onerilen)
-
+### 2. Elasticsearch Plugin'leri (Önerilen)
+Yüksek kaliteli eşleştirmeler için aşağıdaki ES eklentilerinin kurulu olması şarttır:
 ```bash
 # ICU plugin: Unicode normalizasyon ve Latin folding (latinize() yerine)
 elasticsearch-plugin install analysis-icu
 
-# Phonetic plugin: Fonetik benzerlik (transliterasyon varyantlari)
+# Phonetic plugin: Fonetik benzerlik (transliterasyon varyantları)
 elasticsearch-plugin install analysis-phonetic
-
-# Plugin kurulumu sonrasi ES restart gerekir
 ```
+*Not: Eklentiler yoksa sistem otomatik olarak default `standard` analyzer'a ve phonetic tier'ları kapatmaya yönelik graceful fallback yapar.*
 
-> Plugin'ler kurulu degilse sistem graceful fallback yapar:
-> - ICU yoksa → `standard` analyzer kullanilir (variations.unidecode subfield)
-> - Phonetic yoksa → phonetic tier sorgudan cikarilir
-
-### 3. PostgreSQL Tablo
-
+### 3. PostgreSQL Şeması
 ```bash
-# Tablo olustur (gerekirse)
 psql -d market_calculus -f schema.sql
 ```
+*`config.py` içerisindeki `DB_CONFIG` verilerini kendi ortamınıza göre düzenleyin.*
 
-`config.py` dosyasindaki `DB_CONFIG`, `RAW_TABLE_NAME`, `COLUMN_MAPPING` degerlerini kendi ortaminiza gore duzenleyin.
+---
 
-## Calistirma
+## 3. System Architecture & Workflows
 
-### Hizli Baslangic (Sifirdan)
+Below is the complete end-to-end data pipeline between PostgreSQL and Elasticsearch.
 
-```bash
-# 1. ES index olustur (routing + fingerprint + ngram + ICU + phonetic)
-python es_manager.py
-
-# 2. Ingest pipeline kaydet (firma ismi temizleme)
-python es_ingest.py
-
-# 3. Eslestirme islemini baslat
-python main_processor.py
+```mermaid
+graph TD
+    PG[PostgreSQL - p7_firms_v2] -->|1. Batch Read master_code IS NULL| MP[main_processor.py]
+    MP -->|2. active_stages| Msearch[es_queries.py: msearch]
+    Msearch -->|3. Parallel Search| ES[(Elasticsearch Index)]
+    ES -->|4. Score & Hit Candidates| MP
+    MP -->|5. Post-Verification & Verification| Winner{Match Found?}
+    Winner -->|Yes| UpdateES[update_es_variations: Append Variation]
+    Winner -->|No| CreateMaster[_index_new_master: Generate UUID & Doc]
+    UpdateES --> DBUpdate[PG: Update master_code, score, type, details]
+    CreateMaster --> DBUpdate
+    DBUpdate --> LogTable[PG: Write match_stages_log & match_audit]
 ```
 
-### Bastan Eslestirme (Sifirlama)
+### Batch Operations and Within-Batch Deduplication
+To prevent multiple identical companies within the same batch from receiving different master UUIDs, the system employs **Row-by-Row matching within batches**:
+1.  Unmatched records are processed, and if no match is found, they are routed to `NEW_MASTER`.
+2.  `NEW_MASTER` creation runs in sub-batches of size `200` (`NEW_MASTER_SUBBATCH_SIZE`).
+3.  Each sub-batch is indexed into ES and an index `refresh` is called immediately.
+4.  Remaining records in the batch are then queried against ES using `CANONICAL_EXACT` to see if they match the newly created masters before they are also treated as new masters.
 
-```bash
-# PG + ES tamamen sifirla (master_code, match_score, match_type = NULL + index sil/olustur)
-python reset_matching.py
+---
 
-# Sadece PG sifirla (ES index korunur)
-python reset_matching.py --pg
+## 4. Elasticsearch Index Configuration
 
-# Sadece ES sifirla (PG korunur)
-python reset_matching.py --es
+*   **Routing**: Required on index (`_routing.required: true`). Always uses uppercase `country_code` for shard isolation.
+*   **Ingest Pipeline (`es_ingest.py`)**: Before indexing, a Painless script automatically applies lowercase, removes zero-width characters, cleans labels (`attn:`, `c/o`), and normalizes ampersands (`&` to `and`).
 
-# Ingest pipeline kaydet
-python es_ingest.py
+### Custom Analyzers
+1.  **`clean_analyzer_{CC}`**: Tokenizes, normalizes, and applies country-specific synonyms (immutable list in `synonyms_data/`).
+2.  **`fingerprint`**: Normalizes case, removes punctuation, sorts tokens, and removes duplicates. Useful for order-insensitive match.
+3.  **`ngram_analyzer`**: Trigram tokenization (3-4 grams) for index-time fuzzy backstop.
+4.  **`phonetic_analyzer`**: Double Metaphone translation for phonetic resilience.
 
-# Yeniden eslestir
-python main_processor.py
-```
+---
 
-### Mevcut Index'i Yeniden Olusturma
+## 5. The 7-Tier Matching Stage Hierarchy
 
-```bash
-# Synonym degisikligi veya mapping guncellemesi sonrasi
-python es_manager.py --force
+The engine executes queries stage-by-stage inside a single `msearch` packet. The first stage that yields a score >= `min_score` is short-circuited as the winner.
 
-# Ingest pipeline guncelle
-python es_ingest.py
+| Order | Stage Name | Query Type (`es_queries.py`) | Min Score | Description |
+| :---: | :--- | :--- | :---: | :--- |
+| **1** | `TAX_EXACT` | Deterministic exact match on `tax_number` + `country_code`. | `100.0` | Exact verification. Short-circuits post-verify. |
+| **2** | `CANONICAL_EXACT` | `match_phrase` on canonical variations. | `3.0` | Order-sensitive exact canonical matching. |
+| **3** | `STRIPPED_EXACT` | `match_phrase` on stripped variations (suffix-free). | `3.0` | Suffix-independent exact matching. |
+| **4** | `ADDRESS_CLEAN_MATCH` | Matches after address leakage regex clean. | `3.0` | Cleaned name matching. |
+| **5** | `SUBSET_MATCH` | Matches subsets of tokens using ES query. | `1.5` | Suffix fuzzy match threshold. |
+| **6** | `EXACT_FUZZY` | Fuzzy match on exact names. | `3.0` | Small typo tolerance on core name. |
+| **7** | `TOKEN_COVERAGE` | Free word order token match. | `3.0` | Validates against `TOKEN_COVERAGE_THRESHOLD` (95%). |
 
-# Eslestirme (mevcut eslesmeler korunur, sadece NULL olanlar islenir)
-python main_processor.py
-```
+---
 
-### Duplicate Tespiti
+## 6. CLI Command Cheat Sheet
 
-```bash
-# ES Transform olustur ve baslat (surekli calisan arka plan gorevi)
-python es_transform.py
-
-# Potansiyel duplicate'lari incele (interaktif)
-python dedup_reviewer.py
-
-# Minimum 3 master iceren gruplari goster
-python dedup_reviewer.py 3
-```
-
-### Test ve Analiz
-
-```bash
-# Synonym normalizer test
-python synonym_normalizer.py
-
-# Eslesmeme analizi
-python analyze_mismatches.py
-```
-
-## Mimari (v3)
-
-```
-PostgreSQL (ham veri)
-    |
-    v
-[main_processor.py] --- batch okuma (5000 kayit)
-    |
-    +---> [matcher_logic.py: prepare_match_request()]
-    |         Python pre-processing: light_clean + canonical_form
-    |         Sorgu hazirlama: 7-tier bool query + rescore script
-    |
-    +---> [es_batch_search.py: batch_find_best_match()]
-    |         msearch API ile toplu ES sorgusu (500'luk chunk)
-    |         Country routing ile shard izolasyonu
-    |
-    +---> ES Index (living_companies_v1)
-    |         Ingest Pipeline: otomatik temizleme
-    |         7 Tier Scoring + Rescore (Painless script_score)
-    |         Analyzer'lar: synonym, fingerprint, ngram, ICU, phonetic
-    |
-    +---> [matcher_logic.py: interpret_match_result()]
-    |         ES _score tier'indan match_type belirleme
-    |         >= 1000: CANONICAL_EXACT
-    |         >= 500:  STRIPPED_EXACT
-    |         >= 100:  TOKEN_COVERAGE
-    |         < 100:   NEW_MASTER
-    |
-    v
-PostgreSQL (master_code, match_score, match_type)
-```
-
-## Dosya Yapisi
-
-### Cekirdek Dosyalar
-
-| Dosya | Sorumluluk |
-| --- | --- |
-| `config.py` | Tum konfigurasyonlar, sabitler, esikler, MatchType |
-| `matcher_logic.py` | Veri temizligi, ES sorgu olusturma, karar motoru |
-| `main_processor.py` | Batch isleme dongusu (PG -> ES -> PG) |
-| `es_manager.py` | ES index olusturma, mapping, analyzer tanimlama |
-
-### ES-Side Modulleri
-
-| Dosya | Sorumluluk |
-| --- | --- |
-| `es_batch_search.py` | msearch API ile toplu sorgu (5000 kayit/batch) |
-| `es_ingest.py` | Ingest pipeline: light_clean ES tarafinda |
-| `es_scripts.py` | Painless rescore script: post-verification ES tarafinda |
-| `es_transform.py` | Continuous duplicate detection (ES Transform) |
-| `dedup_reviewer.py` | Duplicate inceleme ve birlestirme araci |
-
-### Veri ve Destek Dosyalari
-
-| Dosya | Sorumluluk |
-| --- | --- |
-| `synonym_normalizer.py` | Canonical form ve stripped form hesaplama |
-| `synonym_loader.py` | Synonym JSON dosyalarini yukleme |
-| `synonyms_data/` | Ulke bazli synonym kurallari (65 JSON dosya) |
-| `schema.sql` | PostgreSQL tablo semasi ve indeksler |
-| `analyze_mismatches.py` | Eslesmeme analiz araci |
-
-## ES Sorgu Hiyerarsisi (7 Tier)
-
-| Tier | Sorgu Tipi | Boost | Aciklama |
-| --- | --- | --- | --- |
-| 1 | match_phrase variations | 100 | Canonical exact phrase |
-| 2 | match_phrase variations_stripped | 50 | Suffix-free exact phrase |
-| 3 | match variations (operator:and) | 10 | Tum tokenlar mevcut, sirasiz |
-| 4 | match_phrase variations.fingerprint | 8 | Token sort+dedup, sirasiz |
-| 5 | match_phrase variations.unidecode | 5 | ICU/Latinize exact phrase |
-| 6 | match variations.ngram | 1 | Index-time fuzzy (trigram) |
-| 7 | match variations.phonetic | 0.5 | Fonetik backstop |
-
-+ **Rescore Phase:** Top 20 aday uzerinde Painless script_score ile CANONICAL_EXACT / STRIPPED_EXACT / TOKEN_COVERAGE kontrolu.
-
-## Match Tipleri
-
-| Tip | Skor | Aciklama |
-| --- | --- | --- |
-| TAX_MATCH | 100 | Vergi numarasi kesin eslesmesi (deterministic) |
-| CANONICAL_EXACT | 100 | Synonym-aware canonical form tam eslesmesi |
-| STRIPPED_EXACT | 100 | Suffix'ler temizlendikten sonra tam eslesmesi |
-| TOKEN_COVERAGE | 90 | Anlamli tokenlarin simetrik ortusme esigi (>=%80) |
-| NEW_MASTER | 100 | Eslesmedi - yeni firma kaydi olusturulur |
-
-## ES Index Ozellikleri (v3)
-
-- **Routing:** `country_code` bazli shard izolasyonu (HARD FILTER)
-- **Fingerprint subfield:** Token sort + dedup (sirasiz eslestirme)
-- **N-gram subfield:** Trigram tokenization (index-time fuzzy, 3-4 gram)
-- **ICU subfield:** Unicode normalizasyon + Latin folding (plugin gerekir)
-- **Phonetic subfield:** Double Metaphone (plugin gerekir)
-- **Ingest Pipeline:** Index'leme sirasinda otomatik isim temizleme
-
-## Konfigurasyonlar (config.py)
-
-| Parametre | Deger | Aciklama |
-| --- | --- | --- | --- |
-| BATCH_SIZE | 5000 | Batch basina kayit sayisi |
-| ES_MIN_SCORE | 3.0 | ES minimum relevance esigi |
-| ES_TAX_WEIGHT | 100 | Tax eslesmesi boost agirlik |
-| ES_PHONE_WEIGHT | 20 | Phone eslesmesi boost agirlik |
-| TOKEN_COVERAGE_THRESHOLD | 0.8 | Token ortusme esigi (%80) |
-| RESCORE_WINDOW_SIZE | 20 | Rescore top N aday sayisi |
-| MSEARCH_CHUNK_SIZE | 500 | msearch basina max sorgu |
-
-## Gelistirme Kurallari
-
-- `synonyms_data/*.json` dosyalari **SABIT** - iceriklerine dokunulmaz
-- ES index mapping yapisi degisirse `python es_manager.py --force` ile yeniden olustur
-- Country code HARD FILTER - farkli ulke eslesmesi ASLA yapilmaz
-- Firma isminde 1 harf bile farkliysa yeni firma (fuzzy sadece suffix icin)
-- Post-ES verification ES rescore script tarafindan yapilir
+| Operation | Command | Purpose |
+| :--- | :--- | :--- |
+| **Start Process** | `python main_processor.py` | Run deduplication on all remaining records. |
+| **Force Re-indexing** | `python es_manager.py --force` | Re-create ES Index, mapping, and analyzers. |
+| **Ingest Register** | `python es_ingest.py` | Refresh Ingest Painless clean scripts. |
+| **Full Reset** | `python reset_matching.py` | Clear PostgreSQL and Elasticsearch to start from scratch. |
+| **Postgres-Only Reset** | `python reset_matching.py --pg` | Reset DB match fields but keep Elasticsearch indices intact. |
+| **ES-Only Reset** | `python reset_matching.py --es` | Reset Elasticsearch indices only. |
+| **Duplicate Reviewer** | `python dedup_reviewer.py` | Interactive console tool to review & merge potential duplicates. |
+| **Debug Mismatch** | `python debug_match.py "Co A" "Co B" -c TR` | Debug two names side-by-side. |

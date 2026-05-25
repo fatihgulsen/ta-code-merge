@@ -93,12 +93,7 @@ def test_token_coverage_uses_and_operator():
     q = es_queries.TOKEN_COVERAGE("apple trading limited", "US")
     must = q["query"]["bool"]["must"]
     nested = next(c["nested"] for c in must if "nested" in c)
-    inner_must = nested["query"]["bool"]["must"]
-    match_clause = next(
-        c["match"]["variations.name"]
-        for c in inner_must
-        if "match" in c and "variations.name" in c["match"]
-    )
+    match_clause = nested["query"]["match"]["variations.name"]
     assert match_clause["operator"] == "and"
 
 
@@ -106,12 +101,7 @@ def test_fuzzy_phrase_has_slop():
     q = es_queries.FUZZY_PHRASE("apple trading", "US")
     must = q["query"]["bool"]["must"]
     nested = next(c["nested"] for c in must if "nested" in c)
-    inner_must = nested["query"]["bool"]["must"]
-    phrase = next(
-        c["match_phrase"]["variations.name"]
-        for c in inner_must
-        if "match_phrase" in c and "variations.name" in c["match_phrase"]
-    )
+    phrase = nested["query"]["match_phrase"]["variations.name"]
     assert phrase.get("slop", 0) >= 1
 
 
@@ -119,11 +109,7 @@ def test_ngram_match_queries_ngram_field():
     q = es_queries.NGRAM_MATCH("apple", "US")
     must = q["query"]["bool"]["must"]
     nested = next(c["nested"] for c in must if "nested" in c)
-    inner_must = nested["query"]["bool"]["must"]
-    assert any(
-        "match" in c and "variations_stripped.ngram" in c["match"]
-        for c in inner_must
-    )
+    assert "variations_stripped.name.ngram" in nested["query"]["match"]
 
 
 def test_all_queries_include_country_filter():
@@ -156,14 +142,7 @@ def test_suffix_fuzzy_must_queries_variations_stripped():
     q = es_queries.SUFFIX_FUZZY("komerci limted", "TR")
     must = q["query"]["bool"]["must"]
     nested = next(c["nested"] for c in must if "nested" in c)
-    inner_must = nested["query"]["bool"]["must"]
-    stripped_clauses = [
-        c["match_phrase"]["variations_stripped.name"]
-        for c in inner_must
-        if "match_phrase" in c and "variations_stripped.name" in c["match_phrase"]
-    ]
-    assert stripped_clauses, "variations_stripped match_phrase clause yok"
-    clause = stripped_clauses[0]
+    clause = nested["query"]["match_phrase"]["variations_stripped.name"]
     assert clause["query"] == "komerci limted"
     assert clause["analyzer"] == "stripped_search_analyzer_tr"
 

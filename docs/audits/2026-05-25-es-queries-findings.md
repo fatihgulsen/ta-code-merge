@@ -180,3 +180,5 @@ def NGRAM_MATCH(name: str, country: str, **kwargs) -> dict:
 **CLAUDE.md ihlali:** —
 
 **Test edilebilir mi?** Evet — mevcut `test_ngram_match_queries_ngram_field` testi bu konuya değiniyor (ancak testin kendisi de güncellenmeli).
+
+**Durum:** ✅ Düzeltildi (c653fe8)

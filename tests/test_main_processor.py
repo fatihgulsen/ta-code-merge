@@ -178,3 +178,129 @@ def test_validate_db_schema_uses_safe_identifiers():
             f"ALTER TABLE SQL must be psycopg2.sql.Composed or psycopg2.sql.SQL. "
             f"Got type {type(sql_arg)}: {sql_arg!r}"
         )
+
+
+# ---------------------------------------------------------------------------
+# C3 + C4: pg_updates tuple shape consistency
+# ---------------------------------------------------------------------------
+
+def test_create_new_masters_produces_5_element_tuple():
+    """C3: create_new_masters must append 5-element tuples to pg_updates (not 4-element).
+    The missing field is 'details'. This test will FAIL before the fix at line 594."""
+    from unittest.mock import patch, MagicMock, call as mcall
+    import main_processor as mp
+
+    records = [
+        {"row_id": 10, "raw_name": "Alpha Corp", "country": "TR", "tax": "", "phone": "", "address": ""},
+        {"row_id": 11, "raw_name": "Beta Ltd", "country": "DE", "tax": "", "phone": "", "address": ""},
+    ]
+
+    mock_es = MagicMock()
+    # helpers.bulk should succeed silently
+    mock_write_cursor = MagicMock()
+    mock_write_conn = MagicMock()
+
+    captured_updates: list[tuple] = []
+
+    original_execute_values = None
+
+    def fake_execute_values(cur, sql, argslist, *args, **kwargs):
+        # Capture pg_updates passed to the UPDATE execute_values call
+        if "UPDATE" in str(sql):
+            captured_updates.extend(argslist)
+
+    with patch.object(mp, "execute_values", side_effect=fake_execute_values), \
+         patch("main_processor.helpers.bulk", return_value=(2, [])), \
+         patch.object(mp, "NEW_MASTER_SUBBATCH_SIZE", 10), \
+         patch.object(mp, "ES_INDEX", "test_index"):
+        mp.create_new_masters(mock_es, mock_write_cursor, mock_write_conn, records)
+
+    assert captured_updates, "No pg_updates were flushed — create_new_masters must call execute_values."
+    for tup in captured_updates:
+        assert len(tup) == 5, (
+            f"Each pg_updates tuple must have 5 elements "
+            f"(master_id, score, stage_name, details, row_id) but got {len(tup)}: {tup!r}"
+        )
+
+
+def test_batch_end_flush_sql_binds_all_5_columns():
+    """C4: The batch-end flush SQL (lines ~1149-1155) must bind all 5 columns including
+    match_details (d.md). Currently it only binds 4 — this test will FAIL before the fix."""
+    from unittest.mock import patch, MagicMock
+    import main_processor as mp
+
+    # We inspect the SQL passed to execute_values in the batch-end flush path.
+    # The batch-end flush fires when pg_updates is non-empty at end of a chunk.
+    # We feed exactly one row so the periodic flush (ES_REFRESH_INTERVAL) never fires.
+
+    captured_sqls: list[str] = []
+
+    def fake_execute_values(cur, sql, argslist, *args, **kwargs):
+        captured_sqls.append(str(sql))
+
+    # Minimal row dict that satisfies process_all_data's inner loop.
+    # Keys must match COLUMN_MAPPING values: id="id", company_name="name",
+    # country_code="country_code", tax_number="tax_number", phone_number="tel", address="address".
+    import config as cfg
+    fake_row = {
+        cfg.COLUMN_MAPPING["id"]: 99,
+        cfg.COLUMN_MAPPING["company_name"]: "Gamma GmbH",
+        cfg.COLUMN_MAPPING["country_code"]: "DE",
+    }
+    if cfg.COLUMN_MAPPING.get("tax_number"):
+        fake_row[cfg.COLUMN_MAPPING["tax_number"]] = ""
+    if cfg.COLUMN_MAPPING.get("phone_number"):
+        fake_row[cfg.COLUMN_MAPPING["phone_number"]] = ""
+    if cfg.COLUMN_MAPPING.get("address"):
+        fake_row[cfg.COLUMN_MAPPING["address"]] = ""
+
+    # match_single_record returns a winner so no _index_new_master needed
+    fake_winner = {
+        "master_doc_id": "master-xyz",
+        "es_score": 85.0,
+        "stage_name": "CANONICAL_EXACT",
+        "index_variation": False,
+    }
+
+    mock_es = MagicMock()
+    mock_read_conn = MagicMock()
+    mock_write_conn = MagicMock()
+    mock_read_cur = MagicMock()
+    mock_write_cur = MagicMock()
+
+    mock_read_conn.cursor.return_value = mock_read_cur
+    mock_write_conn.cursor.return_value = mock_write_cur
+
+    # First fetchall returns our one row, second returns [] to break the while loop
+    mock_read_cur.fetchall.side_effect = [[fake_row], []]
+    mock_read_cur.fetchone.return_value = (1,)  # count query
+
+    with patch.object(mp, "get_db_connection", side_effect=[mock_read_conn, mock_write_conn]), \
+         patch.object(mp, "match_single_record", return_value={"winner": fake_winner, "trace": []}), \
+         patch.object(mp, "execute_values", side_effect=fake_execute_values), \
+         patch.object(mp, "validate_db_schema"), \
+         patch.object(mp, "ensure_stage_log_table"), \
+         patch.object(mp, "ES_REFRESH_INTERVAL", 1000), \
+         patch.object(mp, "BATCH_SIZE", 10), \
+         patch.object(mp, "ES_INDEX", "test_index"), \
+         patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
+         patch("main_processor.get_es_client", return_value=mock_es), \
+         patch("main_processor.create_index"), \
+         patch("main_processor.register_all_pipelines"):
+        mp.process_all_data()
+
+    # Find the UPDATE SQL calls — the batch-end flush should be among them
+    update_sqls = [s for s in captured_sqls if "UPDATE" in s.upper()]
+    assert update_sqls, "No UPDATE execute_values call captured — check test setup."
+
+    for sql in update_sqls:
+        assert "d.md" in sql, (
+            f"Batch-end flush SQL must bind match_details via 'd.md' column alias, "
+            f"but it was absent. SQL: {sql!r}"
+        )
+        # Normalise whitespace to check for the 5-bind column alias list
+        sql_compact = " ".join(sql.split())
+        assert "d(mc, ms, mt, md, id)" in sql_compact, (
+            f"Batch-end flush SQL must include 'd(mc, ms, mt, md, id)' (5 binds), "
+            f"but got: {sql!r}"
+        )

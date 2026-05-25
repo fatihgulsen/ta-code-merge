@@ -78,6 +78,15 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 NEW_MASTER_SUBBATCH_SIZE = 200
 
 
+def _make_pg_update_tuple(master_id: str, score: float, stage_name: str, details: str | None, row_id: Any) -> tuple:
+    """5-element tuple matching execute_values bind order: (master_id, score, stage_name, details, row_id).
+
+    Enforces consistent shape for pg_updates list — prevents DataError/IndexError when
+    execute_values SQL template expects 5 columns (mc, ms, mt, md, id).
+    """
+    return (master_id, float(score), stage_name, details, row_id)
+
+
 # ─────────────────────────────────────────────────────────────────────
 # DB YARDIMCILARI
 # ─────────────────────────────────────────────────────────────────────
@@ -521,6 +530,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
     col_master = COLUMN_MAPPING["master_code"]
     col_score = COLUMN_MAPPING["match_score"]
     col_type = COLUMN_MAPPING["match_type"]
+    col_details = COLUMN_MAPPING["match_details"]
 
     # Adim 1: Tum kayitlar icinde exact dedup
     seen: dict[tuple[str, str], str] = {}  # (name_lower, country) → master_id
@@ -535,7 +545,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
         existing_master_id = seen.get(dedup_key)
         if existing_master_id:
             duplicate_updates.append(
-                (existing_master_id, 100, "NEW_MASTER", rec["row_id"])
+                _make_pg_update_tuple(existing_master_id, 100, "NEW_MASTER", "NEW_MASTER: Dedup match.", rec["row_id"])
             )
             duplicate_logs.append(
                 (
@@ -591,7 +601,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
             if rec.get("address"):
                 doc["_source"]["address"] = [rec["address"]]
             es_docs.append(doc)
-            pg_updates.append((master_id, 100, "NEW_MASTER", rec["row_id"]))
+            pg_updates.append(_make_pg_update_tuple(master_id, 100, "NEW_MASTER", "NEW_MASTER: Initial index.", rec["row_id"]))
             log_rows.append(
                 (
                     rec["row_id"],
@@ -691,8 +701,8 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
             write_cursor,
             f"""
             UPDATE {RAW_TABLE_NAME} AS t
-            SET {col_master} = d.mc, {col_score} = d.ms, {col_type} = d.mt
-            FROM (VALUES %s) AS d(mc, ms, mt, id)
+            SET {col_master} = d.mc, {col_score} = d.ms, {col_type} = d.mt, {col_details} = d.md
+            FROM (VALUES %s) AS d(mc, ms, mt, md, id)
             WHERE t.{col_id} = d.id
             """,
             duplicate_updates,
@@ -1149,8 +1159,8 @@ def process_all_data() -> None:
                     f"""
                     UPDATE {RAW_TABLE_NAME} AS t
                     SET {col_master} = d.mc, {COLUMN_MAPPING["match_score"]} = d.ms,
-                        {COLUMN_MAPPING["match_type"]} = d.mt
-                    FROM (VALUES %s) AS d(mc, ms, mt, id)
+                        {COLUMN_MAPPING["match_type"]} = d.mt, {COLUMN_MAPPING["match_details"]} = d.md
+                    FROM (VALUES %s) AS d(mc, ms, mt, md, id)
                     WHERE t.{col_id} = d.id
                     """,
                     pg_updates,

@@ -18,6 +18,7 @@ import uuid
 from typing import Any
 
 import psycopg2
+import psycopg2.sql
 from psycopg2.extras import DictCursor, execute_values
 from elasticsearch import helpers
 
@@ -920,13 +921,28 @@ def process_all_data() -> None:
             select_cols.append(col_address)
 
         # Toplam islenmemis kayit sayisi — progress bar icin
-        where_clause = f"{col_master} IS NULL"
+        # Identifiers (table/column names) use psycopg2.sql.Identifier for safety.
+        # The COUNTRY_CODE_FILTER value is passed as a %s parameter — never interpolated.
+        where_clause = psycopg2.sql.SQL("{col_master} IS NULL").format(
+            col_master=psycopg2.sql.Identifier(col_master)
+        )
+        filter_params: tuple = ()
         if COUNTRY_CODE_FILTER:
-            where_clause += f" AND {col_country} = '{COUNTRY_CODE_FILTER}'"
+            where_clause = psycopg2.sql.SQL("{base} AND {col_country} = %s").format(
+                base=where_clause,
+                col_country=psycopg2.sql.Identifier(col_country),
+            )
+            filter_params = (COUNTRY_CODE_FILTER,)
             logger.info(f"Ülke Filtresi Aktif: {COUNTRY_CODE_FILTER}")
 
         count_cur = read_conn.cursor()
-        count_cur.execute(f"SELECT COUNT(*) FROM {RAW_TABLE_NAME} WHERE {where_clause}")
+        count_cur.execute(
+            psycopg2.sql.SQL("SELECT COUNT(*) FROM {table} WHERE {where}").format(
+                table=psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                where=where_clause,
+            ),
+            filter_params,
+        )
         total_remaining = count_cur.fetchone()[0]
         count_cur.close()
         logger.info(f"Toplam islenmemis kayit: {total_remaining:,}")
@@ -954,14 +970,19 @@ def process_all_data() -> None:
             # Her seferinde master_code IS NULL olan sonraki BATCH_SIZE kaydi cek
             read_cur = read_conn.cursor(cursor_factory=DictCursor)
             read_cur.execute(
-                f"""
-                SELECT {", ".join(select_cols)}
-                FROM {RAW_TABLE_NAME}
-                WHERE {where_clause} AND {col_id} > %s
-                ORDER BY {col_id}
-                LIMIT {BATCH_SIZE}
-                """,
-                (last_id,),
+                psycopg2.sql.SQL(
+                    "SELECT {cols} FROM {table} WHERE {where} AND {col_id} > %s"
+                    " ORDER BY {col_id} LIMIT {batch}"
+                ).format(
+                    cols=psycopg2.sql.SQL(", ").join(
+                        psycopg2.sql.Identifier(c) for c in select_cols
+                    ),
+                    table=psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                    where=where_clause,
+                    col_id=psycopg2.sql.Identifier(col_id),
+                    batch=psycopg2.sql.Literal(BATCH_SIZE),
+                ),
+                filter_params + (last_id,),
             )
             rows = read_cur.fetchall()
             read_cur.close()

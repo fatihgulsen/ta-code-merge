@@ -69,3 +69,70 @@ def test_run_stage_respects_min_score():
 
     assert len(matched) == 0
     assert len(unmatched) == 1
+
+
+def test_country_code_filter_uses_parametric_sql():
+    """COUNTRY_CODE_FILTER değeri SQL string'ine gömülmemeli; parametre olarak geçilmeli (CLAUDE.md §1.1)."""
+    from unittest.mock import patch, call as mcall
+    import main_processor as mp
+    import config
+
+    original_filter = config.COUNTRY_CODE_FILTER
+    original_mp_filter = mp.COUNTRY_CODE_FILTER
+
+    try:
+        # Force COUNTRY_CODE_FILTER to a non-None value so the branch executes
+        config.COUNTRY_CODE_FILTER = "TR"
+        mp.COUNTRY_CODE_FILTER = "TR"
+
+        # One shared cursor mock for all cursor() calls on both connections
+        mock_cur = MagicMock()
+        mock_cur.fetchone.return_value = [0]   # COUNT(*) returns 0 → skips while loop
+        mock_cur.fetchall.return_value = []     # batch fetch returns empty → loop exits
+
+        mock_conn = MagicMock()
+        mock_conn.cursor.return_value = mock_cur
+
+        with patch.object(mp, "get_db_connection", return_value=mock_conn), \
+             patch.object(mp, "get_es_client", MagicMock()), \
+             patch.object(mp, "create_index", MagicMock()), \
+             patch.object(mp, "register_all_pipelines", MagicMock()), \
+             patch.object(mp, "validate_db_schema", MagicMock()), \
+             patch.object(mp, "ensure_stage_log_table", MagicMock()), \
+             patch.object(mp, "STAGES", []):
+
+            try:
+                mp.process_all_data()
+            except Exception:
+                pass  # Interested only in what SQL was executed
+
+        # Collect all execute() calls across all cursors
+        assert mock_cur.execute.called, "cursor.execute was never called at all"
+
+        all_calls = mock_cur.execute.call_args_list
+
+        # Find the COUNT(*) call — it's the first execute on count_cur
+        count_call = all_calls[0]
+        sql_arg = count_call.args[0] if count_call.args else str(count_call)
+        sql_text = str(sql_arg)
+
+        # ASSERT 1: the literal "'TR'" string must NOT be embedded in the SQL text
+        assert "'TR'" not in sql_text, (
+            f"SQL injection vector detected: value 'TR' is hardcoded in SQL: {sql_text!r}"
+        )
+
+        # ASSERT 2: "TR" must appear in the params passed to at least one execute call
+        tr_in_params = False
+        for c in all_calls:
+            params = c.args[1] if len(c.args) > 1 else None
+            if params and "TR" in (str(p) for p in params):
+                tr_in_params = True
+                break
+        assert tr_in_params, (
+            "COUNTRY_CODE_FILTER='TR' was never passed as a SQL parameter. "
+            "It must be passed via the params argument to cur.execute(sql, params)."
+        )
+
+    finally:
+        config.COUNTRY_CODE_FILTER = original_filter
+        mp.COUNTRY_CODE_FILTER = original_mp_filter

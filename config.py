@@ -60,6 +60,13 @@ ES_INDEX = "living_companies_v1"
 
 BATCH_SIZE = 5000
 
+# NEW_MASTER sub-batch boyutu — within-batch duplicate minimizasyonu icin
+# Her N kayitlik alt grup ES'e index'lenir, ardindan refresh yapilir.
+NEW_MASTER_SUBBATCH_SIZE = 200
+
+# ES refresh araligi — her N kayitta bir refresh yapilir (tum stage'ler)
+ES_REFRESH_INTERVAL = 50
+
 # --- ES Skor Eşikleri ---
 ES_MIN_SCORE = 3.0  # ES'te min_score filtresi (bu altı hiç dönmez)
 LOG_ALL_STAGES = False  # Her bir stage sonucunu (failed dahil) logla

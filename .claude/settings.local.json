@@ -58,7 +58,10 @@
       "Bash(python3 -c \"from synonym_loader import get_company_type_tokens; tokens = get_company_type_tokens\\('IN'\\); print\\('Total:', len\\(tokens\\)\\); print\\('Sample \\(sorted\\):', sorted\\(list\\(tokens\\)\\)[:30]\\)\")",
       "Read(//c/Users/fatih/.claude/plans/**)",
       "Bash(head -60 tests/*.py)",
-      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('Keys:', list\\(d.keys\\(\\)\\)\\); arts=d.get\\('articles',[]\\); print\\('Articles count:', len\\(arts\\)\\); print\\('Articles:', arts\\)\")"
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('Keys:', list\\(d.keys\\(\\)\\)\\); arts=d.get\\('articles',[]\\); print\\('Articles count:', len\\(arts\\)\\); print\\('Articles:', arts\\)\")",
+      "Bash(pytest -v --tb=short)",
+      "Bash(pytest -v --tb=short --ignore=scratch --ignore=tests/test_address_anchoring.py)",
+      "Bash(tee pytest_baseline.txt)"
     ]
   }
 }

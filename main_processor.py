@@ -18,6 +18,7 @@ import uuid
 from typing import Any
 
 import psycopg2
+import psycopg2.sql
 from psycopg2.extras import DictCursor, execute_values
 from elasticsearch import helpers
 
@@ -58,6 +59,8 @@ from config import (
     MSEARCH_CHUNK_SIZE,
     SUFFIX_FUZZY_SCORE,
     LOG_ALL_STAGES,
+    NEW_MASTER_SUBBATCH_SIZE,
+    ES_REFRESH_INTERVAL,
 )
 from es_manager import create_index, get_es_client
 from es_ingest import register_all_pipelines, pipeline_name
@@ -73,8 +76,15 @@ logging.getLogger("elasticsearch").setLevel(logging.WARNING)
 logging.getLogger("elastic_transport").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
-# NEW_MASTER oluştururken sub-batch boyutu (within-batch duplicate minimizasyonu)
-NEW_MASTER_SUBBATCH_SIZE = 200
+
+
+def _make_pg_update_tuple(master_id: str, score: float, stage_name: str, details: str | None, row_id: Any) -> tuple:
+    """5-element tuple matching execute_values bind order: (master_id, score, stage_name, details, row_id).
+
+    Enforces consistent shape for pg_updates list — prevents DataError/IndexError when
+    execute_values SQL template expects 5 columns (mc, ms, mt, md, id).
+    """
+    return (master_id, float(score), stage_name, details, row_id)
 
 
 # ─────────────────────────────────────────────────────────────────────
@@ -138,13 +148,21 @@ def validate_db_schema(conn) -> None:
         if not db_col or db_col not in existing_columns:
             missing_update.append((internal_name, db_col))
 
+    _ALLOWED_COL_TYPES = {"VARCHAR(50)", "INTEGER", "TEXT"}
+
     if missing_update and AUTO_CREATE_UPDATE_COLUMNS:
         for internal_name, db_col in missing_update:
             col_type = {"master_code": "VARCHAR(50)", "match_score": "INTEGER"}.get(
                 internal_name, "TEXT"
             )
+            if col_type not in _ALLOWED_COL_TYPES:
+                raise ValueError(f"Bilinmeyen sütun tipi: {col_type!r}")
             cursor.execute(
-                f"ALTER TABLE {RAW_TABLE_NAME} ADD COLUMN {db_col} {col_type};"
+                psycopg2.sql.SQL("ALTER TABLE {} ADD COLUMN {} {};").format(
+                    psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                    psycopg2.sql.Identifier(db_col),
+                    psycopg2.sql.SQL(col_type),
+                )
             )
             conn.commit()
             logger.info(f"Sütun oluşturuldu: {db_col} ({col_type})")
@@ -351,7 +369,7 @@ def update_es_variations(es, matched: list[dict]) -> None:
         try:
             es.bulk(body=bulk_body, refresh=False)
         except Exception:
-            logger.debug("ES variations update basarisiz, devam ediliyor")
+            logger.warning("ES variations update basarisiz, devam ediliyor", exc_info=True)
 
 
 def _append_list_fields(bulk_body: list[dict], master_id: str, info: dict) -> None:
@@ -406,14 +424,18 @@ def write_matched_to_pg(write_cursor, write_conn, matched: list[dict]) -> None:
 
     execute_values(
         write_cursor,
-        f"""
-        UPDATE {RAW_TABLE_NAME} AS t
-        SET {col_master} = d.master_code,
-            {col_score}  = d.match_score,
-            {col_type}   = d.match_type
-        FROM (VALUES %s) AS d(master_code, match_score, match_type, id)
-        WHERE t.{col_id} = d.id
-        """,
+        psycopg2.sql.SQL(
+            "UPDATE {} AS t"
+            " SET {} = d.master_code, {} = d.match_score, {} = d.match_type"
+            " FROM (VALUES %s) AS d(master_code, match_score, match_type, id)"
+            " WHERE t.{} = d.id"
+        ).format(
+            psycopg2.sql.Identifier(RAW_TABLE_NAME),
+            psycopg2.sql.Identifier(col_master),
+            psycopg2.sql.Identifier(col_score),
+            psycopg2.sql.Identifier(col_type),
+            psycopg2.sql.Identifier(col_id),
+        ),
         [
             (r["master_id"], int(r["es_score"]), r["stage_name"], r["row_id"])
             for r in matched
@@ -484,7 +506,7 @@ def build_new_master_doc(
         "_routing": country.upper(),
         "_source": {
             "master_id": master_id,
-            "variations": [name],
+            "variations": [{"name": name}],
             "variations_stripped": [],
             "country_code": country.upper(),
         },
@@ -512,6 +534,12 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
     col_master = COLUMN_MAPPING["master_code"]
     col_score = COLUMN_MAPPING["match_score"]
     col_type = COLUMN_MAPPING["match_type"]
+    col_details = COLUMN_MAPPING["match_details"]
+
+    # Stage order'lari STAGES konfigurasyonundan dinamik olarak al
+    # NEW_MASTER tum stage'lerden sonra gelir; mevcut stage sayisi kadar order atanir
+    _new_master_stage_order = len(STAGES)
+    _canonical_exact_stage_order = next(s["order"] for s in STAGES if s["name"] == "CANONICAL_EXACT")
 
     # Adim 1: Tum kayitlar icinde exact dedup
     seen: dict[tuple[str, str], str] = {}  # (name_lower, country) → master_id
@@ -526,7 +554,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
         existing_master_id = seen.get(dedup_key)
         if existing_master_id:
             duplicate_updates.append(
-                (existing_master_id, 100, "NEW_MASTER", rec["row_id"])
+                _make_pg_update_tuple(existing_master_id, 100, "NEW_MASTER", "NEW_MASTER: Dedup match.", rec["row_id"])
             )
             duplicate_logs.append(
                 (
@@ -534,7 +562,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
                     rec["raw_name"],
                     rec["country"],
                     "NEW_MASTER",
-                    7,
+                    _new_master_stage_order,
                     True,
                     existing_master_id,
                     100.0,
@@ -582,14 +610,14 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
             if rec.get("address"):
                 doc["_source"]["address"] = [rec["address"]]
             es_docs.append(doc)
-            pg_updates.append((master_id, 100, "NEW_MASTER", rec["row_id"]))
+            pg_updates.append(_make_pg_update_tuple(master_id, 100, "NEW_MASTER", "NEW_MASTER: Initial index.", rec["row_id"]))
             log_rows.append(
                 (
                     rec["row_id"],
                     rec["raw_name"],
                     rec["country"],
                     "NEW_MASTER",
-                    7,
+                    _new_master_stage_order,
                     True,
                     master_id,
                     100.0,
@@ -618,14 +646,18 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
 
         execute_values(
             write_cursor,
-            f"""
-            UPDATE {RAW_TABLE_NAME} AS t
-            SET {col_master} = d.master_code,
-                {col_score}  = d.match_score,
-                {col_type}   = d.match_type
-            FROM (VALUES %s) AS d(master_code, match_score, match_type, id)
-            WHERE t.{col_id} = d.id
-            """,
+            psycopg2.sql.SQL(
+                "UPDATE {} AS t"
+                " SET {} = d.master_code, {} = d.match_score, {} = d.match_type"
+                " FROM (VALUES %s) AS d(master_code, match_score, match_type, id)"
+                " WHERE t.{} = d.id"
+            ).format(
+                psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                psycopg2.sql.Identifier(col_master),
+                psycopg2.sql.Identifier(col_score),
+                psycopg2.sql.Identifier(col_type),
+                psycopg2.sql.Identifier(col_id),
+            ),
             pg_updates,
         )
         execute_values(
@@ -662,7 +694,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
                                 r["raw_name"],
                                 r["country"],
                                 "CANONICAL_EXACT",
-                                2,
+                                _canonical_exact_stage_order,
                                 True,
                                 r["master_id"],
                                 r["es_score"],
@@ -680,12 +712,19 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
     if duplicate_updates:
         execute_values(
             write_cursor,
-            f"""
-            UPDATE {RAW_TABLE_NAME} AS t
-            SET {col_master} = d.mc, {col_score} = d.ms, {col_type} = d.mt
-            FROM (VALUES %s) AS d(mc, ms, mt, id)
-            WHERE t.{col_id} = d.id
-            """,
+            psycopg2.sql.SQL(
+                "UPDATE {} AS t"
+                " SET {} = d.mc, {} = d.ms, {} = d.mt, {} = d.md"
+                " FROM (VALUES %s) AS d(mc, ms, mt, md, id)"
+                " WHERE t.{} = d.id"
+            ).format(
+                psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                psycopg2.sql.Identifier(col_master),
+                psycopg2.sql.Identifier(col_score),
+                psycopg2.sql.Identifier(col_type),
+                psycopg2.sql.Identifier(col_details),
+                psycopg2.sql.Identifier(col_id),
+            ),
             duplicate_updates,
         )
         execute_values(
@@ -715,10 +754,6 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
 # ─────────────────────────────────────────────────────────────────────
 # TEKIL KAYIT ESLESTIRME (ES-Authority)
 # ─────────────────────────────────────────────────────────────────────
-
-# ES refresh araligi — her N kayitta bir refresh yapilir
-ES_REFRESH_INTERVAL = 50
-
 
 def match_single_record(es, rec: dict, active_stages: list[dict]) -> dict:
     """Tek bir kaydi tum stage'lerden gecirir (msearch ile performansli).
@@ -836,11 +871,16 @@ def _add_variation_to_master(
             for v in existing_variations
             if isinstance(v, dict)
         ]
+        # Build a shallow-copy body so we never mutate the caller's dict
+        body = dict(source)
+
         if v_lower not in existing_names:
-            existing_variations.append({"name": variation})
-            source["variations"] = existing_variations
-            source["variations_stripped"] = []
-            source["variations_suffix"] = []
+            body["variations"] = list(existing_variations) + [{"name": variation}]
+            # Preserve existing stripped/suffix lists — do NOT reset to []
+            # The ingest pipeline will populate the new entry's tokens;
+            # we only keep whatever was already accumulated.
+            body["variations_stripped"] = list(source.get("variations_stripped") or [])
+            body["variations_suffix"] = list(source.get("variations_suffix") or [])
             changed = True
 
         # tax/phone/address listelerine yeni degerleri ekle
@@ -851,12 +891,11 @@ def _add_variation_to_master(
             ]:
                 val = (rec.get(key) or "").strip()
                 if val:
-                    existing = source.get(field, [])
+                    existing = body.get(field, [])
                     if not isinstance(existing, list):
                         existing = [existing] if existing else []
                     if val not in existing:
-                        existing.append(val)
-                        source[field] = existing
+                        body[field] = existing + [val]
                         changed = True
 
         if not changed:
@@ -867,11 +906,11 @@ def _add_variation_to_master(
             index=ES_INDEX,
             id=master_doc_id,
             routing=cc,
-            body=source,
+            body=body,
             pipeline=pipe,
         )
     except Exception:
-        logger.debug(f"Varyasyon ekleme basarisiz: {v_lower[:50]}")
+        logger.warning(f"Varyasyon ekleme basarisiz: {v_lower[:50]}", exc_info=True)
 
 
 # ─────────────────────────────────────────────────────────────────────
@@ -920,13 +959,28 @@ def process_all_data() -> None:
             select_cols.append(col_address)
 
         # Toplam islenmemis kayit sayisi — progress bar icin
-        where_clause = f"{col_master} IS NULL"
+        # Identifiers (table/column names) use psycopg2.sql.Identifier for safety.
+        # The COUNTRY_CODE_FILTER value is passed as a %s parameter — never interpolated.
+        where_clause = psycopg2.sql.SQL("{col_master} IS NULL").format(
+            col_master=psycopg2.sql.Identifier(col_master)
+        )
+        filter_params: tuple = ()
         if COUNTRY_CODE_FILTER:
-            where_clause += f" AND {col_country} = '{COUNTRY_CODE_FILTER}'"
+            where_clause = psycopg2.sql.SQL("{base} AND {col_country} = %s").format(
+                base=where_clause,
+                col_country=psycopg2.sql.Identifier(col_country),
+            )
+            filter_params = (COUNTRY_CODE_FILTER,)
             logger.info(f"Ülke Filtresi Aktif: {COUNTRY_CODE_FILTER}")
 
         count_cur = read_conn.cursor()
-        count_cur.execute(f"SELECT COUNT(*) FROM {RAW_TABLE_NAME} WHERE {where_clause}")
+        count_cur.execute(
+            psycopg2.sql.SQL("SELECT COUNT(*) FROM {table} WHERE {where}").format(
+                table=psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                where=where_clause,
+            ),
+            filter_params,
+        )
         total_remaining = count_cur.fetchone()[0]
         count_cur.close()
         logger.info(f"Toplam islenmemis kayit: {total_remaining:,}")
@@ -954,14 +1008,19 @@ def process_all_data() -> None:
             # Her seferinde master_code IS NULL olan sonraki BATCH_SIZE kaydi cek
             read_cur = read_conn.cursor(cursor_factory=DictCursor)
             read_cur.execute(
-                f"""
-                SELECT {", ".join(select_cols)}
-                FROM {RAW_TABLE_NAME}
-                WHERE {where_clause} AND {col_id} > %s
-                ORDER BY {col_id}
-                LIMIT {BATCH_SIZE}
-                """,
-                (last_id,),
+                psycopg2.sql.SQL(
+                    "SELECT {cols} FROM {table} WHERE {where} AND {col_id} > %s"
+                    " ORDER BY {col_id} LIMIT {batch}"
+                ).format(
+                    cols=psycopg2.sql.SQL(", ").join(
+                        psycopg2.sql.Identifier(c) for c in select_cols
+                    ),
+                    table=psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                    where=where_clause,
+                    col_id=psycopg2.sql.Identifier(col_id),
+                    batch=psycopg2.sql.Literal(BATCH_SIZE),
+                ),
+                filter_params + (last_id,),
             )
             rows = read_cur.fetchall()
             read_cur.close()
@@ -978,152 +1037,169 @@ def process_all_data() -> None:
             for row in rows:
                 row_id = row[col_id]
                 last_id = row_id  # Sayfalama icin son id'yi takip et
-                country = (
-                    (row[col_country] or "").strip().upper()
-                    if col_country
-                    else "DEFAULT"
-                )
-                if len(country) != 2 or not country.isalpha():
-                    country = "DEFAULT"
-                raw_name = (row[col_name] or "").strip()
-                if not raw_name:
-                    total_skipped += 1
-                    pbar.update(1)
-                    continue
-
-                rec = {
-                    "row_id": row_id,
-                    "raw_name": raw_name,
-                    "country": country,
-                    "tax": row.get(col_tax) or "" if col_tax else "",
-                    "phone": row.get(col_phone) or "" if col_phone else "",
-                    "address": row.get(col_address) or "" if col_address else "",
-                }
-
-                # --- Tek kayit eslestirme ---
-                match_res = match_single_record(es, rec, active_stages)
-                winner = match_res["winner"]
-                trace = match_res["trace"]
-
-                if winner:
-                    master_id = winner["master_doc_id"]
-                    es_score = winner["es_score"]
-                    stage_name = winner["stage_name"]
-
-                    details = f"[{stage_name}] score: {es_score:.2f}"
-                    pg_updates.append(
-                        (master_id, int(es_score), stage_name, details, row_id)
+                try:
+                    country = (
+                        (row[col_country] or "").strip().upper()
+                        if col_country
+                        else "DEFAULT"
                     )
+                    if len(country) != 2 or not country.isalpha():
+                        country = "DEFAULT"
+                    raw_name = (row[col_name] or "").strip()
+                    if not raw_name:
+                        total_skipped += 1
+                        pbar.update(1)
+                        continue
 
-                    if winner.get("index_variation", True):
-                        _add_variation_to_master(
-                            es, winner["master_doc_id"], raw_name, country, rec
+                    rec = {
+                        "row_id": row_id,
+                        "raw_name": raw_name,
+                        "country": country,
+                        "tax": row.get(col_tax) or "" if col_tax else "",
+                        "phone": row.get(col_phone) or "" if col_phone else "",
+                        "address": row.get(col_address) or "" if col_address else "",
+                    }
+
+                    # --- Tek kayit eslestirme ---
+                    match_res = match_single_record(es, rec, active_stages)
+                    winner = match_res["winner"]
+                    trace = match_res["trace"]
+
+                    if winner:
+                        master_id = winner["master_doc_id"]
+                        es_score = winner["es_score"]
+                        stage_name = winner["stage_name"]
+
+                        details = f"[{stage_name}] score: {es_score:.2f}"
+                        pg_updates.append(
+                            _make_pg_update_tuple(master_id, es_score, stage_name, details, row_id)
                         )
 
-                    total_matched += 1
-                    stage_counts[stage_name] = stage_counts.get(stage_name, 0) + 1
-                else:
-                    master_id = _index_new_master(es, rec)
-                    details = "NEW_MASTER: No relevant matches found."
-                    pg_updates.append((master_id, 100, "NEW_MASTER", details, row_id))
-                    total_new += 1
-                    stage_name = "NEW_MASTER"
-                    es_score = 100.0
+                        if winner.get("index_variation", True):
+                            _add_variation_to_master(
+                                es, winner["master_doc_id"], raw_name, country, rec
+                            )
 
-                # --- Audit & Trace Logging ---
-                # 1. match_audit (özet)
-                audit_rows.append(
-                    (
-                        row_id,
-                        raw_name,
-                        country,
-                        master_id,
-                        stage_name,
-                        es_score,
-                        len([t for t in trace if t["matched"]]),
-                    )
-                )
+                        total_matched += 1
+                        stage_counts[stage_name] = stage_counts.get(stage_name, 0) + 1
+                    else:
+                        master_id = _index_new_master(es, rec)
+                        details = "NEW_MASTER: No relevant matches found."
+                        pg_updates.append(_make_pg_update_tuple(master_id, 100, "NEW_MASTER", details, row_id))
+                        total_new += 1
+                        stage_name = "NEW_MASTER"
+                        es_score = 100.0
 
-                # 2. match_stages_log (ayrıntı - Tüm stage'leri logla)
-                for t in trace:
-                    if not t["matched"] and not LOG_ALL_STAGES:
-                        continue
-                    log_rows.append(
+                    # --- Audit & Trace Logging ---
+                    # 1. match_audit (özet)
+                    audit_rows.append(
                         (
                             row_id,
                             raw_name,
                             country,
-                            t["stage_name"],
-                            t["stage_order"],
-                            t["matched"],
-                            (t["master_id"] or master_id) if t["matched"] else None,
-                            t["es_score"],
+                            master_id,
+                            stage_name,
+                            es_score,
+                            len([t for t in trace if t["matched"]]),
                         )
                     )
 
-                records_since_refresh += 1
-                total_processed += 1
-                pbar.update(1)
-
-                # Progress bar postfix guncelle
-                match_pct = (
-                    round(100 * total_matched / total_processed, 1)
-                    if total_processed
-                    else 0
-                )
-                pbar.set_postfix_str(
-                    f"eslesen={total_matched:,} ({match_pct}%) yeni={total_new:,},toplam={total_processed:,},skipped={total_skipped:,}",
-                    refresh=False,
-                )
-
-                # Periyodik ES refresh — yeni master'lar gorunur olsun
-                if records_since_refresh >= ES_REFRESH_INTERVAL:
-                    es.indices.refresh(index=ES_INDEX)
-                    records_since_refresh = 0
-
-                    # Periyodik PG flush
-                    if pg_updates:
-                        execute_values(
-                            write_cursor,
-                            f"""
-                            UPDATE {RAW_TABLE_NAME} AS t
-                            SET {col_master} = d.mc, {COLUMN_MAPPING["match_score"]} = d.ms,
-                                {COLUMN_MAPPING["match_type"]} = d.mt, {COLUMN_MAPPING["match_details"]} = d.md
-                            FROM (VALUES %s) AS d(mc, ms, mt, md, id)
-                            WHERE t.{col_id} = d.id
-                            """,
-                            pg_updates,
+                    # 2. match_stages_log (ayrıntı - Tüm stage'leri logla)
+                    for t in trace:
+                        if not t["matched"] and not LOG_ALL_STAGES:
+                            continue
+                        log_rows.append(
+                            (
+                                row_id,
+                                raw_name,
+                                country,
+                                t["stage_name"],
+                                t["stage_order"],
+                                t["matched"],
+                                (t["master_id"] or master_id) if t["matched"] else None,
+                                t["es_score"],
+                            )
                         )
-                        execute_values(
-                            write_cursor,
-                            """INSERT INTO match_stages_log
-                                (input_id, input_name, country_code, stage_name, stage_order,
-                                 matched, master_id, es_score) VALUES %s""",
-                            log_rows,
-                        )
-                        execute_values(
-                            write_cursor,
-                            """INSERT INTO match_audit
-                                (input_id, input_name, country_code, final_master_id,
-                                 final_stage_name, final_score, total_matched_stages) VALUES %s""",
-                            audit_rows,
-                        )
-                        write_conn.commit()
-                        pg_updates.clear()
-                        log_rows.clear()
-                        audit_rows.clear()
+
+                    records_since_refresh += 1
+                    total_processed += 1
+                    pbar.update(1)
+
+                    # Progress bar postfix guncelle
+                    match_pct = (
+                        round(100 * total_matched / total_processed, 1)
+                        if total_processed
+                        else 0
+                    )
+                    pbar.set_postfix_str(
+                        f"eslesen={total_matched:,} ({match_pct}%) yeni={total_new:,},toplam={total_processed:,},skipped={total_skipped:,}",
+                        refresh=False,
+                    )
+
+                    # Periyodik ES refresh — yeni master'lar gorunur olsun
+                    if records_since_refresh >= ES_REFRESH_INTERVAL:
+                        es.indices.refresh(index=ES_INDEX)
+                        records_since_refresh = 0
+
+                        # Periyodik PG flush
+                        if pg_updates:
+                            execute_values(
+                                write_cursor,
+                                psycopg2.sql.SQL(
+                                    "UPDATE {} AS t"
+                                    " SET {} = d.mc, {} = d.ms, {} = d.mt, {} = d.md"
+                                    " FROM (VALUES %s) AS d(mc, ms, mt, md, id)"
+                                    " WHERE t.{} = d.id"
+                                ).format(
+                                    psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                                    psycopg2.sql.Identifier(col_master),
+                                    psycopg2.sql.Identifier(COLUMN_MAPPING["match_score"]),
+                                    psycopg2.sql.Identifier(COLUMN_MAPPING["match_type"]),
+                                    psycopg2.sql.Identifier(COLUMN_MAPPING["match_details"]),
+                                    psycopg2.sql.Identifier(col_id),
+                                ),
+                                pg_updates,
+                            )
+                            execute_values(
+                                write_cursor,
+                                """INSERT INTO match_stages_log
+                                    (input_id, input_name, country_code, stage_name, stage_order,
+                                     matched, master_id, es_score) VALUES %s""",
+                                log_rows,
+                            )
+                            execute_values(
+                                write_cursor,
+                                """INSERT INTO match_audit
+                                    (input_id, input_name, country_code, final_master_id,
+                                     final_stage_name, final_score, total_matched_stages) VALUES %s""",
+                                audit_rows,
+                            )
+                            write_conn.commit()
+                            pg_updates.clear()
+                            log_rows.clear()
+                            audit_rows.clear()
+
+                except Exception:
+                    logger.exception("Row processing failed (row_id=%s)", row_id)
+                    continue
 
             # Batch sonu — kalan PG yazimlarini flush et
             if pg_updates:
                 execute_values(
                     write_cursor,
-                    f"""
-                    UPDATE {RAW_TABLE_NAME} AS t
-                    SET {col_master} = d.mc, {COLUMN_MAPPING["match_score"]} = d.ms,
-                        {COLUMN_MAPPING["match_type"]} = d.mt
-                    FROM (VALUES %s) AS d(mc, ms, mt, id)
-                    WHERE t.{col_id} = d.id
-                    """,
+                    psycopg2.sql.SQL(
+                        "UPDATE {} AS t"
+                        " SET {} = d.mc, {} = d.ms, {} = d.mt, {} = d.md"
+                        " FROM (VALUES %s) AS d(mc, ms, mt, md, id)"
+                        " WHERE t.{} = d.id"
+                    ).format(
+                        psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                        psycopg2.sql.Identifier(col_master),
+                        psycopg2.sql.Identifier(COLUMN_MAPPING["match_score"]),
+                        psycopg2.sql.Identifier(COLUMN_MAPPING["match_type"]),
+                        psycopg2.sql.Identifier(COLUMN_MAPPING["match_details"]),
+                        psycopg2.sql.Identifier(col_id),
+                    ),
                     pg_updates,
                 )
                 execute_values(

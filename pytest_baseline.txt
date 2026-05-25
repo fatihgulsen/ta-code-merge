@@ -1,0 +1,116 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.8, pytest-9.0.3, pluggy-1.6.0 -- C:\All-project\ta-code-merge\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\All-project\ta-code-merge
+collecting ... collected 76 items
+
+tests/test_config.py::test_stages_has_required_keys PASSED               [  1%]
+tests/test_config.py::test_stages_ordered_correctly PASSED               [  2%]
+tests/test_config.py::test_stage_query_fns_exist_in_es_queries PASSED    [  3%]
+tests/test_config.py::test_stage_names_unique PASSED                     [  5%]
+tests/test_config.py::test_suffix_fuzzy_match_type_exists PASSED         [  6%]
+tests/test_config.py::test_suffix_fuzzy_constants_exist PASSED           [  7%]
+tests/test_config.py::test_suffix_fuzzy_stage_in_stages PASSED           [  9%]
+tests/test_config.py::test_stage_order PASSED                            [ 10%]
+tests/test_config.py::test_business_descriptors_in_synonyms PASSED       [ 11%]
+tests/test_config.py::test_stage_index_variation_sprint2_self_learning PASSED [ 13%]
+tests/test_es_ingest.py::test_build_suffix_script_returns_string PASSED  [ 14%]
+tests/test_es_ingest.py::test_build_suffix_script_contains_generic_tokens PASSED [ 15%]
+tests/test_es_ingest.py::test_build_suffix_script_sets_variations_suffix PASSED [ 17%]
+tests/test_es_ingest.py::test_build_suffix_script_uses_generic_set_contains PASSED [ 18%]
+tests/test_es_ingest.py::test_pipeline_name_format PASSED                [ 19%]
+tests/test_es_ingest.py::test_build_pipeline_body_has_three_processors PASSED [ 21%]
+tests/test_es_ingest.py::test_build_pipeline_body_suffix_processor_last PASSED [ 22%]
+tests/test_es_ingest.py::test_build_pipeline_body_differs_per_country PASSED [ 23%]
+tests/test_es_ingest.py::test_register_all_pipelines_calls_each_country PASSED [ 25%]
+tests/test_es_ingest.py::test_register_pipeline_uses_correct_name PASSED [ 26%]
+tests/test_es_ingest.py::test_no_hardcoded_pipeline_name_constant PASSED [ 27%]
+tests/test_es_manager.py::test_no_hardcoded_generic_tokens PASSED        [ 28%]
+tests/test_es_manager.py::test_es_manager_imports_cleanly PASSED         [ 30%]
+tests/test_es_manager.py::test_stripped_search_analyzer_global_fallback_exists PASSED [ 31%]
+tests/test_es_manager.py::test_per_country_stripped_analyzers_exist PASSED [ 32%]
+tests/test_es_manager.py::test_build_index_settings_includes_articles_in_stop_filter PASSED [ 34%]
+tests/test_es_manager.py::test_build_index_settings_global_filter_includes_articles PASSED [ 35%]
+tests/test_es_queries.py::test_canonical_exact_structure FAILED          [ 36%]
+tests/test_es_queries.py::test_canonical_exact_uses_country_analyzer PASSED [ 38%]
+tests/test_es_queries.py::test_canonical_exact_fallback_analyzer_for_unknown_country PASSED [ 39%]
+tests/test_es_queries.py::test_stripped_exact_structure PASSED           [ 40%]
+tests/test_es_queries.py::test_stripped_exact_uses_country_analyzer PASSED [ 42%]
+tests/test_es_queries.py::test_stripped_exact_uses_global_analyzer_for_unknown_country PASSED [ 43%]
+tests/test_es_queries.py::test_token_coverage_uses_and_operator FAILED   [ 44%]
+tests/test_es_queries.py::test_fuzzy_phrase_has_slop FAILED              [ 46%]
+tests/test_es_queries.py::test_ngram_match_queries_ngram_field FAILED    [ 47%]
+tests/test_es_queries.py::test_all_queries_include_country_filter PASSED [ 48%]
+tests/test_es_queries.py::test_suffix_fuzzy_structure PASSED             [ 50%]
+tests/test_es_queries.py::test_suffix_fuzzy_must_queries_variations_stripped FAILED [ 51%]
+tests/test_es_queries.py::test_suffix_fuzzy_should_queries_variations_suffix_with_fuzziness PASSED [ 52%]
+tests/test_es_queries.py::test_suffix_fuzzy_includes_country_filter PASSED [ 53%]
+tests/test_es_queries.py::test_variations_suffix_mapping_has_explicit_search_analyzer PASSED [ 55%]
+tests/test_generate_config.py::test_find_column_mapping_block_simple PASSED [ 56%]
+tests/test_generate_config.py::test_find_column_mapping_block_with_comments PASSED [ 57%]
+tests/test_generate_config.py::test_find_column_mapping_block_not_found PASSED [ 59%]
+tests/test_generate_config.py::test_find_column_mapping_block_unclosed_brace PASSED [ 60%]
+tests/test_generate_config.py::test_build_column_mapping_block PASSED    [ 61%]
+tests/test_generate_config.py::test_build_column_mapping_block_empty PASSED [ 63%]
+tests/test_generate_config.py::test_replace_column_mapping PASSED        [ 64%]
+tests/test_generate_config.py::test_fetch_table_columns_query PASSED     [ 65%]
+tests/test_generate_config.py::test_fetch_table_columns_empty PASSED     [ 67%]
+tests/test_generate_config.py::test_main_updates_config_file PASSED      [ 68%]
+tests/test_generate_config.py::test_main_config_file_not_found PASSED    [ 69%]
+tests/test_generate_config.py::test_main_empty_table PASSED              [ 71%]
+tests/test_main_processor.py::test_run_stage_returns_matched_and_unmatched PASSED [ 72%]
+tests/test_main_processor.py::test_run_stage_respects_min_score PASSED   [ 73%]
+tests/test_synonym_loader.py::test_get_company_type_tokens_includes_common_tokens PASSED [ 75%]
+tests/test_synonym_loader.py::test_get_company_type_tokens_strips_dots PASSED [ 76%]
+tests/test_synonym_loader.py::test_get_company_type_tokens_lowercase PASSED [ 77%]
+tests/test_synonym_loader.py::test_get_company_type_tokens_includes_both_sides_of_arrow PASSED [ 78%]
+tests/test_synonym_loader.py::test_get_company_type_tokens_country_specific PASSED [ 80%]
+tests/test_synonym_loader.py::test_get_company_type_tokens_lru_cache PASSED [ 81%]
+tests/test_synonym_loader.py::test_get_all_company_type_tokens_is_superset PASSED [ 82%]
+tests/test_synonym_loader.py::test_get_all_company_type_tokens_nonempty PASSED [ 84%]
+tests/test_synonym_loader.py::test_get_article_stopwords_returns_frozenset PASSED [ 85%]
+tests/test_synonym_loader.py::test_get_article_stopwords_contains_common_articles PASSED [ 86%]
+tests/test_synonym_loader.py::test_get_article_stopwords_unknown_country_returns_common PASSED [ 88%]
+tests/test_synonym_loader.py::test_get_article_stopwords_falls_back_to_common PASSED [ 89%]
+tests/test_synonym_loader.py::test_get_article_stopwords_lru_cache PASSED [ 90%]
+tests/test_synonym_loader.py::test_get_company_type_tokens_equals_legal_suffixes PASSED [ 92%]
+tests/test_synonym_loader.py::test_get_legal_suffix_tokens_returns_frozenset PASSED [ 93%]
+tests/test_synonym_loader.py::test_get_legal_suffix_tokens_excludes_sectors PASSED [ 94%]
+tests/test_synonym_loader.py::test_get_legal_suffix_tokens_excludes_foreign_suffixes PASSED [ 96%]
+tests/test_synonym_loader.py::test_get_business_sector_tokens_returns_frozenset PASSED [ 97%]
+tests/test_synonym_loader.py::test_get_business_sector_tokens_excludes_legal_suffixes PASSED [ 98%]
+tests/test_synonym_loader.py::test_get_business_sector_canonical_map_maps_to_rule_target PASSED [100%]
+
+================================== FAILURES ===================================
+_______________________ test_canonical_exact_structure ________________________
+tests\test_es_queries.py:34: in test_canonical_exact_structure
+    assert any("term" in f and "variations.token_count" in f["term"] for f in inner_filters)
+E   assert False
+E    +  where False = any(<generator object test_canonical_exact_structure.<locals>.<genexpr> at 0x00000252E9D50380>)
+____________________ test_token_coverage_uses_and_operator ____________________
+tests\test_es_queries.py:96: in test_token_coverage_uses_and_operator
+    inner_must = nested["query"]["bool"]["must"]
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'bool'
+_________________________ test_fuzzy_phrase_has_slop __________________________
+tests\test_es_queries.py:109: in test_fuzzy_phrase_has_slop
+    inner_must = nested["query"]["bool"]["must"]
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'bool'
+____________________ test_ngram_match_queries_ngram_field _____________________
+tests\test_es_queries.py:122: in test_ngram_match_queries_ngram_field
+    inner_must = nested["query"]["bool"]["must"]
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'bool'
+_____________ test_suffix_fuzzy_must_queries_variations_stripped ______________
+tests\test_es_queries.py:159: in test_suffix_fuzzy_must_queries_variations_stripped
+    inner_must = nested["query"]["bool"]["must"]
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'bool'
+=========================== short test summary info ===========================
+FAILED tests/test_es_queries.py::test_canonical_exact_structure - assert False
+FAILED tests/test_es_queries.py::test_token_coverage_uses_and_operator - KeyE...
+FAILED tests/test_es_queries.py::test_fuzzy_phrase_has_slop - KeyError: 'bool'
+FAILED tests/test_es_queries.py::test_ngram_match_queries_ngram_field - KeyEr...
+FAILED tests/test_es_queries.py::test_suffix_fuzzy_must_queries_variations_stripped
+======================== 5 failed, 71 passed in 1.18s =========================

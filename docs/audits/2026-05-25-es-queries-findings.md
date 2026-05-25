@@ -9,9 +9,16 @@
 
 ## Özet
 - CRITICAL: 0
-- HIGH: 2
-- MEDIUM: 2
+- HIGH: 1
+- MEDIUM: 3
 - LOW: 1
+
+---
+
+## Kapsam Notu
+
+- **`_routing` enforcement** CLAUDE.md §1.1 hem `bool.filter.country_code` hem de `_routing=country_code.upper()` ister. `es_queries.py` sadece query body DSL üretir — `_routing` parametresi `client.msearch()` / `client.search()` çağrısında verilir. Bu audit kapsamında **es_queries.py içindeki `country_code` filter** doğrulanmıştır (✅). `_routing` paramının fiilen geçirilip geçirilmediği `main_processor.py` audit'inin kapsamındadır ve orada doğrulanmıştır (main_processor.py:262 `msearch(... routing=...)` çağrıları, ayrıca `es.index` çağrılarında `routing=cc` kullanımı — Task 2 quality review notu).
+- **`PHONETIC_MATCH` (satır 289-316)** Bu stage fonksiyonu okunmuş, `country_code` filter mevcut, görünür defekt bulunmamıştır. Bulgu çıkarılmadığı için raporda zikredilmemiştir.
 
 ---
 
@@ -29,7 +36,7 @@
 - Country-specific analyzer usage: ✅ — `_get_analyzer` ve `_get_stripped_analyzer` yardımcı fonksiyonları ülkeye özel ve fallback analyzer döndürüyor.
 - Painless thresholds in code vs config: ✅ — Painless script yok. `min_score` değerleri config.py'de STAGES içinde tanımlı.
 - DRY (duplicate stage builders): ⚠️ — `CANONICAL_EXACT` ve `STRIPPED_EXACT` neredeyse özdeş bir şablonu paylaşıyor (yalnızca alan adları farklı). MEDIUM düzey şişirilme; kritik değil.
-- Missing helper patterns (e.g., _strip_address_python): ❌ — `_strip_address_python` es_queries.py'de tanımlı değil. `tests/test_address_anchoring.py` ve `scratch/test_address_strip.py` bu fonksiyonu import etmeye çalışıyor ve `ImportError` ile çöküyor. Bkz. HIGH bulgu #2.
+- Missing helper patterns (e.g., _strip_address_python): ❌ — `_strip_address_python` es_queries.py'de tanımlı değil. `tests/test_address_anchoring.py` ve `scratch/test_address_strip.py` bu fonksiyonu import etmeye çalışıyor ve `ImportError` ile çöküyor. Bkz. MEDIUM bulgu #3.
 
 ### Failing tests (test_es_queries.py) — verdict per test
 
@@ -66,27 +73,6 @@
 **CLAUDE.md ihlali:** —
 
 **Test edilebilir mi?** Evet — `test_canonical_exact_structure` zaten bu senaryoyu test ediyor ve field path düzeltildikten sonra geçmesi beklenir.
-
----
-
-## [HIGH] es_queries.py — `_strip_address_python` fonksiyonu eksik (missing helper)
-
-**Kanıt:**
-```python
-# tests/test_address_anchoring.py:9
-from es_queries import _strip_address_python
-
-# scratch/test_address_strip.py:10
-from es_queries import _strip_address_python
-```
-
-**Neden problem:** `_strip_address_python` fonksiyonu `es_queries.py` içinde tanımlı değil. CLAUDE.md §4'te belirtilen "Sprint 2 kapsamında Python helper fonksiyonlar kaldırıldı" legacy pattern'ına uygun, ancak test dosyaları (hem `tests/` hem `scratch/`) hâlâ bu fonksiyonu import etmeye çalışıyor. Bu, `test_address_anchoring.py` için pytest collection hatasına yol açıyor ve adres soyma mantığını test etmeyi tamamen imkânsız kılıyor.
-
-**Önerilen düzeltme:** Ya `_strip_address_python`'ı `es_queries.py`'e yeniden ekle (eğer adres soyma mantığı hâlâ gerekli ise), ya da `test_address_anchoring.py` ve `scratch/test_address_strip.py`'yi sil/güncelle. Eğer fonksiyon ES ingest pipeline'a taşındıysa, testleri de ES analyze API üzerinden yazılmış entegrasyon testleriyle değiştir.
-
-**CLAUDE.md ihlali:** CLAUDE.md §4 (Bilinen Kısıtlamalar) bu pattern'ı tanımlıyor, ancak çözüm hâlâ uygulanmamış.
-
-**Test edilebilir mi?** Evet — `pytest tests/test_address_anchoring.py` şu anda `ImportError` ile collection aşamasında çöküyor; fonksiyon eklendiğinde veya test kaldırıldığında hata gider.
 
 ---
 
@@ -132,6 +118,27 @@ from es_queries import _strip_address_python
 **CLAUDE.md ihlali:** —
 
 **Test edilebilir mi?** Evet — mevcut testler yeniden yapılanma sonrasında aynı şekilde çalışmalı (davranış değişmez).
+
+---
+
+## [MEDIUM] es_queries.py — `_strip_address_python` fonksiyonu eksik (missing helper)
+
+**Kanıt:**
+```python
+# tests/test_address_anchoring.py:9
+from es_queries import _strip_address_python
+
+# scratch/test_address_strip.py:10
+from es_queries import _strip_address_python
+```
+
+**Neden problem:** `_strip_address_python` fonksiyonu `es_queries.py` içinde tanımlı değil. CLAUDE.md §4'te belirtilen "Sprint 2 kapsamında Python helper fonksiyonlar kaldırıldı" legacy pattern'ına uygun, ancak test dosyaları (hem `tests/` hem `scratch/`) hâlâ bu fonksiyonu import etmeye çalışıyor. Bu, `test_address_anchoring.py` için pytest collection hatasına yol açıyor ve adres soyma mantığını test etmeyi tamamen imkânsız kılıyor.
+
+**Önerilen düzeltme:** Ya `_strip_address_python`'ı `es_queries.py`'e yeniden ekle (eğer adres soyma mantığı hâlâ gerekli ise), ya da `test_address_anchoring.py` ve `scratch/test_address_strip.py`'yi sil/güncelle. Eğer fonksiyon ES ingest pipeline'a taşındıysa, testleri de ES analyze API üzerinden yazılmış entegrasyon testleriyle değiştir.
+
+**CLAUDE.md ihlali:** CLAUDE.md §4 (Bilinen Kısıtlamalar) bu pattern'ı tanımlıyor, ancak çözüm hâlâ uygulanmamış.
+
+**Test edilebilir mi?** Evet — `pytest tests/test_address_anchoring.py` şu anda `ImportError` ile collection aşamasında çöküyor; fonksiyon eklendiğinde veya test kaldırıldığında hata gider.
 
 ---
 

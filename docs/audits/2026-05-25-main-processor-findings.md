@@ -236,6 +236,8 @@ new_source = {
 
 ## [MEDIUM] main_processor.py:76, 720, 537, 665 — Hardcoded magic number'lar config'de olmalı
 
+**Durum:** ✅ Düzeltildi (6115e8e)
+
 **Kanıt:**
 ```python
 NEW_MASTER_SUBBATCH_SIZE = 200          # satır 76 — modül seviyesi sabit
@@ -276,6 +278,8 @@ def process_all_data() -> None:  # satır 882
 ---
 
 ## [MEDIUM] main_processor.py:561-596 — `create_new_masters` içinde varyasyon formatı `run_stage` ile uyumsuz
+
+**Durum:** ✅ Düzeltildi (0a8ab08)
 
 **Kanıt:**
 ```python

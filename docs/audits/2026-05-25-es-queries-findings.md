@@ -103,6 +103,8 @@
 
 **Test edilebilir mi?** Evet — mevcut `test_suffix_fuzzy_structure` testi should clause'un varlığını kontrol ediyor fakat minimum_should_match'i kontrol etmiyor; yeni bir assertion eklenebilir.
 
+**Durum:** ✅ Düzeltildi (965c881)
+
 ---
 
 ## [MEDIUM] es_queries.py:64-149 — CANONICAL_EXACT ve STRIPPED_EXACT arasında copy-paste tekrarı
@@ -124,6 +126,8 @@
 ---
 
 ## [MEDIUM] es_queries.py — `_strip_address_python` fonksiyonu eksik (missing helper)
+
+**Durum:** ✅ Düzeltildi — orphan test dosyaları (`tests/test_address_anchoring.py` ve `scratch/test_address_strip.py`) silindi (M3eq commit).
 
 **Kanıt:**
 ```python

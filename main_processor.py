@@ -890,7 +890,7 @@ def _add_variation_to_master(
             pipeline=pipe,
         )
     except Exception:
-        logger.debug(f"Varyasyon ekleme basarisiz: {v_lower[:50]}")
+        logger.warning(f"Varyasyon ekleme basarisiz: {v_lower[:50]}", exc_info=True)
 
 
 # ─────────────────────────────────────────────────────────────────────

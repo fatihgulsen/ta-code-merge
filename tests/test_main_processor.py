@@ -469,6 +469,7 @@ def test_es_bulk_failure_logs_at_warning_with_exc_info():
         f"Expected logger.warning(..., exc_info=True) to be called, "
         f"but exc_info was not set to True. warning calls: {warning_calls}"
     )
+    # (end of HIGH-2 test)
 
 
 # ---------------------------------------------------------------------------
@@ -518,4 +519,73 @@ def test_add_variation_to_master_logs_es_failure_at_warning_with_exc_info():
     assert has_exc_info, (
         f"Expected logger.warning(..., exc_info=True) to be called, "
         f"but exc_info was not set to True. warning calls: {warning_calls}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# HIGH-4: _add_variation_to_master must preserve existing variations_stripped/suffix
+# ---------------------------------------------------------------------------
+
+def test_add_variation_preserves_existing_variations_stripped_and_suffix():
+    """HIGH-4: When _add_variation_to_master adds a new variation to an existing master,
+    it must APPEND to variations_stripped and variations_suffix, not reset them to [].
+    Also verifies the input dict is not mutated in-place.
+    """
+    from unittest.mock import MagicMock
+    import main_processor as mp
+
+    mock_es = MagicMock()
+
+    # Simulate an existing master doc with 2 prior variations already indexed
+    existing_source = {
+        "master_id": "master-001",
+        "country_code": "TR",
+        "variations": [
+            {"name": "Acme Ltd"},
+            {"name": "Acme Global"},
+        ],
+        "variations_stripped": ["acme", "global"],
+        "variations_suffix": ["ltd", "corp"],
+    }
+
+    mock_es.get.return_value = {
+        "_source": existing_source,
+    }
+
+    # Call with a brand-new variation not in the existing list
+    mp._add_variation_to_master(
+        mock_es,
+        master_doc_id="master-001",
+        variation="Acme International",
+        country="TR",
+        rec=None,
+    )
+
+    # Capture the body passed to es.index
+    assert mock_es.index.called, "es.index() should have been called after adding a new variation"
+    body = mock_es.index.call_args[1].get("body")
+
+    assert body is not None, "es.index() must be called with a body keyword argument"
+
+    # PRIMARY assertion: variations_stripped must PRESERVE the 2 originals (not be wiped to [])
+    vs = body.get("variations_stripped", [])
+    assert len(vs) >= 2, (
+        "variations_stripped was reset to {}; expected at least 2 original entries to be preserved, not wiped.".format(vs)
+    )
+
+    # PRIMARY assertion: variations_suffix must PRESERVE the 2 originals
+    vsuf = body.get("variations_suffix", [])
+    assert len(vsuf) >= 2, (
+        "variations_suffix was reset to {}; expected at least 2 original entries to be preserved, not wiped.".format(vsuf)
+    )
+
+    # Sanity check: variations list must have 3 entries (2 original + 1 new)
+    vlist = body.get("variations", [])
+    assert len(vlist) == 3, (
+        "variations list should have 3 entries but got {}".format(vlist)
+    )
+
+    # BONUS: input dict must not be mutated in-place (immutability hygiene)
+    assert body is not existing_source, (
+        "es.index body must be a new dict, not the same object as the fetched _source."
     )

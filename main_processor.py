@@ -855,11 +855,16 @@ def _add_variation_to_master(
             for v in existing_variations
             if isinstance(v, dict)
         ]
+        # Build a shallow-copy body so we never mutate the caller's dict
+        body = dict(source)
+
         if v_lower not in existing_names:
-            existing_variations.append({"name": variation})
-            source["variations"] = existing_variations
-            source["variations_stripped"] = []
-            source["variations_suffix"] = []
+            body["variations"] = list(existing_variations) + [{"name": variation}]
+            # Preserve existing stripped/suffix lists — do NOT reset to []
+            # The ingest pipeline will populate the new entry's tokens;
+            # we only keep whatever was already accumulated.
+            body["variations_stripped"] = list(source.get("variations_stripped") or [])
+            body["variations_suffix"] = list(source.get("variations_suffix") or [])
             changed = True
 
         # tax/phone/address listelerine yeni degerleri ekle
@@ -870,12 +875,11 @@ def _add_variation_to_master(
             ]:
                 val = (rec.get(key) or "").strip()
                 if val:
-                    existing = source.get(field, [])
+                    existing = body.get(field, [])
                     if not isinstance(existing, list):
                         existing = [existing] if existing else []
                     if val not in existing:
-                        existing.append(val)
-                        source[field] = existing
+                        body[field] = existing + [val]
                         changed = True
 
         if not changed:
@@ -886,7 +890,7 @@ def _add_variation_to_master(
             index=ES_INDEX,
             id=master_doc_id,
             routing=cc,
-            body=source,
+            body=body,
             pipeline=pipe,
         )
     except Exception:

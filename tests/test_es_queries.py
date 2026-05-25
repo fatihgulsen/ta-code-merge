@@ -168,6 +168,20 @@ def test_suffix_fuzzy_includes_country_filter():
     assert _get_country_filter(q) == "DE"
 
 
+def test_suffix_fuzzy_should_clause_requires_minimum_should_match():
+    """SUFFIX_FUZZY should clause'u minimum_should_match=1 içermeli (suffix match zorunlu)."""
+    q = es_queries.SUFFIX_FUZZY("acme ltd", "TR")
+    bool_q = q["query"]["bool"]
+
+    # minimum_should_match kontrolü
+    assert "minimum_should_match" in bool_q, "minimum_should_match eksik"
+    assert bool_q["minimum_should_match"] >= 1, "minimum_should_match en az 1 olmalı"
+
+    # should clause var ve boş değil
+    assert "should" in bool_q, "should clause eksik"
+    assert len(bool_q["should"]) >= 1, "should clause boş olmamalı"
+
+
 def test_variations_suffix_mapping_has_explicit_search_analyzer():
     """variations_suffix alanı hem analyzer hem search_analyzer'ı açıkça tanımlamalı."""
     settings = build_index_settings(es=None)

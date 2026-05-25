@@ -185,6 +185,7 @@ def SUFFIX_FUZZY(name: str, country: str, **kwargs) -> dict:
                     }
                 ],
                 "filter": [{"term": {"country_code": country.upper()}}],
+                "minimum_should_match": 1,
             }
         },
         "size": 1,

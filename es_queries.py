@@ -260,7 +260,9 @@ def NGRAM_MATCH(name: str, country: str, **kwargs) -> dict:
     """
     Trigram index-time fuzzy eslesmesi — suffix'ler cikarilmis form uzerinden.
     minimum_should_match: "75%" eklenerek hatalı kısa eşleşmeler önlenir.
+    Ülkeye özel analyzer arama zamanında ngram field'ı işlemek için kullanılır.
     """
+    analyzer = _get_stripped_analyzer(country)
     return {
         "query": {
             "bool": {
@@ -272,6 +274,7 @@ def NGRAM_MATCH(name: str, country: str, **kwargs) -> dict:
                                 "match": {
                                     "variations_stripped.name.ngram": {
                                         "query": name,
+                                        "analyzer": analyzer,
                                         "minimum_should_match": "75%",
                                     }
                                 }

@@ -112,6 +112,15 @@ def test_ngram_match_queries_ngram_field():
     assert "variations_stripped.name.ngram" in nested["query"]["match"]
 
 
+def test_ngram_match_uses_country_specific_analyzer():
+    q = es_queries.NGRAM_MATCH("apple trading", "DE")
+    must = q["query"]["bool"]["must"]
+    nested = next(c["nested"] for c in must if "nested" in c)
+    match_clause = nested["query"]["match"]["variations_stripped.name.ngram"]
+    analyzer = match_clause.get("analyzer")
+    assert analyzer == "stripped_search_analyzer_de"
+
+
 def test_all_queries_include_country_filter():
     name = "test company"
     country = "FR"

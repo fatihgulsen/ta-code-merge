@@ -600,52 +600,111 @@ def test_add_variation_preserves_existing_variations_stripped_and_suffix():
     )
 
 
-def test_all_pg_updates_appends_use_helper_signature_shape():
-    """Refactor-safety test: every pg_updates tuple must be 5-element with float score.
+def test_all_pg_updates_appends_use_float_score():
+    """Behavioral regression test: ALL pg_updates tuples appended during process_all_data(),
+    including the NEW_MASTER branch (line 1087), must have float score at position 1.
 
-    Goal: Ensure _make_pg_update_tuple is used consistently at all append sites.
-    This prevents maintainers from accidentally building tuples with int(score)
-    or wrong field count in future refactors.
+    This test drives process_all_data with mocked PG/ES via two scenarios:
+    1. One row that finds a match → exercises _make_pg_update_tuple in the match branch
+    2. One row with empty ES response → exercises the no-match → NEW_MASTER append at line 1087
 
-    This test will FAIL if inline code at line 1059 uses int(es_score) instead of float.
+    Every tuple passed to execute_values UPDATE must have score (position 1) as float,
+    or the test will FAIL when asserting isinstance(tuple[1], float).
     """
     from unittest.mock import patch, MagicMock
     import main_processor as mp
-
-    # Test at the point where pg_updates is appended: line 1058-1059
-    # When _make_pg_update_tuple is NOT used and int(es_score) is used instead
+    import config as cfg
 
     captured_updates: list[tuple] = []
 
-    # Capture calls to execute_values
     def fake_execute_values(cur, sql, argslist, *args, **kwargs):
         if "UPDATE" in str(sql):
             captured_updates.extend(argslist)
 
-    # Directly test that the helper enforces float type
-    # And that direct inline (before refactor) uses int
-    master_id = "master-001"
-    es_score_int = 87  # This is what the inline code has
-    stage_name = "TEST_STAGE"
-    details = "[TEST_STAGE] score: 87.00"
-    row_id = 100
+    # Row 1: will find a match → hits the match branch with _make_pg_update_tuple
+    fake_row_match = {
+        cfg.COLUMN_MAPPING["id"]: 101,
+        cfg.COLUMN_MAPPING["company_name"]: "Acme Ltd",
+        cfg.COLUMN_MAPPING["country_code"]: "TR",
+    }
+    if cfg.COLUMN_MAPPING.get("tax_number"):
+        fake_row_match[cfg.COLUMN_MAPPING["tax_number"]] = ""
+    if cfg.COLUMN_MAPPING.get("phone_number"):
+        fake_row_match[cfg.COLUMN_MAPPING["phone_number"]] = ""
+    if cfg.COLUMN_MAPPING.get("address"):
+        fake_row_match[cfg.COLUMN_MAPPING["address"]] = ""
 
-    # Simulate what the CURRENT inline code does (line 1059)
-    inline_tuple = (master_id, int(es_score_int), stage_name, details, row_id)
+    # Row 2: will have NO match → hits line 1087 (NEW_MASTER no-match append)
+    fake_row_nomatch = {
+        cfg.COLUMN_MAPPING["id"]: 102,
+        cfg.COLUMN_MAPPING["company_name"]: "Unknown XYZ Corp",
+        cfg.COLUMN_MAPPING["country_code"]: "DE",
+    }
+    if cfg.COLUMN_MAPPING.get("tax_number"):
+        fake_row_nomatch[cfg.COLUMN_MAPPING["tax_number"]] = ""
+    if cfg.COLUMN_MAPPING.get("phone_number"):
+        fake_row_nomatch[cfg.COLUMN_MAPPING["phone_number"]] = ""
+    if cfg.COLUMN_MAPPING.get("address"):
+        fake_row_nomatch[cfg.COLUMN_MAPPING["address"]] = ""
 
-    # Simulate what the helper does
-    helper_tuple = mp._make_pg_update_tuple(master_id, es_score_int, stage_name, details, row_id)
+    fake_winner = {
+        "master_doc_id": "master-match-001",
+        "es_score": 85.0,
+        "stage_name": "CANONICAL_EXACT",
+        "index_variation": False,
+    }
 
-    # The test: inline has int(87) = 87, helper has float(87) = 87.0
-    # Before refactor: inline_tuple[1] is int, helper_tuple[1] is float
-    assert isinstance(inline_tuple[1], int), "Inline tuple should have int score"
-    assert isinstance(helper_tuple[1], float), "Helper tuple should have float score"
-    assert inline_tuple[1] != helper_tuple[1] or type(inline_tuple[1]) != type(helper_tuple[1]), (
-        "inline and helper must differ in type (int vs float)"
+    mock_es = MagicMock()
+    mock_read_conn = MagicMock()
+    mock_write_conn = MagicMock()
+    mock_read_cur = MagicMock()
+    mock_write_cur = MagicMock()
+
+    mock_read_conn.cursor.return_value = mock_read_cur
+    mock_write_conn.cursor.return_value = mock_write_cur
+
+    # First fetchall returns [row_match, row_nomatch], second returns [] to exit loop
+    mock_read_cur.fetchall.side_effect = [[fake_row_match, fake_row_nomatch], []]
+    mock_read_cur.fetchone.return_value = (2,)  # total count
+
+    with patch.object(mp, "get_db_connection", side_effect=[mock_read_conn, mock_write_conn]), \
+         patch.object(mp, "match_single_record") as mock_match, \
+         patch.object(mp, "execute_values", side_effect=fake_execute_values), \
+         patch.object(mp, "validate_db_schema"), \
+         patch.object(mp, "ensure_stage_log_table"), \
+         patch.object(mp, "ES_REFRESH_INTERVAL", 1000), \
+         patch.object(mp, "BATCH_SIZE", 10), \
+         patch.object(mp, "ES_INDEX", "test_index"), \
+         patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
+         patch("main_processor.get_es_client", return_value=mock_es), \
+         patch("main_processor.create_index"), \
+         patch("main_processor.register_all_pipelines"):
+
+        # Row 1 gets a winner, row 2 gets no winner (empty dict)
+        mock_match.side_effect = [
+            {"winner": fake_winner, "trace": []},
+            {"winner": None, "trace": []},
+        ]
+
+        mp.process_all_data()
+
+    # Assert: every tuple in captured_updates has float score
+    assert captured_updates, (
+        "No UPDATE tuples captured — test setup may not trigger execute_values. "
+        "Check mock return values or batch flush logic."
     )
 
-    # Now when refactor is done and line 1059 uses _make_pg_update_tuple,
-    # captured_updates will only have float scores, passing this check
+    for i, update_tuple in enumerate(captured_updates):
+        assert len(update_tuple) == 5, (
+            f"Tuple {i} has {len(update_tuple)} elements, expected 5. "
+            f"Tuple: {update_tuple}"
+        )
+        score = update_tuple[1]
+        assert isinstance(score, float), (
+            f"Tuple {i} score position (index 1) is {type(score).__name__} = {score!r}, "
+            f"expected float. This means line 1087 (no-match append) is using int(100) "
+            f"instead of _make_pg_update_tuple. Tuple: {update_tuple}"
+        )
 
 
 # ---------------------------------------------------------------------------

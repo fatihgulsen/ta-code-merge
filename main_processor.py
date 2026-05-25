@@ -1084,7 +1084,7 @@ def process_all_data() -> None:
                     else:
                         master_id = _index_new_master(es, rec)
                         details = "NEW_MASTER: No relevant matches found."
-                        pg_updates.append((master_id, 100, "NEW_MASTER", details, row_id))
+                        pg_updates.append(_make_pg_update_tuple(master_id, 100, "NEW_MASTER", details, row_id))
                         total_new += 1
                         stage_name = "NEW_MASTER"
                         es_score = 100.0

@@ -590,6 +590,15 @@ def test_add_variation_preserves_existing_variations_stripped_and_suffix():
         "es.index body must be a new dict, not the same object as the fetched _source."
     )
 
+    # BONUS: Ensure deep isolation — nested lists must not be shared references
+    # Mutate the nested list in the body and verify source is unaffected
+    body_variations_stripped = body.get("variations_stripped", [])
+    body_variations_stripped.append("PROBE_MUTATION_X")
+    assert "PROBE_MUTATION_X" not in existing_source.get("variations_stripped", []), (
+        "shallow copy detected: nested list shared with source. "
+        "Mutating body's variations_stripped affected the original source."
+    )
+
 
 def test_all_pg_updates_appends_use_helper_signature_shape():
     """Refactor-safety test: every pg_updates tuple must be 5-element with float score.

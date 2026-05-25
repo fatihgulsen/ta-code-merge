@@ -59,6 +59,8 @@ from config import (
     MSEARCH_CHUNK_SIZE,
     SUFFIX_FUZZY_SCORE,
     LOG_ALL_STAGES,
+    NEW_MASTER_SUBBATCH_SIZE,
+    ES_REFRESH_INTERVAL,
 )
 from es_manager import create_index, get_es_client
 from es_ingest import register_all_pipelines, pipeline_name
@@ -74,8 +76,6 @@ logging.getLogger("elasticsearch").setLevel(logging.WARNING)
 logging.getLogger("elastic_transport").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
-# NEW_MASTER oluştururken sub-batch boyutu (within-batch duplicate minimizasyonu)
-NEW_MASTER_SUBBATCH_SIZE = 200
 
 
 def _make_pg_update_tuple(master_id: str, score: float, stage_name: str, details: str | None, row_id: Any) -> tuple:
@@ -536,6 +536,11 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
     col_type = COLUMN_MAPPING["match_type"]
     col_details = COLUMN_MAPPING["match_details"]
 
+    # Stage order'lari STAGES konfigurasyonundan dinamik olarak al
+    # NEW_MASTER tum stage'lerden sonra gelir; mevcut stage sayisi kadar order atanir
+    _new_master_stage_order = len(STAGES)
+    _canonical_exact_stage_order = next(s["order"] for s in STAGES if s["name"] == "CANONICAL_EXACT")
+
     # Adim 1: Tum kayitlar icinde exact dedup
     seen: dict[tuple[str, str], str] = {}  # (name_lower, country) → master_id
     unique_records: list[dict] = []  # ES'e index'lenecek (ilk gorulen)
@@ -557,7 +562,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
                     rec["raw_name"],
                     rec["country"],
                     "NEW_MASTER",
-                    7,
+                    _new_master_stage_order,
                     True,
                     existing_master_id,
                     100.0,
@@ -612,7 +617,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
                     rec["raw_name"],
                     rec["country"],
                     "NEW_MASTER",
-                    7,
+                    _new_master_stage_order,
                     True,
                     master_id,
                     100.0,
@@ -689,7 +694,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
                                 r["raw_name"],
                                 r["country"],
                                 "CANONICAL_EXACT",
-                                2,
+                                _canonical_exact_stage_order,
                                 True,
                                 r["master_id"],
                                 r["es_score"],
@@ -749,10 +754,6 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
 # ─────────────────────────────────────────────────────────────────────
 # TEKIL KAYIT ESLESTIRME (ES-Authority)
 # ─────────────────────────────────────────────────────────────────────
-
-# ES refresh araligi — her N kayitta bir refresh yapilir
-ES_REFRESH_INTERVAL = 50
-
 
 def match_single_record(es, rec: dict, active_stages: list[dict]) -> dict:
     """Tek bir kaydi tum stage'lerden gecirir (msearch ile performansli).

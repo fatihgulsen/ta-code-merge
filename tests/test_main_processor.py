@@ -788,3 +788,53 @@ def test_pg_update_flush_sql_uses_safe_identifiers():
             f"execute_values UPDATE SQL must be psycopg2.sql.Composed or psycopg2.sql.SQL. "
             f"Got type {type(sql_arg)}: {sql_arg!r}"
         )
+
+
+def test_main_processor_does_not_hardcode_thresholds():
+    """M1m: magic number'lar config'den gelmeli, main_processor.py'de hardcoded olmamalı."""
+    import inspect
+    import main_processor as mp
+    import config
+
+    # 1) config'de sabitler var mi?
+    assert hasattr(config, "NEW_MASTER_SUBBATCH_SIZE"), (
+        "config.NEW_MASTER_SUBBATCH_SIZE eksik — magic number config'e tasinmali."
+    )
+    assert hasattr(config, "ES_REFRESH_INTERVAL"), (
+        "config.ES_REFRESH_INTERVAL eksik — magic number config'e tasinmali."
+    )
+
+    # 2) Degerler dogru mu?
+    assert config.NEW_MASTER_SUBBATCH_SIZE == 200, (
+        f"NEW_MASTER_SUBBATCH_SIZE 200 olmali, {config.NEW_MASTER_SUBBATCH_SIZE!r} bulundu."
+    )
+    assert config.ES_REFRESH_INTERVAL == 50, (
+        f"ES_REFRESH_INTERVAL 50 olmali, {config.ES_REFRESH_INTERVAL!r} bulundu."
+    )
+
+    # 3) create_new_masters icinde literal stage_order yok, sabit isimler var
+    src = inspect.getsource(mp.create_new_masters)
+
+    # NEW_MASTER stage_order (7) — ya config sabiti ya da dinamik lookup olmali
+    assert "NEW_MASTER_STAGE_ORDER" in src or (
+        "next(" in src and '"NEW_MASTER"' in src
+    ), (
+        "create_new_masters icinde NEW_MASTER stage_order dinamik ya da "
+        "NEW_MASTER_STAGE_ORDER sabiti ile belirlenmeli; literal 7 yasak."
+    )
+    # Literal 7 kalmasin (standalone integer, virgulden once/sonra)
+    import re
+    assert not re.search(r",\s*7\s*,", src), (
+        "create_new_masters icinde hardcoded literal '7' bulundu — config sabitine tasinmali."
+    )
+
+    # CANONICAL_EXACT stage_order (2) — ya config sabiti ya da dinamik lookup olmali
+    assert "CANONICAL_EXACT_STAGE_ORDER" in src or (
+        "next(" in src and '"CANONICAL_EXACT"' in src
+    ), (
+        "create_new_masters icinde CANONICAL_EXACT stage_order dinamik ya da "
+        "CANONICAL_EXACT_STAGE_ORDER sabiti ile belirlenmeli; literal 2 yasak."
+    )
+    assert not re.search(r",\s*2\s*,", src), (
+        "create_new_masters icinde hardcoded literal '2' bulundu — config sabitine tasinmali."
+    )

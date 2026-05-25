@@ -424,14 +424,18 @@ def write_matched_to_pg(write_cursor, write_conn, matched: list[dict]) -> None:
 
     execute_values(
         write_cursor,
-        f"""
-        UPDATE {RAW_TABLE_NAME} AS t
-        SET {col_master} = d.master_code,
-            {col_score}  = d.match_score,
-            {col_type}   = d.match_type
-        FROM (VALUES %s) AS d(master_code, match_score, match_type, id)
-        WHERE t.{col_id} = d.id
-        """,
+        psycopg2.sql.SQL(
+            "UPDATE {} AS t"
+            " SET {} = d.master_code, {} = d.match_score, {} = d.match_type"
+            " FROM (VALUES %s) AS d(master_code, match_score, match_type, id)"
+            " WHERE t.{} = d.id"
+        ).format(
+            psycopg2.sql.Identifier(RAW_TABLE_NAME),
+            psycopg2.sql.Identifier(col_master),
+            psycopg2.sql.Identifier(col_score),
+            psycopg2.sql.Identifier(col_type),
+            psycopg2.sql.Identifier(col_id),
+        ),
         [
             (r["master_id"], int(r["es_score"]), r["stage_name"], r["row_id"])
             for r in matched
@@ -637,14 +641,18 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
 
         execute_values(
             write_cursor,
-            f"""
-            UPDATE {RAW_TABLE_NAME} AS t
-            SET {col_master} = d.master_code,
-                {col_score}  = d.match_score,
-                {col_type}   = d.match_type
-            FROM (VALUES %s) AS d(master_code, match_score, match_type, id)
-            WHERE t.{col_id} = d.id
-            """,
+            psycopg2.sql.SQL(
+                "UPDATE {} AS t"
+                " SET {} = d.master_code, {} = d.match_score, {} = d.match_type"
+                " FROM (VALUES %s) AS d(master_code, match_score, match_type, id)"
+                " WHERE t.{} = d.id"
+            ).format(
+                psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                psycopg2.sql.Identifier(col_master),
+                psycopg2.sql.Identifier(col_score),
+                psycopg2.sql.Identifier(col_type),
+                psycopg2.sql.Identifier(col_id),
+            ),
             pg_updates,
         )
         execute_values(
@@ -699,12 +707,19 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
     if duplicate_updates:
         execute_values(
             write_cursor,
-            f"""
-            UPDATE {RAW_TABLE_NAME} AS t
-            SET {col_master} = d.mc, {col_score} = d.ms, {col_type} = d.mt, {col_details} = d.md
-            FROM (VALUES %s) AS d(mc, ms, mt, md, id)
-            WHERE t.{col_id} = d.id
-            """,
+            psycopg2.sql.SQL(
+                "UPDATE {} AS t"
+                " SET {} = d.mc, {} = d.ms, {} = d.mt, {} = d.md"
+                " FROM (VALUES %s) AS d(mc, ms, mt, md, id)"
+                " WHERE t.{} = d.id"
+            ).format(
+                psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                psycopg2.sql.Identifier(col_master),
+                psycopg2.sql.Identifier(col_score),
+                psycopg2.sql.Identifier(col_type),
+                psycopg2.sql.Identifier(col_details),
+                psycopg2.sql.Identifier(col_id),
+            ),
             duplicate_updates,
         )
         execute_values(
@@ -1129,13 +1144,19 @@ def process_all_data() -> None:
                         if pg_updates:
                             execute_values(
                                 write_cursor,
-                                f"""
-                                UPDATE {RAW_TABLE_NAME} AS t
-                                SET {col_master} = d.mc, {COLUMN_MAPPING["match_score"]} = d.ms,
-                                    {COLUMN_MAPPING["match_type"]} = d.mt, {COLUMN_MAPPING["match_details"]} = d.md
-                                FROM (VALUES %s) AS d(mc, ms, mt, md, id)
-                                WHERE t.{col_id} = d.id
-                                """,
+                                psycopg2.sql.SQL(
+                                    "UPDATE {} AS t"
+                                    " SET {} = d.mc, {} = d.ms, {} = d.mt, {} = d.md"
+                                    " FROM (VALUES %s) AS d(mc, ms, mt, md, id)"
+                                    " WHERE t.{} = d.id"
+                                ).format(
+                                    psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                                    psycopg2.sql.Identifier(col_master),
+                                    psycopg2.sql.Identifier(COLUMN_MAPPING["match_score"]),
+                                    psycopg2.sql.Identifier(COLUMN_MAPPING["match_type"]),
+                                    psycopg2.sql.Identifier(COLUMN_MAPPING["match_details"]),
+                                    psycopg2.sql.Identifier(col_id),
+                                ),
                                 pg_updates,
                             )
                             execute_values(
@@ -1165,13 +1186,19 @@ def process_all_data() -> None:
             if pg_updates:
                 execute_values(
                     write_cursor,
-                    f"""
-                    UPDATE {RAW_TABLE_NAME} AS t
-                    SET {col_master} = d.mc, {COLUMN_MAPPING["match_score"]} = d.ms,
-                        {COLUMN_MAPPING["match_type"]} = d.mt, {COLUMN_MAPPING["match_details"]} = d.md
-                    FROM (VALUES %s) AS d(mc, ms, mt, md, id)
-                    WHERE t.{col_id} = d.id
-                    """,
+                    psycopg2.sql.SQL(
+                        "UPDATE {} AS t"
+                        " SET {} = d.mc, {} = d.ms, {} = d.mt, {} = d.md"
+                        " FROM (VALUES %s) AS d(mc, ms, mt, md, id)"
+                        " WHERE t.{} = d.id"
+                    ).format(
+                        psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                        psycopg2.sql.Identifier(col_master),
+                        psycopg2.sql.Identifier(COLUMN_MAPPING["match_score"]),
+                        psycopg2.sql.Identifier(COLUMN_MAPPING["match_type"]),
+                        psycopg2.sql.Identifier(COLUMN_MAPPING["match_details"]),
+                        psycopg2.sql.Identifier(col_id),
+                    ),
                     pg_updates,
                 )
                 execute_values(

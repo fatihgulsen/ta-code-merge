@@ -646,3 +646,86 @@ def test_all_pg_updates_appends_use_helper_signature_shape():
 
     # Now when refactor is done and line 1059 uses _make_pg_update_tuple,
     # captured_updates will only have float scores, passing this check
+
+
+# ---------------------------------------------------------------------------
+# §1.1: execute_values UPDATE SQL must use psycopg2.sql objects, not raw str
+# ---------------------------------------------------------------------------
+
+def test_pg_update_flush_sql_uses_safe_identifiers():
+    """CLAUDE.md §1.1: Every execute_values UPDATE SQL must be a psycopg2.sql.Composed /
+    psycopg2.sql.SQL object, not a raw str built via f-string interpolation.
+
+    This test drives process_all_data() with a single mocked winning row and
+    captures all execute_values calls. Every SQL argument that is an UPDATE
+    statement must NOT be a plain str.
+    """
+    from unittest.mock import patch, MagicMock
+    import psycopg2.sql
+    import main_processor as mp
+    import config as cfg
+
+    # Build a minimal fake row using actual column mapping values
+    fake_row = {
+        cfg.COLUMN_MAPPING["id"]: 42,
+        cfg.COLUMN_MAPPING["company_name"]: "Safe SQL Corp",
+        cfg.COLUMN_MAPPING["country_code"]: "TR",
+    }
+    if cfg.COLUMN_MAPPING.get("tax_number"):
+        fake_row[cfg.COLUMN_MAPPING["tax_number"]] = ""
+    if cfg.COLUMN_MAPPING.get("phone_number"):
+        fake_row[cfg.COLUMN_MAPPING["phone_number"]] = ""
+    if cfg.COLUMN_MAPPING.get("address"):
+        fake_row[cfg.COLUMN_MAPPING["address"]] = ""
+
+    fake_winner = {
+        "master_doc_id": "master-safe",
+        "es_score": 90.0,
+        "stage_name": "CANONICAL_EXACT",
+        "index_variation": False,
+    }
+
+    mock_es = MagicMock()
+    mock_read_conn = MagicMock()
+    mock_write_conn = MagicMock()
+    mock_read_cur = MagicMock()
+    mock_write_cur = MagicMock()
+
+    mock_read_conn.cursor.return_value = mock_read_cur
+    mock_write_conn.cursor.return_value = mock_write_cur
+
+    # One row batch, then empty to exit while loop
+    mock_read_cur.fetchall.side_effect = [[fake_row], []]
+    mock_read_cur.fetchone.return_value = (1,)  # COUNT(*)
+
+    captured: list[tuple] = []  # (sql_arg, argslist)
+
+    def fake_execute_values(cur, sql, argslist, *args, **kwargs):
+        captured.append((sql, argslist))
+
+    with patch.object(mp, "get_db_connection", side_effect=[mock_read_conn, mock_write_conn]), \
+         patch.object(mp, "match_single_record", return_value={"winner": fake_winner, "trace": []}), \
+         patch.object(mp, "execute_values", side_effect=fake_execute_values), \
+         patch.object(mp, "validate_db_schema"), \
+         patch.object(mp, "ensure_stage_log_table"), \
+         patch.object(mp, "ES_REFRESH_INTERVAL", 1000), \
+         patch.object(mp, "BATCH_SIZE", 10), \
+         patch.object(mp, "ES_INDEX", "test_index"), \
+         patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
+         patch("main_processor.get_es_client", return_value=mock_es), \
+         patch("main_processor.create_index"), \
+         patch("main_processor.register_all_pipelines"):
+        mp.process_all_data()
+
+    update_calls = [(sql, args) for sql, args in captured if "UPDATE" in str(sql).upper()]
+    assert update_calls, "No UPDATE execute_values call captured — check test setup."
+
+    for sql_arg, _ in update_calls:
+        assert not isinstance(sql_arg, str), (
+            f"CLAUDE.md §1.1 violation: execute_values UPDATE SQL must NOT be a raw str. "
+            f"Got str: {sql_arg!r}"
+        )
+        assert isinstance(sql_arg, (psycopg2.sql.Composed, psycopg2.sql.SQL)), (
+            f"execute_values UPDATE SQL must be psycopg2.sql.Composed or psycopg2.sql.SQL. "
+            f"Got type {type(sql_arg)}: {sql_arg!r}"
+        )

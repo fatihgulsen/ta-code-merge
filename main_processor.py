@@ -1056,7 +1056,7 @@ def process_all_data() -> None:
 
                         details = f"[{stage_name}] score: {es_score:.2f}"
                         pg_updates.append(
-                            (master_id, int(es_score), stage_name, details, row_id)
+                            _make_pg_update_tuple(master_id, es_score, stage_name, details, row_id)
                         )
 
                         if winner.get("index_variation", True):

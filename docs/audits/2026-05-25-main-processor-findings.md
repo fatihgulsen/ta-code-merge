@@ -8,10 +8,12 @@
 ---
 
 ## Özet
-- CRITICAL: 2
-- HIGH: 3
-- MEDIUM: 4
-- LOW: 1
+- CRITICAL: 4
+- HIGH: 4
+- MEDIUM: 3
+- LOW: 0
+
+**Toplam: 11 bulgu**
 
 ---
 
@@ -21,7 +23,7 @@
 
 - **country_code filter & routing:** ❌ — Bkz. CRITICAL-1 (SQL injection + f-string interpolation ile `where_clause` oluşturma; `COUNTRY_CODE_FILTER` değeri doğrudan SQL metnine yerleştirilmekte). ES tarafında routing her yerde doğru (`country.upper()`), ancak SQL filtresi güvensiz.
 - **Python fuzzy/Levenshtein imports:** ✅ — `rapidfuzz`, `Levenshtein`, `fuzzywuzzy`, `difflib` import'u yok. Fuzzy mantığı ES Query DSL'e bırakılmış.
-- **Parametric SQL (no f-string interpolation):** ❌ — Bkz. CRITICAL-1 ve CRITICAL-2. `COUNTRY_CODE_FILTER` ve tablo/sütun adları f-string ile SQL metnine eklenmekte. `execute_values` içindeki parametre kısmı (`%s` placeholders) doğru, ama f-string template kısımları SQL injection riskidir.
+- **Parametric SQL (no f-string interpolation):** ❌ — Bkz. CRITICAL-1, CRITICAL-2 ve CRITICAL-4. `COUNTRY_CODE_FILTER` ve tablo/sütun adları f-string ile SQL metnine eklenmekte. `execute_values` içindeki parametre kısmı (`%s` placeholders) doğru, ama f-string template kısımları SQL injection riskidir. CRITICAL-4'te batch-sonu flush SQL şablonu da `{RAW_TABLE_NAME}` f-string içermekte ve tuple-shape uyumsuzluğu nedeniyle runtime crash'e neden olmaktadır.
 - **Batch error handling (try/except + rollback + continue):** ❌ — Bkz. HIGH-1. `process_all_data` içindeki per-row döngüsünde (`for row in rows`) try/except yoktur. Tek bir satırda exception tüm batch'i durdurur; rollback sadece en üst `except Exception` bloğunda yapılmaktadır.
 - **synonyms_data writes:** ✅ — `synonyms_data/` dizinine herhangi bir yazma işlemi yok.
 - **Index/mapping creation only in es_manager.py:** ✅ — `create_index(es)` çağrısı `es_manager.py`'den import ediliyor. Doğrudan `es.indices.create(...)` çağrısı main_processor.py içinde yok.
@@ -34,7 +36,7 @@
   - `_add_variation_to_master`: satır 817–874, ~58 satır — sınırda
   - `run_stage`: satır 164–236, ~72 satır
   - `match_single_record`: satır 723–778, ~56 satır
-- **In-place mutation concerns:** ❌ — Bkz. MEDIUM-3. `_add_variation_to_master` fonksiyonu ES'ten gelen `source` dict'ini doğrudan mutate ederek `es.index(...)` ile geri yazar. `source["variations"]` ve `source[field]` listelerine `append` yapılmakta.
+- **In-place mutation concerns:** ❌ — Bkz. HIGH-4. `_add_variation_to_master` fonksiyonu ES'ten gelen `source` dict'ini doğrudan mutate ederek `es.index(...)` ile geri yazar. `source["variations"]` ve `source[field]` listelerine `append` yapılmakta; `variations_stripped` ve `variations_suffix` her çağrıda `[]` olarak sıfırlanarak veri kaybına yol açmaktadır.
 - **Silent exception swallowing:** ❌ — Bkz. HIGH-2 ve HIGH-3. `update_es_variations` içinde `except Exception: logger.debug(...)` ile ES bulk hatası yutulmakta. `_add_variation_to_master` içinde tüm exception'lar `logger.debug` ile yutulmakta.
 - **Hardcoded thresholds:** ❌ — Bkz. MEDIUM-1. `NEW_MASTER_SUBBATCH_SIZE = 200` (satır 76), `ES_REFRESH_INTERVAL = 50` (satır 720), `stage_order` olarak `7` ve `2` sabit değerleri `create_new_masters` içinde (satır 537, 665), `int(es_score)` truncation `pg_updates` append'lerinde.
 - **Deep nesting (>4):** ❌ — Bkz. MEDIUM-2. `process_all_data` içinde `while True → for row → if winner → if winner.get(...)` zinciri 5+ indent seviyesi.
@@ -84,6 +86,37 @@ cursor.execute(
 **CLAUDE.md ihlali:** §1.1 — "raw string interpolation kullanılmamalıdır"
 
 **Test edilebilir mi?** Evet — `COLUMN_MAPPING` mock'una zararlı değer eklenerek üretilen SQL string'i assertion ile doğrulanabilir.
+
+---
+
+## [CRITICAL] main_processor.py:585 — `create_new_masters` 4-elemanlı tuple ekliyor, tüm diğer path'ler 5-elemanlı
+
+**Kanıt:**
+
+```python
+# satır 585 — create_new_masters içinde:
+pg_updates.append((master_id, 100, "NEW_MASTER", rec["row_id"]))  # 4 eleman
+
+# satır 1014-1015 — match_single_record path'leri:
+pg_updates.append((master_id, int(es_score), stage_name, details, row_id))  # 5 eleman
+
+# Periyodik flush SQL (satır 1086-1094) — 5 bind sütun bekliyor:
+# FROM (VALUES %s) AS d(mc, ms, mt, md, id)
+```
+
+**Neden problem:** `pg_updates` listesi karışık shape'e sahip tuple'lardan oluşmaktadır: `create_new_masters` path'i 4-elemanlı `(master_id, score, stage_name, row_id)` eklerken diğer tüm path'ler 5-elemanlı `(master_id, score, stage_name, details, row_id)` eklemektedir. Periyodik flush SQL şablonu `d(mc, ms, mt, md, id)` ile 5 bind sütun beklemektedir. Aynı `pg_updates` listesinde 4-elemanlı tuple bulunduğunda `psycopg2.extras.execute_values`, `execute_values` template binding uyumsuzluğu nedeniyle `DataError` veya `IndexError` fırlatarak çalışma zamanında crash'e neden olur. `create_new_masters` işlemlerini içeren her run bu hatayı tetikler.
+
+**Önerilen düzeltme:** Satır 585'i 5-elemanlı tuple'a çevirin:
+
+```python
+pg_updates.append((master_id, 100.0, "NEW_MASTER", json.dumps({}), rec["row_id"]))
+```
+
+Tekrarlanmasını önlemek için `_make_pg_update_tuple(master_id, score, stage, details, row_id)` gibi bir yardımcı fonksiyon tanımlayın ve tüm `pg_updates.append(...)` satırlarını bu fonksiyon üzerinden yönlendirin; böylece tuple shape'i tek bir noktada zorunlu kılınır.
+
+**CLAUDE.md ihlali:** Doğrudan bir madde yok, ancak runtime crash ürettiği için correctness CRITICAL.
+
+**Test edilebilir mi?** Evet — `create_new_masters` çalıştırıldıktan sonra `pg_updates` listesindeki tüm tuple'ların `len(...) == 5` olduğunu assert eden bir unit test yazılabilir; periyodik flush mock'u ile execute_values'e gönderilen argümanın shape'i doğrulanabilir.
 
 ---
 
@@ -150,6 +183,43 @@ for row in rows:
 
 ---
 
+## [HIGH] main_processor.py:826-844 — `_add_variation_to_master` ES source dict'ini in-place mutate ederek veri kaybına neden oluyor
+
+**Kanıt:**
+
+```python
+source = doc["_source"]
+existing_variations = source.get("variations", [])
+# ...
+existing_variations.append({"name": variation})
+source["variations"] = existing_variations
+source["variations_stripped"] = []
+source["variations_suffix"] = []
+# ...
+existing.append(val)
+source[field] = existing
+```
+
+**Neden problem:** `es.get(...)` ile alınan `source` dict'i doğrudan mutate edilerek `es.index(...)` ile geri yazılmaktadır. Kritik veri-kaybı mekanizması şudur: `source["variations_stripped"] = []` ve `source["variations_suffix"] = []` atamaları her varyasyon ekleme çağrısında bu alanları ES'teki mevcut değerlerinin üzerine boş liste ile sıfırlar. Yani her `_add_variation_to_master` çağrısı, o master belgesindeki birikimli `variations_stripped` ve `variations_suffix` verilerini aktif olarak yok eder. Bu, eşleşme kalitesini etkileyen indeks bozulmasıdır. Ayrıca exception durumunda partial-mutate edilmiş state ES'te kalabilir.
+
+**Önerilen düzeltme:** Veri-kaybı resetlerini ortadan kaldırmak birincil önceliktir. Yeni bir dict oluşturun:
+
+```python
+new_source = {
+    **source,
+    "variations": existing_variations + [{"name": variation}],
+    # variations_stripped ve variations_suffix'i SIFIRLAMAYIN
+}
+```
+
+`copy.deepcopy(source)` ile çalışmak, orijinal nesneyi tamamen korur. In-place `append` yerine yeni liste değerleri atayın.
+
+**CLAUDE.md ihlali:** — (coding-style.md: "ALWAYS create new objects, NEVER mutate existing ones")
+
+**Test edilebilir mi?** Evet — `es.get` mock'unu belirli `variations_stripped` içeren bir `source` döndürecek şekilde ayarlayarak `es.index` çağrısına giden body'de `variations_stripped` değerinin korunduğunu ve `[]` ile sıfırlanmadığını assert eden bir test yazılabilir.
+
+---
+
 ## [MEDIUM] main_processor.py:76, 720, 537, 665 — Hardcoded magic number'lar config'de olmalı
 
 **Kanıt:**
@@ -191,32 +261,6 @@ def process_all_data() -> None:  # satır 882
 
 ---
 
-## [MEDIUM] main_processor.py:826-844 — `_add_variation_to_master` ES source dict'ini in-place mutate ediyor
-
-**Kanıt:**
-```python
-source = doc["_source"]
-existing_variations = source.get("variations", [])
-# ...
-existing_variations.append({"name": variation})
-source["variations"] = existing_variations
-source["variations_stripped"] = []
-source["variations_suffix"] = []
-# ...
-existing.append(val)
-source[field] = existing
-```
-
-**Neden problem:** `es.get(...)` ile alınan `source` dict'i doğrudan mutate edilerek `es.index(...)` ile geri yazılmaktadır. Bu pattern, değiştirilmesi gereken alanların (`variations_stripped`, `variations_suffix`) ES'teki mevcut değerlerinin üzerine boş liste yazması anlamına gelir — dolayısıyla her varyasyon ekleme işlemi bu alanları sıfırlar. Ayrıca exception durumunda partial state kalabilir.
-
-**Önerilen düzeltme:** Yeni bir dict oluşturun: `new_source = {**source, "variations": [...], "variations_stripped": [], ...}`. In-place `append` yerine yeni liste kullanın.
-
-**CLAUDE.md ihlali:** — (coding-style.md: "ALWAYS create new objects, NEVER mutate existing ones")
-
-**Test edilebilir mi?** Evet — `es.get` mock'unu belirli bir `source` döndürecek şekilde ayarlayarak `es.index` çağrısına giden body'nin orijinal `source`'tan farklı bir nesne olup olmadığı kontrol edilebilir.
-
----
-
 ## [MEDIUM] main_processor.py:561-596 — `create_new_masters` içinde varyasyon formatı `run_stage` ile uyumsuz
 
 **Kanıt:**
@@ -238,25 +282,29 @@ source[field] = existing
 
 ---
 
-## [LOW] main_processor.py:1117-1135 — Batch sonu flush SQL şablonu periyodik flush'tan farklı (match_details eksik)
+## [CRITICAL] main_processor.py:1117-1135 — Batch sonu flush SQL şablonu 4 bind sütun bekliyor, `pg_updates` tuple'ları 5 elemanlı (garantili runtime crash)
 
 **Kanıt:**
+
 ```python
-# Periyodik flush (satır 1086-1094) — 5 sütun:
+# Periyodik flush (satır 1086-1094) — 5 bind sütun, DOĞRU:
 SET {col_master} = d.mc, {COLUMN_MAPPING["match_score"]} = d.ms,
     {COLUMN_MAPPING["match_type"]} = d.mt, {COLUMN_MAPPING["match_details"]} = d.md
 FROM (VALUES %s) AS d(mc, ms, mt, md, id)
 
-# Batch sonu flush (satır 1118-1127) — 4 sütun, match_details YOK:
+# Batch sonu flush (satır 1118-1127) — 4 bind sütun, HATALI:
 SET {col_master} = d.mc, {COLUMN_MAPPING["match_score"]} = d.ms,
     {COLUMN_MAPPING["match_type"]} = d.mt
 FROM (VALUES %s) AS d(mc, ms, mt, id)
+
+# pg_updates her zaman 5-elemanlı tuple içeriyor (satır 1014-1015):
+pg_updates.append((master_id, int(es_score), stage_name, details, row_id))
 ```
 
-**Neden problem:** Periyodik flush `match_details` sütununu yazarken, batch sonu flush yazmamaktadır. `pg_updates` listesi her iki yerde de 5-elemanlı tuple ile doldurulmaktadır (satır 1014-1015: `(master_id, int(es_score), stage_name, details, row_id)`), dolayısıyla batch sonu flush sırasında `details` değeri tuple'da var ama SQL'de kullanılmamaktadır. Bu, batch'in son refresh aralığından sonraki kayıtların `match_details` sütununun güncellenmemesi anlamına gelir.
+**Neden problem:** Batch sonu flush SQL şablonu `d(mc, ms, mt, id)` ile yalnızca 4 bind sütun tanımlarken, `pg_updates` listesine eklenen tuple'lar `(master_id, score, stage_name, details, row_id)` şeklinde 5 elemanlıdır. `psycopg2.extras.execute_values` bu template/tuple uyumsuzluğunu `DataError` veya `IndexError` ile runtime'da crash'e dönüştürür. Bu hata, toplam kayıt sayısı `ES_REFRESH_INTERVAL` (varsayılan 50) değerinden az olan her run'da — yani neredeyse her gerçek çalışmada — tetiklenir: batch hiç periyodik flush yapmadan doğrudan batch-sonu flush'a düşer ve orada çöker. Periyodik flush SQL'i (satır 1086-1094) 5 bind sütunla zaten doğru yazılmıştır; sorun yalnızca batch-sonu path'indedir.
 
-**Önerilen düzeltme:** Batch sonu flush SQL şablonunu periyodik flush ile aynı hale getirin (`match_details` ekleyin) veya tek bir `_flush_pg_updates(write_cursor, write_conn, pg_updates, log_rows, audit_rows)` yardımcı fonksiyonu oluşturun.
+**Önerilen düzeltme:** (a) Satır 1122-1124'teki batch sonu flush SQL şablonunu periyodik flush ile aynı hale getirin — `{COLUMN_MAPPING["match_details"]} = d.md` sütununu ve `d(mc, ms, mt, md, id)` alias'ını ekleyin. (b) Tüm `pg_updates.append(...)` satırlarını denetleyerek tuple shape'inin tutarlı olduğunu doğrulayın. Tekrara karşı tek bir `_flush_pg_updates(...)` yardımcı fonksiyonu oluşturun.
 
-**CLAUDE.md ihlali:** — (DRY ihlali, veri eksikliği)
+**CLAUDE.md ihlali:** §1.1 — Batch sonu flush SQL şablonu aynı zamanda `{RAW_TABLE_NAME}` f-string interpolasyonu içermekte; bu da CLAUDE.md §1.1 parametrik SQL kuralının ihlalidir.
 
-**Test edilebilir mi?** Evet — `ES_REFRESH_INTERVAL`'dan fazla kayıt işlendiğinde batch sonu flush'ta `match_details` değerinin DB'ye yazılıp yazılmadığı mock cursor üzerinden doğrulanabilir.
+**Test edilebilir mi?** Evet — bir test küçük batch (< `ES_REFRESH_INTERVAL`) ile çalıştırıp psycopg2 mock'unun `execute_values` çağrısının 5 elementli tuple beklediğini doğrulayabilir.

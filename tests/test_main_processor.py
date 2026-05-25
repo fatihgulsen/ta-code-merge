@@ -304,3 +304,111 @@ def test_batch_end_flush_sql_binds_all_5_columns():
             f"Batch-end flush SQL must include 'd(mc, ms, mt, md, id)' (5 binds), "
             f"but got: {sql!r}"
         )
+
+
+# ---------------------------------------------------------------------------
+# HIGH-1: Per-row exception must not halt the batch loop (CLAUDE.md §1.3)
+# ---------------------------------------------------------------------------
+
+def test_per_row_exception_does_not_halt_batch():
+    """HIGH-1: When a single row raises during match_single_record, the loop
+    must log the error and continue processing remaining rows (CLAUDE.md §1.3).
+    """
+    from unittest.mock import patch, MagicMock, call as mcall
+    import logging
+    import main_processor as mp
+    import config as cfg
+
+    # Build three fake rows using actual column mapping keys
+    def _make_row(row_id, name, country="TR"):
+        row = {
+            cfg.COLUMN_MAPPING["id"]: row_id,
+            cfg.COLUMN_MAPPING["company_name"]: name,
+            cfg.COLUMN_MAPPING["country_code"]: country,
+        }
+        if cfg.COLUMN_MAPPING.get("tax_number"):
+            row[cfg.COLUMN_MAPPING["tax_number"]] = ""
+        if cfg.COLUMN_MAPPING.get("phone_number"):
+            row[cfg.COLUMN_MAPPING["phone_number"]] = ""
+        if cfg.COLUMN_MAPPING.get("address"):
+            row[cfg.COLUMN_MAPPING["address"]] = ""
+        return row
+
+    row1 = _make_row(101, "Alpha Ltd")
+    row2 = _make_row(102, "Boom Corp")   # will raise
+    row3 = _make_row(103, "Gamma GmbH")
+
+    fake_winner = {
+        "master_doc_id": "master-ok",
+        "es_score": 80.0,
+        "stage_name": "CANONICAL_EXACT",
+        "index_variation": False,
+    }
+
+    # match_single_record: OK for row1, raises for row2, OK for row3
+    call_results = [
+        {"winner": fake_winner, "trace": []},   # row1
+        Exception("boom — row2 explodes"),       # row2
+        {"winner": fake_winner, "trace": []},   # row3
+    ]
+
+    def side_effect_match(*args, **kwargs):
+        result = call_results.pop(0)
+        if isinstance(result, Exception):
+            raise result
+        return result
+
+    mock_es = MagicMock()
+    mock_read_conn = MagicMock()
+    mock_write_conn = MagicMock()
+    mock_read_cur = MagicMock()
+    mock_write_cur = MagicMock()
+
+    mock_read_conn.cursor.return_value = mock_read_cur
+    mock_write_conn.cursor.return_value = mock_write_cur
+
+    # First fetchall: returns 3-row batch; second: empty → exits while loop
+    mock_read_cur.fetchall.side_effect = [[row1, row2, row3], []]
+    mock_read_cur.fetchone.return_value = (3,)  # COUNT(*) = 3
+
+    captured_updates: list[tuple] = []
+
+    def fake_execute_values(cur, sql, argslist, *args, **kwargs):
+        if "UPDATE" in str(sql).upper():
+            captured_updates.extend(argslist)
+
+    with patch.object(mp, "get_db_connection", side_effect=[mock_read_conn, mock_write_conn]), \
+         patch.object(mp, "match_single_record", side_effect=side_effect_match), \
+         patch.object(mp, "execute_values", side_effect=fake_execute_values), \
+         patch.object(mp, "validate_db_schema"), \
+         patch.object(mp, "ensure_stage_log_table"), \
+         patch.object(mp, "ES_REFRESH_INTERVAL", 1000), \
+         patch.object(mp, "BATCH_SIZE", 10), \
+         patch.object(mp, "ES_INDEX", "test_index"), \
+         patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
+         patch("main_processor.get_es_client", return_value=mock_es), \
+         patch("main_processor.create_index"), \
+         patch("main_processor.register_all_pipelines"), \
+         patch("main_processor.logger") as mock_logger:
+        # Must NOT raise — per-row exception should be swallowed, logged, loop continues
+        mp.process_all_data()
+
+    # Row 1 (id=101) and Row 3 (id=103) must have been added to pg_updates
+    processed_row_ids = [tup[4] for tup in captured_updates]  # 5th element is row_id
+    assert 101 in processed_row_ids, (
+        f"Row 101 (row1) should have been processed. pg_updates row_ids: {processed_row_ids}"
+    )
+    assert 103 in processed_row_ids, (
+        f"Row 103 (row3) should have been processed after row2 failed. "
+        f"pg_updates row_ids: {processed_row_ids}"
+    )
+
+    # The failure for row 2 must have been logged
+    logged = (
+        mock_logger.exception.called
+        or mock_logger.error.called
+    )
+    assert logged, (
+        "Expected logger.exception() or logger.error() to be called for the failing row, "
+        "but neither was called."
+    )

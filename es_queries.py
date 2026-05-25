@@ -89,10 +89,9 @@ def CANONICAL_EXACT(name: str, country: str, es: Elasticsearch = None, **kwargs)
                                             }
                                         }
                                     ],
-                                    "filter": (
-                                        [{"term": {"variations.name.token_count": expected_count}}]
-                                        if expected_count > 0 else []
-                                    )
+                                    "filter": [
+                                        {"term": {"variations.token_count": expected_count}}
+                                    ]
                                 }
                             }
                         }

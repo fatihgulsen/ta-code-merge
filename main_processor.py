@@ -139,13 +139,21 @@ def validate_db_schema(conn) -> None:
         if not db_col or db_col not in existing_columns:
             missing_update.append((internal_name, db_col))
 
+    _ALLOWED_COL_TYPES = {"VARCHAR(50)", "INTEGER", "TEXT"}
+
     if missing_update and AUTO_CREATE_UPDATE_COLUMNS:
         for internal_name, db_col in missing_update:
             col_type = {"master_code": "VARCHAR(50)", "match_score": "INTEGER"}.get(
                 internal_name, "TEXT"
             )
+            if col_type not in _ALLOWED_COL_TYPES:
+                raise ValueError(f"Bilinmeyen sütun tipi: {col_type!r}")
             cursor.execute(
-                f"ALTER TABLE {RAW_TABLE_NAME} ADD COLUMN {db_col} {col_type};"
+                psycopg2.sql.SQL("ALTER TABLE {} ADD COLUMN {} {};").format(
+                    psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                    psycopg2.sql.Identifier(db_col),
+                    psycopg2.sql.SQL(col_type),
+                )
             )
             conn.commit()
             logger.info(f"Sütun oluşturuldu: {db_col} ({col_type})")

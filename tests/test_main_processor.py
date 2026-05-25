@@ -136,3 +136,45 @@ def test_country_code_filter_uses_parametric_sql():
     finally:
         config.COUNTRY_CODE_FILTER = original_filter
         mp.COUNTRY_CODE_FILTER = original_mp_filter
+
+
+def test_validate_db_schema_uses_safe_identifiers():
+    """ALTER TABLE DDL in validate_db_schema must use psycopg2.sql objects, not raw f-strings (CLAUDE.md §1.1)."""
+    from unittest.mock import patch, MagicMock, call as mcall
+    import psycopg2.sql
+    import main_processor as mp
+
+    # Simulate: table exists, mandatory read columns present, one update column missing
+    # so the ALTER TABLE branch executes.
+    mock_cur = MagicMock()
+
+    # fetchone()[0] -> True (table exists)
+    # fetchall() -> existing_columns (all MANDATORY_READ_COLUMNS present, update columns absent)
+    mandatory_read_cols = {mp.COLUMN_MAPPING.get(n) for n in mp.MANDATORY_READ_COLUMNS if mp.COLUMN_MAPPING.get(n)}
+    mock_cur.fetchone.return_value = (True,)
+    mock_cur.fetchall.return_value = [(col,) for col in mandatory_read_cols]
+
+    mock_conn = MagicMock()
+    mock_conn.cursor.return_value = mock_cur
+
+    with patch.object(mp, "AUTO_CREATE_UPDATE_COLUMNS", True):
+        mp.validate_db_schema(mock_conn)
+
+    # Find ALTER TABLE calls among all execute() calls
+    alter_calls = [
+        c for c in mock_cur.execute.call_args_list
+        if "ALTER" in str(c.args[0]).upper()
+    ]
+
+    assert alter_calls, "Expected at least one ALTER TABLE execute() call — none found."
+
+    for c in alter_calls:
+        sql_arg = c.args[0]
+        assert not isinstance(sql_arg, str), (
+            f"ALTER TABLE SQL must NOT be a raw str (f-string injection risk). "
+            f"Got: {sql_arg!r}"
+        )
+        assert isinstance(sql_arg, (psycopg2.sql.Composed, psycopg2.sql.SQL)), (
+            f"ALTER TABLE SQL must be psycopg2.sql.Composed or psycopg2.sql.SQL. "
+            f"Got type {type(sql_arg)}: {sql_arg!r}"
+        )

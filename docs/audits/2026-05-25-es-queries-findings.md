@@ -40,15 +40,15 @@
 
 ### Failing tests (test_es_queries.py) — verdict per test
 
-- **test_canonical_exact_structure**: **Real bug in es_queries.py.** Test `variations.token_count` field path'ini bekliyor, kaynak kod ise `variations.name.token_count` kullanıyor. ES mapping'de token_count sub-field'ı `variations.name` altında değil, `variations` altında tanımlanmış olması kuvvetle muhtemel. Kaynak kodu düzeltilmeli.
+- **test_canonical_exact_structure**: **Real bug in es_queries.py.** Test `variations.token_count` field path'ini bekliyor, kaynak kod ise `variations.name.token_count` kullanıyor. ES mapping'de token_count sub-field'ı `variations.name` altında değil, `variations` altında tanımlanmış olması kuvvetle muhtemel. Kaynak kodu düzeltilmeli. — **✅ Düzeltildi (074eb82)**
 
-- **test_token_coverage_uses_and_operator**: **Test outdated (test hatası).** Test `nested["query"]["bool"]["must"]` path'ini bekliyor, fakat `TOKEN_COVERAGE` fonksiyonundaki nested query yapısı `{"match": {...}}` — yani `bool` wrapper'ı yok. `KeyError 'bool'` bu yüzden oluşuyor. Kaynak kodun yapısı doğru; test yanlış path varsayımı yapıyor.
+- **test_token_coverage_uses_and_operator**: **Test outdated (test hatası).** Test `nested["query"]["bool"]["must"]` path'ini bekliyor, fakat `TOKEN_COVERAGE` fonksiyonundaki nested query yapısı `{"match": {...}}` — yani `bool` wrapper'ı yok. `KeyError 'bool'` bu yüzden oluşuyor. Kaynak kodun yapısı doğru; test yanlış path varsayımı yapıyor. — **✅ Düzeltildi (c78091c)**
 
-- **test_fuzzy_phrase_has_slop**: **Test outdated (test hatası).** `FUZZY_PHRASE` fonksiyonundaki nested query `{"match_phrase": {...}}` şeklinde — `bool` wrapper'ı yok. Test `nested["query"]["bool"]["must"]` path'ini bekliyor. Kaynak kodun yapısı doğru; test path'i güncellenmelidir.
+- **test_fuzzy_phrase_has_slop**: **Test outdated (test hatası).** `FUZZY_PHRASE` fonksiyonundaki nested query `{"match_phrase": {...}}` şeklinde — `bool` wrapper'ı yok. Test `nested["query"]["bool"]["must"]` path'ini bekliyor. Kaynak kodun yapısı doğru; test path'i güncellenmelidir. — **✅ Düzeltildi (c78091c)**
 
-- **test_ngram_match_queries_ngram_field**: **Test outdated (test hatası) + field path assertion yanlış.** İki sorun: (1) `nested["query"]["bool"]["must"]` path hatası — nested query `bool` wrapper içermiyor. (2) Test `variations_stripped.ngram` alanını arıyor, kaynak kod ise `variations_stripped.name.ngram` kullanıyor. Test path hem structürel hem semantic olarak yanlış.
+- **test_ngram_match_queries_ngram_field**: **Test outdated (test hatası) + field path assertion yanlış.** İki sorun: (1) `nested["query"]["bool"]["must"]` path hatası — nested query `bool` wrapper içermiyor. (2) Test `variations_stripped.ngram` alanını arıyor, kaynak kod ise `variations_stripped.name.ngram` kullanıyor. Test path hem structürel hem semantic olarak yanlış. — **✅ Düzeltildi (c78091c)**
 
-- **test_suffix_fuzzy_must_queries_variations_stripped**: **Test outdated (test hatası).** `SUFFIX_FUZZY` fonksiyonundaki nested query `{"match_phrase": {...}}` şeklinde — `bool` wrapper yok. Test `nested["query"]["bool"]["must"]` bekliyor. Kaynak yapısı mantıklı; test güncellenmeli.
+- **test_suffix_fuzzy_must_queries_variations_stripped**: **Test outdated (test hatası).** `SUFFIX_FUZZY` fonksiyonundaki nested query `{"match_phrase": {...}}` şeklinde — `bool` wrapper yok. Test `nested["query"]["bool"]["must"]` bekliyor. Kaynak yapısı mantıklı; test güncellenmeli. — **✅ Düzeltildi (c78091c)**
 
 ---
 
@@ -73,6 +73,8 @@
 **CLAUDE.md ihlali:** —
 
 **Test edilebilir mi?** Evet — `test_canonical_exact_structure` zaten bu senaryoyu test ediyor ve field path düzeltildikten sonra geçmesi beklenir.
+
+**Durum:** ✅ Düzeltildi (074eb82)
 
 ---
 

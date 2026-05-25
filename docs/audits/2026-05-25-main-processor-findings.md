@@ -50,6 +50,8 @@
 
 ## [CRITICAL] main_processor.py:923-929 — COUNTRY_CODE_FILTER f-string ile SQL'e ekleniyor (SQL injection)
 
+**Durum:** ✅ Düzeltildi (76eecac)
+
 **Kanıt:**
 ```python
 where_clause = f"{col_master} IS NULL"
@@ -72,6 +74,8 @@ count_cur.execute(f"SELECT COUNT(*) FROM {RAW_TABLE_NAME} WHERE {where_clause}")
 
 ## [CRITICAL] main_processor.py:146-148 — ALTER TABLE f-string SQL injection (`validate_db_schema`)
 
+**Durum:** ✅ Düzeltildi (1c29aa7)
+
 **Kanıt:**
 ```python
 cursor.execute(
@@ -90,6 +94,8 @@ cursor.execute(
 ---
 
 ## [CRITICAL] main_processor.py:585 — `create_new_masters` 4-elemanlı tuple ekliyor, tüm diğer path'ler 5-elemanlı
+
+**Durum:** ✅ Düzeltildi (f3d560f)
 
 **Kanıt:**
 
@@ -121,6 +127,8 @@ Tekrarlanmasını önlemek için `_make_pg_update_tuple(master_id, score, stage,
 ---
 
 ## [HIGH] main_processor.py:978-1082 — Per-row döngüde try/except yok, tek hata tüm batch'i durdurur
+
+**Durum:** ✅ Düzeltildi (6c06a70)
 
 **Kanıt:**
 ```python
@@ -163,9 +171,13 @@ for row in rows:
 
 **Test edilebilir mi?** Evet — `es.bulk` exception fırlatacak şekilde mock'lanarak `logger.warning` veya `logger.debug`'ın çağrılıp çağrılmadığı test edilebilir.
 
+**Durum:** ✅ Düzeltildi (052c29d)
+
 ---
 
 ## [HIGH] main_processor.py:873-874 — `_add_variation_to_master` tüm exception'ları sessizce yutmakta
+
+**Durum:** ✅ Düzeltildi (45b35be)
 
 **Kanıt:**
 ```python
@@ -184,6 +196,8 @@ for row in rows:
 ---
 
 ## [HIGH] main_processor.py:826-844 — `_add_variation_to_master` ES source dict'ini in-place mutate ederek veri kaybına neden oluyor
+
+**Durum:** ✅ Düzeltildi (ef2d6f1)
 
 **Kanıt:**
 
@@ -283,6 +297,8 @@ def process_all_data() -> None:  # satır 882
 ---
 
 ## [CRITICAL] main_processor.py:1117-1135 — Batch sonu flush SQL şablonu 4 bind sütun bekliyor, `pg_updates` tuple'ları 5 elemanlı (garantili runtime crash)
+
+**Durum:** ✅ Düzeltildi (f3d560f)
 
 **Kanıt:**
 

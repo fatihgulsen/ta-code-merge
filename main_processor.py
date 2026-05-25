@@ -506,7 +506,7 @@ def build_new_master_doc(
         "_routing": country.upper(),
         "_source": {
             "master_id": master_id,
-            "variations": [name],
+            "variations": [{"name": name}],
             "variations_stripped": [],
             "country_code": country.upper(),
         },

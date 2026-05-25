@@ -838,3 +838,108 @@ def test_main_processor_does_not_hardcode_thresholds():
     assert not re.search(r",\s*2\s*,", src), (
         "create_new_masters icinde hardcoded literal '2' bulundu — config sabitine tasinmali."
     )
+
+
+# ---------------------------------------------------------------------------
+# M3m: variations entry shape must be consistent across create_new_masters,
+#       build_new_master_doc, and _add_variation_to_master
+# ---------------------------------------------------------------------------
+
+def test_create_new_masters_variation_shape_matches_add_variation():
+    """M3m: The variation entry built inside create_new_masters (and build_new_master_doc)
+    must have the same keys as the entry built by _add_variation_to_master.
+
+    Canonical shape: {"name": <str>}  (dict, same as _add_variation_to_master appends)
+
+    Before the fix, build_new_master_doc produces variations=[name] (plain string),
+    while create_new_masters produces variations=[{"name":...}] and
+    _add_variation_to_master also produces {"name":...}.
+    This test fails when build_new_master_doc is still using the string format.
+    """
+    from unittest.mock import patch, MagicMock
+    import main_processor as mp
+
+    # ── Part A: capture the variation entry from create_new_masters ──────────
+    records = [
+        {"row_id": 1, "raw_name": "Acme Corp", "country": "TR",
+         "tax": "", "phone": "", "address": ""},
+    ]
+
+    captured_bulk_docs: list[dict] = []
+
+    def fake_bulk(es_client, docs, *args, **kwargs):
+        captured_bulk_docs.extend(docs)
+        return (len(docs), [])
+
+    with patch("main_processor.helpers.bulk", side_effect=fake_bulk), \
+         patch.object(mp, "NEW_MASTER_SUBBATCH_SIZE", 10), \
+         patch.object(mp, "ES_INDEX", "test_index"), \
+         patch.object(mp, "execute_values"), \
+         patch.object(mp, "STAGES", [{"name": "CANONICAL_EXACT", "order": 2,
+                                       "query_fn": "CANONICAL_EXACT",
+                                       "min_score": 50.0, "enabled": True}]):
+        mock_es = MagicMock()
+        # make msearch return no hits so no sub-batch match occurs
+        mock_es.msearch.return_value = {
+            "responses": [{"hits": {"hits": [], "total": {"value": 0}}}]
+        }
+        mp.create_new_masters(mock_es, MagicMock(), MagicMock(), records)
+
+    assert captured_bulk_docs, "create_new_masters must index at least one ES doc"
+    source_from_create = captured_bulk_docs[0].get("_source", {})
+    variations_from_create = source_from_create.get("variations", [])
+    assert variations_from_create, "variations list must not be empty in create_new_masters doc"
+    initial_entry = variations_from_create[0]
+
+    # ── Part B: capture the variation entry appended by build_new_master_doc ─
+    doc_from_build, _mid = mp.build_new_master_doc(
+        name="Acme Corp", country="TR", tax="", phone="", address=""
+    )
+    variations_from_build = doc_from_build["_source"].get("variations", [])
+    assert variations_from_build, "build_new_master_doc variations list must not be empty"
+    build_entry = variations_from_build[0]
+
+    # ── Part C: capture the variation entry from _add_variation_to_master ────
+    mock_es2 = MagicMock()
+    mock_es2.get.return_value = {
+        "_source": {
+            "master_id": "m-1",
+            "country_code": "TR",
+            "variations": [{"name": "Existing Co"}],
+            "variations_stripped": [],
+            "variations_suffix": [],
+        }
+    }
+    mp._add_variation_to_master(mock_es2, "m-1", "New Variation", "TR", rec=None)
+    assert mock_es2.index.called, "_add_variation_to_master must call es.index"
+    body_from_add = mock_es2.index.call_args[1].get("body", {})
+    variations_from_add = body_from_add.get("variations", [])
+    # The last entry is the newly added one
+    added_entry = variations_from_add[-1]
+
+    # ── Assertions ────────────────────────────────────────────────────────────
+    # 1) create_new_masters entry must be a dict with key "name"
+    assert isinstance(initial_entry, dict), (
+        f"create_new_masters: variations[0] must be a dict, got {type(initial_entry)}: {initial_entry!r}"
+    )
+    assert set(initial_entry.keys()) == set(added_entry.keys()), (
+        f"create_new_masters variation entry keys {set(initial_entry.keys())} "
+        f"must match _add_variation_to_master keys {set(added_entry.keys())}"
+    )
+
+    # 2) build_new_master_doc entry must also be a dict with key "name"
+    assert isinstance(build_entry, dict), (
+        f"build_new_master_doc: variations[0] must be a dict, got {type(build_entry)}: {build_entry!r}"
+    )
+    assert set(build_entry.keys()) == set(added_entry.keys()), (
+        f"build_new_master_doc variation entry keys {set(build_entry.keys())} "
+        f"must match _add_variation_to_master keys {set(added_entry.keys())}"
+    )
+
+    # 3) Value consistency: "name" field must be a non-empty string
+    assert isinstance(initial_entry.get("name"), str) and initial_entry["name"], (
+        f"create_new_masters variations[0]['name'] must be a non-empty str, got {initial_entry!r}"
+    )
+    assert isinstance(build_entry.get("name"), str) and build_entry["name"], (
+        f"build_new_master_doc variations[0]['name'] must be a non-empty str, got {build_entry!r}"
+    )

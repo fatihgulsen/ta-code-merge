@@ -412,3 +412,60 @@ def test_per_row_exception_does_not_halt_batch():
         "Expected logger.exception() or logger.error() to be called for the failing row, "
         "but neither was called."
     )
+
+
+# ---------------------------------------------------------------------------
+# HIGH-2: ES bulk failures must log at WARNING with exc_info, not DEBUG
+# ---------------------------------------------------------------------------
+
+def test_es_bulk_failure_logs_at_warning_with_exc_info():
+    """HIGH-2: When es.bulk() fails in update_es_variations (line 369-372),
+    the exception must be logged at WARNING level with exc_info=True,
+    not silently swallowed at DEBUG level.
+    """
+    from unittest.mock import patch, MagicMock
+    import logging
+    import main_processor as mp
+
+    # Simulate ES bulk failure
+    mock_es = MagicMock()
+    mock_es.bulk.side_effect = Exception("ES cluster down")
+
+    # Build a minimal matched record that will trigger update_es_variations
+    matched_records = [
+        {
+            "row_id": 1,
+            "master_id": "master-001",
+            "stage_name": "CANONICAL_EXACT",
+            "raw_name": "Acme Global Ltd",
+            "country": "TR",
+            "tax": "",
+            "phone": "",
+            "address": "",
+        }
+    ]
+
+    # Capture log records at all levels
+    with patch("main_processor.logger") as mock_logger:
+        # Call the function that contains the bulk operation
+        mp.update_es_variations(mock_es, matched_records)
+
+    # Assert: logger.warning was called (not just logger.debug)
+    assert mock_logger.warning.called, (
+        "Expected logger.warning() to be called for ES bulk failure, "
+        "but it was not. The exception was likely logged at DEBUG level instead."
+    )
+
+    # Assert: exc_info=True was passed to the warning call
+    warning_calls = mock_logger.warning.call_args_list
+    has_exc_info = False
+    for call in warning_calls:
+        # Check positional args and keyword args for exc_info=True
+        if call.kwargs.get("exc_info") is True:
+            has_exc_info = True
+            break
+
+    assert has_exc_info, (
+        f"Expected logger.warning(..., exc_info=True) to be called, "
+        f"but exc_info was not set to True. warning calls: {warning_calls}"
+    )

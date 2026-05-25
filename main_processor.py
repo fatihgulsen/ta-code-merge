@@ -369,7 +369,7 @@ def update_es_variations(es, matched: list[dict]) -> None:
         try:
             es.bulk(body=bulk_body, refresh=False)
         except Exception:
-            logger.debug("ES variations update basarisiz, devam ediliyor")
+            logger.warning("ES variations update basarisiz, devam ediliyor", exc_info=True)
 
 
 def _append_list_fields(bulk_body: list[dict], master_id: str, info: dict) -> None:

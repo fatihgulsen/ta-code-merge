@@ -109,6 +109,16 @@ Aynı firma onlarca master'a bölünmüş; yasal-ek/kısaltma varyantları ve tr
 
 **Kök-neden:** Suffix/şirket-tipi varyantları (`S.A. DE C.V.`, `S DE RL`, `S.R.L.`, truncated `S DE`, `SA DE`) ve noktalama/case farkları stripping sonrası **aynı çekirdeğe indirgenmiyor**; dolayısıyla exact/stripped stage'ler bu varyantları eşleştiremiyor ve her biri NEW_MASTER oluyor.
 
+**ES doğrulama (hibrit, kanıt — `JABIL CIRCUIT DE MEXICO S DE CV`, MX):**
+
+| stage | sonuç |
+| :--- | :--- |
+| `STRIPPED_EXACT` | **0 hit** — truncated ek (`S DE CV`) stripping'de tanınmadığından çekirdek eşleşmiyor |
+| `CANONICAL_EXACT` | **0 hit** — token_count filtresi farklı-uzunluklu ek varyantlarında tutmuyor |
+| `TOKEN_COVERAGE` | 1 hit (skor 20.98) — yalnızca *birebir* aynı token setine sahip varyantı buluyor; `operator:and` farklı ek-token'lı (cv vs rl vs srl) varyantları kaçırıyor |
+
+Yani gerçek under-merge'ün kök-nedeni **suffix stripping'in truncated/varyant Meksika eklerini normalize edememesi**: STRIPPED_EXACT bu varyantları tek çekirdeğe (`jabil circuit mexico`) indirgeyebilseydi 13 master tek master'da birleşirdi.
+
 ### 4.2 Dedektör false-alarm (tek-jenerik-token imza) — düşük güven
 
 `mexico`, `logistics`, `international`, `comercializadora`, `logistica`, `rqmt` gibi tek jenerik token'a inen imzalar farklı firmaları yanlışlıkla aynı split grubuna koyuyor (örn. imza=`mexico`: "M S.A. DE MEXICO" vs "P.Q.A. DE MEXICO" — gerçekte farklı firmalar).

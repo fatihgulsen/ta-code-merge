@@ -85,6 +85,10 @@ SUFFIX_FUZZY_COVERAGE_THRESHOLD = 0.85  # name token coverage eşiği (_post_ver
 # Bu değerler es_scripts.py'deki Painless script ile uyumlu olmalı
 RESCORE_WINDOW_SIZE = 20  # Rescore sadece top N adaya uygulanır
 
+# PHONETIC_MATCH guard — bu kadar az ayırt edici çekirdek token'da fonetik eşleşme
+# dev/çöp master'lara operator:and ile sızdığından devre dışı bırakılır.
+PHONETIC_MIN_CORE_TOKENS = 2
+
 # --- msearch Ayarları ---
 MSEARCH_CHUNK_SIZE = 500  # Tek msearch çağrısında max sorgu sayısı
 

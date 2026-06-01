@@ -21,5 +21,7 @@ sdist/
 var/
 *.egg-info/
 .claude/
-superpowers/
 .backup
+
+# QA analiz CSV ciktilari (gecici)
+qa_*.csv

@@ -198,3 +198,19 @@ def test_variations_suffix_mapping_has_explicit_search_analyzer():
     suffix_field = props["variations_suffix"]
     assert suffix_field["analyzer"] == "standard"
     assert suffix_field.get("search_analyzer") == "standard"
+
+
+def test_phonetic_match_blocks_short_core():
+    # Tek ayırt edici token (yasal ek çıkınca "witte") → guard devreye girer:
+    # eşleşmeyi imkânsız kılan sentinel query döner (dev/çöp master'a sızmayı önler).
+    q = es_queries.PHONETIC_MATCH("WITTE, S.A. DE C.V.", "MX")
+    assert q == es_queries.MATCH_NONE
+
+
+def test_phonetic_match_allows_multi_token_core():
+    # İki+ ayırt edici token → normal fonetik query döner.
+    q = es_queries.PHONETIC_MATCH("AUDI MEXICO S.A. DE C.V.", "MX")
+    bool_q = q["query"]["bool"]
+    nested = next(c["nested"] for c in bool_q["must"] if "nested" in c)
+    assert nested["path"] == "variations_stripped"
+    assert _get_country_filter(q) == "MX"

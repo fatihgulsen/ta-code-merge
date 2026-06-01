@@ -13,6 +13,8 @@ import logging
 import re
 from elasticsearch import Elasticsearch
 from synonym_loader import get_all_country_codes
+from core_name import normalize_core
+from config import PHONETIC_MIN_CORE_TOKENS
 
 logger = logging.getLogger(__name__)
 
@@ -289,11 +291,18 @@ def NGRAM_MATCH(name: str, country: str, **kwargs) -> dict:
     }
 
 
+# Hiçbir dokümanla eşleşmeyen sentinel query — guard'lar tarafından kullanılır.
+MATCH_NONE = {"query": {"bool": {"must_not": [{"match_all": {}}]}}, "size": 0}
+
+
 def PHONETIC_MATCH(name: str, country: str, **kwargs) -> dict:
     """
     Sestese dayalı (phonetic) eşleşme — sadece ana isim üzerinden.
     Double Metaphone algoritması ile suffix gürültüsü olmadan eşleşir.
     """
+    core = normalize_core(name, country)
+    if len(core) < PHONETIC_MIN_CORE_TOKENS:
+        return MATCH_NONE
     return {
         "query": {
             "bool": {

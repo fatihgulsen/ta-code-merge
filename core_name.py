@@ -19,12 +19,15 @@ _TOKEN_SPLIT = re.compile(r"[^a-z0-9]+")
 
 @lru_cache(maxsize=None)
 def _strip_tokens(country: str) -> frozenset:
-    """Ülkeye özgü düşürülecek token kümesi: yasal-ek parçaları + kısaltmalar."""
+    """Ülkeye özgü düşürülecek token kümesi: küratörlü kısaltma parçaları +
+    yalnızca tek-kelimelik yasal ekler (çok-kelimeli ifadeler parçalanmaz —
+    aksi halde 'general partnership' gibi ifadeler 'general' iş kelimesini siler)."""
+    country = country.upper()
     out = set(_SUFFIX_FRAGMENTS)
     for phrase in get_legal_suffix_tokens(country):
-        for tok in _TOKEN_SPLIT.split(phrase.lower()):
-            if tok:
-                out.add(tok)
+        toks = [t for t in _TOKEN_SPLIT.split(phrase.lower()) if t]
+        if len(toks) == 1:
+            out.add(toks[0])
     return frozenset(out)
 
 

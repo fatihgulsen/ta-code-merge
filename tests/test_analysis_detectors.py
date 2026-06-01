@@ -52,3 +52,36 @@ def test_over_merge_ignores_consistent_cluster():
 def test_over_merge_ignores_singletons():
     rows = [_row(1, "M3", "WITTE, S.A. DE C.V.")]
     assert detect_over_merge(rows, threshold=0.3) == []
+
+
+from analysis.detectors import detect_splits
+
+
+def test_split_flags_same_core_different_master():
+    rows = [
+        _row(1, "M10", "AUDI MEXICO S.A. DE C.V."),
+        _row(2, "M11", "AUDI MEXICO SA DE CV"),  # aynı çekirdek, farklı master
+    ]
+    findings = detect_splits(rows)
+    assert len(findings) == 1
+    f = findings[0]
+    assert f.core_signature == ("audi", "mexico")
+    assert set(f.master_codes) == {"M10", "M11"}
+    assert f.affected_rows == 2
+
+
+def test_split_ignores_same_master():
+    rows = [
+        _row(1, "M10", "AUDI MEXICO S.A. DE C.V."),
+        _row(2, "M10", "AUDI MEXICO SA DE CV"),
+    ]
+    assert detect_splits(rows) == []
+
+
+def test_split_respects_country_boundary():
+    rows = [
+        _row(1, "M10", "AUDI MEXICO S.A. DE C.V.", country="MX"),
+        _row(2, "M11", "AUDI MEXICO", country="US"),
+    ]
+    # Farklı ülke → split sayılmaz (country hard-filter)
+    assert detect_splits(rows) == []

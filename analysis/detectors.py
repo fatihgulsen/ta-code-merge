@@ -78,3 +78,46 @@ def detect_over_merge(rows: list[MatchedRow], threshold: float = 0.3) -> list[Ov
 
     findings.sort(key=lambda f: f.member_count * (1.0 - f.mean_overlap), reverse=True)
     return findings
+
+
+@dataclass(frozen=True)
+class SplitFinding:
+    country: str
+    core_signature: tuple[str, ...]
+    master_codes: tuple[str, ...]
+    affected_rows: int
+    sample_names: tuple[str, ...]
+
+
+def detect_splits(rows: list[MatchedRow]) -> list[SplitFinding]:
+    """Aynı ülkede özdeş çekirdek-imzaya sahip ama farklı master'a düşmüş kayıtları bulur.
+
+    Çekirdek imza = normalize_core token'larının sıralı tuple'ı (sıra-bağımsız eşitlik).
+    Bir (country, signature) altında >=2 farklı master_code varsa under-merge adayı.
+    """
+    groups: dict[tuple[str, tuple[str, ...]], list[MatchedRow]] = {}
+    for r in rows:
+        if not r.master_code:
+            continue
+        sig = tuple(sorted(normalize_core(r.name, r.country)))
+        if not sig:
+            continue
+        groups.setdefault((r.country.upper(), sig), []).append(r)
+
+    findings: list[SplitFinding] = []
+    for (country, sig), members in groups.items():
+        masters = {m.master_code for m in members}
+        if len(masters) < 2:
+            continue
+        findings.append(
+            SplitFinding(
+                country=country,
+                core_signature=sig,
+                master_codes=tuple(sorted(masters)),
+                affected_rows=len(members),
+                sample_names=tuple(dict.fromkeys(m.name for m in members))[:5],
+            )
+        )
+
+    findings.sort(key=lambda f: f.affected_rows, reverse=True)
+    return findings

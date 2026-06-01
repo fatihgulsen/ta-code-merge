@@ -21,3 +21,60 @@ def token_overlap(a: tuple[str, ...], b: tuple[str, ...]) -> float:
         return 0.0
     union = sa | sb
     return len(sa & sb) / len(union)
+
+
+from collections import Counter
+from itertools import combinations
+
+
+@dataclass(frozen=True)
+class MatchedRow:
+    id: object
+    master_code: str
+    name: str
+    country: str
+    match_type: str | None
+
+
+@dataclass(frozen=True)
+class OverMergeFinding:
+    master_code: str
+    member_count: int
+    mean_overlap: float
+    dominant_match_type: str | None
+    sample_names: tuple[str, ...]
+
+
+def detect_over_merge(rows: list[MatchedRow], threshold: float = 0.3) -> list[OverMergeFinding]:
+    """Üyeleri birbirinden farklı (düşük token örtüşmeli) master kümelerini işaretler.
+
+    Her master için üye çiftlerinin ortalama token örtüşmesini hesaplar;
+    ortalama < threshold ise over-merge adayı. Tekil master'lar atlanır.
+    Sonuç: (boyut × düşük-örtüşme) ağırlığına göre azalan sıralı.
+    """
+    by_master: dict[str, list[MatchedRow]] = {}
+    for r in rows:
+        if r.master_code:
+            by_master.setdefault(r.master_code, []).append(r)
+
+    findings: list[OverMergeFinding] = []
+    for master, members in by_master.items():
+        if len(members) < 2:
+            continue
+        cores = [normalize_core(m.name, m.country) for m in members]
+        pairs = list(combinations(cores, 2))
+        mean_overlap = sum(token_overlap(a, b) for a, b in pairs) / len(pairs)
+        if mean_overlap < threshold:
+            dom = Counter(m.match_type for m in members if m.match_type).most_common(1)
+            findings.append(
+                OverMergeFinding(
+                    master_code=master,
+                    member_count=len(members),
+                    mean_overlap=mean_overlap,
+                    dominant_match_type=dom[0][0] if dom else None,
+                    sample_names=tuple(m.name for m in members[:5]),
+                )
+            )
+
+    findings.sort(key=lambda f: f.member_count * (1.0 - f.mean_overlap), reverse=True)
+    return findings

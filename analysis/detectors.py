@@ -5,9 +5,12 @@
 # yalnızca küme (set) işlemleri. DB erişimi yalnızca SELECT.
 # ============================================================================
 
+from collections import Counter
 from dataclasses import dataclass
+from itertools import combinations
 
 import psycopg2
+import psycopg2.sql
 from psycopg2.extras import DictCursor
 
 from config import DB_CONFIG, RAW_TABLE_NAME, COLUMN_MAPPING
@@ -21,10 +24,6 @@ def token_overlap(a: tuple[str, ...], b: tuple[str, ...]) -> float:
         return 0.0
     union = sa | sb
     return len(sa & sb) / len(union)
-
-
-from collections import Counter
-from itertools import combinations
 
 
 @dataclass(frozen=True)
@@ -121,3 +120,47 @@ def detect_splits(rows: list[MatchedRow]) -> list[SplitFinding]:
 
     findings.sort(key=lambda f: f.affected_rows, reverse=True)
     return findings
+
+
+def load_matched_rows(country: str | None = None) -> list[MatchedRow]:
+    """Eşleşmiş (master_code dolu) kayıtları salt-okunur SELECT ile yükler."""
+    col_id = COLUMN_MAPPING["id"]
+    col_name = COLUMN_MAPPING["company_name"]
+    col_country = COLUMN_MAPPING["country_code"]
+    col_master = COLUMN_MAPPING["master_code"]
+    col_type = COLUMN_MAPPING["match_type"]
+
+    sql = psycopg2.sql.SQL(
+        "SELECT {id}, {master}, {name}, {country}, {mtype} FROM {table} "
+        "WHERE {master} IS NOT NULL"
+    ).format(
+        id=psycopg2.sql.Identifier(col_id),
+        master=psycopg2.sql.Identifier(col_master),
+        name=psycopg2.sql.Identifier(col_name),
+        country=psycopg2.sql.Identifier(col_country),
+        mtype=psycopg2.sql.Identifier(col_type),
+        table=psycopg2.sql.Identifier(RAW_TABLE_NAME),
+    )
+    params: tuple = ()
+    if country:
+        sql = sql + psycopg2.sql.SQL(" AND {c} = %s").format(c=psycopg2.sql.Identifier(col_country))
+        params = (country,)
+
+    conn = psycopg2.connect(**DB_CONFIG)
+    try:
+        cur = conn.cursor(cursor_factory=DictCursor)
+        cur.execute(sql, params)
+        rows = [
+            MatchedRow(
+                id=r[col_id],
+                master_code=r[col_master],
+                name=(r[col_name] or "").strip(),
+                country=(r[col_country] or "").strip().upper() or "DEFAULT",
+                match_type=r[col_type],
+            )
+            for r in cur.fetchall()
+        ]
+        cur.close()
+        return rows
+    finally:
+        conn.close()

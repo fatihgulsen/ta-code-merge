@@ -22,3 +22,6 @@ var/
 *.egg-info/
 .claude/
 .backup
+
+# QA analiz CSV ciktilari (gecici)
+qa_*.csv

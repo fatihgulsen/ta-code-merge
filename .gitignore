@@ -21,5 +21,4 @@ sdist/
 var/
 *.egg-info/
 .claude/
-superpowers/
 .backup

@@ -32,3 +32,31 @@ def test_preserves_business_words_from_multiword_suffix_phrases():
 def test_other_country_single_word_suffix():
     # Tek-kelimelik yasal ek (gmbh) farklı ülkede de strip edilir; country.upper() yolu.
     assert normalize_core("ACME GMBH", "de") == ("acme",)
+
+
+# ---------------------------------------------------------------------------
+# Çok-ülke (multi-country) doğruluk: MX'e özgü kısaltma parçaları (sc, rl, del,
+# sa, de, cv...) BAŞKA ülkelere uygulanmamalı. Aksi halde DE/TR gibi ülkelerde
+# meşru isim token'ları yanlışlıkla silinir (latent correctness trap).
+# ---------------------------------------------------------------------------
+
+
+def test_mx_fragments_not_stripped_for_other_countries():
+    # 'del', 'sc', 'rl' MX yasal-ek kısaltma parçalarıdır; DE/TR'de meşru token.
+    assert normalize_core("DEL MONTE", "DE") == ("del", "monte")
+    assert normalize_core("SC JOHNSON", "TR") == ("sc", "johnson")
+    assert normalize_core("RL POLK", "DE") == ("rl", "polk")
+
+
+def test_mx_fragments_still_stripped_for_mx():
+    # Regresyon koruması: MX'te bu parçalar HÂLÂ silinmeli (davranış korunur).
+    assert normalize_core("DEL MONTE", "MX") == ("monte",)
+    assert normalize_core("SC JOHNSON", "MX") == ("johnson",)
+    assert normalize_core("RL POLK", "MX") == ("polk",)
+
+
+def test_other_country_still_strips_genuine_legal_suffix():
+    # Değişiklik dar kapsamlı: ortak (common) tek-kelimelik yasal ekler her
+    # ülkede silinmeye devam eder — yalnızca MX'e özgü parçalar ülke-bazlıdır.
+    assert normalize_core("ACME GMBH", "DE") == ("acme",)
+    assert normalize_core("ACME LIMITED", "TR") == ("acme",)

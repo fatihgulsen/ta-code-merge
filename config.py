@@ -76,6 +76,14 @@ LOG_ALL_STAGES = False  # Her bir stage sonucunu (failed dahil) logla
 LENGTH_RATIO_THRESHOLD = 0.4
 TOKEN_COVERAGE_THRESHOLD = 0.95  # Token'ların en az %95'i örtüşmeli
 
+# --- Çekirdek-token coverage post-verify (Faz 2) ---
+# Kazanan eşleşme kabul edilmeden ÖNCE, sorgu ile kazananın çekirdek (core_name)
+# token kümeleri arasındaki simetrik örtüşme bu eşiğin ALTINDAYSA eşleşme reddedilir.
+# Stage-bağımsız bir güvenlik kapısıdır; subset over-merge'leri (ALCATEL ⊂
+# ALCATEL-LUCENT) ve ayırt edici-çekirdek uyuşmazlıklarını yakalar. 0 → devre dışı.
+# Canlı kalibrasyon: analysis/live_probe.py.
+CORE_COVERAGE_THRESHOLD = 0.6
+
 SUFFIX_FUZZY_MIN_SCORE = 1.5  # ES score eşiği — prod testleriyle kalibre edilmeli
 SUFFIX_FUZZY_SCORE = 85  # match sonucu skoru (normalised tier score)
 SUFFIX_FUZZY_COVERAGE_THRESHOLD = 0.85  # name token coverage eşiği (_post_verify)
@@ -93,6 +101,12 @@ RESCORE_WINDOW_SIZE = 20  # Rescore sadece top N adaya uygulanır
 # (es_manager legal_fragment_stop) farklı markalar zaten birbirine eşleşmez.
 # Bkz. docs/audit/2026-06-02 + analysis/live_probe.py (canlı doğrulama).
 PHONETIC_MIN_CORE_TOKENS = 1
+
+# NGRAM_MATCH guard — PHONETIC ile aynı mantık: yalnızca AYIRT EDİCİ çekirdek
+# token sayısı bu eşiğin ALTINDAysa (boş çekirdek: yalnızca suffix/ülke-adı/çöp)
+# trigram eşleşmesi paylaşılan suffix parçalarından farklı firmaları birleştirir
+# → bloklanır. Asıl precision coverage post-verify'dadır; bu guard çöp sızıntısı içindir.
+NGRAM_MIN_CORE_TOKENS = 1
 
 # --- msearch Ayarları ---
 MSEARCH_CHUNK_SIZE = 500  # Tek msearch çağrısında max sorgu sayısı

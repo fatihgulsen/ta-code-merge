@@ -209,6 +209,20 @@ def test_phonetic_match_blocks_empty_core():
     assert es_queries.PHONETIC_MATCH("MEXICO", "MX") == es_queries.MATCH_NONE        # yalnızca ülke adı (drop_geo)
 
 
+def test_ngram_match_blocks_empty_core():
+    # Faz 3: yalnızca yasal ek / ülke adı (0 ayırt edici token) → NGRAM bloklanır.
+    assert es_queries.NGRAM_MATCH("S.A. DE C.V.", "MX") == es_queries.MATCH_NONE
+    assert es_queries.NGRAM_MATCH("MEXICO", "MX") == es_queries.MATCH_NONE
+
+
+def test_ngram_match_allows_distinctive_core():
+    # Ayırt edici çekirdek varsa normal ngram query döner (precision'ı coverage gate sağlar).
+    q = es_queries.NGRAM_MATCH("ALPI USA INC", "MX")
+    assert q != es_queries.MATCH_NONE
+    nested = next(c["nested"] for c in q["query"]["bool"]["must"] if "nested" in c)
+    assert nested["query"]["match"]["variations_stripped.name.ngram"]["minimum_should_match"] == "75%"
+
+
 def test_phonetic_match_allows_single_brand_core():
     # Tek AYIRT EDİCİ marka token'ı (yasal ek + coğrafi çıkınca) → ARTIK eşleşmeye
     # izin verilir; precision'ı fonetik alan temizliği sağlar (canlı: live_probe).

@@ -1,4 +1,4 @@
-from core_name import normalize_core
+from core_name import best_core_coverage, core_token_coverage, normalize_core
 
 
 def test_strips_mx_legal_suffix_single_token():
@@ -89,3 +89,39 @@ def test_drop_geo_keeps_two_distinctive_with_mx_suffix():
     assert normalize_core(
         "VOLKSWAGEN COMERCIALIZADORA S.A. DE C.V.", "MX", drop_geo=True
     ) == ("volkswagen", "comercializadora")
+
+
+# ---------------------------------------------------------------------------
+# core_token_coverage / best_core_coverage — Faz 2 post-verify metriği
+# ---------------------------------------------------------------------------
+
+
+def test_core_token_coverage_jaccard():
+    assert core_token_coverage(("a", "b"), ("a", "b")) == 1.0
+    assert core_token_coverage(("a",), ("a", "b")) == 0.5      # subset
+    assert core_token_coverage(("a",), ("b", "c")) == 0.0      # disjoint
+    assert core_token_coverage((), ("a",)) == 0.0
+
+
+def test_best_core_coverage_same_firm_high():
+    # Aynı firma (suffix/coğrafi varyant) → tam örtüşme (geo düşer).
+    assert best_core_coverage(
+        "VIBRACOUSTIC DE MEXICO S.A. DE C.V.",
+        ["VIBRACOUSTIC DE MEXICO, S.A. DE C.V."], "MX"
+    ) == 1.0
+    assert best_core_coverage(
+        "DHL GLOBAL FORWARDING", ["DHL GLOBAL FORWARDING MEXICO"], "MX"
+    ) == 1.0
+
+
+def test_best_core_coverage_subset_overmerge_low():
+    # Subset over-merge: ALCATEL ⊂ ALCATEL-LUCENT → düşük örtüşme (gate yakalamalı).
+    cov = best_core_coverage("ALCATEL", ["ALCATEL LUCENT"], "MX")
+    assert cov == 0.5
+    # Tamamen farklı çekirdek → 0.
+    assert best_core_coverage("ENERGY CORPORATION", ["ALKHORAYEF PETROLEUM"], "MX") == 0.0
+
+
+def test_best_core_coverage_empty_query_returns_one():
+    # Boş çekirdek (yalnızca suffix) → 1.0 (çift-bloklamayı önler; guard işi).
+    assert best_core_coverage("S.A. DE C.V.", ["WHATEVER SA"], "MX") == 1.0

@@ -43,6 +43,35 @@ def _strip_tokens(country: str) -> frozenset:
     return frozenset(out)
 
 
+def core_token_coverage(a_core: tuple[str, ...], b_core: tuple[str, ...]) -> float:
+    """İki çekirdek-token tuple'ı arasında simetrik örtüşme (Jaccard).
+
+    Fuzzy kütüphane YOK — yalnızca küme kesişim/birleşim. main_processor ve
+    live_probe coverage post-verify'ı için ortak metrik."""
+    sa, sb = set(a_core), set(b_core)
+    if not sa or not sb:
+        return 0.0
+    return len(sa & sb) / len(sa | sb)
+
+
+def best_core_coverage(
+    query_name: str, candidate_names, country: str, drop_geo: bool = True
+) -> float:
+    """Sorgu isminin çekirdeği ile aday isim(ler)inin çekirdeği arasındaki EN İYİ
+    örtüşme. Aday bir master'ın tüm variation'ları olabilir; biri bile güçlü
+    örtüşürse kabul edilir. Sorgu çekirdeği boşsa 1.0 döner (boş çekirdek zaten
+    PHONETIC guard'ında ele alınır — burada çift-bloklama yapmayız)."""
+    qcore = normalize_core(query_name, country, drop_geo=drop_geo)
+    if not qcore:
+        return 1.0
+    best = 0.0
+    for nm in candidate_names:
+        cov = core_token_coverage(qcore, normalize_core(nm or "", country, drop_geo=drop_geo))
+        if cov > best:
+            best = cov
+    return best
+
+
 def normalize_core(name: str, country: str, drop_geo: bool = False) -> tuple[str, ...]:
     """Ham ismi ayırt edici çekirdek token tuple'ına indirger.
 

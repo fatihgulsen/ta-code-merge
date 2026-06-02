@@ -61,10 +61,39 @@ from config import (
     LOG_ALL_STAGES,
     NEW_MASTER_SUBBATCH_SIZE,
     ES_REFRESH_INTERVAL,
+    CORE_COVERAGE_THRESHOLD,
 )
+from core_name import best_core_coverage
 from es_manager import create_index, get_es_client
 from es_ingest import register_all_pipelines, pipeline_name
 import es_queries as _es_queries
+
+
+def _variation_names(source: dict) -> list[str]:
+    """ES _source.variations dizisinden isim string'lerini çıkarır."""
+    out = []
+    for v in source.get("variations") or []:
+        nm = v.get("name") if isinstance(v, dict) else v
+        if nm:
+            out.append(nm)
+    return out
+
+
+def _core_coverage_ok(query_name: str, source: dict, country: str) -> bool:
+    """Faz 2 post-verify: sorgu çekirdeği ile kazananın variation çekirdekleri
+    arasındaki en iyi örtüşme eşiği geçiyor mu? Eşik 0 ise devre dışı."""
+    if CORE_COVERAGE_THRESHOLD <= 0:
+        return True
+    names = _variation_names(source)
+    if not names:
+        # Eski/eksik doküman: variation yoksa coverage hesaplanamaz → engelleme,
+        # ama gate'in baypas edildiği görünür olsun (sessiz sızıntı olmasın).
+        logger.debug(
+            "coverage gate atlandı: kazanan master '%s' variation içermiyor",
+            source.get("master_id", "?"),
+        )
+        return True
+    return best_core_coverage(query_name, names, country) >= CORE_COVERAGE_THRESHOLD
 
 logging.basicConfig(
     level=logging.INFO,
@@ -676,6 +705,13 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
         # Adim 3: Kalan kayitlari ES'te arat — onceki sub-batch'lerle eslesiyor mu?
         if remaining:
             canonical_stage = next(s for s in STAGES if s["name"] == "CANONICAL_EXACT")
+            # INVARIANT: run_stage coverage post-verify'ı UYGULAMAZ. Yalnızca EXACT
+            # stage'ler (token_count birebir → coverage ~1.0) bu yoldan geçebilir;
+            # fuzzy stage'ler match_single_record üzerinden gitmeli (gate orada).
+            assert canonical_stage["name"] == "CANONICAL_EXACT", (
+                "run_stage yalnızca CANONICAL_EXACT ile çağrılabilir; fuzzy stage "
+                "coverage gate'i baypas eder."
+            )
             found_in_es, still_remaining = run_stage(es, remaining, canonical_stage)
             if found_in_es:
                 write_matched_to_pg(write_cursor, write_conn, found_in_es)
@@ -791,15 +827,24 @@ def match_single_record(es, rec: dict, active_stages: list[dict]) -> dict:
         hits = resp["hits"].get("hits", [])
         top_hit = hits[0] if hits else None
         top_score = top_hit["_score"] if top_hit else 0.0
-        
+
         matched = top_hit is not None and top_score >= stage["min_score"]
-        
+
+        # Faz 2 — çekirdek-token coverage post-verify: skor eşiğini geçse bile,
+        # sorgu ile kazananın çekirdekleri yeterince örtüşmüyorsa (subset/farklı
+        # marka over-merge'i) eşleşmeyi reddet ve sonraki stage'e düş.
+        coverage_rejected = False
+        if matched and not _core_coverage_ok(rec["raw_name"], top_hit["_source"], rec["country"]):
+            matched = False
+            coverage_rejected = True
+
         res = {
             "stage_name": stage["name"],
             "stage_order": stage["order"],
             "matched": matched,
             "es_score": top_score,
-            "master_id": top_hit["_source"]["master_id"] if matched else None
+            "master_id": top_hit["_source"]["master_id"] if matched else None,
+            "coverage_rejected": coverage_rejected,
         }
         trace.append(res)
         

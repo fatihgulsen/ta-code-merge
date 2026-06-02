@@ -20,10 +20,12 @@
 # ============================================================================
 
 import argparse
+import copy
 import uuid
 
 import config
 import es_queries
+from core_name import best_core_coverage
 from es_ingest import build_pipeline_body, pipeline_name
 from es_manager import build_index_settings, get_es_client
 
@@ -43,6 +45,10 @@ GOLDEN_GROUPS: dict[str, list[str]] = {
     "alpi": ["ALPI USA, INC."],
     "cordialsa": ["CORDIALSA USA, INC."],
     "hascor": ["HASCOR USA, INC."],
+    # --- Subset over-merge (Faz 2 coverage gate testi): FARKLI firmalar ---
+    # ALCATEL ⊂ ALCATEL-LUCENT: fonetik subset eşleşir; coverage gate ayırmalı.
+    "alcatel": ["ALCATEL S.A. DE C.V."],
+    "alcatel_lucent": ["ALCATEL LUCENT S.A. DE C.V."],
     # --- SHOULD_MERGE (under-merge): her grup AYNI firma, eşleşmeli ---
     "vibracoustic": [
         "VIBRACOUSTIC DE MEXICO S.A. DE C.V.",
@@ -105,7 +111,9 @@ def _probe(es, name: str, self_id: str) -> dict | None:
         fn = getattr(es_queries, stage["query_fn"], None)
         if fn is None:
             continue
-        body = fn(name, COUNTRY, es=es)
+        # deepcopy: es_queries MATCH_NONE gibi MODÜL-DÜZEYİ sabit döndürebilir;
+        # body'yi yerinde değiştirmek o sabiti kalıcı bozar (review HIGH).
+        body = copy.deepcopy(fn(name, COUNTRY, es=es))
         # Kendini hariç tut (aynı dokümanı yakalamasın)
         q = body.setdefault("query", {}).setdefault("bool", {})
         q.setdefault("must_not", []).append({"ids": {"values": [self_id]}})
@@ -114,6 +122,17 @@ def _probe(es, name: str, self_id: str) -> dict | None:
         hits = res["hits"]["hits"]
         if hits and hits[0]["_score"] >= stage["min_score"]:
             top = hits[0]
+            # Faz 2 — coverage post-verify (main_processor._variation_names ile aynı
+            # çıkarım: variation hem dict hem düz string olabilir):
+            names = [
+                (v.get("name") if isinstance(v, dict) else v)
+                for v in top["_source"].get("variations", [])
+            ]
+            names = [n for n in names if n]
+            if config.CORE_COVERAGE_THRESHOLD > 0 and names:
+                cov = best_core_coverage(name, names, COUNTRY)
+                if cov < config.CORE_COVERAGE_THRESHOLD:
+                    continue  # reddet → sonraki stage'e düş
             return {
                 "stage": stage["name"],
                 "matched_name": top["_source"]["variations"][0]["name"],

@@ -14,7 +14,7 @@ import re
 from elasticsearch import Elasticsearch
 from synonym_loader import get_all_country_codes
 from core_name import normalize_core
-from config import PHONETIC_MIN_CORE_TOKENS
+from config import PHONETIC_MIN_CORE_TOKENS, NGRAM_MIN_CORE_TOKENS
 
 logger = logging.getLogger(__name__)
 
@@ -258,12 +258,25 @@ def FUZZY_PHRASE(name: str, country: str, **kwargs) -> dict:
     }
 
 
+# Hiçbir dokümanla eşleşmeyen sentinel query — guard'lar tarafından kullanılır.
+# (Guard'lardan ÖNCE tanımlanır; NGRAM/PHONETIC forward-reference etmesin.)
+MATCH_NONE = {"query": {"bool": {"must_not": [{"match_all": {}}]}}, "size": 0}
+
+
 def NGRAM_MATCH(name: str, country: str, **kwargs) -> dict:
     """
     Trigram index-time fuzzy eslesmesi — suffix'ler cikarilmis form uzerinden.
     minimum_should_match: "75%" eklenerek hatalı kısa eşleşmeler önlenir.
     Ülkeye özel analyzer arama zamanında ngram field'ı işlemek için kullanılır.
+
+    Guard (Faz 3, PHONETIC ile tutarlı): ayırt edici çekirdek BOŞ ise (yalnızca
+    yasal ek / ülke adı / çöp) trigram'lar paylaşılan suffix parçaları üzerinden
+    farklı firmaları birleştirir → sentinel ile bloklanır. Asıl precision'ı
+    stage-bağımsız coverage post-verify (main_processor) sağlar; bu guard yalnızca
+    çöp/magnet sızıntısını keser. min_score (config.STAGES) rematch ile kalibre edilir.
     """
+    if len(normalize_core(name, country, drop_geo=True)) < NGRAM_MIN_CORE_TOKENS:
+        return MATCH_NONE
     analyzer = _get_stripped_analyzer(country)
     return {
         "query": {
@@ -289,10 +302,6 @@ def NGRAM_MATCH(name: str, country: str, **kwargs) -> dict:
         },
         "size": 1,
     }
-
-
-# Hiçbir dokümanla eşleşmeyen sentinel query — guard'lar tarafından kullanılır.
-MATCH_NONE = {"query": {"bool": {"must_not": [{"match_all": {}}]}}, "size": 0}
 
 
 def PHONETIC_MATCH(name: str, country: str, **kwargs) -> dict:

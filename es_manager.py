@@ -25,10 +25,10 @@ import logging
 from elasticsearch import Elasticsearch
 
 from config import ES_HOST, ES_INDEX
-from core_name import all_legal_fragments, curated_fragment_country_count
 from synonym_loader import (
-    get_all_country_codes,
     get_all_company_type_tokens,
+    get_all_country_codes,
+    get_all_legal_suffix_fragments,
     get_article_stopwords,
     get_company_type_tokens,
     load_synonyms_for_country,
@@ -210,22 +210,16 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
         # phonetic_analyzer'da metaphone'a girmeden DÜŞÜRÜLÜR. Aksi halde tek-harf
         # parçalarının ürettiği aşırı yaygın metaphone kodları (S, A, T, K, F)
         # operator:and eşleşmesini önemsizleştirip over-merge'e yol açar.
+        # Stopword listesi TÜM ülkelerin legal_suffixes JSON'larından türetilir
+        # (get_all_legal_suffix_fragments) — hardcoded değildir.
         #
-        # > [!IMPORTANT]
-        # > Bu filtre GLOBAL'dir (alan-bazlı tek phonetic_analyzer). Küratörlü
-        # > parçalar yalnızca MX için tanımlı olduğundan tek-ülke (MX) korpusunda
-        # > güvenlidir. İkinci bir ülke küratörlenirse parçalar diğer ülkelerin
-        # > fonetik token'larını da siler (örn. DE 'SC JOHNSON' → 'sc' düşer) ve
-        # > ülke-bazlı phonetic analyzer'a geçilmelidir.
-        if curated_fragment_country_count() > 1:
-            logger.warning(
-                "legal_fragment_stop GLOBAL bir phonetic filtresidir ancak birden fazla "
-                "ülke için yasal-ek parçası küratörlendi. Çok-ülke fonetik sızıntısını "
-                "önlemek için ülke-bazlı phonetic analyzer'a geçin."
-            )
+        # > [!NOTE]
+        # > Bu filtre GLOBAL'dir (alan-bazlı tek phonetic_analyzer). Çok-ülke
+        # > korpusta bir ülkenin parçası başka ülkenin meşru kısa token'ını da
+        # > eleyebilir; çok-ülke onboarding'inde ülke-bazlı phonetic analyzer'a geçin.
         filters["legal_fragment_stop"] = {
             "type": "stop",
-            "stopwords": sorted(all_legal_fragments()),
+            "stopwords": sorted(get_all_legal_suffix_fragments()),
         }
         analyzers["phonetic_analyzer"] = {
             "tokenizer": "standard",

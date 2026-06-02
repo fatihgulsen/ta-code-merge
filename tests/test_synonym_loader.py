@@ -1,5 +1,48 @@
 # tests/test_synonym_loader.py
-from synonym_loader import get_company_type_tokens, get_all_company_type_tokens, get_article_stopwords
+from synonym_loader import (
+    get_all_company_type_tokens,
+    get_all_legal_suffix_fragments,
+    get_article_stopwords,
+    get_company_type_tokens,
+    get_country_name_tokens,
+    get_legal_suffix_fragments,
+)
+
+
+def test_legal_suffix_fragments_derived_from_json_not_hardcoded():
+    """MX yasal-ek parçaları legal_suffixes ifadelerinden türetilmeli (hardcode değil)."""
+    mx = get_legal_suffix_fragments("MX")
+    # 'S.A. DE C.V.' / 'S. DE R.L.' parçaları:
+    assert {"s", "a", "c", "v", "sa", "cv", "rl", "sc", "del"} <= mx
+    # Tam iş kelimeleri (len>4) parça olarak SIZMAMALI — aksi halde meşru isimler silinir.
+    assert "general" not in mx
+    assert "civil" not in mx
+    assert "company" not in mx
+
+
+def test_legal_suffix_fragments_country_specific():
+    # Türetme ülkeye özgüdür: MX dosyası olmayan ülke yalnızca common parçalarını alır.
+    mx = get_legal_suffix_fragments("MX")
+    de = get_legal_suffix_fragments("DE")
+    # MX'e özgü 'sapi' DE'de olmamalı (DE dosyasında yoksa).
+    assert "sapi" in mx
+    assert "sapi" not in de
+
+
+def test_all_legal_suffix_fragments_is_union():
+    frags = get_all_legal_suffix_fragments()
+    assert {"sa", "cv", "de", "s", "a", "c", "v"} <= frags
+    assert "general" not in frags
+
+
+def test_country_name_tokens_derived_from_countries_json():
+    mx = get_country_name_tokens("MX")
+    assert "mexico" in mx
+    # Çok-kelimeli uzun ad (United Mexican States) ayrıştırılmaz → jenerik sızıntı yok.
+    assert "united" not in mx
+    assert "states" not in mx
+    # Başka ülke için 'mexico' dönmemeli.
+    assert "mexico" not in get_country_name_tokens("TR")
 
 
 def test_get_company_type_tokens_includes_common_tokens():

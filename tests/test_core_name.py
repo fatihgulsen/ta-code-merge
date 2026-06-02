@@ -1,9 +1,4 @@
-from core_name import (
-    all_legal_fragments,
-    curated_fragment_country_count,
-    legal_suffix_fragments,
-    normalize_core,
-)
+from core_name import normalize_core
 
 
 def test_strips_mx_legal_suffix_single_token():
@@ -94,25 +89,3 @@ def test_drop_geo_keeps_two_distinctive_with_mx_suffix():
     assert normalize_core(
         "VOLKSWAGEN COMERCIALIZADORA S.A. DE C.V.", "MX", drop_geo=True
     ) == ("volkswagen", "comercializadora")
-
-
-# ---------------------------------------------------------------------------
-# Küratörlü yasal-ek parça API'si (es_manager fonetik fragment-stop için kullanır)
-# ---------------------------------------------------------------------------
-
-
-def test_legal_suffix_fragments_per_country_and_fallback():
-    mx = legal_suffix_fragments("MX")
-    assert {"s", "a", "de", "c", "v", "sa", "cv", "rl", "sc", "del"} <= set(mx)
-    # küçük harf ülke kodu da çalışır
-    assert legal_suffix_fragments("mx") == mx
-    # küratörlenmemiş ülke → boş küme (MX parçaları sızmaz)
-    assert legal_suffix_fragments("DE") == frozenset()
-    assert legal_suffix_fragments("TR") == frozenset()
-
-
-def test_all_legal_fragments_union_is_mx_only():
-    frags = all_legal_fragments()
-    assert {"sa", "cv", "de", "s", "a", "c", "v"} <= frags
-    # Tek-ülke (MX) varsayımı: yalnızca bir ülke küratörlü.
-    assert curated_fragment_country_count() == 1

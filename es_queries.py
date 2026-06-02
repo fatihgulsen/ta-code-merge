@@ -300,12 +300,13 @@ def PHONETIC_MATCH(name: str, country: str, **kwargs) -> dict:
     Sestese dayalı (phonetic) eşleşme — sadece ana isim üzerinden.
     Double Metaphone algoritması ile suffix gürültüsü olmadan eşleşir.
     """
-    # drop_geo=True: 'mexico' gibi coğrafi token'lar ayırt edici sayılmaz; böylece
-    # "marka + MEXICO" kalıbı tek çekirdek token'a iner ve guard zayıf fonetik
-    # eşleşmeleri (over-merge kaynağı) bloklar.
-    # Bilinen ödünleşme: tek-ayırt-edici "marka + MEXICO" isimlerinde fonetik
-    # TİPO recall'ı (örn. AODY↔AUDI) kasıtlı olarak feda edilir — %80+ over-merge
-    # oranını kesmek için kabul edilmiş tercih (bkz. docs/audit 2026-06-02).
+    # Guard yalnızca AYIRT EDİCİ çekirdek token sayısı eşiğin ALTINDA ise bloklar.
+    # drop_geo=True: yasal ekler + ülke-adı/coğrafi token'lar ('mexico') çekirdek
+    # dışıdır → yalnızca-suffix / yalnızca-ülke-adı / çöp isimler (0 token) bloklanır.
+    # Gerçek tek-marka firmalar (IGSA, AUDI MEXICO, VIBRACOUSTIC) ELENMEZ: fonetik
+    # alandan yasal-ek parçaları temizlendiğinden (es_manager legal_fragment_stop)
+    # farklı markalar operator:and altında zaten eşleşmez. Canlı doğrulama:
+    # analysis/live_probe.py (0 over-merge, recall 9/10).
     core = normalize_core(name, country, drop_geo=True)
     if len(core) < PHONETIC_MIN_CORE_TOKENS:
         return MATCH_NONE

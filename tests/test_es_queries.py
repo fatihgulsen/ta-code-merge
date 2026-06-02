@@ -200,24 +200,21 @@ def test_variations_suffix_mapping_has_explicit_search_analyzer():
     assert suffix_field.get("search_analyzer") == "standard"
 
 
-def test_phonetic_match_blocks_short_core():
-    # Tek ayırt edici token (yasal ek çıkınca "witte") → guard devreye girer:
-    # eşleşmeyi imkânsız kılan sentinel query döner (dev/çöp master'a sızmayı önler).
-    q = es_queries.PHONETIC_MATCH("WITTE, S.A. DE C.V.", "MX")
-    assert q == es_queries.MATCH_NONE
+def test_phonetic_match_blocks_empty_core():
+    # SIFIR ayırt edici token (yalnızca yasal ek / coğrafi ad / çöp) → guard
+    # devreye girer: eşleşmeyi imkânsız kılan sentinel query (çöp/magnet master'a
+    # sızmayı önler). Fonetik alan temizliği (legal_fragment_stop) gerçek markaların
+    # ayrımını zaten yaptığından guard yalnızca BOŞ çekirdeği bloklar.
+    assert es_queries.PHONETIC_MATCH("S.A. DE C.V.", "MX") == es_queries.MATCH_NONE  # yalnızca suffix
+    assert es_queries.PHONETIC_MATCH("MEXICO", "MX") == es_queries.MATCH_NONE        # yalnızca ülke adı (drop_geo)
 
 
-def test_phonetic_match_allows_multi_token_core():
-    # İki+ AYIRT EDİCİ token (coğrafi olmayan) → normal fonetik query döner.
-    q = es_queries.PHONETIC_MATCH("DHL GLOBAL FORWARDING", "MX")
-    bool_q = q["query"]["bool"]
-    nested = next(c["nested"] for c in bool_q["must"] if "nested" in c)
-    assert nested["path"] == "variations_stripped"
-    assert _get_country_filter(q) == "MX"
-
-
-def test_phonetic_match_blocks_brand_plus_geo():
-    # 'marka + MEXICO' tek ayırt edici token sayılır (coğrafi 'mexico' düşer) →
-    # guard devreye girer. Over-merge denetimi: bu kalıp PHONETIC ile çöp master'a sızıyordu.
-    assert es_queries.PHONETIC_MATCH("AUDI MEXICO S.A. DE C.V.", "MX") == es_queries.MATCH_NONE
-    assert es_queries.PHONETIC_MATCH("KOHLER DE MEXICO S.A. DE C.V.", "MX") == es_queries.MATCH_NONE
+def test_phonetic_match_allows_single_brand_core():
+    # Tek AYIRT EDİCİ marka token'ı (yasal ek + coğrafi çıkınca) → ARTIK eşleşmeye
+    # izin verilir; precision'ı fonetik alan temizliği sağlar (canlı: live_probe).
+    for name in ("IGSA S.A. DE C.V.", "AUDI MEXICO S.A. DE C.V.", "DHL GLOBAL FORWARDING"):
+        q = es_queries.PHONETIC_MATCH(name, "MX")
+        assert q != es_queries.MATCH_NONE
+        nested = next(c["nested"] for c in q["query"]["bool"]["must"] if "nested" in c)
+        assert nested["path"] == "variations_stripped"
+        assert _get_country_filter(q) == "MX"

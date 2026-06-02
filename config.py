@@ -85,9 +85,14 @@ SUFFIX_FUZZY_COVERAGE_THRESHOLD = 0.85  # name token coverage eşiği (_post_ver
 # Bu değerler es_scripts.py'deki Painless script ile uyumlu olmalı
 RESCORE_WINDOW_SIZE = 20  # Rescore sadece top N adaya uygulanır
 
-# PHONETIC_MATCH guard — bu kadar az ayırt edici çekirdek token'da fonetik eşleşme
-# dev/çöp master'lara operator:and ile sızdığından devre dışı bırakılır.
-PHONETIC_MIN_CORE_TOKENS = 2
+# PHONETIC_MATCH guard — yalnızca AYIRT EDİCİ çekirdek token sayısı bu eşiğin
+# ALTINDA ise fonetik eşleşme bloklanır. drop_geo ile ülke-adı/coğrafi token'lar
+# çekirdek dışıdır; böylece yalnızca-suffix / yalnızca-ülke-adı / çöp isimler
+# (0 ayırt edici token) bloklanır. Gerçek tek-marka firmalar (IGSA, VIBRACOUSTIC,
+# AUDI MEXICO) ELENMEZ — fonetik alandan yasal-ek parçaları temizlendiği için
+# (es_manager legal_fragment_stop) farklı markalar zaten birbirine eşleşmez.
+# Bkz. docs/audit/2026-06-02 + analysis/live_probe.py (canlı doğrulama).
+PHONETIC_MIN_CORE_TOKENS = 1
 
 # --- msearch Ayarları ---
 MSEARCH_CHUNK_SIZE = 500  # Tek msearch çağrısında max sorgu sayısı

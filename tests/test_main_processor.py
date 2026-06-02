@@ -71,56 +71,6 @@ def test_run_stage_respects_min_score():
     assert len(unmatched) == 1
 
 
-def test_core_coverage_ok_helper():
-    """Faz 2 post-verify: subset/farklı-marka düşük örtüşme reddedilir, aynı firma geçer."""
-    import main_processor as mp
-
-    # ALCATEL ⊂ ALCATEL-LUCENT → coverage 0.5 < eşik → False
-    src_sub = {"variations": [{"name": "ALCATEL LUCENT S.A. DE C.V."}]}
-    assert mp._core_coverage_ok("ALCATEL S.A. DE C.V.", src_sub, "MX") is False
-    # Aynı firma (suffix/coğrafi varyant) → 1.0 → True
-    src_same = {"variations": [{"name": "VIBRACOUSTIC DE MEXICO, S.A. DE C.V."}]}
-    assert mp._core_coverage_ok("VIBRACOUSTIC DE MEXICO S.A. DE C.V.", src_same, "MX") is True
-    # Variation yoksa engelleme (eksik doküman) → True
-    assert mp._core_coverage_ok("ANYTHING SA", {"variations": []}, "MX") is True
-
-
-def test_match_single_record_coverage_rejects_subset():
-    """Skor eşiğini geçen ama çekirdek örtüşmesi düşük subset eşleşmesi reddedilmeli
-    (winner None) — over-merge guard."""
-    import main_processor as mp
-
-    rec = {"row_id": 1, "raw_name": "ALCATEL S.A. DE C.V.", "country": "MX", "tax": "", "phone": ""}
-    stage = {"name": "PHONETIC_MATCH", "order": 6, "query_fn": "PHONETIC_MATCH",
-             "min_score": 3.0, "enabled": True}
-    mock_es = MagicMock()
-    mock_es.msearch.return_value = _make_msearch_response([
-        [_make_es_hit("master-ALU", score=5.0, variations=[{"name": "ALCATEL LUCENT S.A. DE C.V."}])],
-    ])
-
-    out = mp.match_single_record(mock_es, rec, [stage])
-    assert out["winner"] is None
-    assert out["trace"][0]["coverage_rejected"] is True
-
-
-def test_match_single_record_coverage_accepts_same_firm():
-    """Yüksek çekirdek örtüşmesi → eşleşme kabul edilir."""
-    import main_processor as mp
-
-    rec = {"row_id": 1, "raw_name": "VIBRACOUSTIC DE MEXICO S.A. DE C.V.", "country": "MX", "tax": "", "phone": ""}
-    stage = {"name": "PHONETIC_MATCH", "order": 6, "query_fn": "PHONETIC_MATCH",
-             "min_score": 3.0, "enabled": True}
-    hit = _make_es_hit("master-VIB", score=5.0,
-                       variations=[{"name": "VIBRACOUSTIC DE MEXICO, S.A. DE C.V."}])
-    hit["_id"] = "master-VIB"
-    mock_es = MagicMock()
-    mock_es.msearch.return_value = _make_msearch_response([[hit]])
-
-    out = mp.match_single_record(mock_es, rec, [stage])
-    assert out["winner"] is not None
-    assert out["winner"]["master_id"] == "master-VIB"
-
-
 def test_country_code_filter_uses_parametric_sql():
     """COUNTRY_CODE_FILTER değeri SQL string'ine gömülmemeli; parametre olarak geçilmeli (CLAUDE.md §1.1)."""
     from unittest.mock import patch, call as mcall

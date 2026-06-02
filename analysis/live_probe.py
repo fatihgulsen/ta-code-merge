@@ -25,7 +25,6 @@ import uuid
 
 import config
 import es_queries
-from core_name import best_core_coverage
 from es_ingest import build_pipeline_body, pipeline_name
 from es_manager import build_index_settings, get_es_client
 
@@ -122,17 +121,6 @@ def _probe(es, name: str, self_id: str) -> dict | None:
         hits = res["hits"]["hits"]
         if hits and hits[0]["_score"] >= stage["min_score"]:
             top = hits[0]
-            # Faz 2 — coverage post-verify (main_processor._variation_names ile aynı
-            # çıkarım: variation hem dict hem düz string olabilir):
-            names = [
-                (v.get("name") if isinstance(v, dict) else v)
-                for v in top["_source"].get("variations", [])
-            ]
-            names = [n for n in names if n]
-            if config.CORE_COVERAGE_THRESHOLD > 0 and names:
-                cov = best_core_coverage(name, names, COUNTRY)
-                if cov < config.CORE_COVERAGE_THRESHOLD:
-                    continue  # reddet → sonraki stage'e düş
             return {
                 "stage": stage["name"],
                 "matched_name": top["_source"]["variations"][0]["name"],
@@ -144,8 +132,26 @@ def _probe(es, name: str, self_id: str) -> dict | None:
 
 def run(keep: bool = False) -> None:
     es = get_es_client()
-    indexed = _build_probe_index(es)
-    print(f"Probe index '{PROBE_INDEX}': {len(indexed)} kayıt indexlendi.\n")
+    # _get_token_count (es_queries) config.ES_INDEX'e karşı _analyze çağırır; probe
+    # index'i GÜNCEL analyzer'lara sahip olduğundan token sayıları ancak ES_INDEX
+    # probe index'e işaret ederse tutarlı olur (aksi halde prod'un ESKİ analyzer'ı
+    # yanlış sayı verir). Çalışma boyunca yönlendir, sonra geri al.
+    original_index = config.ES_INDEX
+    config.ES_INDEX = PROBE_INDEX
+    try:
+        indexed = _build_probe_index(es)
+        print(f"Probe index '{PROBE_INDEX}': {len(indexed)} kayıt indexlendi.\n")
+        _run_probe(es, indexed)
+    finally:
+        config.ES_INDEX = original_index
+        if not keep:
+            es.indices.delete(index=PROBE_INDEX, ignore=[404])
+            print(f"\nGeçici index '{PROBE_INDEX}' silindi.")
+        else:
+            print(f"\nGeçici index '{PROBE_INDEX}' korundu (--keep).")
+
+
+def _run_probe(es, indexed: list[dict]) -> None:
 
     over_merge_viol = []  # farklı firma eşleşti (precision ihlali)
     recall_ok = 0
@@ -174,12 +180,6 @@ def run(keep: bool = False) -> None:
     for nm, m in over_merge_viol:
         print(f"   ✗ '{nm}' == '{m['matched_name']}' via {m['stage']} ({m['score']})")
     print(f"Under-merge recall (aynı firma sibling yakalandı): {recall_ok}/{recall_total}")
-
-    if not keep:
-        es.indices.delete(index=PROBE_INDEX, ignore=[404])
-        print(f"\nGeçici index '{PROBE_INDEX}' silindi.")
-    else:
-        print(f"\nGeçici index '{PROBE_INDEX}' korundu (--keep).")
 
 
 if __name__ == "__main__":

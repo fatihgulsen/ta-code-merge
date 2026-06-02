@@ -304,10 +304,17 @@ def NGRAM_MATCH(name: str, country: str, **kwargs) -> dict:
     }
 
 
-def PHONETIC_MATCH(name: str, country: str, **kwargs) -> dict:
+def PHONETIC_MATCH(name: str, country: str, es: Elasticsearch = None, **kwargs) -> dict:
     """
     Sestese dayalı (phonetic) eşleşme — sadece ana isim üzerinden.
     Double Metaphone algoritması ile suffix gürültüsü olmadan eşleşir.
+
+    Coverage (over-merge) güvencesi TAMAMEN ES TARAFINDADIR (Python doğrulaması YOK):
+    nested query'ye bir token_count filtresi eklenir — kazanan dokümanın stripped
+    token sayısı sorgununkiyle EŞİT olmalı. Böylece subset over-merge'i (ALCATEL ⊂
+    ALCATEL-LUCENT: 5 ≠ 6 token) ES eler; tipo varyantları (MANAGMENT ↔ MANAGEMENT,
+    aynı token sayısı) korunur. Bu, CANONICAL_EXACT/STRIPPED_EXACT'in token_count
+    deseninin aynısıdır.
     """
     # Guard yalnızca AYIRT EDİCİ çekirdek token sayısı eşiğin ALTINDA ise bloklar.
     # drop_geo=True: yasal ekler + ülke-adı/coğrafi token'lar ('mexico') çekirdek
@@ -315,10 +322,15 @@ def PHONETIC_MATCH(name: str, country: str, **kwargs) -> dict:
     # Gerçek tek-marka firmalar (IGSA, AUDI MEXICO, VIBRACOUSTIC) ELENMEZ: fonetik
     # alandan yasal-ek parçaları temizlendiğinden (es_manager legal_fragment_stop)
     # farklı markalar operator:and altında zaten eşleşmez. Canlı doğrulama:
-    # analysis/live_probe.py (0 over-merge, recall 9/10).
+    # analysis/live_probe.py.
     core = normalize_core(name, country, drop_geo=True)
     if len(core) < PHONETIC_MIN_CORE_TOKENS:
         return MATCH_NONE
+    expected_count = _get_token_count(es, name, _get_stripped_analyzer(country))
+    nested_filter = (
+        [{"term": {"variations_stripped.name.token_count": expected_count}}]
+        if expected_count > 0 else []
+    )
     return {
         "query": {
             "bool": {
@@ -327,11 +339,18 @@ def PHONETIC_MATCH(name: str, country: str, **kwargs) -> dict:
                         "nested": {
                             "path": "variations_stripped",
                             "query": {
-                                "match": {
-                                    "variations_stripped.name.phonetic": {
-                                        "query": name,
-                                        "operator": "and",
-                                    }
+                                "bool": {
+                                    "must": [
+                                        {
+                                            "match": {
+                                                "variations_stripped.name.phonetic": {
+                                                    "query": name,
+                                                    "operator": "and",
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "filter": nested_filter,
                                 }
                             }
                         }

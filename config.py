@@ -76,14 +76,6 @@ LOG_ALL_STAGES = False  # Her bir stage sonucunu (failed dahil) logla
 LENGTH_RATIO_THRESHOLD = 0.4
 TOKEN_COVERAGE_THRESHOLD = 0.95  # Token'ların en az %95'i örtüşmeli
 
-# --- Çekirdek-token coverage post-verify (Faz 2) ---
-# Kazanan eşleşme kabul edilmeden ÖNCE, sorgu ile kazananın çekirdek (core_name)
-# token kümeleri arasındaki simetrik örtüşme bu eşiğin ALTINDAYSA eşleşme reddedilir.
-# Stage-bağımsız bir güvenlik kapısıdır; subset over-merge'leri (ALCATEL ⊂
-# ALCATEL-LUCENT) ve ayırt edici-çekirdek uyuşmazlıklarını yakalar. 0 → devre dışı.
-# Canlı kalibrasyon: analysis/live_probe.py.
-CORE_COVERAGE_THRESHOLD = 0.6
-
 SUFFIX_FUZZY_MIN_SCORE = 1.5  # ES score eşiği — prod testleriyle kalibre edilmeli
 SUFFIX_FUZZY_SCORE = 85  # match sonucu skoru (normalised tier score)
 SUFFIX_FUZZY_COVERAGE_THRESHOLD = 0.85  # name token coverage eşiği (_post_verify)

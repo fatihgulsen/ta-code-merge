@@ -111,6 +111,18 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     else:
         base_clean_filters.extend(["lowercase", "arabic_norm"])
 
+    # ── Yasal-ek parça stop filtresi (tüm ülke legal_suffixes JSON'larından türetilir) ──
+    # 'S.A. DE C.V.' gibi dotlu yasal ekler punctuation_remover ile s/a/c/v tek
+    # harflerine bölünür. Bu parçaları HEM stripped HEM phonetic analyzer'da düşürmek:
+    #   1) fonetik gürültüyü (yaygın metaphone S,A,T,K,F) keser (over-merge),
+    #   2) arama-zamanı tokenizasyonunu ingest stripped TEXT'iyle TUTARLI kılar —
+    #      böylece token_count filtreleri (STRIPPED_EXACT + PHONETIC coverage) dotlu
+    #      suffix'lerde doğru çalışır (analyzer↔ingest uyumsuzluğu giderilir).
+    filters["legal_fragment_stop"] = {
+        "type": "stop",
+        "stopwords": sorted(get_all_legal_suffix_fragments()),
+    }
+
     # ── Ortak (common) filter ve analyzer ──
     common_synonyms = list(load_synonyms_for_country("__common__"))
     filters["synonym_filter_common"] = {
@@ -139,7 +151,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
         analyzers[analyzer_name] = {
             "tokenizer": "standard",
             "char_filter": ["punctuation_remover"],
-            "filter": base_clean_filters + [filter_name],
+            "filter": base_clean_filters + [filter_name, "legal_fragment_stop"],
         }
 
     # Global fallback stripped analyzer (tüm ülkeler birleşimi)
@@ -152,7 +164,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     analyzers["stripped_search_analyzer"] = {
         "tokenizer": "standard",
         "char_filter": ["punctuation_remover"],
-        "filter": base_clean_filters + ["generic_stopwords_global"],
+        "filter": base_clean_filters + ["generic_stopwords_global", "legal_fragment_stop"],
     }
 
     # ── Ülkeye özgü filter ve analyzer (varsa) ──
@@ -205,22 +217,8 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
             "encoder": "double_metaphone",
             "replace": False,
         }
-        # ── Yasal-ek parça stop filtresi (fonetik gürültü kontrolü) ──
-        # 'S.A. DE C.V.' gibi yasal-ek parçaları (s, a, de, c, v, sa, cv, rl, sc…)
-        # phonetic_analyzer'da metaphone'a girmeden DÜŞÜRÜLÜR. Aksi halde tek-harf
-        # parçalarının ürettiği aşırı yaygın metaphone kodları (S, A, T, K, F)
-        # operator:and eşleşmesini önemsizleştirip over-merge'e yol açar.
-        # Stopword listesi TÜM ülkelerin legal_suffixes JSON'larından türetilir
-        # (get_all_legal_suffix_fragments) — hardcoded değildir.
-        #
-        # > [!NOTE]
-        # > Bu filtre GLOBAL'dir (alan-bazlı tek phonetic_analyzer). Çok-ülke
-        # > korpusta bir ülkenin parçası başka ülkenin meşru kısa token'ını da
-        # > eleyebilir; çok-ülke onboarding'inde ülke-bazlı phonetic analyzer'a geçin.
-        filters["legal_fragment_stop"] = {
-            "type": "stop",
-            "stopwords": sorted(get_all_legal_suffix_fragments()),
-        }
+        # phonetic_analyzer da legal_fragment_stop kullanır (yukarıda koşulsuz tanımlı):
+        # yasal-ek parçaları metaphone'a girmeden elenir → over-merge gürültüsü kesilir.
         analyzers["phonetic_analyzer"] = {
             "tokenizer": "standard",
             "char_filter": ["punctuation_remover"],
@@ -233,10 +231,14 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     variations_fields = {
         # Tam eşleşme kontrolü (synonym uygulanmaz)
         "keyword": {"type": "keyword", "ignore_above": 512},
-        # Token Count: Birebir (1-1) eşleşme kontrolü için kelime sayısı
+        # Token Count: Birebir (1-1) eşleşme kontrolü için kelime sayısı.
+        # enable_position_increments=False: stop filtresiyle ELENEN token'ların
+        # bıraktığı pozisyon boşlukları sayıma DAHİL EDİLMEZ → indeks sayımı,
+        # _analyze API'sinin (gerçek token sayısı) sonucuyla TUTARLI olur.
         "token_count": {
             "type": "token_count",
             "analyzer": "clean_analyzer_common",
+            "enable_position_increments": False,
         },
         # Fingerprint: token sort + dedup (sırasız eşleşme)
         "fingerprint": {
@@ -267,10 +269,13 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     # Stripped fields:
     stripped_fields = {
         "keyword": {"type": "keyword", "ignore_above": 512},
-        # Token Count: Suffix'ler atıldıktan sonraki kelime sayısı
+        # Token Count: Suffix'ler atıldıktan sonraki kelime sayısı.
+        # enable_position_increments=False: legal_fragment_stop ile elenen parçaların
+        # pozisyon boşlukları sayılmaz → _analyze ile tutarlı (dotlu S.A. DE C.V. dahil).
         "token_count": {
             "type": "token_count",
             "analyzer": "stripped_search_analyzer",
+            "enable_position_increments": False,
         },
         "ngram": {
             "type": "text",

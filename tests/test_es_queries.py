@@ -209,6 +209,25 @@ def test_phonetic_match_blocks_empty_core():
     assert es_queries.PHONETIC_MATCH("MEXICO", "MX") == es_queries.MATCH_NONE        # yalnızca ülke adı (drop_geo)
 
 
+def test_phonetic_match_adds_token_count_filter_es_side():
+    """ES-tarafı coverage: es verildiğinde nested query'ye token_count term filtresi
+    eklenir (subset over-merge'i ES eler; Python doğrulaması YOK)."""
+    from unittest.mock import MagicMock
+    es = MagicMock()
+    es.indices.analyze.return_value = {"tokens": [{"token": "alcatel"}]}  # 1 token
+    q = es_queries.PHONETIC_MATCH("ALCATEL S.A. DE C.V.", "MX", es=es)
+    nested = next(c["nested"] for c in q["query"]["bool"]["must"] if "nested" in c)
+    inner_filter = nested["query"]["bool"]["filter"]
+    assert {"term": {"variations_stripped.name.token_count": 1}} in inner_filter
+
+
+def test_phonetic_match_no_token_count_filter_without_es():
+    """es yoksa (birim test) token_count hesaplanamaz → filtre eklenmez (graceful)."""
+    q = es_queries.PHONETIC_MATCH("IGSA S.A. DE C.V.", "MX")
+    nested = next(c["nested"] for c in q["query"]["bool"]["must"] if "nested" in c)
+    assert nested["query"]["bool"]["filter"] == []
+
+
 def test_ngram_match_blocks_empty_core():
     # Faz 3: yalnızca yasal ek / ülke adı (0 ayırt edici token) → NGRAM bloklanır.
     assert es_queries.NGRAM_MATCH("S.A. DE C.V.", "MX") == es_queries.MATCH_NONE

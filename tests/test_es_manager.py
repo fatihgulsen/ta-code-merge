@@ -18,6 +18,24 @@ def test_es_manager_imports_cleanly():
     assert True
 
 
+def test_phonetic_analyzer_wires_fragment_stop_before_metaphone():
+    """phonetic_analyzer mevcutsa: legal_fragment_stop, phonetic_filter'dan ÖNCE gelmeli.
+
+    phonetic_analyzer yalnızca analysis-phonetic plugin'i kuruluysa üretilir; es=None
+    ile (test ortamı) üretilmez. Plugin yoksa bu davranış doğrulanamaz → skip."""
+    import pytest
+    from es_manager import build_index_settings
+    settings = build_index_settings(es=None)
+    analyzers = settings["settings"]["analysis"]["analyzer"]
+    if "phonetic_analyzer" not in analyzers:
+        pytest.skip("analysis-phonetic plugin yok; phonetic_analyzer üretilmedi")
+    filters = settings["settings"]["analysis"]["filter"]
+    assert "legal_fragment_stop" in filters
+    chain = analyzers["phonetic_analyzer"]["filter"]
+    assert "legal_fragment_stop" in chain and "phonetic_filter" in chain
+    assert chain.index("legal_fragment_stop") < chain.index("phonetic_filter")
+
+
 def test_stripped_search_analyzer_global_fallback_exists():
     """build_index_settings fonksiyonu global stripped_search_analyzer üretmeli."""
     from es_manager import build_index_settings

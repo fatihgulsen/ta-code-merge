@@ -25,6 +25,7 @@ import logging
 from elasticsearch import Elasticsearch
 
 from config import ES_HOST, ES_INDEX
+from core_name import all_legal_fragments, curated_fragment_country_count
 from synonym_loader import (
     get_all_country_codes,
     get_all_company_type_tokens,
@@ -204,10 +205,34 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
             "encoder": "double_metaphone",
             "replace": False,
         }
+        # ── Yasal-ek parça stop filtresi (fonetik gürültü kontrolü) ──
+        # 'S.A. DE C.V.' gibi yasal-ek parçaları (s, a, de, c, v, sa, cv, rl, sc…)
+        # phonetic_analyzer'da metaphone'a girmeden DÜŞÜRÜLÜR. Aksi halde tek-harf
+        # parçalarının ürettiği aşırı yaygın metaphone kodları (S, A, T, K, F)
+        # operator:and eşleşmesini önemsizleştirip over-merge'e yol açar.
+        #
+        # > [!IMPORTANT]
+        # > Bu filtre GLOBAL'dir (alan-bazlı tek phonetic_analyzer). Küratörlü
+        # > parçalar yalnızca MX için tanımlı olduğundan tek-ülke (MX) korpusunda
+        # > güvenlidir. İkinci bir ülke küratörlenirse parçalar diğer ülkelerin
+        # > fonetik token'larını da siler (örn. DE 'SC JOHNSON' → 'sc' düşer) ve
+        # > ülke-bazlı phonetic analyzer'a geçilmelidir.
+        if curated_fragment_country_count() > 1:
+            logger.warning(
+                "legal_fragment_stop GLOBAL bir phonetic filtresidir ancak birden fazla "
+                "ülke için yasal-ek parçası küratörlendi. Çok-ülke fonetik sızıntısını "
+                "önlemek için ülke-bazlı phonetic analyzer'a geçin."
+            )
+        filters["legal_fragment_stop"] = {
+            "type": "stop",
+            "stopwords": sorted(all_legal_fragments()),
+        }
         analyzers["phonetic_analyzer"] = {
             "tokenizer": "standard",
             "char_filter": ["punctuation_remover"],
-            "filter": ["lowercase", "phonetic_filter"],
+            # legal_fragment_stop, phonetic_filter'dan ÖNCE: yasal-ek parçaları
+            # metaphone'a girmeden eler (index + arama tarafında tutarlı).
+            "filter": ["lowercase", "legal_fragment_stop", "phonetic_filter"],
         }
 
     # ── Mapping: variations subfield'ları ──

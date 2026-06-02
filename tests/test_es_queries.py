@@ -208,9 +208,16 @@ def test_phonetic_match_blocks_short_core():
 
 
 def test_phonetic_match_allows_multi_token_core():
-    # İki+ ayırt edici token → normal fonetik query döner.
-    q = es_queries.PHONETIC_MATCH("AUDI MEXICO S.A. DE C.V.", "MX")
+    # İki+ AYIRT EDİCİ token (coğrafi olmayan) → normal fonetik query döner.
+    q = es_queries.PHONETIC_MATCH("DHL GLOBAL FORWARDING", "MX")
     bool_q = q["query"]["bool"]
     nested = next(c["nested"] for c in bool_q["must"] if "nested" in c)
     assert nested["path"] == "variations_stripped"
     assert _get_country_filter(q) == "MX"
+
+
+def test_phonetic_match_blocks_brand_plus_geo():
+    # 'marka + MEXICO' tek ayırt edici token sayılır (coğrafi 'mexico' düşer) →
+    # guard devreye girer. Over-merge denetimi: bu kalıp PHONETIC ile çöp master'a sızıyordu.
+    assert es_queries.PHONETIC_MATCH("AUDI MEXICO S.A. DE C.V.", "MX") == es_queries.MATCH_NONE
+    assert es_queries.PHONETIC_MATCH("KOHLER DE MEXICO S.A. DE C.V.", "MX") == es_queries.MATCH_NONE

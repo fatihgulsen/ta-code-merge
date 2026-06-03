@@ -63,6 +63,7 @@ from config import (
     ES_REFRESH_INTERVAL,
     ENABLE_INPUT_FILTER,
     AUTO_DEDUP_PER_BATCH,
+    MATCH_BATCH_SIZE,
 )
 from es_manager import create_index, get_es_client
 from es_ingest import register_all_pipelines, pipeline_name
@@ -1073,176 +1074,167 @@ def process_all_data() -> None:
             pg_updates: list[tuple] = []
             log_rows: list[tuple] = []
             audit_rows: list[tuple] = []
-            records_since_refresh = 0
             # P0-C: bu batch'te oluşturulan NEW_MASTER id'leri (batch-içi dedup kapsamı)
             batch_new_master_ids: list[str] = []
 
-            for row in rows:
-                row_id = row[col_id]
-                last_id = row_id  # Sayfalama icin son id'yi takip et
-                try:
-                    country = (
-                        (row[col_country] or "").strip().upper()
-                        if col_country
-                        else "DEFAULT"
-                    )
-                    if len(country) != 2 or not country.isalpha():
-                        country = "DEFAULT"
-                    raw_name = (row[col_name] or "").strip()
-                    if not raw_name:
-                        total_skipped += 1
-                        pbar.update(1)
-                        continue
+            # Kayıtları MATCH_BATCH_SIZE'lık chunk'larda işle (Q1 — toplu msearch).
+            # chunk = refresh penceresi → görünürlük tekil-akışla AYNI; refresh chunk
+            # sonunda. Cross-chunk aynı-firma kayıtları normal matching ile (önceki
+            # chunk refresh'lendiğinden) eşleşir; within-chunk dup'ları batch-sonu dedup
+            # toplar. chunk_sz=1 → eski kayıt-başına davranış.
+            chunk_sz = max(1, MATCH_BATCH_SIZE)
+            for c0 in range(0, len(rows), chunk_sz):
+                chunk = rows[c0:c0 + chunk_sz]
 
-                    # --- Boundary girdi filtresi (P0-B): firma-olmayan girdiyi izole et ---
-                    # EXCLUDED → kendi master_code'u, ES'e İNDEKSLENMEZ (magnet olamaz),
-                    # tekrar işlenmez. Kimlik kararı DEĞİL; "geçerli firma adı mı?" kontrolü.
-                    excl_reason = classify_input(raw_name, country) if ENABLE_INPUT_FILTER else None
-                    if excl_reason:
-                        master_id = str(uuid.uuid4())
-                        pg_updates.append(
-                            _make_pg_update_tuple(
-                                master_id, 0, "EXCLUDED", f"EXCLUDED: {excl_reason}", row_id
-                            )
+                # 1) Pre-pass: parse + empty-skip + EXCLUDED; eşleştirilecekleri topla
+                match_items: list[tuple] = []  # (row_id, raw_name, country, rec)
+                for row in chunk:
+                    row_id = row[col_id]
+                    last_id = row_id  # Sayfalama icin son id'yi takip et
+                    try:
+                        country = (
+                            (row[col_country] or "").strip().upper()
+                            if col_country
+                            else "DEFAULT"
                         )
-                        total_excluded += 1
-                        total_processed += 1
-                        records_since_refresh += 1
-                        pbar.update(1)
-                        continue
-
-                    rec = {
-                        "row_id": row_id,
-                        "raw_name": raw_name,
-                        "country": country,
-                        "tax": row.get(col_tax) or "" if col_tax else "",
-                        "phone": row.get(col_phone) or "" if col_phone else "",
-                        "address": row.get(col_address) or "" if col_address else "",
-                    }
-
-                    # --- Tek kayit eslestirme ---
-                    match_res = match_single_record(es, rec, active_stages)
-                    winner = match_res["winner"]
-                    trace = match_res["trace"]
-
-                    if winner:
-                        master_id = winner["master_doc_id"]
-                        es_score = winner["es_score"]
-                        stage_name = winner["stage_name"]
-
-                        details = f"[{stage_name}] score: {es_score:.2f}"
-                        pg_updates.append(
-                            _make_pg_update_tuple(master_id, es_score, stage_name, details, row_id)
-                        )
-
-                        if winner.get("index_variation", True):
-                            _add_variation_to_master(
-                                es, winner["master_doc_id"], raw_name, country, rec
-                            )
-
-                        total_matched += 1
-                        stage_counts[stage_name] = stage_counts.get(stage_name, 0) + 1
-                    else:
-                        master_id = _index_new_master(es, rec)
-                        details = "NEW_MASTER: No relevant matches found."
-                        pg_updates.append(_make_pg_update_tuple(master_id, 100, "NEW_MASTER", details, row_id))
-                        batch_new_master_ids.append(master_id)  # P0-C: batch-içi dedup kapsamı
-                        total_new += 1
-                        stage_name = "NEW_MASTER"
-                        es_score = 100.0
-
-                    # --- Audit & Trace Logging ---
-                    # 1. match_audit (özet)
-                    audit_rows.append(
-                        (
-                            row_id,
-                            raw_name,
-                            country,
-                            master_id,
-                            stage_name,
-                            es_score,
-                            len([t for t in trace if t["matched"]]),
-                        )
-                    )
-
-                    # 2. match_stages_log (ayrıntı - Tüm stage'leri logla)
-                    for t in trace:
-                        if not t["matched"] and not LOG_ALL_STAGES:
+                        if len(country) != 2 or not country.isalpha():
+                            country = "DEFAULT"
+                        raw_name = (row[col_name] or "").strip()
+                        if not raw_name:
+                            total_skipped += 1
+                            pbar.update(1)
                             continue
-                        log_rows.append(
+
+                        # Boundary girdi filtresi (P0-B): firma-olmayan girdiyi izole et.
+                        # EXCLUDED → kendi master_code'u, ES'e İNDEKSLENMEZ (magnet olamaz).
+                        excl_reason = classify_input(raw_name, country) if ENABLE_INPUT_FILTER else None
+                        if excl_reason:
+                            master_id = str(uuid.uuid4())
+                            pg_updates.append(
+                                _make_pg_update_tuple(
+                                    master_id, 0, "EXCLUDED", f"EXCLUDED: {excl_reason}", row_id
+                                )
+                            )
+                            total_excluded += 1
+                            total_processed += 1
+                            pbar.update(1)
+                            continue
+
+                        rec = {
+                            "row_id": row_id,
+                            "raw_name": raw_name,
+                            "country": country,
+                            "tax": row.get(col_tax) or "" if col_tax else "",
+                            "phone": row.get(col_phone) or "" if col_phone else "",
+                            "address": row.get(col_address) or "" if col_address else "",
+                        }
+                        match_items.append((row_id, raw_name, country, rec))
+                    except Exception:
+                        logger.exception("Row parse failed (row_id=%s)", row_id)
+                        continue
+
+                # 2) Toplu eşleştirme — chunk tek index anlık-görüntüsüne karşı
+                results = match_records_batch(es, [it[3] for it in match_items], active_stages)
+
+                # 3) Apply-pass (sıralı; yazımlar tekil-akışla aynı semantik)
+                for (row_id, raw_name, country, rec), match_res in zip(match_items, results):
+                    try:
+                        winner = match_res["winner"]
+                        trace = match_res["trace"]
+
+                        if winner:
+                            master_id = winner["master_doc_id"]
+                            es_score = winner["es_score"]
+                            stage_name = winner["stage_name"]
+                            details = f"[{stage_name}] score: {es_score:.2f}"
+                            pg_updates.append(
+                                _make_pg_update_tuple(master_id, es_score, stage_name, details, row_id)
+                            )
+                            if winner.get("index_variation", True):
+                                _add_variation_to_master(
+                                    es, winner["master_doc_id"], raw_name, country, rec
+                                )
+                            total_matched += 1
+                            stage_counts[stage_name] = stage_counts.get(stage_name, 0) + 1
+                        else:
+                            master_id = _index_new_master(es, rec)
+                            details = "NEW_MASTER: No relevant matches found."
+                            pg_updates.append(_make_pg_update_tuple(master_id, 100, "NEW_MASTER", details, row_id))
+                            batch_new_master_ids.append(master_id)  # P0-C: batch-içi dedup kapsamı
+                            total_new += 1
+                            stage_name = "NEW_MASTER"
+                            es_score = 100.0
+
+                        # Audit & Trace Logging
+                        audit_rows.append(
                             (
-                                row_id,
-                                raw_name,
-                                country,
-                                t["stage_name"],
-                                t["stage_order"],
-                                t["matched"],
-                                (t["master_id"] or master_id) if t["matched"] else None,
-                                t["es_score"],
+                                row_id, raw_name, country, master_id, stage_name, es_score,
+                                len([t for t in trace if t["matched"]]),
                             )
                         )
+                        for t in trace:
+                            if not t["matched"] and not LOG_ALL_STAGES:
+                                continue
+                            log_rows.append(
+                                (
+                                    row_id, raw_name, country, t["stage_name"], t["stage_order"],
+                                    t["matched"],
+                                    (t["master_id"] or master_id) if t["matched"] else None,
+                                    t["es_score"],
+                                )
+                            )
 
-                    records_since_refresh += 1
-                    total_processed += 1
-                    pbar.update(1)
+                        total_processed += 1
+                        pbar.update(1)
+                        match_pct = (
+                            round(100 * total_matched / total_processed, 1) if total_processed else 0
+                        )
+                        pbar.set_postfix_str(
+                            f"eslesen={total_matched:,} ({match_pct}%) yeni={total_new:,},toplam={total_processed:,},skipped={total_skipped:,}",
+                            refresh=False,
+                        )
+                    except Exception:
+                        logger.exception("Row apply failed (row_id=%s)", row_id)
+                        continue
 
-                    # Progress bar postfix guncelle
-                    match_pct = (
-                        round(100 * total_matched / total_processed, 1)
-                        if total_processed
-                        else 0
+                # 4) Chunk sonu: refresh (yeni master'lar sonraki chunk'a görünür) + PG flush
+                es.indices.refresh(index=ES_INDEX)
+                if pg_updates:
+                    execute_values(
+                        write_cursor,
+                        psycopg2.sql.SQL(
+                            "UPDATE {} AS t"
+                            " SET {} = d.mc, {} = d.ms, {} = d.mt, {} = d.md"
+                            " FROM (VALUES %s) AS d(mc, ms, mt, md, id)"
+                            " WHERE t.{} = d.id"
+                        ).format(
+                            psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                            psycopg2.sql.Identifier(col_master),
+                            psycopg2.sql.Identifier(COLUMN_MAPPING["match_score"]),
+                            psycopg2.sql.Identifier(COLUMN_MAPPING["match_type"]),
+                            psycopg2.sql.Identifier(COLUMN_MAPPING["match_details"]),
+                            psycopg2.sql.Identifier(col_id),
+                        ),
+                        pg_updates,
                     )
-                    pbar.set_postfix_str(
-                        f"eslesen={total_matched:,} ({match_pct}%) yeni={total_new:,},toplam={total_processed:,},skipped={total_skipped:,}",
-                        refresh=False,
+                    execute_values(
+                        write_cursor,
+                        """INSERT INTO match_stages_log
+                            (input_id, input_name, country_code, stage_name, stage_order,
+                             matched, master_id, es_score) VALUES %s""",
+                        log_rows,
                     )
-
-                    # Periyodik ES refresh — yeni master'lar gorunur olsun
-                    if records_since_refresh >= ES_REFRESH_INTERVAL:
-                        es.indices.refresh(index=ES_INDEX)
-                        records_since_refresh = 0
-
-                        # Periyodik PG flush
-                        if pg_updates:
-                            execute_values(
-                                write_cursor,
-                                psycopg2.sql.SQL(
-                                    "UPDATE {} AS t"
-                                    " SET {} = d.mc, {} = d.ms, {} = d.mt, {} = d.md"
-                                    " FROM (VALUES %s) AS d(mc, ms, mt, md, id)"
-                                    " WHERE t.{} = d.id"
-                                ).format(
-                                    psycopg2.sql.Identifier(RAW_TABLE_NAME),
-                                    psycopg2.sql.Identifier(col_master),
-                                    psycopg2.sql.Identifier(COLUMN_MAPPING["match_score"]),
-                                    psycopg2.sql.Identifier(COLUMN_MAPPING["match_type"]),
-                                    psycopg2.sql.Identifier(COLUMN_MAPPING["match_details"]),
-                                    psycopg2.sql.Identifier(col_id),
-                                ),
-                                pg_updates,
-                            )
-                            execute_values(
-                                write_cursor,
-                                """INSERT INTO match_stages_log
-                                    (input_id, input_name, country_code, stage_name, stage_order,
-                                     matched, master_id, es_score) VALUES %s""",
-                                log_rows,
-                            )
-                            execute_values(
-                                write_cursor,
-                                """INSERT INTO match_audit
-                                    (input_id, input_name, country_code, final_master_id,
-                                     final_stage_name, final_score, total_matched_stages) VALUES %s""",
-                                audit_rows,
-                            )
-                            write_conn.commit()
-                            pg_updates.clear()
-                            log_rows.clear()
-                            audit_rows.clear()
-
-                except Exception:
-                    logger.exception("Row processing failed (row_id=%s)", row_id)
-                    continue
+                    execute_values(
+                        write_cursor,
+                        """INSERT INTO match_audit
+                            (input_id, input_name, country_code, final_master_id,
+                             final_stage_name, final_score, total_matched_stages) VALUES %s""",
+                        audit_rows,
+                    )
+                    write_conn.commit()
+                    pg_updates.clear()
+                    log_rows.clear()
+                    audit_rows.clear()
 
             # Batch sonu — kalan PG yazimlarini flush et
             if pg_updates:

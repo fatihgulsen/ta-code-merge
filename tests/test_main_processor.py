@@ -345,18 +345,20 @@ def test_per_row_exception_does_not_halt_batch():
         "index_variation": False,
     }
 
-    # match_single_record: OK for row1, raises for row2, OK for row3
-    call_results = [
-        {"winner": fake_winner, "trace": []},   # row1
-        Exception("boom — row2 explodes"),       # row2
-        {"winner": fake_winner, "trace": []},   # row3
-    ]
+    # Batched matching: row1/row3 → winner; row2 → NEW_MASTER yolunda _index_new_master patlar.
+    def fake_batch(es, recs, stages):
+        out = []
+        for r in recs:
+            if r["raw_name"] == "Boom Corp":
+                out.append({"winner": None, "trace": []})
+            else:
+                out.append({"winner": fake_winner, "trace": []})
+        return out
 
-    def side_effect_match(*args, **kwargs):
-        result = call_results.pop(0)
-        if isinstance(result, Exception):
-            raise result
-        return result
+    def fake_index_new_master(es, rec):
+        if rec["raw_name"] == "Boom Corp":
+            raise Exception("boom — row2 explodes")
+        return "m-new"
 
     mock_es = MagicMock()
     mock_read_conn = MagicMock()
@@ -378,11 +380,13 @@ def test_per_row_exception_does_not_halt_batch():
             captured_updates.extend(argslist)
 
     with patch.object(mp, "get_db_connection", side_effect=[mock_read_conn, mock_write_conn]), \
-         patch.object(mp, "match_single_record", side_effect=side_effect_match), \
+         patch.object(mp, "match_records_batch", side_effect=fake_batch), \
+         patch.object(mp, "_index_new_master", side_effect=fake_index_new_master), \
+         patch.object(mp, "_add_variation_to_master"), \
+         patch.object(mp, "auto_merge_duplicates", return_value={"merged_masters": 0, "repointed_rows": 0}), \
          patch.object(mp, "execute_values", side_effect=fake_execute_values), \
          patch.object(mp, "validate_db_schema"), \
          patch.object(mp, "ensure_stage_log_table"), \
-         patch.object(mp, "ES_REFRESH_INTERVAL", 1000), \
          patch.object(mp, "BATCH_SIZE", 10), \
          patch.object(mp, "ES_INDEX", "test_index"), \
          patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
@@ -1009,7 +1013,7 @@ def test_input_filter_disabled_processes_normally(monkeypatch):
         if cfg.COLUMN_MAPPING.get(k):
             row[cfg.COLUMN_MAPPING[k]] = ""
 
-    msr = MagicMock(return_value={"winner": None, "trace": []})
+    mrb = MagicMock(return_value=[{"winner": None, "trace": []}])
     mock_es = MagicMock()
     mrc = MagicMock(); mwc = MagicMock(); rcur = MagicMock(); wcur = MagicMock()
     mrc.cursor.return_value = rcur; mwc.cursor.return_value = wcur
@@ -1017,12 +1021,12 @@ def test_input_filter_disabled_processes_normally(monkeypatch):
 
     with patch.object(mp, "ENABLE_INPUT_FILTER", False), \
          patch.object(mp, "get_db_connection", side_effect=[mrc, mwc]), \
-         patch.object(mp, "match_single_record", msr), \
+         patch.object(mp, "match_records_batch", mrb), \
          patch.object(mp, "_index_new_master", MagicMock(return_value="m1")), \
+         patch.object(mp, "auto_merge_duplicates", return_value={"merged_masters": 0, "repointed_rows": 0}), \
          patch.object(mp, "execute_values"), \
          patch.object(mp, "validate_db_schema"), \
          patch.object(mp, "ensure_stage_log_table"), \
-         patch.object(mp, "ES_REFRESH_INTERVAL", 1000), \
          patch.object(mp, "BATCH_SIZE", 10), \
          patch.object(mp, "ES_INDEX", "test_index"), \
          patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
@@ -1031,7 +1035,9 @@ def test_input_filter_disabled_processes_normally(monkeypatch):
          patch("main_processor.register_all_pipelines"):
         mp.process_all_data()
 
-    msr.assert_called_once()  # filtre kapalı → garbage bile match denendi
+    # filtre kapalı → garbage bile eşleştirmeye girdi (batched matcher 1 kayıtla çağrıldı)
+    mrb.assert_called_once()
+    assert [r["raw_name"] for r in mrb.call_args[0][1]] == ["Sin Razon Social"]
 
 
 def test_per_batch_dedup_invoked_with_batch_master_ids():

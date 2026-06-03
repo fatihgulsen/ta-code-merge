@@ -71,6 +71,14 @@ NEW_MASTER_SUBBATCH_SIZE = 200
 # ES refresh araligi — her N kayitta bir refresh yapilir (tum stage'ler)
 ES_REFRESH_INTERVAL = 50
 
+# Eşleştirme chunk boyutu (Q1 — toplu msearch): kayıtlar bu boyutta gruplanıp TEK index
+# anlık-görüntüsüne karşı toplu msearch ile eşleştirilir; chunk sonunda refresh yapılır.
+# chunk = refresh penceresi olduğundan görünürlük tekil-akışla AYNI (refresh=False yazımlar
+# pencere içinde zaten görünmez) → eşleşme sonucu DEĞİŞMEZ, yalnız round-trip azalır.
+# 1 yaparsan eski kayıt-başına davranışa döner. Büyütürsen refresh seyrekleşir (Q3: kanonik
+# dup'ları batch-içi dedup toplar, ama fuzzy varyant recall'ı düşebilir → ölçerek artır).
+MATCH_BATCH_SIZE = 50
+
 # --- ES Skor Eşikleri ---
 ES_MIN_SCORE = 3.0  # ES'te min_score filtresi (bu altı hiç dönmez)
 LOG_ALL_STAGES = False  # Her bir stage sonucunu (failed dahil) logla

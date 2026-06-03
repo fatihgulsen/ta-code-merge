@@ -276,10 +276,14 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
         # Fingerprint: token sort + dedup (sırasız eşleşme).
         # Özel fingerprint_analyzer: jenerik + yasal-ek + geo stop → sort/dedup.
         # Built-in 'fingerprint' yerine; aynı-firma varyantları (suffix/geo/word-order)
-        # tek kanonik parmak izine iner → ES Transform dedup (Option-2).
+        # tek kanonik parmak izine iner → ES Transform / dedup_auto_merge (Option-2).
+        # fielddata=True: dedup terms/composite aggregation için zorunlu. Analyzer TEK
+        # token (birleşik fingerprint) ürettiğinden alan başına kardinalite düşük →
+        # fielddata maliyeti sınırlı. (Daha ucuz alternatif: ingest'te keyword fingerprint.)
         "fingerprint": {
             "type": "text",
             "analyzer": "fingerprint_analyzer",
+            "fielddata": True,
         },
         # N-gram: index-time fuzzy matching
         "ngram": {

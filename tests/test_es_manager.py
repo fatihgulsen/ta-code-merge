@@ -114,3 +114,5 @@ def test_fingerprint_field_uses_custom_analyzer():
     settings = build_index_settings(es=None)
     fp = settings["mappings"]["properties"]["variations"]["properties"]["name"]["fields"]["fingerprint"]
     assert fp["analyzer"] == "fingerprint_analyzer", f"beklenen fingerprint_analyzer, görülen {fp.get('analyzer')}"
+    # text alanda dedup aggregation için fielddata zorunlu
+    assert fp.get("fielddata") is True, "fingerprint alanı aggregation için fielddata=True olmalı"

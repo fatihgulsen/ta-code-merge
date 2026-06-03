@@ -15,6 +15,10 @@ class MatchType:
     PHONETIC_MATCH = "PHONETIC_MATCH"
     NGRAM_MATCH = "NGRAM_MATCH"
     NEW_MASTER = "NEW_MASTER"
+    # Boundary girdi-geçerliliği filtresi (P0-B / Faz 4): firma-olmayan girdiler
+    # (placeholder, salt-kod/sayı, baş-harf, aşırı uzun gümrük dizesi) eşleştirmeye
+    # SOKULMADAN izole edilir → ES'e indekslenmez (magnet olamaz). Bkz. input_filter.py.
+    EXCLUDED = "EXCLUDED"
 
 
 # --- PostgreSQL Bağlantı ---
@@ -99,6 +103,39 @@ PHONETIC_MIN_CORE_TOKENS = 1
 # trigram eşleşmesi paylaşılan suffix parçalarından farklı firmaları birleştirir
 # → bloklanır. Asıl precision coverage post-verify'dadır; bu guard çöp sızıntısı içindir.
 NGRAM_MIN_CORE_TOKENS = 1
+
+# --- Girdi Filtresi (P0-B / Faz 4) — firma-olmayan girdileri eşleştirmeden hariç tut ---
+# docs/audit/2026-06-03-llm-judge-rematch-comparison.md §4: 'Sin Razon Social' (1.181
+# üyeli magnet), '#N/A', gümrük dizeleri, salt-kod/baş-harf gibi girdiler NEW_MASTER
+# seed'i olup mıknatıs görevi görüyor. Bu filtre sınır (boundary) doğrulamasıdır —
+# KİMLİK/eşleşme kararı DEĞİL; yalnızca "bu bir firma adı mı?" geçerliliği.
+ENABLE_INPUT_FILTER = True
+
+# Yapısal eşikler (dil-bağımsız):
+GARBAGE_MAX_NAME_LEN = 70    # bundan uzun isim → gümrük/serbest-metin dizesi say
+GARBAGE_CODE_MIN_LEN = 6     # alnum referans-kod tespitinde min uzunluk (3M gibi kısa markaları korur)
+GARBAGE_CODE_DIGIT_RATIO = 0.4  # alnum çekirdekte bu orandan fazla rakam → referans kodu
+GARBAGE_MIN_INITIALS = 3     # bu kadar veya daha fazla tek-harf token → baş-harf çöpü (A.S/H M korunur)
+
+# Ülkeye-özel placeholder ("ticari unvan yok" anlamına gelen, firma OLMAYAN ifadeler).
+# Normalize edilmiş (lowercase, aksansız, alnum+space) biçimde, TAM eşleşme için.
+# synonyms_data SABİT olduğundan (CLAUDE.md §1.4) burada, config'te tutulur.
+NON_FIRM_PLACEHOLDERS = {
+    "__common__": [
+        "na",
+    ],
+    "MX": [
+        "sin razon social",
+        "razon social no determinada",
+        "razon social no determinado",
+        "no determinado",
+        "no determinada",
+        "sin nombre",
+        "publico en general",
+        "venta al publico en general",
+    ],
+}
+
 
 # --- msearch Ayarları ---
 MSEARCH_CHUNK_SIZE = 500  # Tek msearch çağrısında max sorgu sayısı

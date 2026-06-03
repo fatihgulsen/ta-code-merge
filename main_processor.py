@@ -61,10 +61,12 @@ from config import (
     LOG_ALL_STAGES,
     NEW_MASTER_SUBBATCH_SIZE,
     ES_REFRESH_INTERVAL,
+    ENABLE_INPUT_FILTER,
 )
 from es_manager import create_index, get_es_client
 from es_ingest import register_all_pipelines, pipeline_name
 import es_queries as _es_queries
+from input_filter import classify_input
 
 logging.basicConfig(
     level=logging.INFO,
@@ -989,6 +991,7 @@ def process_all_data() -> None:
         total_matched = 0
         total_new = 0
         total_skipped = 0
+        total_excluded = 0  # P0-B: firma-olmayan girdi (EXCLUDED, izole, indekslenmez)
         stage_counts: dict[str, int] = {}
         last_id = 0  # Sayfalama icin son islenen id
 
@@ -1048,6 +1051,23 @@ def process_all_data() -> None:
                     raw_name = (row[col_name] or "").strip()
                     if not raw_name:
                         total_skipped += 1
+                        pbar.update(1)
+                        continue
+
+                    # --- Boundary girdi filtresi (P0-B): firma-olmayan girdiyi izole et ---
+                    # EXCLUDED → kendi master_code'u, ES'e İNDEKSLENMEZ (magnet olamaz),
+                    # tekrar işlenmez. Kimlik kararı DEĞİL; "geçerli firma adı mı?" kontrolü.
+                    excl_reason = classify_input(raw_name, country) if ENABLE_INPUT_FILTER else None
+                    if excl_reason:
+                        master_id = str(uuid.uuid4())
+                        pg_updates.append(
+                            _make_pg_update_tuple(
+                                master_id, 0, "EXCLUDED", f"EXCLUDED: {excl_reason}", row_id
+                            )
+                        )
+                        total_excluded += 1
+                        total_processed += 1
+                        records_since_refresh += 1
                         pbar.update(1)
                         continue
 
@@ -1221,6 +1241,8 @@ def process_all_data() -> None:
         logger.info(f"TAMAMLANDI: {total_processed:,} kayit islendi")
         logger.info(f"  Eslesen:     {total_matched:,}")
         logger.info(f"  Yeni master: {total_new:,}")
+        if total_excluded:
+            logger.info(f"  Excluded (P0-B): {total_excluded:,} firma-olmayan girdi izole edildi (indekslenmedi)")
         if total_skipped:
             logger.info(f"  Atlanan:     {total_skipped:,} (bos isim)")
         logger.info(f"  Stage dagilimi:")

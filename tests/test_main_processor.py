@@ -943,3 +943,92 @@ def test_create_new_masters_variation_shape_matches_add_variation():
     assert isinstance(build_entry.get("name"), str) and build_entry["name"], (
         f"build_new_master_doc variations[0]['name'] must be a non-empty str, got {build_entry!r}"
     )
+
+
+def test_excluded_input_isolated_not_matched_not_indexed():
+    """P0-B: garbage girdi (placeholder) match_single_record'a GİRMEZ, ES'e İNDEKSLENMEZ;
+    EXCLUDED match_type ile izole edilir (kendi master_code)."""
+    from unittest.mock import patch, MagicMock
+    import main_processor as mp
+    import config as cfg
+
+    row = {
+        cfg.COLUMN_MAPPING["id"]: 1,
+        cfg.COLUMN_MAPPING["company_name"]: "Sin Razon Social",
+        cfg.COLUMN_MAPPING["country_code"]: "MX",
+    }
+    for k in ("tax_number", "phone_number", "address"):
+        if cfg.COLUMN_MAPPING.get(k):
+            row[cfg.COLUMN_MAPPING[k]] = ""
+
+    captured = []
+    def fake_execute_values(cur, sql, argslist, *a, **k):
+        captured.extend(list(argslist))
+
+    msr = MagicMock(); idx = MagicMock()
+    mock_es = MagicMock()
+    mock_read_conn = MagicMock(); mock_write_conn = MagicMock()
+    mock_read_cur = MagicMock(); mock_write_cur = MagicMock()
+    mock_read_conn.cursor.return_value = mock_read_cur
+    mock_write_conn.cursor.return_value = mock_write_cur
+    mock_read_cur.fetchall.side_effect = [[row], []]
+    mock_read_cur.fetchone.return_value = (1,)
+
+    with patch.object(mp, "get_db_connection", side_effect=[mock_read_conn, mock_write_conn]), \
+         patch.object(mp, "match_single_record", msr), \
+         patch.object(mp, "_index_new_master", idx), \
+         patch.object(mp, "execute_values", side_effect=fake_execute_values), \
+         patch.object(mp, "validate_db_schema"), \
+         patch.object(mp, "ensure_stage_log_table"), \
+         patch.object(mp, "ES_REFRESH_INTERVAL", 1000), \
+         patch.object(mp, "BATCH_SIZE", 10), \
+         patch.object(mp, "ES_INDEX", "test_index"), \
+         patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
+         patch("main_processor.get_es_client", return_value=mock_es), \
+         patch("main_processor.create_index"), \
+         patch("main_processor.register_all_pipelines"):
+        mp.process_all_data()
+
+    msr.assert_not_called()   # eşleştirmeye girmedi
+    idx.assert_not_called()   # ES'e indekslenmedi (magnet olamaz)
+    # EXCLUDED match_type ile bir PG update yazıldı
+    excluded = [t for t in captured if len(t) >= 3 and t[2] == "EXCLUDED"]
+    assert excluded, f"EXCLUDED PG update bulunamadı; capt={captured}"
+    assert "EXCLUDED:" in excluded[0][3]  # details sebep içerir
+
+
+def test_input_filter_disabled_processes_normally(monkeypatch):
+    """ENABLE_INPUT_FILTER=False iken garbage bile normal akışa girer (match denenir)."""
+    from unittest.mock import patch, MagicMock
+    import main_processor as mp
+    import config as cfg
+
+    row = {cfg.COLUMN_MAPPING["id"]: 1, cfg.COLUMN_MAPPING["company_name"]: "Sin Razon Social",
+           cfg.COLUMN_MAPPING["country_code"]: "MX"}
+    for k in ("tax_number", "phone_number", "address"):
+        if cfg.COLUMN_MAPPING.get(k):
+            row[cfg.COLUMN_MAPPING[k]] = ""
+
+    msr = MagicMock(return_value={"winner": None, "trace": []})
+    mock_es = MagicMock()
+    mrc = MagicMock(); mwc = MagicMock(); rcur = MagicMock(); wcur = MagicMock()
+    mrc.cursor.return_value = rcur; mwc.cursor.return_value = wcur
+    rcur.fetchall.side_effect = [[row], []]; rcur.fetchone.return_value = (1,)
+
+    with patch.object(mp, "ENABLE_INPUT_FILTER", False), \
+         patch.object(mp, "get_db_connection", side_effect=[mrc, mwc]), \
+         patch.object(mp, "match_single_record", msr), \
+         patch.object(mp, "_index_new_master", MagicMock(return_value="m1")), \
+         patch.object(mp, "execute_values"), \
+         patch.object(mp, "validate_db_schema"), \
+         patch.object(mp, "ensure_stage_log_table"), \
+         patch.object(mp, "ES_REFRESH_INTERVAL", 1000), \
+         patch.object(mp, "BATCH_SIZE", 10), \
+         patch.object(mp, "ES_INDEX", "test_index"), \
+         patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
+         patch("main_processor.get_es_client", return_value=mock_es), \
+         patch("main_processor.create_index"), \
+         patch("main_processor.register_all_pipelines"):
+        mp.process_all_data()
+
+    msr.assert_called_once()  # filtre kapalı → garbage bile match denendi

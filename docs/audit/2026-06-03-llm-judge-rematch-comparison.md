@@ -273,14 +273,19 @@ bozuk) **ve** aynı anda ciddi bir under-merge/recall problemi var. Sistem yanl�
 - **İkincil:** NGRAM `min_score` 10 → 18-20 (trigram prefix sızıntısı için); NGRAM
   `minimum_should_match` "75%" kısa isimlerde hâlâ gevşek olabilir — band kontrolü.
 
-### 🔴 P0-B — Garbage/geçersiz girdi filtresi (ingest) — magnet'leri kökten kes
+### ✅ P0-B — Garbage/geçersiz girdi filtresi (UYGULANDI 2026-06-03) — magnet'leri kökten kes
 - **Kanıt:** `Sin Razon Social` (1.181), `Razon Social no determinada` (152),
   `C R M` (160), QHE gümrük dizesi (52) + 78 garbage grup. ~1.606+ kayıt hapis.
-- **Eylem:** `es_ingest.py` Painless / `main_processor` girdi aşamasında **eşleştirmeden
-  hariç tut**: placeholder unvanlar (`sin razon social`, `razon social no determinada`,
-  `no determinad*`), `#N/A`, salt-sayı, `RQMT-…`/`DDI…` referansları, >60 karakter
-  gümrük dizesi, ≤3 harfli baş-harf grupları. Bu kayıtlar `NEW_MASTER`'a bile girmesin
-  (kendi master'ları olabilir ama **mıknatıs/seed olmamalı**).
+- **Uygulanan:** `input_filter.classify_input(raw_name, country)` — sınır (boundary)
+  geçerlilik filtresi (KİMLİK kararı DEĞİL; fuzzy YOK). Sebepler: `empty`, `too_long`
+  (>70), `no_alnum`, `placeholder` (config `NON_FIRM_PLACEHOLDERS`, ülke-bazlı), `na_marker`
+  (`#N/A`), `numeric`, `code` (alnum referans: len≥6 & rakam-oranı≥0.4, `3M` korunur),
+  `initials` (≥3 tek-harf token, `A.S`/`H M` korunur). `main_processor` girdi aşamasında
+  EXCLUDED ise kayıt **kendi master_code'unu alır ama ES'e İNDEKSLENMEZ** (magnet olamaz),
+  `match_type='EXCLUDED'`, tekrar işlenmez. `ENABLE_INPUT_FILTER` bayrağı.
+  **Dry-run rapor:** `python input_filter.py` → PG'yi salt-okunur tarar, sebep+sayı+örnek
+  verir (rematch ÖNCESİ kalibrasyon için). 35 yeni test, 170 passed.
+  synonyms_data SABİT olduğundan placeholder'lar `config.NON_FIRM_PLACEHOLDERS`'ta.
 
 ### 🔴 P0-C — NEW_MASTER within-batch dedup (recall'ın %73'ü) — ES-NATIVE olmalı
 - **Kanıt:** §3.3 — SHOULD_MERGE NEW_MASTER gruplarının **%73,2'sinin STRIPPED kanonik

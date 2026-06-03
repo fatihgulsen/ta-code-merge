@@ -49,18 +49,39 @@ def _get_stripped_analyzer(country: str) -> str:
     return "stripped_search_analyzer"
 
 
+# Token-count memoization (perf): analyzer index'e sabit olduğundan bir koşu boyunca
+# (analyzer, text) → token sayısı DEĞİŞMEZ. Tekrarlı isimlerde es.indices.analyze
+# round-trip'lerini eler. Hata sonuçları CACHE'LENMEZ (zehirlenmeyi önler). Bellek için
+# basit cap (dolunca yeni anahtar eklenmez; mevcutlar yine hızlı döner).
+_TOKEN_COUNT_CACHE: dict[tuple[str, str], int] = {}
+_TOKEN_COUNT_CACHE_MAX = 200_000
+
+
+def clear_token_count_cache() -> None:
+    """Token-count cache'ini temizler (test izolasyonu / reindex sonrası)."""
+    _TOKEN_COUNT_CACHE.clear()
+
+
 def _get_token_count(es: Elasticsearch, text: str, analyzer: str) -> int:
-    """Elasticsearch _analyze API kullanarak metnin kaç token ürettiğini hesaplar."""
+    """Elasticsearch _analyze API kullanarak metnin kaç token ürettiğini hesaplar.
+    (analyzer, text) anahtarıyla memoize edilir; hatalar cache'lenmez."""
     if not es or not text:
         return 0
+    key = (analyzer, text)
+    cached = _TOKEN_COUNT_CACHE.get(key)
+    if cached is not None:
+        return cached
     try:
         # Circular import önlemek için local import
         from config import ES_INDEX
         res = es.indices.analyze(index=ES_INDEX, body={"analyzer": analyzer, "text": text})
-        return len(res.get("tokens", []))
+        count = len(res.get("tokens", []))
     except Exception:
-        # Hata durumunda (index henüz oluşmamış vb.) 0 döner, match engellenmez (faydalı değil ama güvenli)
+        # Hata durumunda (index henüz oluşmamış vb.) 0 döner, CACHE'LENMEZ → sonra tekrar denenir.
         return 0
+    if len(_TOKEN_COUNT_CACHE) < _TOKEN_COUNT_CACHE_MAX:
+        _TOKEN_COUNT_CACHE[key] = count
+    return count
 
 
 def CANONICAL_EXACT(name: str, country: str, es: Elasticsearch = None, **kwargs) -> dict:

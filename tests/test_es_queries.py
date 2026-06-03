@@ -251,3 +251,44 @@ def test_phonetic_match_allows_single_brand_core():
         nested = next(c["nested"] for c in q["query"]["bool"]["must"] if "nested" in c)
         assert nested["path"] == "variations_stripped"
         assert _get_country_filter(q) == "MX"
+
+
+# ─────────────────────────────────────────────────────────────────────
+# _get_token_count memoization (perf — analyze round-trip'lerini azaltır)
+# ─────────────────────────────────────────────────────────────────────
+
+def test_get_token_count_memoizes_same_analyzer_text():
+    """Aynı (analyzer, text) için es.indices.analyze YALNIZCA bir kez çağrılmalı."""
+    from unittest.mock import MagicMock
+    es_queries.clear_token_count_cache()
+    es = MagicMock()
+    es.indices.analyze.return_value = {"tokens": [{"t": 1}, {"t": 2}, {"t": 3}]}
+
+    a = es_queries._get_token_count(es, "ACME S.A. DE C.V.", "stripped_search_analyzer_mx")
+    b = es_queries._get_token_count(es, "ACME S.A. DE C.V.", "stripped_search_analyzer_mx")
+    assert a == b == 3
+    assert es.indices.analyze.call_count == 1  # ikinci çağrı cache'ten
+
+
+def test_get_token_count_distinct_keys_recompute():
+    from unittest.mock import MagicMock
+    es_queries.clear_token_count_cache()
+    es = MagicMock()
+    es.indices.analyze.return_value = {"tokens": [{"t": 1}]}
+    es_queries._get_token_count(es, "A", "an1")
+    es_queries._get_token_count(es, "B", "an1")           # farklı text
+    es_queries._get_token_count(es, "A", "an2")           # farklı analyzer
+    assert es.indices.analyze.call_count == 3
+
+
+def test_get_token_count_does_not_cache_errors():
+    """Hata (exception) durumunda 0 döner ama CACHE'LENMEZ → sonraki çağrı tekrar dener."""
+    from unittest.mock import MagicMock
+    es_queries.clear_token_count_cache()
+    es = MagicMock()
+    es.indices.analyze.side_effect = [RuntimeError("down"), {"tokens": [{"t": 1}, {"t": 2}]}]
+    first = es_queries._get_token_count(es, "X", "an")
+    second = es_queries._get_token_count(es, "X", "an")
+    assert first == 0          # hata → 0
+    assert second == 2         # cache'lenmediği için yeniden denendi ve başardı
+    assert es.indices.analyze.call_count == 2

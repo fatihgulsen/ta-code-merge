@@ -1081,3 +1081,79 @@ def test_per_batch_dedup_invoked_with_batch_master_ids():
 
     assert captured.get("ids") == ["mA", "mB"], f"batch master id'leri geçilmeli, görülen: {captured}"
     assert captured.get("refresh") is False
+
+
+# ─────────────────────────────────────────────────────────────────────
+# Q1: batched matching equivalence (match_records_batch == per-record)
+# ─────────────────────────────────────────────────────────────────────
+
+def _stage(name, order, min_score):
+    return {"name": name, "order": order, "query_fn": name, "min_score": min_score,
+            "enabled": True, "index_variation": False}
+
+
+def _hit(master_id, score):
+    return {"hits": {"hits": [{"_id": master_id, "_score": score,
+                               "_source": {"master_id": master_id}}]}}
+
+
+def _nohit():
+    return {"hits": {"hits": []}}
+
+
+def test_match_records_batch_equivalent_to_single(monkeypatch):
+    """Toplu eşleştirme, her kayıt için tekil eşleştirmeyle BİREBİR aynı winner/trace üretir."""
+    from unittest.mock import MagicMock
+    import main_processor as mp
+
+    stages = [_stage("CANONICAL_EXACT", 1, 3.0), _stage("STRIPPED_EXACT", 2, 3.0)]
+
+    # her stage query_fn'i basit bir dict döndürsün (es_queries'e bağımlı olmadan)
+    monkeypatch.setattr(mp._es_queries, "CANONICAL_EXACT",
+                        lambda name, country, es=None, **k: {"q": "c"}, raising=False)
+    monkeypatch.setattr(mp._es_queries, "STRIPPED_EXACT",
+                        lambda name, country, es=None, **k: {"q": "s"}, raising=False)
+
+    recs = [
+        {"raw_name": "A", "country": "MX"},  # CANONICAL hit
+        {"raw_name": "B", "country": "MX"},  # no hit
+        {"raw_name": "C", "country": "MX"},  # STRIPPED hit (CANONICAL no)
+    ]
+    # Her kayıt 2 stage → response sırası: A.can, A.str, B.can, B.str, C.can, C.str
+    per_rec_resps = {
+        "A": [_hit("mA", 9.0), _nohit()],
+        "B": [_nohit(), _nohit()],
+        "C": [_nohit(), _hit("mC", 7.0)],
+    }
+
+    # Tekil: her çağrı o kaydın 2 yanıtını döndürür
+    def single_msearch(body):
+        # body[1]["q"] ilk stage; kaydı raw_name ile ayırt edemeyiz → sıra ile takip
+        raise AssertionError("not used")
+
+    # match_records_batch: tek msearch çağrısı (MSEARCH_CHUNK_SIZE >= 6/2)
+    es_batch = MagicMock()
+    es_batch.msearch.return_value = {"responses":
+        per_rec_resps["A"] + per_rec_resps["B"] + per_rec_resps["C"]}
+    batch_out = mp.match_records_batch(es_batch, recs, stages)
+
+    # Tekil eşdeğer: her kayıt için ayrı es, kendi 2 yanıtı
+    single_out = []
+    for r in recs:
+        es_one = MagicMock()
+        es_one.msearch.return_value = {"responses": per_rec_resps[r["raw_name"]]}
+        single_out.append(mp.match_single_record(es_one, r, stages))
+
+    assert batch_out == single_out
+    # winner doğrulaması
+    assert batch_out[0]["winner"]["stage_name"] == "CANONICAL_EXACT"
+    assert batch_out[1]["winner"] is None
+    assert batch_out[2]["winner"]["stage_name"] == "STRIPPED_EXACT"
+
+
+def test_match_records_batch_empty_and_no_stages():
+    import main_processor as mp
+    from unittest.mock import MagicMock
+    assert mp.match_records_batch(MagicMock(), [], [_stage("X", 1, 1.0)]) == []
+    out = mp.match_records_batch(MagicMock(), [{"raw_name": "A", "country": "MX"}], [])
+    assert out == [{"winner": None, "trace": []}]

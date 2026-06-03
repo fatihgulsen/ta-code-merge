@@ -759,45 +759,23 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
 # TEKIL KAYIT ESLESTIRME (ES-Authority)
 # ─────────────────────────────────────────────────────────────────────
 
-def match_single_record(es, rec: dict, active_stages: list[dict]) -> dict:
-    """Tek bir kaydi tum stage'lerden gecirir (msearch ile performansli).
-    Sonuclari islerken ilk eslesenden sonrasini kisa devre yapar (loglamaz).
-    Returns:
-        {"winner": dict or None, "trace": list}
+def _select_winner(stage_responses: list[dict], active_stages: list[dict]) -> dict:
+    """Bir kaydın stage yanıtlarından (sıralı) kazananı seçer.
+
+    Stage'ler `order` sırasında; ilk `score >= min_score` eşleşen kazanır (kısa devre).
+    Hem tekil hem toplu eşleştirme bu mantığı paylaşır → birebir aynı semantik.
+    Returns: {"winner": dict|None, "trace": list}
     """
-    body: list[dict] = []
-    stage_indices: list[dict] = []
-
-    for stage in active_stages:
-        query_fn = getattr(_es_queries, stage["query_fn"])
-        q = query_fn(name=rec["raw_name"], country=rec["country"], es=es)
-        body.append({"index": ES_INDEX, "routing": rec["country"].upper()})
-        body.append(q)
-        stage_indices.append(stage)
-
-    if not body:
-        return {"winner": None, "trace": []}
-
-    try:
-        response = es.msearch(body=body)
-    except Exception:
-        logger.exception("msearch basarisiz (single record)")
-        return {"winner": None, "trace": []}
-
     trace = []
     winner = None
-
-    for i, stage in enumerate(stage_indices):
-        resp = response["responses"][i]
+    for i, stage in enumerate(active_stages):
+        resp = stage_responses[i] if i < len(stage_responses) else {"error": "missing"}
         if "error" in resp:
             continue
-            
         hits = resp["hits"].get("hits", [])
         top_hit = hits[0] if hits else None
         top_score = top_hit["_score"] if top_hit else 0.0
-
         matched = top_hit is not None and top_score >= stage["min_score"]
-
         res = {
             "stage_name": stage["name"],
             "stage_order": stage["order"],
@@ -806,15 +784,72 @@ def match_single_record(es, rec: dict, active_stages: list[dict]) -> dict:
             "master_id": top_hit["_source"]["master_id"] if matched else None,
         }
         trace.append(res)
-        
         if matched and winner is None:
             winner = res.copy()
             winner["master_doc_id"] = top_hit["_id"]
             winner["index_variation"] = stage.get("index_variation", True)
-            # Kisa devre: Ilk kazanan stage'den sonraki sonuclari (msearch icinden gelmis olsa bile) cope at.
             break
-            
     return {"winner": winner, "trace": trace}
+
+
+def _build_stage_body(es, rec: dict, active_stages: list[dict]) -> list[dict]:
+    """Bir kayıt için tüm stage'lerin msearch gövdesini (header+query çiftleri) üretir."""
+    body: list[dict] = []
+    for stage in active_stages:
+        query_fn = getattr(_es_queries, stage["query_fn"])
+        q = query_fn(name=rec["raw_name"], country=rec["country"], es=es)
+        body.append({"index": ES_INDEX, "routing": rec["country"].upper()})
+        body.append(q)
+    return body
+
+
+def match_single_record(es, rec: dict, active_stages: list[dict]) -> dict:
+    """Tek bir kaydi tum stage'lerden gecirir (msearch). Returns {winner, trace}."""
+    body = _build_stage_body(es, rec, active_stages)
+    if not body:
+        return {"winner": None, "trace": []}
+    try:
+        response = es.msearch(body=body)
+    except Exception:
+        logger.exception("msearch basarisiz (single record)")
+        return {"winner": None, "trace": []}
+    return _select_winner(response["responses"], active_stages)
+
+
+def match_records_batch(es, recs: list[dict], active_stages: list[dict]) -> list[dict]:
+    """Birden çok kaydı TOPLU msearch ile eşleştirir; her kayıt için {winner, trace}
+    döner (sıra korunur; `match_single_record` ile BİREBİR aynı winner-seçim semantiği).
+
+    Görünürlük: tüm kayıtlar AYNI index anlık-görüntüsüne karşı sorgulanır. Çağıran,
+    chunk'ı refresh penceresiyle hizalamalıdır (refresh=False yazımlar zaten pencere
+    içinde görünmez) → davranış tekil-akışla aynı, yalnız round-trip azalır.
+    """
+    if not recs:
+        return []
+    if not active_stages:
+        return [{"winner": None, "trace": []} for _ in recs]
+
+    S = len(active_stages)
+    body: list[dict] = []
+    for rec in recs:
+        body.extend(_build_stage_body(es, rec, active_stages))
+
+    # msearch'i MSEARCH_CHUNK_SIZE sorgu (=2 satır) ile parçala
+    responses: list[dict] = []
+    max_lines = max(2, MSEARCH_CHUNK_SIZE * 2)
+    for off in range(0, len(body), max_lines):
+        sub = body[off:off + max_lines]
+        try:
+            resp = es.msearch(body=sub)
+            responses.extend(resp["responses"])
+        except Exception:
+            logger.exception("toplu msearch basarisiz (sub-chunk error olarak isaretlendi)")
+            responses.extend([{"error": "msearch_failed"}] * (len(sub) // 2))
+
+    out = []
+    for i in range(len(recs)):
+        out.append(_select_winner(responses[i * S:(i + 1) * S], active_stages))
+    return out
 
 
 def _index_new_master(es, rec: dict) -> str:

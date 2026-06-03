@@ -151,19 +151,33 @@ STAGES = [
         "index_variation": False,
     },
     {
+        # DEVRE DIŞI (2026-06-03, docs/audit/2026-06-03-llm-judge-rematch-comparison.md):
+        # PHONETIC_MATCH over-merge'in birincil kaynağı (master-seviyesi %95,9 yanlış).
+        # Kök neden: double_metaphone max_code_len=4 → tek-token markaların fonetik
+        # ön-ekleri çakışıyor (INTERAGUA/INTERFIG/ENTRETEX → hepsi "ANTR"). guard
+        # (core≥1) ve token_count coverage (1==1) tek-token markada no-op kalıyor.
+        # Marjinal değer (tipo toleransı) STRIPPED_EXACT/SUFFIX_FUZZY/NGRAM ile kısmen
+        # karşılanıyor. Yeniden açılması için önce phonetic_filter'a max_code_len:8-10
+        # eklenip reindex + live_probe prefix-collision golden ile doğrulanmalı.
         "name": "PHONETIC_MATCH",
         "order": 6,
         "query_fn": "PHONETIC_MATCH",
         "min_score": 3.0,
-        "enabled": True,
+        "enabled": False,
         "index_variation": False,
     },
     {
+        # DEVRE DIŞI (2026-06-03, docs/audit/2026-06-03-llm-judge-rematch-comparison.md):
+        # NGRAM_MATCH PHONETIC ile aynı hastalıkta — master-seviyesi %98,1 over-merge.
+        # Paylaşılan trigram'lar (ör. "… PERU S.A.C.", ortak ön-ekler) farklı markaları
+        # birleştiriyor; minimum_should_match:"75%" + min_score:10 kısa isimlerde gevşek.
+        # Yeniden açmak için: min_score 18-20'ye çıkar + kazanan adaya çekirdek-token
+        # coverage (token_count) zorunluluğu ekle, ardından reindex + live_probe ile doğrula.
         "name": "NGRAM_MATCH",
         "order": 7,
         "query_fn": "NGRAM_MATCH",
         "min_score": 10.0,
-        "enabled": True,
+        "enabled": False,
         "index_variation": False,
     },
 ]

@@ -84,3 +84,33 @@ def test_build_index_settings_global_filter_includes_articles():
     assert global_filter is not None
     assert "and" in global_filter["stopwords"]
     assert "von" in global_filter["stopwords"]
+
+
+def test_fingerprint_analyzer_normalizes_suffix_and_geo():
+    """P0-C/Option-2: variations.fingerprint için özel fingerprint_analyzer —
+    yasal-ek + jenerik + geo token'ları düşürür, sonra fingerprint (sort+dedup) uygular.
+    Böylece 'ACME DE MEXICO S.A. DE C.V.' ile 'ACME' aynı fingerprint'e iner."""
+    from es_manager import build_index_settings
+    settings = build_index_settings(es=None)
+    analyzers = settings["settings"]["analysis"]["analyzer"]
+    filters = settings["settings"]["analysis"]["filter"]
+
+    assert "fingerprint_analyzer" in analyzers, "özel fingerprint_analyzer bulunamadı"
+    chain = analyzers["fingerprint_analyzer"]["filter"]
+    assert "legal_fragment_stop" in chain
+    assert "generic_stopwords_global" in chain
+    assert "geo_stopwords_global" in chain
+    # fingerprint (sort+dedup) filtresi zincirin SONUNDA olmalı
+    fp_filters = [f for f in chain if filters.get(f, {}).get("type") == "fingerprint"]
+    assert fp_filters, "fingerprint tipli filtre zincirde yok"
+    assert chain.index(fp_filters[0]) == len(chain) - 1, "fingerprint filtresi en sonda olmalı"
+    # geo stop filtresi gerçek bir stop filtresi olmalı
+    assert filters["geo_stopwords_global"]["type"] == "stop"
+
+
+def test_fingerprint_field_uses_custom_analyzer():
+    """variations.name.fingerprint subfield'ı built-in yerine fingerprint_analyzer kullanmalı."""
+    from es_manager import build_index_settings
+    settings = build_index_settings(es=None)
+    fp = settings["mappings"]["properties"]["variations"]["properties"]["name"]["fields"]["fingerprint"]
+    assert fp["analyzer"] == "fingerprint_analyzer", f"beklenen fingerprint_analyzer, görülen {fp.get('analyzer')}"

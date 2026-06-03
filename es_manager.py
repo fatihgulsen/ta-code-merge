@@ -31,6 +31,7 @@ from synonym_loader import (
     get_all_legal_suffix_fragments,
     get_article_stopwords,
     get_company_type_tokens,
+    get_country_name_tokens,
     load_synonyms_for_country,
 )
 
@@ -167,6 +168,38 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
         "filter": base_clean_filters + ["generic_stopwords_global", "legal_fragment_stop"],
     }
 
+    # ── Geo/ülke-adı stop filtresi (tüm ülke countries.json'larından TÜRETİLİR) ──
+    # MX: 'mexico', 'mexicana' vb. Coğrafi token'lar ayırt edici DEĞİL; fingerprint
+    # dedup'unda 'BRAND DE MEXICO' ile 'BRAND'in aynı parmak izine inmesini sağlar
+    # (docs/audit/2026-06-03 §3.3, recall kaybının %27'si geo token farkından).
+    geo_tokens_global = sorted(
+        set().union(*(set(get_country_name_tokens(cc)) for cc in get_all_country_codes()))
+    ) if get_all_country_codes() else []
+    filters["geo_stopwords_global"] = {
+        "type": "stop",
+        "stopwords": geo_tokens_global,
+    }
+
+    # ── Fingerprint (sort + dedup) filtresi + güçlendirilmiş fingerprint_analyzer ──
+    # Built-in 'fingerprint' analyzer yasal-ek/geo normalize ETMEZ; bu özel analyzer
+    # stripped_search_analyzer ile aynı normalizasyonu (jenerik + yasal-ek + geo stop)
+    # uygular, ardından token'ları sıralayıp tekilleştirir → kanonik parmak izi.
+    # ES Transform (es_transform.py) bununla aynı-firma master'larını gruplar (Option-2).
+    filters["fingerprint_token_filter"] = {
+        "type": "fingerprint",
+    }
+    analyzers["fingerprint_analyzer"] = {
+        "tokenizer": "standard",
+        "char_filter": ["punctuation_remover"],
+        "filter": base_clean_filters
+        + [
+            "generic_stopwords_global",
+            "legal_fragment_stop",
+            "geo_stopwords_global",
+            "fingerprint_token_filter",
+        ],
+    }
+
     # ── Ülkeye özgü filter ve analyzer (varsa) ──
     for cc in get_all_country_codes():
         country_synonyms = list(load_synonyms_for_country(cc))
@@ -240,10 +273,13 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
             "analyzer": "clean_analyzer_common",
             "enable_position_increments": False,
         },
-        # Fingerprint: token sort + dedup (sırasız eşleşme)
+        # Fingerprint: token sort + dedup (sırasız eşleşme).
+        # Özel fingerprint_analyzer: jenerik + yasal-ek + geo stop → sort/dedup.
+        # Built-in 'fingerprint' yerine; aynı-firma varyantları (suffix/geo/word-order)
+        # tek kanonik parmak izine iner → ES Transform dedup (Option-2).
         "fingerprint": {
             "type": "text",
-            "analyzer": "fingerprint",
+            "analyzer": "fingerprint_analyzer",
         },
         # N-gram: index-time fuzzy matching
         "ngram": {

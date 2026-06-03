@@ -276,16 +276,16 @@ bozuk) **ve** aynı anda ciddi bir under-merge/recall problemi var. Sistem yanl�
 ### ✅ P0-B — Garbage/geçersiz girdi filtresi (UYGULANDI 2026-06-03) — magnet'leri kökten kes
 - **Kanıt:** `Sin Razon Social` (1.181), `Razon Social no determinada` (152),
   `C R M` (160), QHE gümrük dizesi (52) + 78 garbage grup. ~1.606+ kayıt hapis.
-- **Uygulanan:** `input_filter.classify_input(raw_name, country)` — sınır (boundary)
-  geçerlilik filtresi (KİMLİK kararı DEĞİL; fuzzy YOK). Sebepler: `empty`, `too_long`
-  (>70), `no_alnum`, `placeholder` (config `NON_FIRM_PLACEHOLDERS`, ülke-bazlı), `na_marker`
-  (`#N/A`), `numeric`, `code` (alnum referans: len≥6 & rakam-oranı≥0.4, `3M` korunur),
-  `initials` (≥3 tek-harf token, `A.S`/`H M` korunur). `main_processor` girdi aşamasında
-  EXCLUDED ise kayıt **kendi master_code'unu alır ama ES'e İNDEKSLENMEZ** (magnet olamaz),
-  `match_type='EXCLUDED'`, tekrar işlenmez. `ENABLE_INPUT_FILTER` bayrağı.
-  **Dry-run rapor:** `python input_filter.py` → PG'yi salt-okunur tarar, sebep+sayı+örnek
-  verir (rematch ÖNCESİ kalibrasyon için). 35 yeni test, 170 passed.
-  synonyms_data SABİT olduğundan placeholder'lar `config.NON_FIRM_PLACEHOLDERS`'ta.
+- **Uygulanan (DAR KAPSAM):** `input_filter.classify_input(raw_name, country)` — sınır
+  (boundary) geçerlilik filtresi (KİMLİK kararı DEĞİL; fuzzy YOK). **FELSEFE: bir firmanın
+  "doğru" olduğuna karar veremeyiz** — salt-kod/sayı/baş-harf veya çok-uzun isim gerçek bir
+  (yeni) firma OLABİLİR → DIŞLANMAZ, NEW_MASTER olur. Yalnızca **tamamen anlamsız** girdiler
+  elenir: `empty`, `no_alnum` (salt-noktalama), `na_marker` (`#N/A`/`null`/`none`/`nan`/`s/n`),
+  `placeholder` (config `NON_FIRM_PLACEHOLDERS`, 'unvan yok' ifadeleri, ülke-bazlı).
+  **Kasıtlı dışlanmayan:** kod/sayı/baş-harf/uzun isim. `main_processor` girdi aşamasında
+  EXCLUDED ise kayıt kendi master_code'unu alır ama **ES'e İNDEKSLENMEZ** (magnet olamaz),
+  `match_type='EXCLUDED'`. `ENABLE_INPUT_FILTER` bayrağı. Dry-run rapor: `python input_filter.py`.
+  synonyms_data SABİT olduğundan placeholder'lar `config.NON_FIRM_PLACEHOLDERS`'ta. 170 passed.
 
 ### 🔴 P0-C — NEW_MASTER within-batch dedup (recall'ın %73'ü) — ES-NATIVE olmalı
 - **Kanıt:** §3.3 — SHOULD_MERGE NEW_MASTER gruplarının **%73,2'sinin STRIPPED kanonik
@@ -310,8 +310,16 @@ bozuk) **ve** aynı anda ciddi bir under-merge/recall problemi var. Sistem yanl�
      birleştirme YOK** (garbage magnet önlenir). Grup-bazlı try/except + PG rollback
      (CLAUDE.md §3). `--apply`/`--limit=N`/dry-run. Kimlik kararı %100 ES (Python normalize/
      fuzzy YOK). Mevcut `dedup_reviewer`'ın **PG'yi güncellememe** açığını kapatır.
-  - **Çalıştırma sırası:** `es_manager.py --force` (reindex) → `main_processor.py` (rematch) →
-    `dedup_auto_merge.py` (önce dry-run, sonra `--apply`). 9 yeni test (RED→GREEN), 132 passed.
+  3. **SİSTEM-İÇİ entegrasyon (batch-başına, 2026-06-03):** `dedup_auto_merge` ayrı script
+     olarak çalıştırılmaz — `main_processor` HER BATCH sonunda (refresh sonrası) o batch'te
+     oluşan NEW_MASTER'lar arasında otomatik dedup eder (`auto_merge_duplicates(restrict_
+     master_ids=batch_new_master_ids, refresh=False)`). `iter_duplicate_groups`'a
+     `restrict_master_ids` eklendi → agg yalnızca batch master'larını tarar (tüm index DEĞİL),
+     iş yükü batch'e ölçeklenir. `config.AUTO_DEDUP_PER_BATCH` bayrağı; final özet `total_deduped`.
+     Hata batch'i durdurmaz (try/except). Ayrı `dedup_auto_merge.py` CLI yalnızca **manuel/
+     tek-seferlik tam-index onarımı** için kalır (artık akışın zorunlu adımı değil).
+  - **Çalıştırma sırası:** `es_manager.py --force` (reindex) → `main_processor.py` (rematch —
+    batch-içi dedup OTOMATİK). 12+3 yeni test, 173 passed.
   - **Reddedilen Option 1** (refresh=wait_for): sıralı döngüde throughput riski.
     **Reddedilen Python `_canonical_dedup_key`**: normalize-ile-sınıflandırma anti-deseni
     ([[no-python-verification-es-side]]) — geri alındı.

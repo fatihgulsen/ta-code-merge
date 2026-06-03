@@ -104,26 +104,30 @@ PHONETIC_MIN_CORE_TOKENS = 1
 # → bloklanır. Asıl precision coverage post-verify'dadır; bu guard çöp sızıntısı içindir.
 NGRAM_MIN_CORE_TOKENS = 1
 
-# --- Girdi Filtresi (P0-B / Faz 4) — firma-olmayan girdileri eşleştirmeden hariç tut ---
+# --- Girdi Filtresi (P0-B / Faz 4) — YALNIZCA tamamen anlamsız girdileri ele ---
 # docs/audit/2026-06-03-llm-judge-rematch-comparison.md §4: 'Sin Razon Social' (1.181
-# üyeli magnet), '#N/A', gümrük dizeleri, salt-kod/baş-harf gibi girdiler NEW_MASTER
-# seed'i olup mıknatıs görevi görüyor. Bu filtre sınır (boundary) doğrulamasıdır —
-# KİMLİK/eşleşme kararı DEĞİL; yalnızca "bu bir firma adı mı?" geçerliliği.
+# üyeli magnet) gibi 'isim yok' placeholder'ları + '#N/A'/null işaretçileri NEW_MASTER
+# seed'i olup mıknatıs görevi görüyor.
+#
+# FELSEFE: Bir firmanın "doğru" olup olmadığına karar VEREMEYİZ — salt kod/sayı/baş-harf
+# veya çok uzun bir isim gerçek bir (yeni) firma OLABİLİR ve NEW_MASTER olmalı. Bu yüzden
+# yalnızca içerik-taşımayan / 'isim yok' girdiler elenir (boş, salt-noktalama, n/a/null,
+# placeholder). Bu bir KİMLİK kararı DEĞİL; boundary geçerlilik kontrolü.
 ENABLE_INPUT_FILTER = True
 
-# Yapısal eşikler (dil-bağımsız):
-GARBAGE_MAX_NAME_LEN = 70    # bundan uzun isim → gümrük/serbest-metin dizesi say
-GARBAGE_CODE_MIN_LEN = 6     # alnum referans-kod tespitinde min uzunluk (3M gibi kısa markaları korur)
-GARBAGE_CODE_DIGIT_RATIO = 0.4  # alnum çekirdekte bu orandan fazla rakam → referans kodu
-GARBAGE_MIN_INITIALS = 3     # bu kadar veya daha fazla tek-harf token → baş-harf çöpü (A.S/H M korunur)
+# --- Batch-içi otomatik dedup (P0-C, sistem-içi) ---
+# Her batch sonunda, o batch'te oluşturulan NEW_MASTER'lar arasında AYNI kanonik
+# fingerprint'e sahip olanları ES-tarafı birleştirir (dedup_auto_merge). Ayrı script
+# çalıştırma zorunluluğunu kaldırır; iş yükü batch'e ölçeklenir (tüm index taranmaz).
+# Refresh-lag penceresinde oluşan within-batch duplikasyonu sistemin kendi içinde kapanır.
+AUTO_DEDUP_PER_BATCH = True
 
 # Ülkeye-özel placeholder ("ticari unvan yok" anlamına gelen, firma OLMAYAN ifadeler).
 # Normalize edilmiş (lowercase, aksansız, alnum+space) biçimde, TAM eşleşme için.
 # synonyms_data SABİT olduğundan (CLAUDE.md §1.4) burada, config'te tutulur.
+# (n/a, null, none, nan, s/n gibi yapısal işaretçiler input_filter._NA_MARKERS'ta.)
 NON_FIRM_PLACEHOLDERS = {
-    "__common__": [
-        "na",
-    ],
+    "__common__": [],
     "MX": [
         "sin razon social",
         "razon social no determinada",

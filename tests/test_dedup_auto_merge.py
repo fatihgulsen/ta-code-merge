@@ -149,3 +149,38 @@ def test_auto_merge_limit_stops_early(monkeypatch):
     es = MagicMock(); conn = MagicMock()
     stats = dam.auto_merge_duplicates(es, conn, dry_run=True, limit=2)
     assert stats["groups"] == 2
+
+
+def test_iter_duplicate_groups_restrict_scopes_to_master_ids():
+    """restrict_master_ids verilince agg query master_id terms filtresiyle batch'e ölçeklenir
+    (tüm index taranmaz)."""
+    from unittest.mock import MagicMock
+    import dedup_auto_merge as dam
+
+    countries_resp = {"aggregations": {"cc": {"buckets": [{"key": "MX"}]}}}
+    page = _agg_page([_fp_bucket("acme", ["m1", "m2"])], after_key=None)
+    es = MagicMock()
+    es.search.side_effect = [countries_resp, page]
+
+    groups = list(dam.iter_duplicate_groups(es, restrict_master_ids=["m1", "m2", "m3"]))
+    assert groups[0]["master_ids"] == ["m1", "m2"]
+    # query bool/filter içinde master_id terms olmalı
+    q = es.search.call_args_list[1].kwargs["body"]["query"]
+    assert "bool" in q
+    flts = q["bool"]["filter"]
+    assert {"term": {"country_code": "MX"}} in flts
+    assert any("terms" in f and f["terms"].get("master_id") == ["m1", "m2", "m3"] for f in flts)
+
+
+def test_auto_merge_per_batch_no_refresh(monkeypatch):
+    """Batch-içi kullanım: refresh=False iken ES refresh çağrılmaz (döngü kendi refresh eder)."""
+    import dedup_auto_merge as dam
+    from unittest.mock import MagicMock
+
+    monkeypatch.setattr(dam, "iter_duplicate_groups",
+                        lambda es, **k: iter([{"fingerprint": "a", "country_code": "MX", "master_ids": ["m1", "m2"]}]))
+    monkeypatch.setattr(dam, "apply_merge", lambda es, cur, conn, plan: {"ok": True, "merged": 1, "repointed": 1})
+    es = MagicMock(); conn = MagicMock()
+    stats = dam.auto_merge_duplicates(es, conn, restrict_master_ids=["m1", "m2"], refresh=False)
+    assert stats["groups"] == 1 and stats["merged_masters"] == 1
+    es.indices.refresh.assert_not_called()

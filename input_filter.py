@@ -1,29 +1,27 @@
 # ============================================================================
 # input_filter.py — Sınır (boundary) girdi-geçerliliği filtresi (P0-B / Faz 4)
 # ============================================================================
-# "Bu bir firma adı mı?" sorusunu yanıtlar. Firma-OLMAYAN girdileri (placeholder,
-# salt-kod/sayı, baş-harf, aşırı uzun gümrük dizesi) tespit eder; bunlar eşleştirmeye
-# sokulmadan EXCLUDED olarak izole edilir (ES'e indekslenmez → magnet olamaz).
+# "Bu girdi TAMAMEN ANLAMSIZ mı?" sorusunu yanıtlar — firma adı olarak GEÇERSİZ
+# olanları (boş, salt-noktalama, n/a/null işaretçileri, 'unvan yok' placeholder'ları)
+# tespit eder; bunlar eşleştirmeye sokulmadan EXCLUDED olarak izole edilir (ES'e
+# indekslenmez → magnet olamaz).
 #
-# Bu KİMLİK/eşleşme kararı DEĞİLDİR (iki firmayı karşılaştırmaz) — yalnızca girdinin
-# geçerli bir firma adı olup olmadığını denetler (CLAUDE.md: validate at boundaries).
-# Fuzzy/Levenshtein YOK. Ülke-özel placeholder'lar config'ten gelir (synonyms_data sabit).
+# ÖNEMLİ FELSEFE: Bir firmanın "doğru" olup olmadığına KARAR VEREMEYİZ. Yalnızca
+# kodlardan/sayılardan/baş-harflerden oluşan ya da çok uzun bir isim PEKÂLÂ gerçek
+# (yeni) bir firma olabilir → bunlar DIŞLANMAZ, NEW_MASTER olur. Yalnızca hiçbir
+# içerik taşımayan / 'isim yok' anlamına gelen girdiler elenir. Bu KİMLİK kararı
+# DEĞİLDİR. Fuzzy/Levenshtein YOK. Placeholder'lar config'ten (synonyms_data sabit).
 # Kanıt/ölçek: docs/audit/2026-06-03-llm-judge-rematch-comparison.md §4.
 # ============================================================================
 
 import re
 import unicodedata
 
-from config import (
-    GARBAGE_CODE_DIGIT_RATIO,
-    GARBAGE_CODE_MIN_LEN,
-    GARBAGE_MAX_NAME_LEN,
-    GARBAGE_MIN_INITIALS,
-    NON_FIRM_PLACEHOLDERS,
-)
+from config import NON_FIRM_PLACEHOLDERS
 
 _NONALNUM = re.compile(r"[^a-z0-9]+")
-_NA_MARKERS = {"n a", "n/a", "s n", "nd"}  # '#N/A','N/A','S/N' → normalize sonrası
+# Salt yapısal "boş/null" işaretçileri (dil-bağımsız, içerik taşımayan):
+_NA_MARKERS = {"n a", "na", "s n", "sn", "null", "none", "nan", "nil"}
 
 
 def _norm(text: str) -> str:
@@ -39,48 +37,28 @@ def _placeholder_set(country: str) -> set:
 
 
 def classify_input(raw_name: str, country: str) -> str | None:
-    """Girdi firma-olmayan ise sebep stringi, geçerli firma adı ise None döner.
+    """Girdi TAMAMEN ANLAMSIZ ise sebep stringi, aksi halde None döner.
 
-    Sebepler: empty | too_long | no_alnum | placeholder | na_marker | numeric |
-              code | initials
+    Sebepler (yalnızca içerik-taşımayan / 'isim yok'): empty | no_alnum | na_marker |
+    placeholder.
+
+    Kasıtlı olarak DIŞLANMAYANLAR (gerçek yeni firma olabilir): salt-kod, salt-sayı,
+    baş-harf grupları, aşırı uzun isimler.
     """
     if not raw_name or not raw_name.strip():
         return "empty"
-    name = raw_name.strip()
-    if len(name) > GARBAGE_MAX_NAME_LEN:
-        return "too_long"
 
-    norm = _norm(name)
+    norm = _norm(raw_name)
     if not norm:
-        return "no_alnum"
+        return "no_alnum"  # yalnızca noktalama → içerik yok
 
-    # Ülke-özel/ortak placeholder (tam eşleşme)
+    # 'isim yok' anlamına gelen ülke-özel/ortak placeholder (tam eşleşme)
     if norm in _placeholder_set(country):
         return "placeholder"
 
-    # #N/A, N/A, S/N gibi işaretçiler
+    # n/a, null, none, nan, s/n gibi yapısal boş işaretçiler (tam eşleşme)
     if norm in _NA_MARKERS:
         return "na_marker"
-
-    tokens = norm.split()
-    core = norm.replace(" ", "")
-    digit_count = sum(c.isdigit() for c in core)
-
-    # Hiç harf yok → salt sayı/işaret
-    if not any(c.isalpha() for c in core):
-        return "numeric"
-
-    # Alnum referans kodu: yeterli uzunluk + yüksek rakam oranı (3M gibi kısa markaları korur)
-    if (
-        len(core) >= GARBAGE_CODE_MIN_LEN
-        and digit_count >= 3
-        and digit_count / len(core) >= GARBAGE_CODE_DIGIT_RATIO
-    ):
-        return "code"
-
-    # Baş-harf çöpü: >=N token, hepsi tek-harf (A.S/H M gibi 2'liler korunur)
-    if len(tokens) >= GARBAGE_MIN_INITIALS and all(len(t) == 1 and t.isalpha() for t in tokens):
-        return "initials"
 
     return None
 

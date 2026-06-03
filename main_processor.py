@@ -62,11 +62,13 @@ from config import (
     NEW_MASTER_SUBBATCH_SIZE,
     ES_REFRESH_INTERVAL,
     ENABLE_INPUT_FILTER,
+    AUTO_DEDUP_PER_BATCH,
 )
 from es_manager import create_index, get_es_client
 from es_ingest import register_all_pipelines, pipeline_name
 import es_queries as _es_queries
 from input_filter import classify_input
+from dedup_auto_merge import auto_merge_duplicates
 
 logging.basicConfig(
     level=logging.INFO,
@@ -992,6 +994,7 @@ def process_all_data() -> None:
         total_new = 0
         total_skipped = 0
         total_excluded = 0  # P0-B: firma-olmayan girdi (EXCLUDED, izole, indekslenmez)
+        total_deduped = 0   # P0-C: batch-içi fingerprint dedup ile birleştirilen master sayısı
         stage_counts: dict[str, int] = {}
         last_id = 0  # Sayfalama icin son islenen id
 
@@ -1036,6 +1039,8 @@ def process_all_data() -> None:
             log_rows: list[tuple] = []
             audit_rows: list[tuple] = []
             records_since_refresh = 0
+            # P0-C: bu batch'te oluşturulan NEW_MASTER id'leri (batch-içi dedup kapsamı)
+            batch_new_master_ids: list[str] = []
 
             for row in rows:
                 row_id = row[col_id]
@@ -1106,6 +1111,7 @@ def process_all_data() -> None:
                         master_id = _index_new_master(es, rec)
                         details = "NEW_MASTER: No relevant matches found."
                         pg_updates.append(_make_pg_update_tuple(master_id, 100, "NEW_MASTER", details, row_id))
+                        batch_new_master_ids.append(master_id)  # P0-C: batch-içi dedup kapsamı
                         total_new += 1
                         stage_name = "NEW_MASTER"
                         es_score = 100.0
@@ -1233,6 +1239,26 @@ def process_all_data() -> None:
 
             es.indices.refresh(index=ES_INDEX)
 
+            # P0-C: batch-içi otomatik dedup — bu batch'te oluşan NEW_MASTER'lar arasında
+            # aynı kanonik fingerprint'e sahip olanları ES-tarafı birleştir (sistem-içi,
+            # ayrı script gerekmez). Kapsam batch'le sınırlı → iş yükü ölçeklenir.
+            # refresh=False: bir sonraki batch zaten refresh eder.
+            if AUTO_DEDUP_PER_BATCH and batch_new_master_ids:
+                try:
+                    d = auto_merge_duplicates(
+                        es, write_conn,
+                        restrict_master_ids=batch_new_master_ids,
+                        refresh=False,
+                    )
+                    if d["merged_masters"]:
+                        total_deduped += d["merged_masters"]
+                        logger.info(
+                            f"  Batch-ici dedup: {d['merged_masters']} master birlestirildi, "
+                            f"{d['repointed_rows']} satir yeniden yonlendirildi."
+                        )
+                except Exception:
+                    logger.exception("Batch-ici dedup basarisiz (batch atlandi, devam ediliyor)")
+
         pbar.close()
 
         # Final ozet
@@ -1243,6 +1269,8 @@ def process_all_data() -> None:
         logger.info(f"  Yeni master: {total_new:,}")
         if total_excluded:
             logger.info(f"  Excluded (P0-B): {total_excluded:,} firma-olmayan girdi izole edildi (indekslenmedi)")
+        if total_deduped:
+            logger.info(f"  Dedup (P0-C): {total_deduped:,} duplike master batch-ici birlestirildi")
         if total_skipped:
             logger.info(f"  Atlanan:     {total_skipped:,} (bos isim)")
         logger.info(f"  Stage dagilimi:")

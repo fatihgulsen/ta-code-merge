@@ -1032,3 +1032,52 @@ def test_input_filter_disabled_processes_normally(monkeypatch):
         mp.process_all_data()
 
     msr.assert_called_once()  # filtre kapalı → garbage bile match denendi
+
+
+def test_per_batch_dedup_invoked_with_batch_master_ids():
+    """P0-C: batch sonunda auto_merge_duplicates, o batch'te oluşan NEW_MASTER id'leriyle
+    (restrict_master_ids) ve refresh=False ile çağrılır."""
+    from unittest.mock import patch, MagicMock
+    import main_processor as mp
+    import config as cfg
+
+    def mkrow(rid, name):
+        r = {cfg.COLUMN_MAPPING["id"]: rid, cfg.COLUMN_MAPPING["company_name"]: name,
+             cfg.COLUMN_MAPPING["country_code"]: "MX"}
+        for k in ("tax_number", "phone_number", "address"):
+            if cfg.COLUMN_MAPPING.get(k):
+                r[cfg.COLUMN_MAPPING[k]] = ""
+        return r
+
+    rows = [mkrow(1, "ACME S.A. DE C.V."), mkrow(2, "ACME, S.A. DE C.V.")]
+    captured = {}
+    def fake_auto_merge(es, conn, restrict_master_ids=None, refresh=True, **k):
+        captured["ids"] = list(restrict_master_ids or [])
+        captured["refresh"] = refresh
+        return {"groups": 1, "merged_masters": 1, "repointed_rows": 1, "skipped": 0, "errors": 0}
+
+    ids = iter(["mA", "mB"])
+    mock_es = MagicMock()
+    mrc = MagicMock(); mwc = MagicMock(); rcur = MagicMock(); wcur = MagicMock()
+    mrc.cursor.return_value = rcur; mwc.cursor.return_value = wcur
+    rcur.fetchall.side_effect = [rows, []]; rcur.fetchone.return_value = (2,)
+
+    with patch.object(mp, "AUTO_DEDUP_PER_BATCH", True), \
+         patch.object(mp, "get_db_connection", side_effect=[mrc, mwc]), \
+         patch.object(mp, "match_single_record", return_value={"winner": None, "trace": []}), \
+         patch.object(mp, "_index_new_master", side_effect=lambda es, rec: next(ids)), \
+         patch.object(mp, "auto_merge_duplicates", side_effect=fake_auto_merge), \
+         patch.object(mp, "execute_values"), \
+         patch.object(mp, "validate_db_schema"), \
+         patch.object(mp, "ensure_stage_log_table"), \
+         patch.object(mp, "ES_REFRESH_INTERVAL", 1000), \
+         patch.object(mp, "BATCH_SIZE", 10), \
+         patch.object(mp, "ES_INDEX", "test_index"), \
+         patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
+         patch("main_processor.get_es_client", return_value=mock_es), \
+         patch("main_processor.create_index"), \
+         patch("main_processor.register_all_pipelines"):
+        mp.process_all_data()
+
+    assert captured.get("ids") == ["mA", "mB"], f"batch master id'leri geçilmeli, görülen: {captured}"
+    assert captured.get("refresh") is False

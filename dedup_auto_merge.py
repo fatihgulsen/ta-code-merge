@@ -73,6 +73,7 @@ def iter_duplicate_groups(
     page_size: int = 1000,
     master_cap: int = 200,
     min_count: int = 2,
+    restrict_master_ids: list[str] | None = None,
 ):
     """Aynı kanonik fingerprint'i paylaşan distinct master_id'leri üretir.
 
@@ -80,6 +81,9 @@ def iter_duplicate_groups(
     alanı olduğundan nested composite içine source olarak KONULAMAZ; bu yüzden ülke dış
     döngüde sabitlenir, fingerprint nested composite ile sayfalanır, master_id'ler
     reverse_nested ile parent'tan toplanır.
+
+    restrict_master_ids verilirse aggregation YALNIZCA bu master'larla sınırlanır
+    (batch-içi dedup için → tüm index'i taramaz, iş yükü batch'e ölçeklenir).
 
     Yields: {"fingerprint", "country_code", "master_ids": [...]}
     """
@@ -89,9 +93,16 @@ def iter_duplicate_groups(
             comp = {"size": page_size, "sources": [{"fp": {"terms": {"field": _FINGERPRINT_FIELD}}}]}
             if after:
                 comp["after"] = after
+            if restrict_master_ids:
+                query = {"bool": {"filter": [
+                    {"term": {"country_code": cc}},
+                    {"terms": {"master_id": list(restrict_master_ids)}},
+                ]}}
+            else:
+                query = {"term": {"country_code": cc}}
             body = {
                 "size": 0,
-                "query": {"term": {"country_code": cc}},
+                "query": query,
                 "aggs": {
                     "v": {
                         "nested": {"path": "variations"},
@@ -182,15 +193,25 @@ def apply_merge(es: Elasticsearch, cur, pg_conn, plan: dict) -> dict:
         return {"ok": False, "primary": primary, "merged": 0, "repointed": 0}
 
 
-def auto_merge_duplicates(es: Elasticsearch, pg_conn, dry_run: bool = False, limit: int | None = None) -> dict:
-    """Tüm duplicate fingerprint gruplarını otomatik birleştirir.
+def auto_merge_duplicates(
+    es: Elasticsearch,
+    pg_conn,
+    dry_run: bool = False,
+    limit: int | None = None,
+    restrict_master_ids: list[str] | None = None,
+    refresh: bool = True,
+) -> dict:
+    """Duplicate fingerprint gruplarını otomatik birleştirir (PG repoint + ES merge).
 
     dry_run=True → yalnızca planları sayar, hiçbir değişiklik yapmaz.
     limit → en fazla bu kadar grup işle (kademeli rollout için).
+    restrict_master_ids → yalnızca bu master'lar arasında dedup (batch-içi kullanım).
+    refresh → bitişte ES refresh (batch-içi çağrıda False bırakılabilir; döngü zaten
+              bir sonraki batch'te refresh eder).
     """
     cur = pg_conn.cursor()
     stats = {"groups": 0, "merged_masters": 0, "repointed_rows": 0, "skipped": 0, "errors": 0}
-    for group in iter_duplicate_groups(es):
+    for group in iter_duplicate_groups(es, restrict_master_ids=restrict_master_ids):
         plan = plan_merge(group)
         if not plan:
             stats["skipped"] += 1
@@ -207,7 +228,7 @@ def auto_merge_duplicates(es: Elasticsearch, pg_conn, dry_run: bool = False, lim
                 stats["errors"] += 1
         if limit and stats["groups"] >= limit:
             break
-    if not dry_run:
+    if refresh and not dry_run:
         es.indices.refresh(index=ES_INDEX)
     cur.close()
     return stats

@@ -1,5 +1,8 @@
-# Tests for input_filter.classify_input — boundary garbage/non-firm detection (P0-B).
-# Pure function; no ES/PG. Identity decision is NOT made here — only "is this a firm name?".
+# Tests for input_filter.classify_input — boundary NON-FIRM detection (P0-B, narrowed).
+# Philosophy: we CANNOT judge if a firm is "correct". A name made of codes/numbers/
+# initials, or a very long name, MAY be a legitimate (new) firm → it must NOT be excluded.
+# We exclude ONLY completely meaningless inputs: empty, punctuation-only, n/a/null
+# markers, and explicit "no business name" placeholders. Everything else → NEW_MASTER.
 import pytest
 
 import input_filter as inf
@@ -12,37 +15,14 @@ import input_filter as inf
     ("Razón Social no determinada", "placeholder"),   # aksanlı → aynı
     ("#N/A", "na_marker"),
     ("N/A", "na_marker"),
-    ("NA", "placeholder"),                              # __common__ placeholder
-    ("1234", "numeric"),
-    ("101840", "numeric"),
-    ("RQMT-00170/2017", "code"),
-    ("DDI051109783", "code"),
-    ("AIL-1264", "code"),
-    ("CFR-0289", "code"),
-    ("ONE150407DKA", "code"),
-    ("C R M", "initials"),
-    ("P. D. X", "initials"),
-    ("B.V.G", "initials"),
-    ("M.R.V.L", "initials"),
+    ("NA", "na_marker"),
+    ("null", "na_marker"),
+    ("NULL", "na_marker"),
+    ("None", "na_marker"),
+    ("nan", "na_marker"),
 ])
-def test_garbage_inputs_flagged(name, reason):
+def test_meaningless_inputs_flagged(name, reason):
     assert inf.classify_input(name, "MX") == reason
-
-
-@pytest.mark.parametrize("name", [
-    "AUDI MEXICO",
-    "SIEMENS S.A. DE C.V.",
-    "VIBRACOUSTIC DE MEXICO S.A. DE C.V.",
-    "H&M HENNES & MAURITZ SERVICIOS",
-    "3M MEXICO",
-    "3M",                       # kısa marka — kod sanılmamalı
-    "ACME, S.A. DE C.V.",
-    "KUEHNE + NAGEL",
-    "A.S",                      # 2 baş-harf — korunur (yalnız >=3 dışlanır)
-    "INDUSTRIAS JOHN DEERE",
-])
-def test_valid_firm_names_pass(name):
-    assert inf.classify_input(name, "MX") is None
 
 
 def test_empty_and_whitespace():
@@ -50,24 +30,37 @@ def test_empty_and_whitespace():
     assert inf.classify_input("   ", "MX") == "empty"
 
 
-def test_too_long_customs_string():
-    long_customs = "QHE LOGISTICS MEXICO S DE RL DE MEXICO Manzanillo EGM 1 incoterm FOB ref 99887766"
-    assert inf.classify_input(long_customs, "MX") == "too_long"
-
-
 def test_only_punctuation_is_no_alnum():
     assert inf.classify_input("...,-/", "MX") == "no_alnum"
 
 
+@pytest.mark.parametrize("name", [
+    # Real firms
+    "AUDI MEXICO",
+    "SIEMENS S.A. DE C.V.",
+    "VIBRACOUSTIC DE MEXICO S.A. DE C.V.",
+    "H&M HENNES & MAURITZ SERVICIOS",
+    "3M MEXICO",
+    "3M",
+    "ACME, S.A. DE C.V.",
+    "INDUSTRIAS JOHN DEERE",
+    # NOT excluded anymore (may be a legitimate new firm — code/number/initials/long):
+    "RQMT-00170/2017",
+    "DDI051109783",
+    "AIL-1264",
+    "CFR-0289",
+    "1234",
+    "101840",
+    "C R M",
+    "P. D. X",
+    "B.V.G",
+    "A.S",
+    "QHE LOGISTICS MEXICO S DE RL DE MEXICO Manzanillo EGM 1 incoterm FOB ref 99887766",
+])
+def test_codes_numbers_initials_long_are_kept_as_new_firm(name):
+    assert inf.classify_input(name, "MX") is None
+
+
 def test_placeholder_is_country_scoped():
-    """MX placeholder başka ülkede placeholder sayılmamalı (yapısal değilse)."""
-    # 'sin razon social' MX'e özel; DE'de placeholder listesi yok → None (yapısal da değil)
     assert inf.classify_input("sin razon social", "DE") is None
     assert inf.classify_input("sin razon social", "MX") == "placeholder"
-
-
-def test_classify_input_reason_only_no_identity_decision():
-    """classify_input bir firma adının GEÇERLİ olup olmadığını söyler; iki firmayı
-    karşılaştırmaz (kimlik kararı vermez) — None ya da sebep stringi döner."""
-    r = inf.classify_input("AUDI MEXICO", "MX")
-    assert r is None or isinstance(r, str)

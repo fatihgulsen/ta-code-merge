@@ -22,6 +22,43 @@ def test_plan_merge_skips_empty_fingerprint():
     assert dam.plan_merge({"fingerprint": "   ", "country_code": "MX", "master_ids": ["m1", "m2"]}) is None
 
 
+def test_is_distinctive_fingerprint_respects_threshold():
+    """Saf fonksiyon: eşik (min_token_len) parametrik. P-R2-1."""
+    import dedup_auto_merge as dam
+    # min=1 (config default şu an) → her boş-olmayan token ayırt edici sayılır (guard kapalı)
+    assert dam._is_distinctive_fingerprint("m", min_token_len=1) is True
+    assert dam._is_distinctive_fingerprint("g m", min_token_len=1) is True
+    assert dam._is_distinctive_fingerprint("", min_token_len=1) is False  # boş yine reddedilir
+    # min=2 → akronim-çökmesi ('m','g m') dejenere; gerçek kısa markalar (vf,3m) korunur
+    assert dam._is_distinctive_fingerprint("m", min_token_len=2) is False
+    assert dam._is_distinctive_fingerprint("g m", min_token_len=2) is False
+    assert dam._is_distinctive_fingerprint("vf", min_token_len=2) is True
+    assert dam._is_distinctive_fingerprint("3m", min_token_len=2) is True
+    assert dam._is_distinctive_fingerprint("a bc", min_token_len=2) is True  # karışık → ayırt edici
+
+
+def test_plan_merge_degenerate_guard_is_config_driven(monkeypatch):
+    """plan_merge config.DEDUP_MIN_FINGERPRINT_TOKEN_LEN eşiğini kullanır.
+    Default 1'de 'm' birleşir (guard kapalı); 2'ye çekilince magnet skip edilir."""
+    import dedup_auto_merge as dam
+    grp = {"fingerprint": "m", "country_code": "MX", "master_ids": ["m1", "m2"]}
+    # Eşik 1 (default) → birleştir
+    monkeypatch.setattr(dam, "DEDUP_MIN_FINGERPRINT_TOKEN_LEN", 1)
+    assert dam.plan_merge(grp) is not None
+    # Eşik 2 → dejenere magnet skip
+    monkeypatch.setattr(dam, "DEDUP_MIN_FINGERPRINT_TOKEN_LEN", 2)
+    assert dam.plan_merge(grp) is None
+    # Gerçek kısa marka eşik 2'de bile korunur
+    assert dam.plan_merge({"fingerprint": "vf", "country_code": "MX", "master_ids": ["m1", "m2"]}) is not None
+
+
+def test_plan_merge_keeps_distinctive_fingerprint():
+    """Ayırt edici (boş-olmayan) fingerprint → birleştir (default eşik 1)."""
+    import dedup_auto_merge as dam
+    assert dam.plan_merge({"fingerprint": "outdoor vf", "country_code": "MX", "master_ids": ["m1", "m2"]}) is not None
+    assert dam.plan_merge({"fingerprint": "acme", "country_code": "MX", "master_ids": ["m1", "m2"]}) is not None
+
+
 def test_plan_merge_builds_primary_and_secondaries():
     import dedup_auto_merge as dam
     plan = dam.plan_merge({"fingerprint": "acme", "country_code": "MX", "master_ids": ["m3", "m1", "m2"]})
@@ -126,7 +163,7 @@ def test_auto_merge_dry_run_counts_without_mutating(monkeypatch):
 
     fake_groups = [
         {"fingerprint": "acme", "country_code": "MX", "master_ids": ["m1", "m2", "m3"]},
-        {"fingerprint": "", "country_code": "MX", "master_ids": ["x", "y"]},  # boş fp → skip
+        {"fingerprint": "", "country_code": "MX", "master_ids": ["x", "y"]},   # boş fp → skip
     ]
     monkeypatch.setattr(dam, "iter_duplicate_groups", lambda es, **k: iter(fake_groups))
     es = MagicMock(); conn = MagicMock()
@@ -178,7 +215,7 @@ def test_auto_merge_per_batch_no_refresh(monkeypatch):
     from unittest.mock import MagicMock
 
     monkeypatch.setattr(dam, "iter_duplicate_groups",
-                        lambda es, **k: iter([{"fingerprint": "a", "country_code": "MX", "master_ids": ["m1", "m2"]}]))
+                        lambda es, **k: iter([{"fingerprint": "acme", "country_code": "MX", "master_ids": ["m1", "m2"]}]))
     monkeypatch.setattr(dam, "apply_merge", lambda es, cur, conn, plan: {"ok": True, "merged": 1, "repointed": 1})
     es = MagicMock(); conn = MagicMock()
     stats = dam.auto_merge_duplicates(es, conn, restrict_master_ids=["m1", "m2"], refresh=False)

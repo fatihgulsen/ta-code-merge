@@ -64,3 +64,25 @@ def test_codes_numbers_initials_long_are_kept_as_new_firm(name):
 def test_placeholder_is_country_scoped():
     assert inf.classify_input("sin razon social", "DE") is None
     assert inf.classify_input("sin razon social", "MX") == "placeholder"
+
+
+@pytest.mark.parametrize("name", [
+    # Non-Latin scripts carry real content → must NOT be excluded (P-R2-2 regression).
+    # Real firms transliterated into Cyrillic in the source data.
+    "ФОЛЬКСВАГЕН АГ",                 # Volkswagen AG
+    "СИБУР ИНТЕРНЭШНЛ ГМБХ",          # SIBUR International GmbH
+    "ООО УРАЛКАЛИЙ ТРЕЙДИНГ",         # Uralkali Trading
+    "КИМИКА ЦЕНТРАЛЬ ДЕ МЕКСИКО",     # Quimica Central de Mexico
+    "三菱商事株式会社",                 # CJK
+    "ΑΛΦΑ ΒΗΤΑ",                      # Greek
+])
+def test_non_latin_real_firms_are_kept(name):
+    assert inf.classify_input(name, "MX") is None
+
+
+def test_na_marker_still_detected_after_unicode_norm():
+    # Unicode-aware _norm must not regress structural NA markers / punctuation-only.
+    assert inf.classify_input("#N/A", "MX") == "na_marker"
+    assert inf.classify_input("s/n", "MX") == "na_marker"
+    assert inf.classify_input("...,-/", "MX") == "no_alnum"
+    assert inf.classify_input("Sin Razón Social", "MX") == "placeholder"

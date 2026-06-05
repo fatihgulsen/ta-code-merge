@@ -19,13 +19,22 @@ import unicodedata
 
 from config import NON_FIRM_PLACEHOLDERS
 
-_NONALNUM = re.compile(r"[^a-z0-9]+")
+# Unicode-AWARE: harf/rakam DIŞI her şeyi (+alt çizgi) boşluğa indir. Latin-DIŞI
+# alfabeler (Kiril/Yunan/CJK/Arap) içerik TAŞIR → 'no_alnum' sayılmamalı. Eski
+# [^a-z0-9] regex'i bu gerçek firmaları (ör. ФОЛЬКСВАГЕН АГ = Volkswagen AG) yanlışlıkla
+# eliyordu (P-R2-2). \w py3 str'de zaten Unicode harf/rakam eşler (re.UNICODE default);
+# '_' ayrıca elenir.
+_NONALNUM = re.compile(r"[\W_]+")
 # Salt yapısal "boş/null" işaretçileri (dil-bağımsız, içerik taşımayan):
 _NA_MARKERS = {"n a", "na", "s n", "sn", "null", "none", "nan", "nil"}
 
 
 def _norm(text: str) -> str:
-    """lower + aksan-fold (NFKD) + alfanümerik-olmayanları boşluğa indir + tek boşluk."""
+    """lower + aksan-fold (NFKD) + alfanümerik-olmayanları (Unicode) boşluğa indir + tek boşluk.
+
+    Latin-dışı içerik (Kiril/CJK/...) KORUNUR → 'isim yok' kararı yalnızca gerçekten
+    içerik-taşımayan girdilere uygulanır. Latin placeholder/na set'leriyle eşleşme
+    değişmez (Latin girdiler aynı normalize edilir; Latin-dışı zaten set'lerde yok)."""
     nfkd = unicodedata.normalize("NFKD", text.lower())
     no_accent = "".join(c for c in nfkd if not unicodedata.combining(c))
     return _NONALNUM.sub(" ", no_accent).strip()

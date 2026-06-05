@@ -21,7 +21,7 @@ import psycopg2
 import psycopg2.sql
 from elasticsearch import Elasticsearch
 
-from config import DB_CONFIG, ES_INDEX, RAW_TABLE_NAME, COLUMN_MAPPING
+from config import DB_CONFIG, ES_INDEX, RAW_TABLE_NAME, COLUMN_MAPPING, DEDUP_MIN_FINGERPRINT_TOKEN_LEN
 
 logger = logging.getLogger(__name__)
 
@@ -37,11 +37,28 @@ def choose_primary(master_ids: list[str]) -> str:
     return sorted(master_ids)[0]
 
 
+def _is_distinctive_fingerprint(fp: str, min_token_len: int | None = None) -> bool:
+    """Fingerprint dedup ANAHTARI olacak kadar ayırt edici mi?
+
+    En az bir token >= `min_token_len` (config.DEDUP_MIN_FINGERPRINT_TOKEN_LEN) karakter
+    olmalı. Aksi halde dejenere kabul edilir: fingerprint_analyzer noktalı-akronim isimleri
+    (C.M.S.A.D.C / U M S.A. DE C.V. / A.P.M. S.A.) tek junk harfe ('m') çökertebiliyor →
+    alakasız firmalar aynı anahtarda toplanıp magnet oluşuyor (P-R2-1).
+
+    Eşik config'ten ayarlanır: 1 = guard pratikte kapalı (yalnız boş fp engellenir);
+    2 = akronim magnet'lerini engeller, gerçek 2-harfli markaları (VF/3M) korur. Ampirik
+    sınır ve neden ≥2'nin bile yetmediği: docs/audit/2026-06-03-round2-preliminary-2.9pct.md."""
+    if min_token_len is None:
+        min_token_len = DEDUP_MIN_FINGERPRINT_TOKEN_LEN
+    return any(len(tok) >= min_token_len for tok in fp.split())
+
+
 def plan_merge(group: dict) -> dict | None:
     """Bir fingerprint grubundan birleştirme planı üretir veya None döner.
 
     None koşulları (güvenlik):
       - fingerprint boş/whitespace (yalnız yasal-ek/geo/çöp → magnet riski)
+      - fingerprint dejenere: yalnızca tek-karakter token'lar (akronim çökmesi → magnet)
       - country_code yok (hard-filter güvenliği)
       - <2 distinct master (birleştirilecek bir şey yok)
     """
@@ -49,6 +66,12 @@ def plan_merge(group: dict) -> dict | None:
     country = (group.get("country_code") or "").strip()
     masters = list(dict.fromkeys(group.get("master_ids") or []))  # tekilleştir, sıra korunur
     if not fp or not country or len(masters) < 2:
+        return None
+    if not _is_distinctive_fingerprint(fp):
+        # Dejenere fingerprint (akronim çökmesi) → birleştirme. NOT: gerçekten
+        # tek-karakterli özdeş firmalar burada under-merge kalır (kabul edilen takas;
+        # magnet riski somut, under-merge riski düşük). Kayıp merge'ler denetlenebilsin.
+        logger.debug("dejenere fingerprint skip: fp=%r masters=%d", fp, len(masters))
         return None
     primary = choose_primary(masters)
     secondaries = [m for m in masters if m != primary]

@@ -200,17 +200,150 @@ def test_variations_suffix_mapping_has_explicit_search_analyzer():
     assert suffix_field.get("search_analyzer") == "standard"
 
 
-def test_phonetic_match_blocks_short_core():
-    # Tek ayırt edici token (yasal ek çıkınca "witte") → guard devreye girer:
-    # eşleşmeyi imkânsız kılan sentinel query döner (dev/çöp master'a sızmayı önler).
-    q = es_queries.PHONETIC_MATCH("WITTE, S.A. DE C.V.", "MX")
-    assert q == es_queries.MATCH_NONE
+def test_phonetic_match_blocks_empty_core():
+    # SIFIR ayırt edici token (yalnızca yasal ek / coğrafi ad / çöp) → guard
+    # devreye girer: eşleşmeyi imkânsız kılan sentinel query (çöp/magnet master'a
+    # sızmayı önler). Fonetik alan temizliği (legal_fragment_stop) gerçek markaların
+    # ayrımını zaten yaptığından guard yalnızca BOŞ çekirdeği bloklar.
+    assert es_queries.PHONETIC_MATCH("S.A. DE C.V.", "MX") == es_queries.MATCH_NONE  # yalnızca suffix
+    assert es_queries.PHONETIC_MATCH("MEXICO", "MX") == es_queries.MATCH_NONE        # yalnızca ülke adı (drop_geo)
 
 
-def test_phonetic_match_allows_multi_token_core():
-    # İki+ ayırt edici token → normal fonetik query döner.
-    q = es_queries.PHONETIC_MATCH("AUDI MEXICO S.A. DE C.V.", "MX")
-    bool_q = q["query"]["bool"]
-    nested = next(c["nested"] for c in bool_q["must"] if "nested" in c)
-    assert nested["path"] == "variations_stripped"
-    assert _get_country_filter(q) == "MX"
+def test_phonetic_match_adds_token_count_filter_es_side():
+    """ES-tarafı coverage: es verildiğinde nested query'ye token_count term filtresi
+    eklenir (subset over-merge'i ES eler; Python doğrulaması YOK)."""
+    from unittest.mock import MagicMock
+    es = MagicMock()
+    es.indices.analyze.return_value = {"tokens": [{"token": "alcatel"}]}  # 1 token
+    q = es_queries.PHONETIC_MATCH("ALCATEL S.A. DE C.V.", "MX", es=es)
+    nested = next(c["nested"] for c in q["query"]["bool"]["must"] if "nested" in c)
+    inner_filter = nested["query"]["bool"]["filter"]
+    assert {"term": {"variations_stripped.name.token_count": 1}} in inner_filter
+
+
+def test_phonetic_match_no_token_count_filter_without_es():
+    """es yoksa (birim test) token_count hesaplanamaz → filtre eklenmez (graceful)."""
+    q = es_queries.PHONETIC_MATCH("IGSA S.A. DE C.V.", "MX")
+    nested = next(c["nested"] for c in q["query"]["bool"]["must"] if "nested" in c)
+    assert nested["query"]["bool"]["filter"] == []
+
+
+# ── Ayırt-edici çekirdek GATE (Round-3 #3) ─────────────────────────────────
+
+def _es_returning(tokens):
+    """stripped analyzer çıktısını taklit eden MagicMock es."""
+    from unittest.mock import MagicMock
+    es = MagicMock()
+    es.indices.analyze.return_value = {"tokens": [{"token": t} for t in tokens]}
+    return es
+
+
+def test_core_gate_blocks_single_char_residue():
+    """Tek-harfe çöken çekirdek ('M S.A.'→'m') tüm matching stage'lerde MATCH_NONE →
+    NEW_MASTER. Akronim magnet artığı (A-sınıfı) ve magnet-seed engellenir."""
+    es = _es_returning(["m"])
+    for fn in (es_queries.CANONICAL_EXACT, es_queries.STRIPPED_EXACT, es_queries.TOKEN_COVERAGE,
+               es_queries.FUZZY_PHRASE, es_queries.SUFFIX_FUZZY):
+        es_queries.clear_token_count_cache()
+        assert fn("M S.A. DE C.V.", "MX", es=es) == es_queries.MATCH_NONE, fn.__name__
+
+
+def test_core_gate_allows_distinctive_brand():
+    """Gerçek marka (>=2-char alfabetik çekirdek) tüm stage'lerde geçer."""
+    es = _es_returning(["siemens"])
+    for fn in (es_queries.CANONICAL_EXACT, es_queries.STRIPPED_EXACT,
+               es_queries.TOKEN_COVERAGE, es_queries.FUZZY_PHRASE):
+        es_queries.clear_token_count_cache()
+        assert fn("SIEMENS S.A. DE C.V.", "MX", es=es) != es_queries.MATCH_NONE, fn.__name__
+
+
+def test_core_gate_two_char_brand_preserved():
+    """2-harfli gerçek marka (VF/3M) korunur (MATCH_CORE_MIN_TOKEN_LEN=2)."""
+    es_queries.clear_token_count_cache()
+    assert es_queries.TOKEN_COVERAGE("VF OUTDOOR", "MX", es=_es_returning(["vf", "outdoor"])) != es_queries.MATCH_NONE
+    es_queries.clear_token_count_cache()
+    assert es_queries.FUZZY_PHRASE("3M", "MX", es=_es_returning(["3m"])) != es_queries.MATCH_NONE
+
+
+def test_core_gate_numeric_only_blocked_in_fuzzy_allowed_in_stripped():
+    """Salt-sayı çekirdek ('#N/A 300'→['300']): loose stage'lerde (require_alpha) bloklanır
+    (B-sınıfı çöp sızma), STRIPPED_EXACT'te (tam eşleşme güvenli) izin verilir."""
+    es = _es_returning(["300"])
+    es_queries.clear_token_count_cache()
+    assert es_queries.TOKEN_COVERAGE("#N/A 300", "MX", es=es) == es_queries.MATCH_NONE
+    es_queries.clear_token_count_cache()
+    assert es_queries.FUZZY_PHRASE("#N/A 300", "MX", es=es) == es_queries.MATCH_NONE
+    es_queries.clear_token_count_cache()
+    assert es_queries.STRIPPED_EXACT("300 S.A. DE C.V.", "MX", es=es) != es_queries.MATCH_NONE
+
+
+def test_core_gate_inert_without_es():
+    """es yoksa (birim test / eski çağrı yolu) guard devre dışı — mevcut davranış korunur."""
+    assert es_queries.TOKEN_COVERAGE("M S.A.", "MX") != es_queries.MATCH_NONE
+    assert es_queries.FUZZY_PHRASE("M S.A.", "MX") != es_queries.MATCH_NONE
+
+
+def test_ngram_match_blocks_empty_core():
+    # Faz 3: yalnızca yasal ek / ülke adı (0 ayırt edici token) → NGRAM bloklanır.
+    assert es_queries.NGRAM_MATCH("S.A. DE C.V.", "MX") == es_queries.MATCH_NONE
+    assert es_queries.NGRAM_MATCH("MEXICO", "MX") == es_queries.MATCH_NONE
+
+
+def test_ngram_match_allows_distinctive_core():
+    # Ayırt edici çekirdek varsa normal ngram query döner (precision'ı coverage gate sağlar).
+    q = es_queries.NGRAM_MATCH("ALPI USA INC", "MX")
+    assert q != es_queries.MATCH_NONE
+    nested = next(c["nested"] for c in q["query"]["bool"]["must"] if "nested" in c)
+    assert nested["query"]["match"]["variations_stripped.name.ngram"]["minimum_should_match"] == "75%"
+
+
+def test_phonetic_match_allows_single_brand_core():
+    # Tek AYIRT EDİCİ marka token'ı (yasal ek + coğrafi çıkınca) → ARTIK eşleşmeye
+    # izin verilir; precision'ı fonetik alan temizliği sağlar (canlı: live_probe).
+    for name in ("IGSA S.A. DE C.V.", "AUDI MEXICO S.A. DE C.V.", "DHL GLOBAL FORWARDING"):
+        q = es_queries.PHONETIC_MATCH(name, "MX")
+        assert q != es_queries.MATCH_NONE
+        nested = next(c["nested"] for c in q["query"]["bool"]["must"] if "nested" in c)
+        assert nested["path"] == "variations_stripped"
+        assert _get_country_filter(q) == "MX"
+
+
+# ─────────────────────────────────────────────────────────────────────
+# _get_token_count memoization (perf — analyze round-trip'lerini azaltır)
+# ─────────────────────────────────────────────────────────────────────
+
+def test_get_token_count_memoizes_same_analyzer_text():
+    """Aynı (analyzer, text) için es.indices.analyze YALNIZCA bir kez çağrılmalı."""
+    from unittest.mock import MagicMock
+    es_queries.clear_token_count_cache()
+    es = MagicMock()
+    es.indices.analyze.return_value = {"tokens": [{"t": 1}, {"t": 2}, {"t": 3}]}
+
+    a = es_queries._get_token_count(es, "ACME S.A. DE C.V.", "stripped_search_analyzer_mx")
+    b = es_queries._get_token_count(es, "ACME S.A. DE C.V.", "stripped_search_analyzer_mx")
+    assert a == b == 3
+    assert es.indices.analyze.call_count == 1  # ikinci çağrı cache'ten
+
+
+def test_get_token_count_distinct_keys_recompute():
+    from unittest.mock import MagicMock
+    es_queries.clear_token_count_cache()
+    es = MagicMock()
+    es.indices.analyze.return_value = {"tokens": [{"t": 1}]}
+    es_queries._get_token_count(es, "A", "an1")
+    es_queries._get_token_count(es, "B", "an1")           # farklı text
+    es_queries._get_token_count(es, "A", "an2")           # farklı analyzer
+    assert es.indices.analyze.call_count == 3
+
+
+def test_get_token_count_does_not_cache_errors():
+    """Hata (exception) durumunda 0 döner ama CACHE'LENMEZ → sonraki çağrı tekrar dener."""
+    from unittest.mock import MagicMock
+    es_queries.clear_token_count_cache()
+    es = MagicMock()
+    es.indices.analyze.side_effect = [RuntimeError("down"), {"tokens": [{"t": 1}, {"t": 2}]}]
+    first = es_queries._get_token_count(es, "X", "an")
+    second = es_queries._get_token_count(es, "X", "an")
+    assert first == 0          # hata → 0
+    assert second == 2         # cache'lenmediği için yeniden denendi ve başardı
+    assert es.indices.analyze.call_count == 2

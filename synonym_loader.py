@@ -138,6 +138,74 @@ def get_legal_suffix_tokens(country_code: str) -> frozenset:
     return _parse_category_tokens(paths, "legal_suffixes")
 
 
+# Yasal-ek kısaltma parçaları için maksimum parça uzunluğu. Bu sınır, çok-kelimeli
+# yasal ifadelerdeki KISALTMA parçalarını (s, a, de, c, v, sa, cv, rl, sapi…)
+# yakalarken TAM iş kelimelerini (general, civil, company, partnership; len>4)
+# hariç tutar — aksi halde meşru isim token'ları yanlışlıkla silinir.
+_LEGAL_FRAGMENT_MAX_LEN = 4
+
+
+@lru_cache(maxsize=None)
+def get_legal_suffix_fragments(country_code: str) -> frozenset:
+    """Ülkeye özgü yasal-ek KISALTMA parçaları (JSON'dan türetilir, hardcode değil).
+
+    legal_suffixes ifadelerini (örn. 's a de c v', 's de rl de cv') boşlukta böler;
+    yalnızca KISA (<=_LEGAL_FRAGMENT_MAX_LEN harf) alfabetik parçaları döner. Böylece
+    'S.A. DE C.V.' → {s, a, de, c, v}; 'general partnership' → {} (tam kelimeler korunur).
+    core_name çekirdek-token indirgemesinde ve es_manager fonetik gürültü stop'unda kullanılır.
+    """
+    frags: set[str] = set()
+    for phrase in get_legal_suffix_tokens(country_code):
+        for piece in phrase.split():
+            if piece.isalpha() and len(piece) <= _LEGAL_FRAGMENT_MAX_LEN:
+                frags.add(piece)
+    return frozenset(frags)
+
+
+@lru_cache(maxsize=None)
+def get_all_legal_suffix_fragments() -> frozenset:
+    """Tüm ülkelerin (common dahil) yasal-ek kısaltma parçalarının birleşimi.
+
+    es_manager bunu phonetic_analyzer'da metaphone gürültüsünü (S, A, T, K, F)
+    üreten parçaları stop'lamak için kullanır. Tamamen JSON'dan türetilir."""
+    frags: set[str] = set()
+    for phrase in get_all_company_type_tokens():
+        for piece in phrase.split():
+            if piece.isalpha() and len(piece) <= _LEGAL_FRAGMENT_MAX_LEN:
+                frags.add(piece)
+    return frozenset(frags)
+
+
+@lru_cache(maxsize=None)
+def get_country_name_tokens(country_code: str) -> frozenset:
+    """Ülkenin kendi ad varyantlarının TEK-KELİMELİK token'ları (countries.json'dan).
+
+    'countries' kategorisinde hedefi bu ülke kodu olan kuralın tek-kelimelik kaynak
+    adlarını döner (MX → mexico, méxico, mex, mx). Çok-kelimeli uzun adlar
+    (United Mexican States) ayrıştırılmaz; aksi halde jenerik kelimeler (united,
+    states) sızar. Tek-ülke korpusunda 'mexico' ayırt edici olmadığından PHONETIC
+    guard `drop_geo=True` ile bu token'ları çekirdek dışı bırakır."""
+    cc = country_code.upper()
+    path = SYNONYMS_DIR / "countries.json"
+    if not path.exists():
+        return frozenset()
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    out: set[str] = set()
+    for rule in data.get("countries", []):
+        rule_norm = normalize_text(rule)
+        if "=>" not in rule_norm:
+            continue
+        left, right = rule_norm.split("=>", 1)
+        if right.strip().lower().replace(".", "") != cc.lower():
+            continue
+        for src in left.split(","):
+            t = src.strip().lower().replace(".", "")
+            if t and " " not in t:
+                out.add(t)
+    return frozenset(out)
+
+
 @lru_cache(maxsize=None)
 def get_business_sector_tokens(country_code: str) -> frozenset:
     """Ulkeye ozgu business_sector token'larini doner.

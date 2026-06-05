@@ -345,18 +345,20 @@ def test_per_row_exception_does_not_halt_batch():
         "index_variation": False,
     }
 
-    # match_single_record: OK for row1, raises for row2, OK for row3
-    call_results = [
-        {"winner": fake_winner, "trace": []},   # row1
-        Exception("boom — row2 explodes"),       # row2
-        {"winner": fake_winner, "trace": []},   # row3
-    ]
+    # Batched matching: row1/row3 → winner; row2 → NEW_MASTER yolunda _index_new_master patlar.
+    def fake_batch(es, recs, stages):
+        out = []
+        for r in recs:
+            if r["raw_name"] == "Boom Corp":
+                out.append({"winner": None, "trace": []})
+            else:
+                out.append({"winner": fake_winner, "trace": []})
+        return out
 
-    def side_effect_match(*args, **kwargs):
-        result = call_results.pop(0)
-        if isinstance(result, Exception):
-            raise result
-        return result
+    def fake_index_new_master(es, rec):
+        if rec["raw_name"] == "Boom Corp":
+            raise Exception("boom — row2 explodes")
+        return "m-new"
 
     mock_es = MagicMock()
     mock_read_conn = MagicMock()
@@ -378,11 +380,13 @@ def test_per_row_exception_does_not_halt_batch():
             captured_updates.extend(argslist)
 
     with patch.object(mp, "get_db_connection", side_effect=[mock_read_conn, mock_write_conn]), \
-         patch.object(mp, "match_single_record", side_effect=side_effect_match), \
+         patch.object(mp, "match_records_batch", side_effect=fake_batch), \
+         patch.object(mp, "_index_new_master", side_effect=fake_index_new_master), \
+         patch.object(mp, "_add_variation_to_master"), \
+         patch.object(mp, "auto_merge_duplicates", return_value={"merged_masters": 0, "repointed_rows": 0}), \
          patch.object(mp, "execute_values", side_effect=fake_execute_values), \
          patch.object(mp, "validate_db_schema"), \
          patch.object(mp, "ensure_stage_log_table"), \
-         patch.object(mp, "ES_REFRESH_INTERVAL", 1000), \
          patch.object(mp, "BATCH_SIZE", 10), \
          patch.object(mp, "ES_INDEX", "test_index"), \
          patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
@@ -943,3 +947,219 @@ def test_create_new_masters_variation_shape_matches_add_variation():
     assert isinstance(build_entry.get("name"), str) and build_entry["name"], (
         f"build_new_master_doc variations[0]['name'] must be a non-empty str, got {build_entry!r}"
     )
+
+
+def test_excluded_input_isolated_not_matched_not_indexed():
+    """P0-B: garbage girdi (placeholder) match_single_record'a GİRMEZ, ES'e İNDEKSLENMEZ;
+    EXCLUDED match_type ile izole edilir (kendi master_code)."""
+    from unittest.mock import patch, MagicMock
+    import main_processor as mp
+    import config as cfg
+
+    row = {
+        cfg.COLUMN_MAPPING["id"]: 1,
+        cfg.COLUMN_MAPPING["company_name"]: "Sin Razon Social",
+        cfg.COLUMN_MAPPING["country_code"]: "MX",
+    }
+    for k in ("tax_number", "phone_number", "address"):
+        if cfg.COLUMN_MAPPING.get(k):
+            row[cfg.COLUMN_MAPPING[k]] = ""
+
+    captured = []
+    def fake_execute_values(cur, sql, argslist, *a, **k):
+        captured.extend(list(argslist))
+
+    msr = MagicMock(); idx = MagicMock()
+    mock_es = MagicMock()
+    mock_read_conn = MagicMock(); mock_write_conn = MagicMock()
+    mock_read_cur = MagicMock(); mock_write_cur = MagicMock()
+    mock_read_conn.cursor.return_value = mock_read_cur
+    mock_write_conn.cursor.return_value = mock_write_cur
+    mock_read_cur.fetchall.side_effect = [[row], []]
+    mock_read_cur.fetchone.return_value = (1,)
+
+    with patch.object(mp, "get_db_connection", side_effect=[mock_read_conn, mock_write_conn]), \
+         patch.object(mp, "match_single_record", msr), \
+         patch.object(mp, "_index_new_master", idx), \
+         patch.object(mp, "execute_values", side_effect=fake_execute_values), \
+         patch.object(mp, "validate_db_schema"), \
+         patch.object(mp, "ensure_stage_log_table"), \
+         patch.object(mp, "ES_REFRESH_INTERVAL", 1000), \
+         patch.object(mp, "BATCH_SIZE", 10), \
+         patch.object(mp, "ES_INDEX", "test_index"), \
+         patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
+         patch("main_processor.get_es_client", return_value=mock_es), \
+         patch("main_processor.create_index"), \
+         patch("main_processor.register_all_pipelines"):
+        mp.process_all_data()
+
+    msr.assert_not_called()   # eşleştirmeye girmedi
+    idx.assert_not_called()   # ES'e indekslenmedi (magnet olamaz)
+    # EXCLUDED match_type ile bir PG update yazıldı
+    excluded = [t for t in captured if len(t) >= 3 and t[2] == "EXCLUDED"]
+    assert excluded, f"EXCLUDED PG update bulunamadı; capt={captured}"
+    assert "EXCLUDED:" in excluded[0][3]  # details sebep içerir
+
+
+def test_input_filter_disabled_processes_normally(monkeypatch):
+    """ENABLE_INPUT_FILTER=False iken garbage bile normal akışa girer (match denenir)."""
+    from unittest.mock import patch, MagicMock
+    import main_processor as mp
+    import config as cfg
+
+    row = {cfg.COLUMN_MAPPING["id"]: 1, cfg.COLUMN_MAPPING["company_name"]: "Sin Razon Social",
+           cfg.COLUMN_MAPPING["country_code"]: "MX"}
+    for k in ("tax_number", "phone_number", "address"):
+        if cfg.COLUMN_MAPPING.get(k):
+            row[cfg.COLUMN_MAPPING[k]] = ""
+
+    mrb = MagicMock(return_value=[{"winner": None, "trace": []}])
+    mock_es = MagicMock()
+    mrc = MagicMock(); mwc = MagicMock(); rcur = MagicMock(); wcur = MagicMock()
+    mrc.cursor.return_value = rcur; mwc.cursor.return_value = wcur
+    rcur.fetchall.side_effect = [[row], []]; rcur.fetchone.return_value = (1,)
+
+    with patch.object(mp, "ENABLE_INPUT_FILTER", False), \
+         patch.object(mp, "get_db_connection", side_effect=[mrc, mwc]), \
+         patch.object(mp, "match_records_batch", mrb), \
+         patch.object(mp, "_index_new_master", MagicMock(return_value="m1")), \
+         patch.object(mp, "auto_merge_duplicates", return_value={"merged_masters": 0, "repointed_rows": 0}), \
+         patch.object(mp, "execute_values"), \
+         patch.object(mp, "validate_db_schema"), \
+         patch.object(mp, "ensure_stage_log_table"), \
+         patch.object(mp, "BATCH_SIZE", 10), \
+         patch.object(mp, "ES_INDEX", "test_index"), \
+         patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
+         patch("main_processor.get_es_client", return_value=mock_es), \
+         patch("main_processor.create_index"), \
+         patch("main_processor.register_all_pipelines"):
+        mp.process_all_data()
+
+    # filtre kapalı → garbage bile eşleştirmeye girdi (batched matcher 1 kayıtla çağrıldı)
+    mrb.assert_called_once()
+    assert [r["raw_name"] for r in mrb.call_args[0][1]] == ["Sin Razon Social"]
+
+
+def test_per_batch_dedup_invoked_with_batch_master_ids():
+    """P0-C: batch sonunda auto_merge_duplicates, o batch'te oluşan NEW_MASTER id'leriyle
+    (restrict_master_ids) ve refresh=False ile çağrılır."""
+    from unittest.mock import patch, MagicMock
+    import main_processor as mp
+    import config as cfg
+
+    def mkrow(rid, name):
+        r = {cfg.COLUMN_MAPPING["id"]: rid, cfg.COLUMN_MAPPING["company_name"]: name,
+             cfg.COLUMN_MAPPING["country_code"]: "MX"}
+        for k in ("tax_number", "phone_number", "address"):
+            if cfg.COLUMN_MAPPING.get(k):
+                r[cfg.COLUMN_MAPPING[k]] = ""
+        return r
+
+    rows = [mkrow(1, "ACME S.A. DE C.V."), mkrow(2, "ACME, S.A. DE C.V.")]
+    captured = {}
+    def fake_auto_merge(es, conn, restrict_master_ids=None, refresh=True, **k):
+        captured["ids"] = list(restrict_master_ids or [])
+        captured["refresh"] = refresh
+        return {"groups": 1, "merged_masters": 1, "repointed_rows": 1, "skipped": 0, "errors": 0}
+
+    ids = iter(["mA", "mB"])
+    mock_es = MagicMock()
+    mrc = MagicMock(); mwc = MagicMock(); rcur = MagicMock(); wcur = MagicMock()
+    mrc.cursor.return_value = rcur; mwc.cursor.return_value = wcur
+    rcur.fetchall.side_effect = [rows, []]; rcur.fetchone.return_value = (2,)
+
+    with patch.object(mp, "AUTO_DEDUP_PER_BATCH", True), \
+         patch.object(mp, "get_db_connection", side_effect=[mrc, mwc]), \
+         patch.object(mp, "match_single_record", return_value={"winner": None, "trace": []}), \
+         patch.object(mp, "_index_new_master", side_effect=lambda es, rec: next(ids)), \
+         patch.object(mp, "auto_merge_duplicates", side_effect=fake_auto_merge), \
+         patch.object(mp, "execute_values"), \
+         patch.object(mp, "validate_db_schema"), \
+         patch.object(mp, "ensure_stage_log_table"), \
+         patch.object(mp, "ES_REFRESH_INTERVAL", 1000), \
+         patch.object(mp, "BATCH_SIZE", 10), \
+         patch.object(mp, "ES_INDEX", "test_index"), \
+         patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
+         patch("main_processor.get_es_client", return_value=mock_es), \
+         patch("main_processor.create_index"), \
+         patch("main_processor.register_all_pipelines"):
+        mp.process_all_data()
+
+    assert captured.get("ids") == ["mA", "mB"], f"batch master id'leri geçilmeli, görülen: {captured}"
+    assert captured.get("refresh") is False
+
+
+# ─────────────────────────────────────────────────────────────────────
+# Q1: batched matching equivalence (match_records_batch == per-record)
+# ─────────────────────────────────────────────────────────────────────
+
+def _stage(name, order, min_score):
+    return {"name": name, "order": order, "query_fn": name, "min_score": min_score,
+            "enabled": True, "index_variation": False}
+
+
+def _hit(master_id, score):
+    return {"hits": {"hits": [{"_id": master_id, "_score": score,
+                               "_source": {"master_id": master_id}}]}}
+
+
+def _nohit():
+    return {"hits": {"hits": []}}
+
+
+def test_match_records_batch_equivalent_to_single(monkeypatch):
+    """Toplu eşleştirme, her kayıt için tekil eşleştirmeyle BİREBİR aynı winner/trace üretir."""
+    from unittest.mock import MagicMock
+    import main_processor as mp
+
+    stages = [_stage("CANONICAL_EXACT", 1, 3.0), _stage("STRIPPED_EXACT", 2, 3.0)]
+
+    # her stage query_fn'i basit bir dict döndürsün (es_queries'e bağımlı olmadan)
+    monkeypatch.setattr(mp._es_queries, "CANONICAL_EXACT",
+                        lambda name, country, es=None, **k: {"q": "c"}, raising=False)
+    monkeypatch.setattr(mp._es_queries, "STRIPPED_EXACT",
+                        lambda name, country, es=None, **k: {"q": "s"}, raising=False)
+
+    recs = [
+        {"raw_name": "A", "country": "MX"},  # CANONICAL hit
+        {"raw_name": "B", "country": "MX"},  # no hit
+        {"raw_name": "C", "country": "MX"},  # STRIPPED hit (CANONICAL no)
+    ]
+    # Her kayıt 2 stage → response sırası: A.can, A.str, B.can, B.str, C.can, C.str
+    per_rec_resps = {
+        "A": [_hit("mA", 9.0), _nohit()],
+        "B": [_nohit(), _nohit()],
+        "C": [_nohit(), _hit("mC", 7.0)],
+    }
+
+    # Tekil: her çağrı o kaydın 2 yanıtını döndürür
+    def single_msearch(body):
+        # body[1]["q"] ilk stage; kaydı raw_name ile ayırt edemeyiz → sıra ile takip
+        raise AssertionError("not used")
+
+    # match_records_batch: tek msearch çağrısı (MSEARCH_CHUNK_SIZE >= 6/2)
+    es_batch = MagicMock()
+    es_batch.msearch.return_value = {"responses":
+        per_rec_resps["A"] + per_rec_resps["B"] + per_rec_resps["C"]}
+    batch_out = mp.match_records_batch(es_batch, recs, stages)
+
+    # Tekil eşdeğer: her kayıt için ayrı es, kendi 2 yanıtı
+    single_out = []
+    for r in recs:
+        es_one = MagicMock()
+        es_one.msearch.return_value = {"responses": per_rec_resps[r["raw_name"]]}
+        single_out.append(mp.match_single_record(es_one, r, stages))
+
+    assert batch_out == single_out
+    # winner doğrulaması
+    assert batch_out[0]["winner"]["stage_name"] == "CANONICAL_EXACT"
+    assert batch_out[1]["winner"] is None
+    assert batch_out[2]["winner"]["stage_name"] == "STRIPPED_EXACT"
+
+
+def test_match_records_batch_empty_and_no_stages():
+    import main_processor as mp
+    from unittest.mock import MagicMock
+    assert mp.match_records_batch(MagicMock(), [], [_stage("X", 1, 1.0)]) == []
+    out = mp.match_records_batch(MagicMock(), [{"raw_name": "A", "country": "MX"}], [])
+    assert out == [{"winner": None, "trace": []}]

@@ -60,3 +60,32 @@ def test_other_country_still_strips_genuine_legal_suffix():
     # ülkede silinmeye devam eder — yalnızca MX'e özgü parçalar ülke-bazlıdır.
     assert normalize_core("ACME GMBH", "DE") == ("acme",)
     assert normalize_core("ACME LIMITED", "TR") == ("acme",)
+
+
+# ---------------------------------------------------------------------------
+# drop_geo: Coğrafi/jenerik non-distinctive token'lar (MX: 'mexico'/'mexicana')
+# PHONETIC guard için ayırt edici sayılmaz. Varsayılan KAPALI (geri uyumluluk).
+# ---------------------------------------------------------------------------
+
+
+def test_drop_geo_collapses_geographic_token():
+    # 'mexico' coğrafi gürültü → drop_geo ile düşer, geriye tek ayırt edici core kalır.
+    assert normalize_core("AUDI MEXICO S.A. DE C.V.", "MX", drop_geo=True) == ("audi",)
+    assert normalize_core("VIBRACOUSTIC DE MEXICO S.A. DE C.V.", "MX", drop_geo=True) == ("vibracoustic",)
+
+
+def test_drop_geo_default_off_keeps_existing_behaviour():
+    # Varsayılan (drop_geo=False) davranış korunur — detektörler etkilenmez.
+    assert normalize_core("AUDI MEXICO S.A. DE C.V.", "MX") == ("audi", "mexico")
+
+
+def test_drop_geo_only_for_country_with_geo_set():
+    # MX dışı ülkede 'mexico' coğrafi-stopword DEĞİL → korunur.
+    assert normalize_core("ALFA MEXICO", "TR", drop_geo=True) == ("alfa", "mexico")
+
+
+def test_drop_geo_keeps_two_distinctive_with_mx_suffix():
+    # MX yasal ekleri çıkınca iki AYIRT EDİCİ token kalıyorsa guard'a takılmamalı.
+    assert normalize_core(
+        "VOLKSWAGEN COMERCIALIZADORA S.A. DE C.V.", "MX", drop_geo=True
+    ) == ("volkswagen", "comercializadora")

@@ -61,10 +61,15 @@ from config import (
     LOG_ALL_STAGES,
     NEW_MASTER_SUBBATCH_SIZE,
     ES_REFRESH_INTERVAL,
+    ENABLE_INPUT_FILTER,
+    AUTO_DEDUP_PER_BATCH,
+    MATCH_BATCH_SIZE,
 )
 from es_manager import create_index, get_es_client
 from es_ingest import register_all_pipelines, pipeline_name
 import es_queries as _es_queries
+from input_filter import classify_input
+from dedup_auto_merge import auto_merge_duplicates
 
 logging.basicConfig(
     level=logging.INFO,
@@ -755,62 +760,97 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
 # TEKIL KAYIT ESLESTIRME (ES-Authority)
 # ─────────────────────────────────────────────────────────────────────
 
-def match_single_record(es, rec: dict, active_stages: list[dict]) -> dict:
-    """Tek bir kaydi tum stage'lerden gecirir (msearch ile performansli).
-    Sonuclari islerken ilk eslesenden sonrasini kisa devre yapar (loglamaz).
-    Returns:
-        {"winner": dict or None, "trace": list}
+def _select_winner(stage_responses: list[dict], active_stages: list[dict]) -> dict:
+    """Bir kaydın stage yanıtlarından (sıralı) kazananı seçer.
+
+    Stage'ler `order` sırasında; ilk `score >= min_score` eşleşen kazanır (kısa devre).
+    Hem tekil hem toplu eşleştirme bu mantığı paylaşır → birebir aynı semantik.
+    Returns: {"winner": dict|None, "trace": list}
     """
-    body: list[dict] = []
-    stage_indices: list[dict] = []
-
-    for stage in active_stages:
-        query_fn = getattr(_es_queries, stage["query_fn"])
-        q = query_fn(name=rec["raw_name"], country=rec["country"], es=es)
-        body.append({"index": ES_INDEX, "routing": rec["country"].upper()})
-        body.append(q)
-        stage_indices.append(stage)
-
-    if not body:
-        return {"winner": None, "trace": []}
-
-    try:
-        response = es.msearch(body=body)
-    except Exception:
-        logger.exception("msearch basarisiz (single record)")
-        return {"winner": None, "trace": []}
-
     trace = []
     winner = None
-
-    for i, stage in enumerate(stage_indices):
-        resp = response["responses"][i]
+    for i, stage in enumerate(active_stages):
+        resp = stage_responses[i] if i < len(stage_responses) else {"error": "missing"}
         if "error" in resp:
             continue
-            
         hits = resp["hits"].get("hits", [])
         top_hit = hits[0] if hits else None
         top_score = top_hit["_score"] if top_hit else 0.0
-        
         matched = top_hit is not None and top_score >= stage["min_score"]
-        
         res = {
             "stage_name": stage["name"],
             "stage_order": stage["order"],
             "matched": matched,
             "es_score": top_score,
-            "master_id": top_hit["_source"]["master_id"] if matched else None
+            "master_id": top_hit["_source"]["master_id"] if matched else None,
         }
         trace.append(res)
-        
         if matched and winner is None:
             winner = res.copy()
             winner["master_doc_id"] = top_hit["_id"]
             winner["index_variation"] = stage.get("index_variation", True)
-            # Kisa devre: Ilk kazanan stage'den sonraki sonuclari (msearch icinden gelmis olsa bile) cope at.
             break
-            
     return {"winner": winner, "trace": trace}
+
+
+def _build_stage_body(es, rec: dict, active_stages: list[dict]) -> list[dict]:
+    """Bir kayıt için tüm stage'lerin msearch gövdesini (header+query çiftleri) üretir."""
+    body: list[dict] = []
+    for stage in active_stages:
+        query_fn = getattr(_es_queries, stage["query_fn"])
+        q = query_fn(name=rec["raw_name"], country=rec["country"], es=es)
+        body.append({"index": ES_INDEX, "routing": rec["country"].upper()})
+        body.append(q)
+    return body
+
+
+def match_single_record(es, rec: dict, active_stages: list[dict]) -> dict:
+    """Tek bir kaydi tum stage'lerden gecirir (msearch). Returns {winner, trace}."""
+    body = _build_stage_body(es, rec, active_stages)
+    if not body:
+        return {"winner": None, "trace": []}
+    try:
+        response = es.msearch(body=body)
+    except Exception:
+        logger.exception("msearch basarisiz (single record)")
+        return {"winner": None, "trace": []}
+    return _select_winner(response["responses"], active_stages)
+
+
+def match_records_batch(es, recs: list[dict], active_stages: list[dict]) -> list[dict]:
+    """Birden çok kaydı TOPLU msearch ile eşleştirir; her kayıt için {winner, trace}
+    döner (sıra korunur; `match_single_record` ile BİREBİR aynı winner-seçim semantiği).
+
+    Görünürlük: tüm kayıtlar AYNI index anlık-görüntüsüne karşı sorgulanır. Çağıran,
+    chunk'ı refresh penceresiyle hizalamalıdır (refresh=False yazımlar zaten pencere
+    içinde görünmez) → davranış tekil-akışla aynı, yalnız round-trip azalır.
+    """
+    if not recs:
+        return []
+    if not active_stages:
+        return [{"winner": None, "trace": []} for _ in recs]
+
+    S = len(active_stages)
+    body: list[dict] = []
+    for rec in recs:
+        body.extend(_build_stage_body(es, rec, active_stages))
+
+    # msearch'i MSEARCH_CHUNK_SIZE sorgu (=2 satır) ile parçala
+    responses: list[dict] = []
+    max_lines = max(2, MSEARCH_CHUNK_SIZE * 2)
+    for off in range(0, len(body), max_lines):
+        sub = body[off:off + max_lines]
+        try:
+            resp = es.msearch(body=sub)
+            responses.extend(resp["responses"])
+        except Exception:
+            logger.exception("toplu msearch basarisiz (sub-chunk error olarak isaretlendi)")
+            responses.extend([{"error": "msearch_failed"}] * (len(sub) // 2))
+
+    out = []
+    for i in range(len(recs)):
+        out.append(_select_winner(responses[i * S:(i + 1) * S], active_stages))
+    return out
 
 
 def _index_new_master(es, rec: dict) -> str:
@@ -923,6 +963,19 @@ def process_all_data() -> None:
     logger.info("Elasticsearch index kontrol ediliyor...")
     create_index(es)
 
+    # Reindex-ordering güvenlik kontrolü: distinctive-core GATE canlı analyzer'a güvenir.
+    # Index hâlâ ESKİ analyzer'daysa (acronym_glue yok) gate akronim isimleri yanlış bloklar
+    # (under-merge). create_index var olan index'i DEĞİŞTİRMEZ → eski şema sessizce kalabilir.
+    from es_manager import acronym_glue_active
+    glue = acronym_glue_active(es)
+    if glue is False:
+        raise RuntimeError(
+            "ES index'i ESKİ analyzer şemasında (acronym_glue yok). Distinctive-core gate "
+            "yanlış MATCH_NONE üretir → under-merge. Önce reindex: `python es_manager.py --force`."
+        )
+    if glue is None:
+        logger.warning("acronym_glue probe belirsiz (ES erişimi?) — reindex yapıldığından emin olun.")
+
     logger.info("Ingest pipeline kontrol ediliyor...")
     register_all_pipelines(es)
 
@@ -989,6 +1042,8 @@ def process_all_data() -> None:
         total_matched = 0
         total_new = 0
         total_skipped = 0
+        total_excluded = 0  # P0-B: firma-olmayan girdi (EXCLUDED, izole, indekslenmez)
+        total_deduped = 0   # P0-C: batch-içi fingerprint dedup ile birleştirilen master sayısı
         stage_counts: dict[str, int] = {}
         last_id = 0  # Sayfalama icin son islenen id
 
@@ -1032,156 +1087,167 @@ def process_all_data() -> None:
             pg_updates: list[tuple] = []
             log_rows: list[tuple] = []
             audit_rows: list[tuple] = []
-            records_since_refresh = 0
+            # P0-C: bu batch'te oluşturulan NEW_MASTER id'leri (batch-içi dedup kapsamı)
+            batch_new_master_ids: list[str] = []
 
-            for row in rows:
-                row_id = row[col_id]
-                last_id = row_id  # Sayfalama icin son id'yi takip et
-                try:
-                    country = (
-                        (row[col_country] or "").strip().upper()
-                        if col_country
-                        else "DEFAULT"
-                    )
-                    if len(country) != 2 or not country.isalpha():
-                        country = "DEFAULT"
-                    raw_name = (row[col_name] or "").strip()
-                    if not raw_name:
-                        total_skipped += 1
-                        pbar.update(1)
+            # Kayıtları MATCH_BATCH_SIZE'lık chunk'larda işle (Q1 — toplu msearch).
+            # chunk = refresh penceresi → görünürlük tekil-akışla AYNI; refresh chunk
+            # sonunda. Cross-chunk aynı-firma kayıtları normal matching ile (önceki
+            # chunk refresh'lendiğinden) eşleşir; within-chunk dup'ları batch-sonu dedup
+            # toplar. chunk_sz=1 → eski kayıt-başına davranış.
+            chunk_sz = max(1, MATCH_BATCH_SIZE)
+            for c0 in range(0, len(rows), chunk_sz):
+                chunk = rows[c0:c0 + chunk_sz]
+
+                # 1) Pre-pass: parse + empty-skip + EXCLUDED; eşleştirilecekleri topla
+                match_items: list[tuple] = []  # (row_id, raw_name, country, rec)
+                for row in chunk:
+                    row_id = row[col_id]
+                    last_id = row_id  # Sayfalama icin son id'yi takip et
+                    try:
+                        country = (
+                            (row[col_country] or "").strip().upper()
+                            if col_country
+                            else "DEFAULT"
+                        )
+                        if len(country) != 2 or not country.isalpha():
+                            country = "DEFAULT"
+                        raw_name = (row[col_name] or "").strip()
+                        if not raw_name:
+                            total_skipped += 1
+                            pbar.update(1)
+                            continue
+
+                        # Boundary girdi filtresi (P0-B): firma-olmayan girdiyi izole et.
+                        # EXCLUDED → kendi master_code'u, ES'e İNDEKSLENMEZ (magnet olamaz).
+                        excl_reason = classify_input(raw_name, country) if ENABLE_INPUT_FILTER else None
+                        if excl_reason:
+                            master_id = str(uuid.uuid4())
+                            pg_updates.append(
+                                _make_pg_update_tuple(
+                                    master_id, 0, "EXCLUDED", f"EXCLUDED: {excl_reason}", row_id
+                                )
+                            )
+                            total_excluded += 1
+                            total_processed += 1
+                            pbar.update(1)
+                            continue
+
+                        rec = {
+                            "row_id": row_id,
+                            "raw_name": raw_name,
+                            "country": country,
+                            "tax": row.get(col_tax) or "" if col_tax else "",
+                            "phone": row.get(col_phone) or "" if col_phone else "",
+                            "address": row.get(col_address) or "" if col_address else "",
+                        }
+                        match_items.append((row_id, raw_name, country, rec))
+                    except Exception:
+                        logger.exception("Row parse failed (row_id=%s)", row_id)
                         continue
 
-                    rec = {
-                        "row_id": row_id,
-                        "raw_name": raw_name,
-                        "country": country,
-                        "tax": row.get(col_tax) or "" if col_tax else "",
-                        "phone": row.get(col_phone) or "" if col_phone else "",
-                        "address": row.get(col_address) or "" if col_address else "",
-                    }
+                # 2) Toplu eşleştirme — chunk tek index anlık-görüntüsüne karşı
+                results = match_records_batch(es, [it[3] for it in match_items], active_stages)
 
-                    # --- Tek kayit eslestirme ---
-                    match_res = match_single_record(es, rec, active_stages)
-                    winner = match_res["winner"]
-                    trace = match_res["trace"]
+                # 3) Apply-pass (sıralı; yazımlar tekil-akışla aynı semantik)
+                for (row_id, raw_name, country, rec), match_res in zip(match_items, results):
+                    try:
+                        winner = match_res["winner"]
+                        trace = match_res["trace"]
 
-                    if winner:
-                        master_id = winner["master_doc_id"]
-                        es_score = winner["es_score"]
-                        stage_name = winner["stage_name"]
-
-                        details = f"[{stage_name}] score: {es_score:.2f}"
-                        pg_updates.append(
-                            _make_pg_update_tuple(master_id, es_score, stage_name, details, row_id)
-                        )
-
-                        if winner.get("index_variation", True):
-                            _add_variation_to_master(
-                                es, winner["master_doc_id"], raw_name, country, rec
+                        if winner:
+                            master_id = winner["master_doc_id"]
+                            es_score = winner["es_score"]
+                            stage_name = winner["stage_name"]
+                            details = f"[{stage_name}] score: {es_score:.2f}"
+                            pg_updates.append(
+                                _make_pg_update_tuple(master_id, es_score, stage_name, details, row_id)
                             )
+                            if winner.get("index_variation", True):
+                                _add_variation_to_master(
+                                    es, winner["master_doc_id"], raw_name, country, rec
+                                )
+                            total_matched += 1
+                            stage_counts[stage_name] = stage_counts.get(stage_name, 0) + 1
+                        else:
+                            master_id = _index_new_master(es, rec)
+                            details = "NEW_MASTER: No relevant matches found."
+                            pg_updates.append(_make_pg_update_tuple(master_id, 100, "NEW_MASTER", details, row_id))
+                            batch_new_master_ids.append(master_id)  # P0-C: batch-içi dedup kapsamı
+                            total_new += 1
+                            stage_name = "NEW_MASTER"
+                            es_score = 100.0
 
-                        total_matched += 1
-                        stage_counts[stage_name] = stage_counts.get(stage_name, 0) + 1
-                    else:
-                        master_id = _index_new_master(es, rec)
-                        details = "NEW_MASTER: No relevant matches found."
-                        pg_updates.append(_make_pg_update_tuple(master_id, 100, "NEW_MASTER", details, row_id))
-                        total_new += 1
-                        stage_name = "NEW_MASTER"
-                        es_score = 100.0
-
-                    # --- Audit & Trace Logging ---
-                    # 1. match_audit (özet)
-                    audit_rows.append(
-                        (
-                            row_id,
-                            raw_name,
-                            country,
-                            master_id,
-                            stage_name,
-                            es_score,
-                            len([t for t in trace if t["matched"]]),
-                        )
-                    )
-
-                    # 2. match_stages_log (ayrıntı - Tüm stage'leri logla)
-                    for t in trace:
-                        if not t["matched"] and not LOG_ALL_STAGES:
-                            continue
-                        log_rows.append(
+                        # Audit & Trace Logging
+                        audit_rows.append(
                             (
-                                row_id,
-                                raw_name,
-                                country,
-                                t["stage_name"],
-                                t["stage_order"],
-                                t["matched"],
-                                (t["master_id"] or master_id) if t["matched"] else None,
-                                t["es_score"],
+                                row_id, raw_name, country, master_id, stage_name, es_score,
+                                len([t for t in trace if t["matched"]]),
                             )
                         )
+                        for t in trace:
+                            if not t["matched"] and not LOG_ALL_STAGES:
+                                continue
+                            log_rows.append(
+                                (
+                                    row_id, raw_name, country, t["stage_name"], t["stage_order"],
+                                    t["matched"],
+                                    (t["master_id"] or master_id) if t["matched"] else None,
+                                    t["es_score"],
+                                )
+                            )
 
-                    records_since_refresh += 1
-                    total_processed += 1
-                    pbar.update(1)
+                        total_processed += 1
+                        pbar.update(1)
+                        match_pct = (
+                            round(100 * total_matched / total_processed, 1) if total_processed else 0
+                        )
+                        pbar.set_postfix_str(
+                            f"eslesen={total_matched:,} ({match_pct}%) yeni={total_new:,},toplam={total_processed:,},skipped={total_skipped:,}",
+                            refresh=False,
+                        )
+                    except Exception:
+                        logger.exception("Row apply failed (row_id=%s)", row_id)
+                        continue
 
-                    # Progress bar postfix guncelle
-                    match_pct = (
-                        round(100 * total_matched / total_processed, 1)
-                        if total_processed
-                        else 0
+                # 4) Chunk sonu: refresh (yeni master'lar sonraki chunk'a görünür) + PG flush
+                es.indices.refresh(index=ES_INDEX)
+                if pg_updates:
+                    execute_values(
+                        write_cursor,
+                        psycopg2.sql.SQL(
+                            "UPDATE {} AS t"
+                            " SET {} = d.mc, {} = d.ms, {} = d.mt, {} = d.md"
+                            " FROM (VALUES %s) AS d(mc, ms, mt, md, id)"
+                            " WHERE t.{} = d.id"
+                        ).format(
+                            psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                            psycopg2.sql.Identifier(col_master),
+                            psycopg2.sql.Identifier(COLUMN_MAPPING["match_score"]),
+                            psycopg2.sql.Identifier(COLUMN_MAPPING["match_type"]),
+                            psycopg2.sql.Identifier(COLUMN_MAPPING["match_details"]),
+                            psycopg2.sql.Identifier(col_id),
+                        ),
+                        pg_updates,
                     )
-                    pbar.set_postfix_str(
-                        f"eslesen={total_matched:,} ({match_pct}%) yeni={total_new:,},toplam={total_processed:,},skipped={total_skipped:,}",
-                        refresh=False,
+                    execute_values(
+                        write_cursor,
+                        """INSERT INTO match_stages_log
+                            (input_id, input_name, country_code, stage_name, stage_order,
+                             matched, master_id, es_score) VALUES %s""",
+                        log_rows,
                     )
-
-                    # Periyodik ES refresh — yeni master'lar gorunur olsun
-                    if records_since_refresh >= ES_REFRESH_INTERVAL:
-                        es.indices.refresh(index=ES_INDEX)
-                        records_since_refresh = 0
-
-                        # Periyodik PG flush
-                        if pg_updates:
-                            execute_values(
-                                write_cursor,
-                                psycopg2.sql.SQL(
-                                    "UPDATE {} AS t"
-                                    " SET {} = d.mc, {} = d.ms, {} = d.mt, {} = d.md"
-                                    " FROM (VALUES %s) AS d(mc, ms, mt, md, id)"
-                                    " WHERE t.{} = d.id"
-                                ).format(
-                                    psycopg2.sql.Identifier(RAW_TABLE_NAME),
-                                    psycopg2.sql.Identifier(col_master),
-                                    psycopg2.sql.Identifier(COLUMN_MAPPING["match_score"]),
-                                    psycopg2.sql.Identifier(COLUMN_MAPPING["match_type"]),
-                                    psycopg2.sql.Identifier(COLUMN_MAPPING["match_details"]),
-                                    psycopg2.sql.Identifier(col_id),
-                                ),
-                                pg_updates,
-                            )
-                            execute_values(
-                                write_cursor,
-                                """INSERT INTO match_stages_log
-                                    (input_id, input_name, country_code, stage_name, stage_order,
-                                     matched, master_id, es_score) VALUES %s""",
-                                log_rows,
-                            )
-                            execute_values(
-                                write_cursor,
-                                """INSERT INTO match_audit
-                                    (input_id, input_name, country_code, final_master_id,
-                                     final_stage_name, final_score, total_matched_stages) VALUES %s""",
-                                audit_rows,
-                            )
-                            write_conn.commit()
-                            pg_updates.clear()
-                            log_rows.clear()
-                            audit_rows.clear()
-
-                except Exception:
-                    logger.exception("Row processing failed (row_id=%s)", row_id)
-                    continue
+                    execute_values(
+                        write_cursor,
+                        """INSERT INTO match_audit
+                            (input_id, input_name, country_code, final_master_id,
+                             final_stage_name, final_score, total_matched_stages) VALUES %s""",
+                        audit_rows,
+                    )
+                    write_conn.commit()
+                    pg_updates.clear()
+                    log_rows.clear()
+                    audit_rows.clear()
 
             # Batch sonu — kalan PG yazimlarini flush et
             if pg_updates:
@@ -1213,6 +1279,26 @@ def process_all_data() -> None:
 
             es.indices.refresh(index=ES_INDEX)
 
+            # P0-C: batch-içi otomatik dedup — bu batch'te oluşan NEW_MASTER'lar arasında
+            # aynı kanonik fingerprint'e sahip olanları ES-tarafı birleştir (sistem-içi,
+            # ayrı script gerekmez). Kapsam batch'le sınırlı → iş yükü ölçeklenir.
+            # refresh=False: bir sonraki batch zaten refresh eder.
+            if AUTO_DEDUP_PER_BATCH and batch_new_master_ids:
+                try:
+                    d = auto_merge_duplicates(
+                        es, write_conn,
+                        restrict_master_ids=batch_new_master_ids,
+                        refresh=False,
+                    )
+                    if d["merged_masters"]:
+                        total_deduped += d["merged_masters"]
+                        logger.info(
+                            f"  Batch-ici dedup: {d['merged_masters']} master birlestirildi, "
+                            f"{d['repointed_rows']} satir yeniden yonlendirildi."
+                        )
+                except Exception:
+                    logger.exception("Batch-ici dedup basarisiz (batch atlandi, devam ediliyor)")
+
         pbar.close()
 
         # Final ozet
@@ -1221,6 +1307,10 @@ def process_all_data() -> None:
         logger.info(f"TAMAMLANDI: {total_processed:,} kayit islendi")
         logger.info(f"  Eslesen:     {total_matched:,}")
         logger.info(f"  Yeni master: {total_new:,}")
+        if total_excluded:
+            logger.info(f"  Excluded (P0-B): {total_excluded:,} firma-olmayan girdi izole edildi (indekslenmedi)")
+        if total_deduped:
+            logger.info(f"  Dedup (P0-C): {total_deduped:,} duplike master batch-ici birlestirildi")
         if total_skipped:
             logger.info(f"  Atlanan:     {total_skipped:,} (bos isim)")
         logger.info(f"  Stage dagilimi:")

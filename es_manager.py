@@ -408,6 +408,28 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     return settings
 
 
+def acronym_glue_active(es: Elasticsearch) -> bool | None:
+    """Canlı ES index'inin analyzer zincirinde acronym_glue ETKİN mi? (reindex doğrulaması)
+
+    'K.W.M' = hepsi yasal-OLMAYAN tek harf. acronym_glue varsa tek token 'kwm' üretir;
+    eski (glue'suz) zincir nokta→boşluk bölüp 3 token ([k,w,m]) üretir. Distinctive-core
+    GATE canlı analyzer'a güvendiğinden, rematch ESKİ index'e karşı koşarsa gate akronim
+    isimleri yanlışlıkla bloklar (under-merge).
+
+    Dönüş: True = glue etkin ('kwm'); False = KESİN eski şema (>1 token); None = belirsiz
+    (boş/hata/tek-farklı token) → çağıran yalnız KESİN False'ta abort etmeli."""
+    try:
+        res = es.indices.analyze(index=ES_INDEX, body={"analyzer": "fingerprint_analyzer", "text": "K.W.M"})
+        tokens = [t["token"] for t in res.get("tokens", [])]
+    except Exception:
+        return None
+    if tokens == ["kwm"]:
+        return True
+    if len(tokens) > 1:
+        return False  # nokta→boşluk bölmüş → glue YOK (kesin eski)
+    return None  # boş / tek-farklı → belirsiz (bozma)
+
+
 def create_index(es: Elasticsearch, force_recreate: bool = False) -> None:
     """
     ES index'ini oluşturur.
@@ -434,6 +456,15 @@ def create_index(es: Elasticsearch, force_recreate: bool = False) -> None:
     print(f"{cc_count} ulke icin per-country analyzer olusturuluyor...")
 
     es.options(request_timeout=120).indices.create(index=ES_INDEX, body=settings)
+
+    # Analyzer tanımı değişti (örn. acronym_glue) → es_queries token_count + çekirdek-gate
+    # cache'leri ESKİ analyzer sonuçlarını taşıyor olabilir (anahtar analyzer ADI, tanımı
+    # değil). Reindex sonrası bayat sonuçları (özellikle gate'in yanlış MATCH_NONE'u) temizle.
+    try:
+        from es_queries import clear_token_count_cache
+        clear_token_count_cache()
+    except Exception:
+        logger.warning("es_queries cache temizlenemedi (import?) — reindex sonrası süreç yeniden başlatılmalı")
 
     features = ["synonym", "fingerprint", "ngram"]
     if _check_plugin_installed(es, "analysis-icu"):

@@ -136,7 +136,12 @@ def CANONICAL_EXACT(name: str, country: str, es: Elasticsearch = None, **kwargs)
     Synonym-aware canonical form tam phrase eşleşmesi.
     Ülkeye özel analyzer arama zamanında canonical form üretir.
     Nested structure ve token_count filtresi ile 1-1 birebir (identity) eşleşme zorlanır.
+
+    GATE (#3): ayırt edici çekirdek yoksa (tek-harf akronim artığı) eşleşmez → NEW_MASTER.
+    STRIPPED_EXACT ile simetrik (require_alpha=False → salt-sayı exact dedup korunur).
     """
+    if not _has_distinctive_core(es, name, country, require_alpha=False):
+        return MATCH_NONE
     analyzer = _get_analyzer(country)
     expected_count = _get_token_count(es, name, analyzer)
 

@@ -133,6 +133,25 @@ def test_acronym_glue_char_filter_precedes_punctuation_remover():
             f"{name}: acronym_glue punctuation_remover'dan ÖNCE olmalı"
 
 
+def test_acronym_glue_active_probe():
+    """Round-3: acronym_glue_active probe canlı analyzer'ı 'K.W.M' ile yoklar.
+    glue varsa tek token 'kwm' → True; eski zincir 3 token → False; hata → None."""
+    from unittest.mock import MagicMock
+    from es_manager import acronym_glue_active
+
+    es_new = MagicMock()
+    es_new.indices.analyze.return_value = {"tokens": [{"token": "kwm"}]}
+    assert acronym_glue_active(es_new) is True
+
+    es_old = MagicMock()
+    es_old.indices.analyze.return_value = {"tokens": [{"token": "k"}, {"token": "w"}, {"token": "m"}]}
+    assert acronym_glue_active(es_old) is False
+
+    es_err = MagicMock()
+    es_err.indices.analyze.side_effect = RuntimeError("no index")
+    assert acronym_glue_active(es_err) is None
+
+
 def test_fingerprint_field_uses_custom_analyzer():
     """variations.name.fingerprint subfield'ı built-in yerine fingerprint_analyzer kullanmalı."""
     from es_manager import build_index_settings

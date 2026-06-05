@@ -242,7 +242,7 @@ def test_core_gate_blocks_single_char_residue():
     """Tek-harfe çöken çekirdek ('M S.A.'→'m') tüm matching stage'lerde MATCH_NONE →
     NEW_MASTER. Akronim magnet artığı (A-sınıfı) ve magnet-seed engellenir."""
     es = _es_returning(["m"])
-    for fn in (es_queries.STRIPPED_EXACT, es_queries.TOKEN_COVERAGE,
+    for fn in (es_queries.CANONICAL_EXACT, es_queries.STRIPPED_EXACT, es_queries.TOKEN_COVERAGE,
                es_queries.FUZZY_PHRASE, es_queries.SUFFIX_FUZZY):
         es_queries.clear_token_count_cache()
         assert fn("M S.A. DE C.V.", "MX", es=es) == es_queries.MATCH_NONE, fn.__name__
@@ -251,7 +251,8 @@ def test_core_gate_blocks_single_char_residue():
 def test_core_gate_allows_distinctive_brand():
     """Gerçek marka (>=2-char alfabetik çekirdek) tüm stage'lerde geçer."""
     es = _es_returning(["siemens"])
-    for fn in (es_queries.STRIPPED_EXACT, es_queries.TOKEN_COVERAGE, es_queries.FUZZY_PHRASE):
+    for fn in (es_queries.CANONICAL_EXACT, es_queries.STRIPPED_EXACT,
+               es_queries.TOKEN_COVERAGE, es_queries.FUZZY_PHRASE):
         es_queries.clear_token_count_cache()
         assert fn("SIEMENS S.A. DE C.V.", "MX", es=es) != es_queries.MATCH_NONE, fn.__name__
 

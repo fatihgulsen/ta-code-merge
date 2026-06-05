@@ -963,6 +963,19 @@ def process_all_data() -> None:
     logger.info("Elasticsearch index kontrol ediliyor...")
     create_index(es)
 
+    # Reindex-ordering güvenlik kontrolü: distinctive-core GATE canlı analyzer'a güvenir.
+    # Index hâlâ ESKİ analyzer'daysa (acronym_glue yok) gate akronim isimleri yanlış bloklar
+    # (under-merge). create_index var olan index'i DEĞİŞTİRMEZ → eski şema sessizce kalabilir.
+    from es_manager import acronym_glue_active
+    glue = acronym_glue_active(es)
+    if glue is False:
+        raise RuntimeError(
+            "ES index'i ESKİ analyzer şemasında (acronym_glue yok). Distinctive-core gate "
+            "yanlış MATCH_NONE üretir → under-merge. Önce reindex: `python es_manager.py --force`."
+        )
+    if glue is None:
+        logger.warning("acronym_glue probe belirsiz (ES erişimi?) — reindex yapıldığından emin olun.")
+
     logger.info("Ingest pipeline kontrol ediliyor...")
     register_all_pipelines(es)
 

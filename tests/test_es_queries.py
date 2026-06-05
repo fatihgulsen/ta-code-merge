@@ -228,6 +228,60 @@ def test_phonetic_match_no_token_count_filter_without_es():
     assert nested["query"]["bool"]["filter"] == []
 
 
+# ── Ayırt-edici çekirdek GATE (Round-3 #3) ─────────────────────────────────
+
+def _es_returning(tokens):
+    """stripped analyzer çıktısını taklit eden MagicMock es."""
+    from unittest.mock import MagicMock
+    es = MagicMock()
+    es.indices.analyze.return_value = {"tokens": [{"token": t} for t in tokens]}
+    return es
+
+
+def test_core_gate_blocks_single_char_residue():
+    """Tek-harfe çöken çekirdek ('M S.A.'→'m') tüm matching stage'lerde MATCH_NONE →
+    NEW_MASTER. Akronim magnet artığı (A-sınıfı) ve magnet-seed engellenir."""
+    es = _es_returning(["m"])
+    for fn in (es_queries.STRIPPED_EXACT, es_queries.TOKEN_COVERAGE,
+               es_queries.FUZZY_PHRASE, es_queries.SUFFIX_FUZZY):
+        es_queries.clear_token_count_cache()
+        assert fn("M S.A. DE C.V.", "MX", es=es) == es_queries.MATCH_NONE, fn.__name__
+
+
+def test_core_gate_allows_distinctive_brand():
+    """Gerçek marka (>=2-char alfabetik çekirdek) tüm stage'lerde geçer."""
+    es = _es_returning(["siemens"])
+    for fn in (es_queries.STRIPPED_EXACT, es_queries.TOKEN_COVERAGE, es_queries.FUZZY_PHRASE):
+        es_queries.clear_token_count_cache()
+        assert fn("SIEMENS S.A. DE C.V.", "MX", es=es) != es_queries.MATCH_NONE, fn.__name__
+
+
+def test_core_gate_two_char_brand_preserved():
+    """2-harfli gerçek marka (VF/3M) korunur (MATCH_CORE_MIN_TOKEN_LEN=2)."""
+    es_queries.clear_token_count_cache()
+    assert es_queries.TOKEN_COVERAGE("VF OUTDOOR", "MX", es=_es_returning(["vf", "outdoor"])) != es_queries.MATCH_NONE
+    es_queries.clear_token_count_cache()
+    assert es_queries.FUZZY_PHRASE("3M", "MX", es=_es_returning(["3m"])) != es_queries.MATCH_NONE
+
+
+def test_core_gate_numeric_only_blocked_in_fuzzy_allowed_in_stripped():
+    """Salt-sayı çekirdek ('#N/A 300'→['300']): loose stage'lerde (require_alpha) bloklanır
+    (B-sınıfı çöp sızma), STRIPPED_EXACT'te (tam eşleşme güvenli) izin verilir."""
+    es = _es_returning(["300"])
+    es_queries.clear_token_count_cache()
+    assert es_queries.TOKEN_COVERAGE("#N/A 300", "MX", es=es) == es_queries.MATCH_NONE
+    es_queries.clear_token_count_cache()
+    assert es_queries.FUZZY_PHRASE("#N/A 300", "MX", es=es) == es_queries.MATCH_NONE
+    es_queries.clear_token_count_cache()
+    assert es_queries.STRIPPED_EXACT("300 S.A. DE C.V.", "MX", es=es) != es_queries.MATCH_NONE
+
+
+def test_core_gate_inert_without_es():
+    """es yoksa (birim test / eski çağrı yolu) guard devre dışı — mevcut davranış korunur."""
+    assert es_queries.TOKEN_COVERAGE("M S.A.", "MX") != es_queries.MATCH_NONE
+    assert es_queries.FUZZY_PHRASE("M S.A.", "MX") != es_queries.MATCH_NONE
+
+
 def test_ngram_match_blocks_empty_core():
     # Faz 3: yalnızca yasal ek / ülke adı (0 ayırt edici token) → NGRAM bloklanır.
     assert es_queries.NGRAM_MATCH("S.A. DE C.V.", "MX") == es_queries.MATCH_NONE

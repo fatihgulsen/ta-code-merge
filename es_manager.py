@@ -97,11 +97,29 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     filters["arabic_norm"] = {"type": "arabic_normalization"}
 
     char_filters = {
+        # ── Akronim-glue (Round-3, docs/audit/2026-06-05-round3-unicode-config-dedup.md) ──
+        # Noktayı YALNIZCA iki tek-harf arasında siler (acronym): 'C.M.S.A.D.C' → 'CMSADC',
+        # 'B.A.T' → 'BAT'. punctuation_remover'dan ÖNCE çalışır. Aksi halde nokta→boşluk
+        # akronimi tek harflere bölüyor, legal_fragment_stop tek-harf yasal-ek parçalarını
+        # (a b c d e f h i l p r s u v y) atınca geriye tek "junk" harf kalıp ('m'/'g'/'t')
+        # alakasız firmaları aynı fingerprint'te topluyordu (STRIPPED_EXACT magnet).
+        # REGRESYON YOK: akronim-biçimli yasal ekler (S.A.P.I.→sapi) zaten fragment set'inde
+        # (≤4 harf) → strip'lenmeye devam eder. Boşlukla ayrılmış tek-harf markalar
+        # ('M S.A.') glue'dan ETKİLENMEZ; onlar DEDUP_MIN=2 + token_count çekirdek-gate ile
+        # eşleşme-zamanında engellenir. REINDEX (es_manager.py --force) GEREKTİRİR.
+        # Lookbehind-SIZ (Java/JVM-portable): tek-harf + nokta + (sonrası harf) → harf.
+        # `\b(\p{L})\.` yalnız KELİME-BAŞI tek harfi yakalar → 'WORD.WORD'/'ACME.INC' GLUE'lanmaz
+        # ('MARCA REGISTRADA' ayrı kalır); yalnız akronim segmentleri ('C.M.', 'U.S.') birleşir.
+        "acronym_glue": {
+            "type": "pattern_replace",
+            "pattern": r"\b(\p{L})\.(?=\p{L})",
+            "replacement": "$1",
+        },
         "punctuation_remover": {
             "type": "pattern_replace",
             "pattern": "[.,]+",
             "replacement": " ",
-        }
+        },
     }
 
     base_clean_filters = []
@@ -133,7 +151,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     }
     analyzers["clean_analyzer_common"] = {
         "tokenizer": "standard",
-        "char_filter": ["punctuation_remover"],
+        "char_filter": ["acronym_glue", "punctuation_remover"],
         "filter": base_clean_filters + ["synonym_filter_common"],
     }
 
@@ -151,7 +169,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
         }
         analyzers[analyzer_name] = {
             "tokenizer": "standard",
-            "char_filter": ["punctuation_remover"],
+            "char_filter": ["acronym_glue", "punctuation_remover"],
             "filter": base_clean_filters + [filter_name, "legal_fragment_stop"],
         }
 
@@ -164,7 +182,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     }
     analyzers["stripped_search_analyzer"] = {
         "tokenizer": "standard",
-        "char_filter": ["punctuation_remover"],
+        "char_filter": ["acronym_glue", "punctuation_remover"],
         "filter": base_clean_filters + ["generic_stopwords_global", "legal_fragment_stop"],
     }
 
@@ -190,7 +208,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     }
     analyzers["fingerprint_analyzer"] = {
         "tokenizer": "standard",
-        "char_filter": ["punctuation_remover"],
+        "char_filter": ["acronym_glue", "punctuation_remover"],
         "filter": base_clean_filters
         + [
             "generic_stopwords_global",
@@ -213,7 +231,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
         }
         analyzers[analyzer_name] = {
             "tokenizer": "standard",
-            "char_filter": ["punctuation_remover"],
+            "char_filter": ["acronym_glue", "punctuation_remover"],
             "filter": base_clean_filters + [filter_name],
         }
 
@@ -221,7 +239,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     if has_icu:
         analyzers["icu_analyzer"] = {
             "tokenizer": "icu_tokenizer",
-            "char_filter": ["punctuation_remover"],
+            "char_filter": ["acronym_glue", "punctuation_remover"],
             "filter": ["icu_normalizer", "icu_folding", "lowercase"],
         }
 
@@ -234,12 +252,12 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     }
     analyzers["ngram_analyzer"] = {
         "tokenizer": "ngram_tokenizer",
-        "char_filter": ["punctuation_remover"],
+        "char_filter": ["acronym_glue", "punctuation_remover"],
         "filter": base_clean_filters,
     }
     analyzers["ngram_search_analyzer"] = {
         "tokenizer": "standard",
-        "char_filter": ["punctuation_remover"],
+        "char_filter": ["acronym_glue", "punctuation_remover"],
         "filter": base_clean_filters,
     }
 
@@ -254,7 +272,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
         # yasal-ek parçaları metaphone'a girmeden elenir → over-merge gürültüsü kesilir.
         analyzers["phonetic_analyzer"] = {
             "tokenizer": "standard",
-            "char_filter": ["punctuation_remover"],
+            "char_filter": ["acronym_glue", "punctuation_remover"],
             # legal_fragment_stop, phonetic_filter'dan ÖNCE: yasal-ek parçaları
             # metaphone'a girmeden eler (index + arama tarafında tutarlı).
             "filter": ["lowercase", "legal_fragment_stop", "phonetic_filter"],

@@ -108,6 +108,31 @@ def test_fingerprint_analyzer_normalizes_suffix_and_geo():
     assert filters["geo_stopwords_global"]["type"] == "stop"
 
 
+def test_acronym_glue_char_filter_precedes_punctuation_remover():
+    """Round-3 (P-R3-1): akronim-glue char-filter tanımlı ve fingerprint/stripped
+    analyzer zincirinde punctuation_remover'dan ÖNCE çalışmalı. 'C.M.S.A.D.C' → 'CMSADC'
+    olur, tek harfe ('m') çökmez → STRIPPED_EXACT/dedup akronim magneti önlenir.
+    docs/audit/2026-06-05-round3-unicode-config-dedup.md §ADIM 5."""
+    from es_manager import build_index_settings
+    settings = build_index_settings(es=None)
+    char_filters = settings["settings"]["analysis"]["char_filter"]
+    analyzers = settings["settings"]["analysis"]["analyzer"]
+
+    assert "acronym_glue" in char_filters, "acronym_glue char-filter tanımlı değil"
+    glue = char_filters["acronym_glue"]
+    assert glue["type"] == "pattern_replace"
+    # tek-harf akronim segmentini yakalayıp grup-1'e indirger (lookbehind-siz, JVM-portable)
+    assert r"\p{L}" in glue["pattern"], "pattern tek-harf (\\p{L}) kısıtı taşımalı"
+    assert glue["replacement"] == "$1"
+
+    # fingerprint_analyzer + global stripped analyzer'da SIRA: acronym_glue < punctuation_remover
+    for name in ("fingerprint_analyzer", "stripped_search_analyzer"):
+        chain = analyzers[name]["char_filter"]
+        assert "acronym_glue" in chain and "punctuation_remover" in chain, f"{name} char_filter eksik"
+        assert chain.index("acronym_glue") < chain.index("punctuation_remover"), \
+            f"{name}: acronym_glue punctuation_remover'dan ÖNCE olmalı"
+
+
 def test_fingerprint_field_uses_custom_analyzer():
     """variations.name.fingerprint subfield'ı built-in yerine fingerprint_analyzer kullanmalı."""
     from es_manager import build_index_settings

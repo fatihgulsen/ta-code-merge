@@ -283,6 +283,58 @@ def test_core_gate_inert_without_es():
     assert es_queries.FUZZY_PHRASE("M S.A.", "MX") != es_queries.MATCH_NONE
 
 
+# ── Çözüm A: ayırt-edici-çekirdek COVERAGE gate (Round-4) ──────────────────
+# FUZZY_PHRASE / TOKEN_COVERAGE'a ES-side STRIPPED token_count eşitlik filtresi:
+# kısa/kesik isim (SPM ⊂ SPM FLOW CONTROL) farklı core-count → master'a giremez.
+# clean_analyzer DEĞİL (Round-3'te synonym genişlemesi recall'ı kırmıştı) — STRIPPED.
+
+def _core_filter_terms(q):
+    """Query'deki tüm variations_stripped.name.token_count term değerlerini topla."""
+    terms = []
+    for c in q["query"]["bool"]["must"]:
+        nested = c.get("nested")
+        if nested and nested.get("path") == "variations_stripped":
+            for f in nested["query"]["bool"].get("filter", []):
+                t = f.get("term", {})
+                if "variations_stripped.name.token_count" in t:
+                    terms.append(t["variations_stripped.name.token_count"])
+    return terms
+
+
+def test_fuzzy_phrase_adds_core_coverage_filter():
+    """es verildiğinde FUZZY_PHRASE'e STRIPPED core-count term filtresi eklenir."""
+    es_queries.clear_token_count_cache()
+    es = _es_returning(["spm"])  # 1 ayırt edici token
+    q = es_queries.FUZZY_PHRASE("SPM", "MX", es=es)
+    assert q != es_queries.MATCH_NONE
+    assert 1 in _core_filter_terms(q)
+
+
+def test_token_coverage_adds_core_coverage_filter():
+    """es verildiğinde TOKEN_COVERAGE'e STRIPPED core-count term filtresi eklenir."""
+    es_queries.clear_token_count_cache()
+    es = _es_returning(["amcor"])
+    q = es_queries.TOKEN_COVERAGE("AMCOR", "MX", es=es)
+    assert q != es_queries.MATCH_NONE
+    assert 1 in _core_filter_terms(q)
+
+
+def test_core_coverage_count_matches_distinctive_token_count():
+    """Filtre değeri STRIPPED ayırt-edici token sayısına eşit (çok-token brand)."""
+    es_queries.clear_token_count_cache()
+    es = _es_returning(["flow", "control", "spm"])  # 3 token
+    q = es_queries.FUZZY_PHRASE("SPM FLOW CONTROL", "MX", es=es)
+    assert 3 in _core_filter_terms(q)
+
+
+def test_core_coverage_inert_without_es():
+    """es yoksa core-coverage filtresi eklenmez (graceful; mevcut yapı korunur)."""
+    q = es_queries.FUZZY_PHRASE("apple trading", "US")
+    assert _core_filter_terms(q) == []
+    q2 = es_queries.TOKEN_COVERAGE("apple trading", "US")
+    assert _core_filter_terms(q2) == []
+
+
 def test_ngram_match_blocks_empty_core():
     # Faz 3: yalnızca yasal ek / ülke adı (0 ayırt edici token) → NGRAM bloklanır.
     assert es_queries.NGRAM_MATCH("S.A. DE C.V.", "MX") == es_queries.MATCH_NONE

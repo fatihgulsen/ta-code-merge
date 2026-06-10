@@ -13,6 +13,9 @@ import input_filter as inf
     ("SIN RAZON SOCIAL", "placeholder"),
     ("Razon Social no determinada", "placeholder"),
     ("Razón Social no determinada", "placeholder"),   # aksanlı → aynı
+    ("SAME AS", "placeholder"),                        # Round-4 #C: gümrük işaretçisi
+    ("Same As CNEE", "placeholder"),                   # alıcı=gönderici (firma değil)
+    ("SAME AS CONSIGNEE", "placeholder"),
     ("#N/A", "na_marker"),
     ("N/A", "na_marker"),
     ("NA", "na_marker"),
@@ -56,6 +59,9 @@ def test_only_punctuation_is_no_alnum():
     "B.V.G",
     "A.S",
     "QHE LOGISTICS MEXICO S DE RL DE MEXICO Manzanillo EGM 1 incoterm FOB ref 99887766",
+    # Round-4 #C: "same as" placeholder TAM eşleşmedir — gerçek firma adında substring
+    # olarak geçerse DIŞLANMAZ.
+    "SAME AS GOOD TRADING S.A. DE C.V.",
 ])
 def test_codes_numbers_initials_long_are_kept_as_new_firm(name):
     assert inf.classify_input(name, "MX") is None

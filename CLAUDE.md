@@ -18,6 +18,7 @@ This guide acts as the strict operational runbook and instruction filter for AI 
 2.  **Index Yönetimi**: Elasticsearch index şeması, mapping'leri ve özel analyzer'lar sadece `es_manager.py` üzerinden yönetilmelidir. Ad-hoc veya geçici indeks oluşturmak yasaktır.
 3.  **Hata Yönetimi (Exception Handling)**: Toplu batch eşleştirmeleri sırasında tek bir satırda veya kayıtta hata alınırsa tüm batch işlemi durdurulmamalıdır. Hata loglanmalı, veritabanı rollback edilerek diğer kayıtlar için işlem devam etmelidir.
 4.  **Synonym JSON Dosyalarının Dokunulmazlığı**: `synonyms_data/` altındaki 65 ülke JSON dosyası **SABİTTİR.** İçeriklerindeki hataları düzeltmek veya yeni ekleme yapmak gerekirse `config.py` içerisindeki `SUFFIX_TYPO_MAP` veya kod içi eşleşme kuralları güncellenmelidir.
+    *   **İSTİSNA — `non_firm_placeholders` kategorisi**: Firma-OLMAYAN placeholder'lar ("ticari unvan yok" / "alıcı=gönderici": `sin razon social`, `same as cnee` vb.) **hardcode edilmez**, bu kategori altında JSON'da tutulur ve **eklemeye AÇIKTIR** (ortaklar `common.json`, ülkeye-özgü olanlar `<cc>.json`). `synonym_loader.get_non_firm_placeholders(cc)` okur, `input_filter` TAM eşleşmeyle EXCLUDED yapar. Bu kategori bir Solr synonym kuralı (`A,B=>C`) DEĞİLDİR, ES analyzer'a girmez — düz ifade listesidir.
 
 ---
 

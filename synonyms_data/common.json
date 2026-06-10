@@ -100,5 +100,14 @@
     "and", "of", "the", "for", "in", "on", "at", "to", "by",
     "de", "del", "la", "le", "les", "des", "du", "et",
     "und", "der", "die", "das", "von"
+  ],
+
+  "non_firm_placeholders": [
+    "same as",
+    "same as cnee",
+    "same as consignee",
+    "same as shipper",
+    "same as above",
+    "same as notify"
   ]
 }

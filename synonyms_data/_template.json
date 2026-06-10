@@ -12,7 +12,9 @@
 
     "regions": "Ülke içi bölge / eyalet eşanlamları: Maharashtra/MH, Karnataka/KA, vb. Yalnızca adres veya bölge metadatası için.",
 
-    "cities": "Şehir eşanlamları: Mumbai/Bombay, Bengaluru/Bangalore, vb. Yalnızca adres veya bölge metadatası için."
+    "cities": "Şehir eşanlamları: Mumbai/Bombay, Bengaluru/Bangalore, vb. Yalnızca adres veya bölge metadatası için.",
+
+    "non_firm_placeholders": "Solr synonym kuralı DEĞİL — düz ifade listesi. 'Ticari unvan yok' / 'alıcı=gönderici' anlamına gelen, firma OLMAYAN girdiler: 'sin razon social', 'razon social no determinada', 'same as cnee', vb. input_filter bunları TAM eşleşmeyle EXCLUDED yapar (ES'e indekslenmez). Ortak/evrensel olanlar common.json'da, ülkeye-özgü olanlar ilgili ülke dosyasında. Aksan/case önemsiz (input_filter._norm fold eder)."
   },
 
   "_classification_rules": [
@@ -91,5 +93,10 @@
 
   "cities": [
     "example city,example city name=>example city"
+  ],
+
+  "non_firm_placeholders": [
+    "razon social no determinada",
+    "sin razon social"
   ]
 }

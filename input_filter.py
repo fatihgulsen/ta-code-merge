@@ -10,14 +10,16 @@
 # kodlardan/sayılardan/baş-harflerden oluşan ya da çok uzun bir isim PEKÂLÂ gerçek
 # (yeni) bir firma olabilir → bunlar DIŞLANMAZ, NEW_MASTER olur. Yalnızca hiçbir
 # içerik taşımayan / 'isim yok' anlamına gelen girdiler elenir. Bu KİMLİK kararı
-# DEĞİLDİR. Fuzzy/Levenshtein YOK. Placeholder'lar config'ten (synonyms_data sabit).
+# DEĞİLDİR. Fuzzy/Levenshtein YOK. Placeholder'lar synonyms_data JSON'undan
+# (non_firm_placeholders kategorisi, synonym_loader üzerinden — hardcode DEĞİL).
 # Kanıt/ölçek: docs/audit/2026-06-03-llm-judge-rematch-comparison.md §4.
 # ============================================================================
 
 import re
 import unicodedata
+from functools import lru_cache
 
-from config import NON_FIRM_PLACEHOLDERS
+from synonym_loader import get_non_firm_placeholders
 
 # Unicode-AWARE: harf/rakam DIŞI her şeyi (+alt çizgi) boşluğa indir. Latin-DIŞI
 # alfabeler (Kiril/Yunan/CJK/Arap) içerik TAŞIR → 'no_alnum' sayılmamalı. Eski
@@ -40,9 +42,15 @@ def _norm(text: str) -> str:
     return _NONALNUM.sub(" ", no_accent).strip()
 
 
-def _placeholder_set(country: str) -> set:
+@lru_cache(maxsize=None)
+def _placeholder_set(country: str) -> frozenset:
+    """Ülke için "firma değil" placeholder'ları — synonyms_data JSON'undan, _norm edilmiş.
+
+    Kaynak: synonyms_data/{common,<cc>}.json 'non_firm_placeholders' kategorisi (hardcode
+    DEĞİL). get_non_firm_placeholders zaten common + ülke birleşimini döner; her ifade
+    classify_input ile AYNI _norm'dan geçirilir → aksan/case/noktalama tutarlı TAM eşleşme."""
     cc = (country or "").upper()
-    return set(NON_FIRM_PLACEHOLDERS.get(cc, ())) | set(NON_FIRM_PLACEHOLDERS.get("__common__", ()))
+    return frozenset(n for p in get_non_firm_placeholders(cc) if (n := _norm(p)))
 
 
 def classify_input(raw_name: str, country: str) -> str | None:

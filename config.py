@@ -31,7 +31,7 @@ DB_CONFIG = {
 }
 
 # --- Tablo ve Sütun Ayarları ---
-RAW_TABLE_NAME = "p7_firms_v2"
+RAW_TABLE_NAME = "p7_firms_v2_ar_pe"
 
 # COUNTRY_CODE_FILTER = "mx"
 COUNTRY_CODE_FILTER = None
@@ -147,23 +147,15 @@ AUTO_DEDUP_PER_BATCH = True
 # asıl çözüm analyzer-side akronim-glue (Öneri-1) + reindex.
 DEDUP_MIN_FINGERPRINT_TOKEN_LEN = 2
 
-# Ülkeye-özel placeholder ("ticari unvan yok" anlamına gelen, firma OLMAYAN ifadeler).
-# Normalize edilmiş (lowercase, aksansız, alnum+space) biçimde, TAM eşleşme için.
-# synonyms_data SABİT olduğundan (CLAUDE.md §1.4) burada, config'te tutulur.
+# Firma-OLMAYAN placeholder'lar ("ticari unvan yok" / "alıcı=gönderici") artık DATA-DRIVEN:
+# synonyms_data/{common,<cc>}.json içindeki "non_firm_placeholders" kategorisinde tanımlıdır.
+#   - __common__ karşılığı  → common.json (gümrük "same as ..." işaretçileri, tüm ülkelere)
+#   - ülkeye-özgü (MX vb.)  → <cc>.json   (örn. "sin razon social")
+# synonym_loader.get_non_firm_placeholders(cc) okur; input_filter EXCLUDED yapar (ES'e
+# indekslenmez). TAM eşleşme; gerçek firma adı bu biçimde normalize olmaz.
+# CLAUDE.md §1.4 İSTİSNASI: synonyms_data SABİT kuralı bu kategori için gevşetilmiştir
+# (kullanıcı kararı) — placeholder'ları hardcode etmemek için JSON'a eklenebilir.
 # (n/a, null, none, nan, s/n gibi yapısal işaretçiler input_filter._NA_MARKERS'ta.)
-NON_FIRM_PLACEHOLDERS = {
-    "__common__": [],
-    "MX": [
-        "sin razon social",
-        "razon social no determinada",
-        "razon social no determinado",
-        "no determinado",
-        "no determinada",
-        "sin nombre",
-        "publico en general",
-        "venta al publico en general",
-    ],
-}
 
 
 # --- Ayırt-edici çekirdek GATE (Round-3 #3, docs/audit/2026-06-05-DURUM-RAPORU...) ---
@@ -180,6 +172,19 @@ MATCH_CORE_MIN_TOKEN_LEN = 2  # ayırt edici sayılmak için min token uzunluğu
 # ALFABETİK olmalı (salt-sayı '300'/'414' loose eşleşmede güvenilmez → NEW_MASTER). STRIPPED_EXACT
 # (tam eşleşme, güvenli) sayıyı ayırt edici sayar → salt-numerik exact-dedup korunur.
 MATCH_CORE_FUZZY_REQUIRE_ALPHA = True
+
+# --- Ayırt-edici-çekirdek COVERAGE gate (Round-4 #A, docs/audit/2026-06-10-round4-*) ---
+# FUZZY_PHRASE / TOKEN_COVERAGE loose stage'lerinde, eşleşen master'ın STRIPPED ayırt-edici
+# çekirdek token SAYISI, sorgu kaydının çekirdek token sayısına EŞİT olmalı (ES-side term
+# filtresi; Python doğrulaması YOK). Böylece kısa/kesik isim (SPM ⊂ SPM FLOW CONTROL,
+# WORLDWIDE LOGISTICS ⊂ MENLO WORLDWIDE LOGISTICS) farklı core-count taşıdığı için master'a
+# GİREMEZ → subset/truncation-shell over-merge (D1/D2/D3) ES tarafında elenir.
+# STRIPPED analyzer kullanılır (synonym YOK) — Round-3'te clean_analyzer token_count eşitliği
+# synonym_graph genişlemesi yüzünden recall'ı 8/10→4/10 kırıp GERİ ALINMIŞTI; STRIPPED tutarlı.
+# Yan-etki: gerçekten-kesik-ama-aynı firma (ör. 'INTER MEX MATERIALES DE') NEW_MASTER olur
+# (recall maliyeti, dedup_reviewer'a kalır). Flag ile kapatılabilir; reindex GEREKMEZ
+# (variations_stripped.name.token_count alanı zaten STRIPPED_EXACT tarafından kullanılıyor).
+ENABLE_CORE_COVERAGE_GATE = True
 
 # --- msearch Ayarları ---
 MSEARCH_CHUNK_SIZE = 500  # Tek msearch çağrısında max sorgu sayısı
@@ -219,6 +224,10 @@ STAGES = [
         "name": "FUZZY_PHRASE",
         "order": 4,
         "query_fn": "FUZZY_PHRASE",
+        # Round-4 #D DENENDİ ve GERİ ALINDI: 5.0→9.0 raise live_probe recall'ı 8/10→4/10
+        # düşürdü (WITTE/VIBRACOUSTIC/CEVA-typo gibi gerçek varyantlar düşük skorlu 5-11 →
+        # bloklandı) — token_count'la aynı başarısızlık modu. Çekirdek-coverage gate (#A) zaten
+        # over-merge'i 0'a indirdiği için D GEREKSİZ + zararlı. min_score 5.0'da bırakıldı.
         "min_score": 5.0,
         "enabled": True,
         "index_variation": False,
@@ -227,6 +236,9 @@ STAGES = [
         "name": "TOKEN_COVERAGE",
         "order": 5,
         "query_fn": "TOKEN_COVERAGE",
+        # Round-4 #D DENENDİ ve GERİ ALINDI (3.0→11.0): yukarıdaki FUZZY ile aynı recall kaybı.
+        # Subset/truncation over-merge çekirdek-coverage gate (#A, ENABLE_CORE_COVERAGE_GATE)
+        # ile ES-side ve recall-nötr şekilde çözülüyor. min_score 3.0'da bırakıldı.
         "min_score": 3.0,
         "enabled": True,
         "index_variation": False,

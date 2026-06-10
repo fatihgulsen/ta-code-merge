@@ -121,5 +121,16 @@
     "Toluca=>Toluca",
     "Chihuahua,chiuahua,chihuaha=>Chihuahua",
     "Hermosillo,hermosilo=>Hermosillo"
+  ],
+
+  "non_firm_placeholders": [
+    "sin razon social",
+    "razon social no determinada",
+    "razon social no determinado",
+    "no determinado",
+    "no determinada",
+    "sin nombre",
+    "publico en general",
+    "venta al publico en general"
   ]
 }

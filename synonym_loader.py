@@ -330,6 +330,37 @@ def get_article_stopwords(country_code: str) -> frozenset:
     return frozenset(stopwords)
 
 
+@lru_cache(maxsize=None)
+def get_non_firm_placeholders(country_code: str) -> frozenset:
+    """Ülkeye-özgü + ortak "firma DEĞİL" placeholder ifadeleri (JSON'dan, hardcode DEĞİL).
+
+    'non_firm_placeholders' kategorisi bir Solr synonym kuralı DEĞİLDİR — düz ifade
+    listesidir ("sin razon social", "same as cnee"). "Ticari unvan yok" ya da
+    "alıcı=gönderici" anlamına gelen, firma OLMAYAN girdileri işaretler; input_filter
+    bunları EXCLUDED yapar (ES'e indekslenmez → magnet olamaz). common.json (TÜM ülkeler)
+    + {cc}.json birleşimini döner. HAM string döner; eşleşme normalizasyonu (aksan-fold,
+    lowercase, noktalama→boşluk) tutarlılık için input_filter._norm'da yapılır.
+
+    CLAUDE.md §1.4 istisnası: synonyms_data SABİT kuralının bu kategori için bilinçli
+    istisnasıdır — placeholder'ları hardcode'dan çıkarıp data-driven tutmak için."""
+    country_code = country_code.upper()
+    paths = [SYNONYMS_DIR / f for f in COMMON_FILES]
+    country_file = SYNONYMS_DIR / f"{country_code.lower()}.json"
+    if country_file.exists():
+        paths.append(country_file)
+
+    out: set[str] = set()
+    for path in paths:
+        if not path.exists():
+            continue
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        for item in data.get("non_firm_placeholders", []):
+            if isinstance(item, str) and item.strip():
+                out.add(item.strip())
+    return frozenset(out)
+
+
 def get_all_country_codes() -> list[str]:
     """
     synonyms_data/ klasöründeki tüm ülke dosyalarının kodlarını döner.

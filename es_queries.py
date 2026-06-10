@@ -20,6 +20,7 @@ from config import (
     ENABLE_CORE_GATE,
     MATCH_CORE_MIN_TOKEN_LEN,
     MATCH_CORE_FUZZY_REQUIRE_ALPHA,
+    ENABLE_CORE_COVERAGE_GATE,
 )
 
 logger = logging.getLogger(__name__)
@@ -125,6 +126,42 @@ def _get_token_count(es: Elasticsearch, text: str, analyzer: str) -> int:
     if len(_TOKEN_COUNT_CACHE) < _TOKEN_COUNT_CACHE_MAX:
         _TOKEN_COUNT_CACHE[key] = count
     return count
+
+
+def _core_coverage_filter(es: Elasticsearch, name: str, country: str) -> list:
+    """Çözüm A (Round-4): ES-side ayırt-edici-çekirdek COVERAGE filtresi (loose stage'ler için).
+
+    Eşleşen master, sorgunun STRIPPED ayırt-edici çekirdek token SAYISINA eşit bir
+    variations_stripped varyantı taşımak ZORUNDA → kısa/kesik isim (SPM ⊂ SPM FLOW CONTROL)
+    farklı core-count taşıdığı için master'a giremez (subset/truncation over-merge ES'de elenir).
+
+    STRIPPED analyzer kullanılır (synonym YOK) — clean_analyzer token_count eşitliği Round-3'te
+    recall'ı kırıp geri alınmıştı. Karar ES analyzer çıktısından (_get_token_count); Python fuzzy/
+    doğrulama YOK. es yoksa veya sayı 0 ise (çekirdeksiz) filtre eklenmez (graceful).
+
+    NOT (analyzer hizası): sayı, indekslenen alanın (variations_stripped.name.token_count,
+    es_manager: "stripped_search_analyzer" GLOBAL) analyzer'ıyla TUTARLI olmak için global
+    stripped analyzer ile hesaplanır (ülke-özel değil). 100% MX veride ikisi aynı token sayısını
+    üretir; global kullanmak çok-ülkeli durumda da stored count ile birebir eşleşmeyi garantiler.
+
+    NOT (korelasyon): bu, `variations` eşleşmesinden AYRI bir nested clause'tur — guard/defans
+    amaçlıdır (subset/truncation seed'i master'a girmesin). Tek-firma master'larında varyant
+    çekirdekleri aynı sayıda kümelendiğinden ve gate kısa-isim sızıntısını zaten engellediğinden
+    (kendini-pekiştiren), bir master'ın alâkasız kısa varyantı üzerinden sayıyı sağlaması ikincil
+    bir durumdur; STRIPPED_EXACT'in birebir token_count'u + fingerprint dedup bunu tamamlar."""
+    if not ENABLE_CORE_COVERAGE_GATE or es is None:
+        return []
+    count = _get_token_count(es, name, "stripped_search_analyzer")
+    if count <= 0:
+        return []
+    return [{
+        "nested": {
+            "path": "variations_stripped",
+            "query": {"bool": {"filter": [
+                {"term": {"variations_stripped.name.token_count": count}}
+            ]}},
+        }
+    }]
 
 
 # Hiçbir dokümanla eşleşmeyen sentinel query — guard'lar tarafından kullanılır.
@@ -309,7 +346,9 @@ def TOKEN_COVERAGE(name: str, country: str, es: Elasticsearch = None, **kwargs) 
                                 }
                             }
                         }
-                    }
+                    },
+                    # Çözüm A: ayırt-edici-çekirdek coverage (STRIPPED token_count eşitliği, ES-side)
+                    *_core_coverage_filter(es, name, country),
                 ],
                 "filter": [{"term": {"country_code": country.upper()}}],
             }
@@ -347,7 +386,9 @@ def FUZZY_PHRASE(name: str, country: str, es: Elasticsearch = None, **kwargs) ->
                                 }
                             }
                         }
-                    }
+                    },
+                    # Çözüm A: ayırt-edici-çekirdek coverage (STRIPPED token_count eşitliği, ES-side)
+                    *_core_coverage_filter(es, name, country),
                 ],
                 "filter": [{"term": {"country_code": country.upper()}}],
             }

@@ -692,7 +692,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
                         write_cursor,
                         """INSERT INTO match_stages_log
                             (input_id, input_name, country_code, stage_name, stage_order,
-                             matched, master_id, es_score) VALUES %s""",
+                            matched, master_id, es_score) VALUES %s""",
                         [
                             (
                                 r["row_id"],

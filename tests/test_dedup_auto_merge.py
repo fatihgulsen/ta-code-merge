@@ -3,7 +3,7 @@
 
 
 def test_choose_primary_is_deterministic():
-    import dedup_auto_merge as dam
+    import dedup.auto_merge as dam
     ids = ["c-3", "a-1", "b-2"]
     assert dam.choose_primary(ids) == dam.choose_primary(list(reversed(ids)))
     # deterministic = sorted first
@@ -11,20 +11,20 @@ def test_choose_primary_is_deterministic():
 
 
 def test_plan_merge_skips_single_master():
-    import dedup_auto_merge as dam
+    import dedup.auto_merge as dam
     assert dam.plan_merge({"fingerprint": "acme", "country_code": "MX", "master_ids": ["m1"]}) is None
 
 
 def test_plan_merge_skips_empty_fingerprint():
     """Boş fingerprint (yalnız yasal-ek/geo/çöp) → BİRLEŞTİRME (garbage magnet önlenir)."""
-    import dedup_auto_merge as dam
+    import dedup.auto_merge as dam
     assert dam.plan_merge({"fingerprint": "", "country_code": "MX", "master_ids": ["m1", "m2"]}) is None
     assert dam.plan_merge({"fingerprint": "   ", "country_code": "MX", "master_ids": ["m1", "m2"]}) is None
 
 
 def test_is_distinctive_fingerprint_respects_threshold():
     """Saf fonksiyon: eşik (min_token_len) parametrik. P-R2-1."""
-    import dedup_auto_merge as dam
+    import dedup.auto_merge as dam
     # min=1 (config default şu an) → her boş-olmayan token ayırt edici sayılır (guard kapalı)
     assert dam._is_distinctive_fingerprint("m", min_token_len=1) is True
     assert dam._is_distinctive_fingerprint("g m", min_token_len=1) is True
@@ -40,7 +40,7 @@ def test_is_distinctive_fingerprint_respects_threshold():
 def test_plan_merge_degenerate_guard_is_config_driven(monkeypatch):
     """plan_merge config.DEDUP_MIN_FINGERPRINT_TOKEN_LEN eşiğini kullanır.
     Default 1'de 'm' birleşir (guard kapalı); 2'ye çekilince magnet skip edilir."""
-    import dedup_auto_merge as dam
+    import dedup.auto_merge as dam
     grp = {"fingerprint": "m", "country_code": "MX", "master_ids": ["m1", "m2"]}
     # Eşik 1 (default) → birleştir
     monkeypatch.setattr(dam, "DEDUP_MIN_FINGERPRINT_TOKEN_LEN", 1)
@@ -54,13 +54,13 @@ def test_plan_merge_degenerate_guard_is_config_driven(monkeypatch):
 
 def test_plan_merge_keeps_distinctive_fingerprint():
     """Ayırt edici (boş-olmayan) fingerprint → birleştir (default eşik 1)."""
-    import dedup_auto_merge as dam
+    import dedup.auto_merge as dam
     assert dam.plan_merge({"fingerprint": "outdoor vf", "country_code": "MX", "master_ids": ["m1", "m2"]}) is not None
     assert dam.plan_merge({"fingerprint": "acme", "country_code": "MX", "master_ids": ["m1", "m2"]}) is not None
 
 
 def test_plan_merge_builds_primary_and_secondaries():
-    import dedup_auto_merge as dam
+    import dedup.auto_merge as dam
     plan = dam.plan_merge({"fingerprint": "acme", "country_code": "MX", "master_ids": ["m3", "m1", "m2"]})
     assert plan is not None
     assert plan["primary"] == "m1"
@@ -70,7 +70,7 @@ def test_plan_merge_builds_primary_and_secondaries():
 
 def test_plan_merge_requires_country():
     """country_code yoksa (hard-filter güvenliği) birleştirme yapma."""
-    import dedup_auto_merge as dam
+    import dedup.auto_merge as dam
     assert dam.plan_merge({"fingerprint": "acme", "country_code": None, "master_ids": ["m1", "m2"]}) is None
     assert dam.plan_merge({"fingerprint": "acme", "country_code": "", "master_ids": ["m1", "m2"]}) is None
 
@@ -79,7 +79,7 @@ def test_apply_merge_repoints_pg_with_country_hard_filter_and_merges_es():
     """apply_merge: PG master_code repoint (country HARD FILTER param) + ES merge/delete
     + commit. ES get/update/delete routing=country ile çağrılmalı."""
     from unittest.mock import MagicMock
-    import dedup_auto_merge as dam
+    import dedup.auto_merge as dam
 
     es = MagicMock()
     es.get.return_value = {"_source": {"variations": [{"name": "X"}], "variations_stripped": []}}
@@ -106,7 +106,7 @@ def test_apply_merge_repoints_pg_with_country_hard_filter_and_merges_es():
 
 def test_apply_merge_rolls_back_on_error_without_commit():
     from unittest.mock import MagicMock
-    import dedup_auto_merge as dam
+    import dedup.auto_merge as dam
 
     es = MagicMock()
     es.get.side_effect = RuntimeError("ES down")
@@ -136,7 +136,7 @@ def test_iter_duplicate_groups_per_country_pagination_and_min_count():
     """iter_duplicate_groups: ülke-başına döngü, nested-agg parse, after_key sayfalama,
     <2 master atlama."""
     from unittest.mock import MagicMock
-    import dedup_auto_merge as dam
+    import dedup.auto_merge as dam
 
     countries_resp = {"aggregations": {"cc": {"buckets": [{"key": "MX"}]}}}
     page1 = _agg_page(
@@ -160,7 +160,7 @@ def test_iter_duplicate_groups_per_country_pagination_and_min_count():
 
 
 def test_auto_merge_dry_run_counts_without_mutating(monkeypatch):
-    import dedup_auto_merge as dam
+    import dedup.auto_merge as dam
     from unittest.mock import MagicMock
 
     fake_groups = [
@@ -177,7 +177,7 @@ def test_auto_merge_dry_run_counts_without_mutating(monkeypatch):
 
 
 def test_auto_merge_limit_stops_early(monkeypatch):
-    import dedup_auto_merge as dam
+    import dedup.auto_merge as dam
     from unittest.mock import MagicMock
 
     fake_groups = [
@@ -194,7 +194,7 @@ def test_iter_duplicate_groups_restrict_scopes_to_master_ids():
     """restrict_master_ids verilince agg query master_id terms filtresiyle batch'e ölçeklenir
     (tüm index taranmaz)."""
     from unittest.mock import MagicMock
-    import dedup_auto_merge as dam
+    import dedup.auto_merge as dam
 
     countries_resp = {"aggregations": {"cc": {"buckets": [{"key": "MX"}]}}}
     page = _agg_page([_fp_bucket("acme", ["m1", "m2"])], after_key=None)
@@ -213,7 +213,7 @@ def test_iter_duplicate_groups_restrict_scopes_to_master_ids():
 
 def test_auto_merge_per_batch_no_refresh(monkeypatch):
     """Batch-içi kullanım: refresh=False iken ES refresh çağrılmaz (döngü kendi refresh eder)."""
-    import dedup_auto_merge as dam
+    import dedup.auto_merge as dam
     from unittest.mock import MagicMock
 
     monkeypatch.setattr(dam, "iter_duplicate_groups",

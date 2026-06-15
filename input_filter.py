@@ -1,19 +1,11 @@
-# ============================================================================
-# input_filter.py — Sınır (boundary) girdi-geçerliliği filtresi (P0-B / Faz 4)
-# ============================================================================
-# "Bu girdi TAMAMEN ANLAMSIZ mı?" sorusunu yanıtlar — firma adı olarak GEÇERSİZ
-# olanları (boş, salt-noktalama, n/a/null işaretçileri, 'unvan yok' placeholder'ları)
-# tespit eder; bunlar eşleştirmeye sokulmadan EXCLUDED olarak izole edilir (ES'e
-# indekslenmez → magnet olamaz).
-#
-# ÖNEMLİ FELSEFE: Bir firmanın "doğru" olup olmadığına KARAR VEREMEYİZ. Yalnızca
-# kodlardan/sayılardan/baş-harflerden oluşan ya da çok uzun bir isim PEKÂLÂ gerçek
-# (yeni) bir firma olabilir → bunlar DIŞLANMAZ, NEW_MASTER olur. Yalnızca hiçbir
-# içerik taşımayan / 'isim yok' anlamına gelen girdiler elenir. Bu KİMLİK kararı
-# DEĞİLDİR. Fuzzy/Levenshtein YOK. Placeholder'lar synonyms_data JSON'undan
-# (non_firm_placeholders kategorisi, synonym_loader üzerinden — hardcode DEĞİL).
-# Kanıt/ölçek: docs/audit/2026-06-03-llm-judge-rematch-comparison.md §4.
-# ============================================================================
+"""Girdi geçerlilik filtresi.
+
+'Bu girdi firma adı olarak anlamlı mı?' sorusunu yanıtlar. Boş, salt-noktalama,
+n/a işaretçileri ve 'unvan yok' placeholder'ları EXCLUDED olarak izole edilir —
+eşleştirmeye sokulmazlar. Yalnızca içerik taşımayan girdiler elenir; kimlik kararı
+verilmez (salt-kod/baş-harf grupları NEW_MASTER olabilir). Placeholder'lar
+synonyms_data JSON'undan okunur, hardcode edilmez (bkz. docs/audit/).
+"""
 
 import re
 import unicodedata
@@ -21,22 +13,18 @@ from functools import lru_cache
 
 from synonym_loader import get_non_firm_placeholders
 
-# Unicode-AWARE: harf/rakam DIŞI her şeyi (+alt çizgi) boşluğa indir. Latin-DIŞI
-# alfabeler (Kiril/Yunan/CJK/Arap) içerik TAŞIR → 'no_alnum' sayılmamalı. Eski
-# [^a-z0-9] regex'i bu gerçek firmaları (ör. ФОЛЬКСВАГЕН АГ = Volkswagen AG) yanlışlıkla
-# eliyordu (P-R2-2). \w py3 str'de zaten Unicode harf/rakam eşler (re.UNICODE default);
-# '_' ayrıca elenir.
+# Unicode-aware: Latin-dışı alfabeler (Kiril/CJK/Arap) içerik taşır → no_alnum sayılmaz.
+# \w py3'te Unicode harf/rakam eşler; '_' ayrıca elenir.
 _NONALNUM = re.compile(r"[\W_]+")
-# Salt yapısal "boş/null" işaretçileri (dil-bağımsız, içerik taşımayan):
+# Dil-bağımsız yapısal boş/null işaretçileri (içerik taşımayan):
 _NA_MARKERS = {"n a", "na", "s n", "sn", "null", "none", "nan", "nil"}
 
 
 def _norm(text: str) -> str:
-    """lower + aksan-fold (NFKD) + alfanümerik-olmayanları (Unicode) boşluğa indir + tek boşluk.
+    """lower + NFKD aksan-fold + alfanümerik-olmayanları boşluğa indir + tek boşluk.
 
-    Latin-dışı içerik (Kiril/CJK/...) KORUNUR → 'isim yok' kararı yalnızca gerçekten
-    içerik-taşımayan girdilere uygulanır. Latin placeholder/na set'leriyle eşleşme
-    değişmez (Latin girdiler aynı normalize edilir; Latin-dışı zaten set'lerde yok)."""
+    Latin-dışı içerik (Kiril/CJK) korunur; bu sayede 'isim yok' kararı
+    yalnızca gerçekten içerik taşımayan girdilere uygulanır."""
     nfkd = unicodedata.normalize("NFKD", text.lower())
     no_accent = "".join(c for c in nfkd if not unicodedata.combining(c))
     return _NONALNUM.sub(" ", no_accent).strip()
@@ -44,11 +32,10 @@ def _norm(text: str) -> str:
 
 @lru_cache(maxsize=None)
 def _placeholder_set(country: str) -> frozenset:
-    """Ülke için "firma değil" placeholder'ları — synonyms_data JSON'undan, _norm edilmiş.
+    """Ülke için 'firma değil' placeholder'larını _norm edilmiş frozenset olarak döner.
 
-    Kaynak: synonyms_data/{common,<cc>}.json 'non_firm_placeholders' kategorisi (hardcode
-    DEĞİL). get_non_firm_placeholders zaten common + ülke birleşimini döner; her ifade
-    classify_input ile AYNI _norm'dan geçirilir → aksan/case/noktalama tutarlı TAM eşleşme."""
+    synonyms_data/{common,<cc>}.json 'non_firm_placeholders' kategorisinden okunur
+    (hardcode değil). classify_input ile aynı _norm geçirilir → tam eşleşme tutarlı."""
     cc = (country or "").upper()
     return frozenset(n for p in get_non_firm_placeholders(cc) if (n := _norm(p)))
 
@@ -80,12 +67,8 @@ def classify_input(raw_name: str, country: str) -> str | None:
     return None
 
 
-# ─────────────────────────────────────────────────────────────────────
-# DRY-RUN RAPOR — PG'yi salt-okunur tarar, neyin dışlanacağını sebep+örnek+sayı ile gösterir
-# ─────────────────────────────────────────────────────────────────────
-
 def report(conn, sample_per_reason: int = 8, only_unprocessed: bool = True) -> dict:
-    """p7_firms_v2'yi tarar; her dışlama sebebi için sayı + örnek toplar (DEĞİŞİKLİK YOK)."""
+    """PG'yi salt-okunur tarar; her dışlama sebebi için sayı ve örnek toplar (değişiklik yapmaz)."""
     from collections import Counter, defaultdict
     import psycopg2.sql
     from psycopg2.extras import DictCursor

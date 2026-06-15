@@ -1,19 +1,9 @@
-# ============================================================================
-# dedup_auto_merge.py — ES-side otomatik duplicate-master birleştirme (Option-2)
-# ============================================================================
-# Aynı KANONİK fingerprint'e (es_manager fingerprint_analyzer: jenerik + yasal-ek
-# + geo stripped, sort+dedup) ve aynı country_code'a sahip master'ları tespit edip
-# OTOMATİK birleştirir:
-#   1. PG: p7_firms_v2.master_code → primary master'a yeniden yönlendir
-#   2. ES: secondary'lerin variations'ını primary'e taşı, secondary doc'ları sil
-#
-# Kimlik kararı %100 ES analyzer'ındadır (fingerprint). Python'da fuzzy/Levenshtein
-# veya normalize-ile-sınıflandırma YOKTUR — yalnızca ES'in ürettiği fingerprint
-# eşitliği üzerinden gruplama + orkestrasyon. country_code HARD FILTER (grup anahtarı).
-#
-# Boş fingerprint (yalnız yasal-ek/geo/çöp) → BİRLEŞTİRİLMEZ (garbage magnet önlenir).
-# Bkz. docs/audit/2026-06-03-llm-judge-rematch-comparison.md §3.3 / P0-C Option-2.
-# ============================================================================
+"""ES tarafındaki fingerprint eşitliğine dayanarak aynı ülkedeki duplicate master'ları otomatik birleştirir.
+
+Karar tamamen ES analyzer'ının ürettiği fingerprint'e aittir; Python'da fuzzy/string
+benzerliği yapılmaz. country_code HARD FILTER'dır. Boş/dejenere fingerprint'ler
+magnet riski nedeniyle atlanır. Bkz. docs/audit/ raporları.
+"""
 
 import logging
 
@@ -38,16 +28,12 @@ def choose_primary(master_ids: list[str]) -> str:
 
 
 def _is_distinctive_fingerprint(fp: str, min_token_len: int | None = None) -> bool:
-    """Fingerprint dedup ANAHTARI olacak kadar ayırt edici mi?
+    """Fingerprint'in dedup anahtarı olacak kadar ayırt edici olup olmadığını döner.
 
-    En az bir token >= `min_token_len` (config.DEDUP_MIN_FINGERPRINT_TOKEN_LEN) karakter
-    olmalı. Aksi halde dejenere kabul edilir: fingerprint_analyzer noktalı-akronim isimleri
-    (C.M.S.A.D.C / U M S.A. DE C.V. / A.P.M. S.A.) tek junk harfe ('m') çökertebiliyor →
-    alakasız firmalar aynı anahtarda toplanıp magnet oluşuyor (P-R2-1).
-
-    Eşik config'ten ayarlanır: 1 = guard pratikte kapalı (yalnız boş fp engellenir);
-    2 = akronim magnet'lerini engeller, gerçek 2-harfli markaları (VF/3M) korur. Ampirik
-    sınır ve neden ≥2'nin bile yetmediği: docs/audit/2026-06-03-round2-preliminary-2.9pct.md."""
+    Noktalı-akronim isimleri fingerprint_analyzer'da tek karaktere çöküp alakasız firmaları
+    aynı grup altında toplayabilir (magnet riski). En az bir token min_token_len karakter
+    uzunluğunda olmalıdır. Eşik gerekçesi için bkz. docs/audit/.
+    """
     if min_token_len is None:
         min_token_len = DEDUP_MIN_FINGERPRINT_TOKEN_LEN
     return any(len(tok) >= min_token_len for tok in fp.split())
@@ -68,9 +54,7 @@ def plan_merge(group: dict) -> dict | None:
     if not fp or not country or len(masters) < 2:
         return None
     if not _is_distinctive_fingerprint(fp):
-        # Dejenere fingerprint (akronim çökmesi) → birleştirme. NOT: gerçekten
-        # tek-karakterli özdeş firmalar burada under-merge kalır (kabul edilen takas;
-        # magnet riski somut, under-merge riski düşük). Kayıp merge'ler denetlenebilsin.
+        # Magnet riskine karşı atlanır; nadir under-merge kabul edilmiş bir takas.
         logger.debug("dejenere fingerprint skip: fp=%r masters=%d", fp, len(masters))
         return None
     primary = choose_primary(masters)
@@ -99,19 +83,11 @@ def iter_duplicate_groups(
     restrict_master_ids: list[str] | None = None,
     countries: list[str] | None = None,
 ):
-    """Aynı kanonik fingerprint'i paylaşan distinct master_id'leri üretir.
+    """Aynı kanonik fingerprint'i paylaşan distinct master_id'lerini üretir (generator).
 
-    country_code HARD FILTER: her ülke ayrı işlenir (query-level filter). Ülke parent
-    alanı olduğundan nested composite içine source olarak KONULAMAZ; bu yüzden ülke dış
-    döngüde sabitlenir, fingerprint nested composite ile sayfalanır, master_id'ler
-    reverse_nested ile parent'tan toplanır.
-
-    restrict_master_ids verilirse aggregation YALNIZCA bu master'larla sınırlanır
-    (batch-içi dedup için → tüm index'i taramaz, iş yükü batch'e ölçeklenir).
-
-    countries verilirse YALNIZCA bu ülkeler işlenir (perf: batch-içi dedup'ta tüm index'in
-    distinct ülkelerini taramak + boş-ülke için agg koşmak yerine, batch'in gerçek ülke
-    kümesi geçilir → fielddata aggregation gereksiz yere koşmaz).
+    country_code dış döngüde sabitlenir; nested composite ile fingerprint sayfalanır,
+    master_id'ler reverse_nested ile toplanır. restrict_master_ids verilirse yalnızca bu
+    master'lar sorgulanır (batch-içi kullanım). countries verilirse fielddata agg atlanır.
 
     Yields: {"fingerprint", "country_code", "master_ids": [...]}
     """
@@ -176,12 +152,11 @@ for (s in params.new_stripped) { if (!ctx._source.variations_stripped.contains(s
 
 
 def _repoint_pg(cur, primary: str, secondaries: list[str], country: str) -> int:
-    """secondary master'lara işaret eden satırları primary'e yönlendirir.
-    country_code = HARD FILTER (parametrik). Etkilenen satır sayısını döner.
+    """Secondary master'lara işaret eden satırları primary'e yönlendirir; etkilenen satır sayısını döner.
 
-    A3: aynı atomik UPDATE'te ikincil NEW_MASTER anchor'ları AUTO_DEDUP'a demote eder
-    (CASE) — böylece tek master_code'da >1 NEW_MASTER kalmaz (watch query kör noktası).
-    Variant satırları (NEW_MASTER olmayan) tipini korur, sadece master_code'u değişir."""
+    Aynı UPDATE'te ikincil NEW_MASTER anchor'ları AUTO_DEDUP'a demote edilir; böylece
+    tek master_code altında >1 NEW_MASTER kalmasının yol açtığı izleme kör noktası önlenir.
+    """
     col_master = COLUMN_MAPPING["master_code"]
     col_country = COLUMN_MAPPING["country_code"]
     col_mt = COLUMN_MAPPING["match_type"]
@@ -207,8 +182,7 @@ def apply_merge(es: Elasticsearch, cur, pg_conn, plan: dict) -> dict:
     primary, secondaries, cc = plan["primary"], plan["secondaries"], plan["country_code"]
     try:
         repointed = _repoint_pg(cur, primary, secondaries, cc)
-        # MEDIUM-1 (review): secondary'lere işaret eden satır yoksa (kaskad/zaten-repoint
-        # edilmiş) izlenebilir olsun — sessiz no-op olmasın.
+        # Satır etkilenmemişse (kaskad/önceden repoint) sessiz geçilmemesi için uyarı.
         if repointed == 0 and secondaries:
             logger.warning(
                 "dedup repoint 0 satır etkiledi (kaskad/stale secondary?) "
@@ -246,11 +220,10 @@ def auto_merge_duplicates(
 ) -> dict:
     """Duplicate fingerprint gruplarını otomatik birleştirir (PG repoint + ES merge).
 
-    dry_run=True → yalnızca planları sayar, hiçbir değişiklik yapmaz.
-    limit → en fazla bu kadar grup işle (kademeli rollout için).
+    dry_run=True → yalnızca planları sayar, değişiklik yapmaz.
+    limit → en fazla bu kadar grup işle.
     restrict_master_ids → yalnızca bu master'lar arasında dedup (batch-içi kullanım).
-    refresh → bitişte ES refresh (batch-içi çağrıda False bırakılabilir; döngü zaten
-              bir sonraki batch'te refresh eder).
+    refresh → bitişte ES refresh; batch-içi çağrıda False bırakılabilir.
     """
     cur = pg_conn.cursor()
     stats = {"groups": 0, "merged_masters": 0, "repointed_rows": 0, "skipped": 0, "errors": 0}
@@ -277,7 +250,8 @@ def auto_merge_duplicates(
     return stats
 
 
-# ============================================================================
+# Kullanım: python dedup_auto_merge.py [--apply] [--limit=N]
+# Varsayılan dry-run; --apply ile değişiklikler uygulanır.
 if __name__ == "__main__":
     import sys
     from es_manager import get_es_client

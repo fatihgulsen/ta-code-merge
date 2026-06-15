@@ -1,10 +1,8 @@
-# ============================================================================
-# es_transform.py - ES Transform ile Sürekli Duplicate Detection
-# ============================================================================
-# Fingerprint + country_code bazlı continuous transform.
-# Aynı fingerprint'e sahip birden fazla master_id'yi tespit eder
-# ve potential_duplicates index'ine yazar.
-# ============================================================================
+"""Fingerprint + country_code bazlı ES continuous transform yönetimi.
+
+Aynı fingerprint'e sahip birden fazla master_id'yi tespit ederek potential_duplicates
+index'ine yazar. Transform kurulum/başlatma/durdurma ve sonuç sorgulama işlevlerini sağlar.
+"""
 
 import logging
 
@@ -19,11 +17,8 @@ DEST_INDEX = "potential_duplicates"
 
 
 def create_dedup_transform(es: Elasticsearch) -> None:
-    """
-    Continuous transform oluşturur: aynı fingerprint + country'ye sahip
-    birden fazla master kaydı tespit eder.
-    """
-    # Önce destination index'i oluştur (yoksa)
+    """Duplicate tespiti için continuous transform'u oluşturur (varsa yeniden oluşturur)."""
+    # Destination index yoksa oluştur
     if not es.indices.exists(index=DEST_INDEX):
         es.indices.create(
             index=DEST_INDEX,
@@ -92,7 +87,7 @@ def create_dedup_transform(es: Elasticsearch) -> None:
         },
     }
 
-    # Transform varsa sil ve yeniden oluştur
+    # Varsa durdur ve sil, ardından yeniden oluştur
     try:
         es.transform.get_transform(transform_id=TRANSFORM_ID)
         es.transform.stop_transform(transform_id=TRANSFORM_ID, wait_for_completion=True)
@@ -118,16 +113,7 @@ def stop_dedup_transform(es: Elasticsearch) -> None:
 
 
 def get_potential_duplicates(es: Elasticsearch, min_count: int = 2, size: int = 100) -> list[dict]:
-    """
-    Potansiyel duplicate'ları listeler.
-
-    Args:
-        min_count: Minimum master_id sayısı (2 = en az 2 farklı master)
-        size:      Döndürülecek max kayıt sayısı
-
-    Returns:
-        Duplicate aday listesi
-    """
+    """potential_duplicates index'inden duplicate aday gruplarını döner."""
     res = es.search(
         index=DEST_INDEX,
         body={
@@ -155,7 +141,7 @@ def get_potential_duplicates(es: Elasticsearch, min_count: int = 2, size: int = 
     return results
 
 
-# ============================================================================
+# Kullanım: python es_transform.py  → transform'u kurar ve başlatır.
 if __name__ == "__main__":
     from es_manager import get_es_client
 

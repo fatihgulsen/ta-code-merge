@@ -24,7 +24,7 @@ def _make_msearch_response(hits_per_query: list[list[dict]]) -> dict:
 
 def test_run_stage_returns_matched_and_unmatched():
     """Eşleşen kayıtlar matched, eşleşmeyenler unmatched listesine girer."""
-    import main_processor as mp
+    import matching.pipeline as mp
 
     records = [
         {"row_id": 1, "raw_name": "Acme Global Ltd", "country": "TR", "tax": "", "phone": ""},
@@ -52,7 +52,7 @@ def test_run_stage_returns_matched_and_unmatched():
 
 def test_run_stage_respects_min_score():
     """min_score altındaki hit'ler eşleşme sayılmaz."""
-    import main_processor as mp
+    import matching.pipeline as mp
 
     records = [
         {"row_id": 1, "raw_name": "Acme Ltd", "country": "TR", "tax": "", "phone": ""},
@@ -74,7 +74,7 @@ def test_run_stage_respects_min_score():
 def test_country_code_filter_uses_parametric_sql():
     """COUNTRY_CODE_FILTER değeri SQL string'ine gömülmemeli; parametre olarak geçilmeli (CLAUDE.md §1.1)."""
     from unittest.mock import patch, call as mcall
-    import main_processor as mp
+    import matching.pipeline as mp
     import config
 
     original_filter = config.COUNTRY_CODE_FILTER
@@ -142,7 +142,7 @@ def test_validate_db_schema_uses_safe_identifiers():
     """ALTER TABLE DDL in validate_db_schema must use psycopg2.sql objects, not raw f-strings (CLAUDE.md §1.1)."""
     from unittest.mock import patch, MagicMock, call as mcall
     import psycopg2.sql
-    import main_processor as mp
+    import matching.db_io as mp
 
     # Simulate: table exists, mandatory read columns present, one update column missing
     # so the ALTER TABLE branch executes.
@@ -188,7 +188,7 @@ def test_create_new_masters_produces_5_element_tuple():
     """C3: create_new_masters must append 5-element tuples to pg_updates (not 4-element).
     The missing field is 'details'. This test will FAIL before the fix at line 594."""
     from unittest.mock import patch, MagicMock, call as mcall
-    import main_processor as mp
+    import matching.pipeline as mp
 
     records = [
         {"row_id": 10, "raw_name": "Alpha Corp", "country": "TR", "tax": "", "phone": "", "address": ""},
@@ -210,7 +210,7 @@ def test_create_new_masters_produces_5_element_tuple():
             captured_updates.extend(argslist)
 
     with patch.object(mp, "execute_values", side_effect=fake_execute_values), \
-         patch("main_processor.helpers.bulk", return_value=(2, [])), \
+         patch("matching.pipeline.helpers.bulk", return_value=(2, [])), \
          patch.object(mp, "NEW_MASTER_SUBBATCH_SIZE", 10), \
          patch.object(mp, "ES_INDEX", "test_index"):
         mp.create_new_masters(mock_es, mock_write_cursor, mock_write_conn, records)
@@ -227,7 +227,7 @@ def test_batch_end_flush_sql_binds_all_5_columns():
     """C4: The batch-end flush SQL (lines ~1149-1155) must bind all 5 columns including
     match_details (d.md). Currently it only binds 4 — this test will FAIL before the fix."""
     from unittest.mock import patch, MagicMock
-    import main_processor as mp
+    import matching.pipeline as mp
 
     # We inspect the SQL passed to execute_values in the batch-end flush path.
     # The batch-end flush fires when pg_updates is non-empty at end of a chunk.
@@ -284,9 +284,9 @@ def test_batch_end_flush_sql_binds_all_5_columns():
          patch.object(mp, "BATCH_SIZE", 10), \
          patch.object(mp, "ES_INDEX", "test_index"), \
          patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
-         patch("main_processor.get_es_client", return_value=mock_es), \
-         patch("main_processor.create_index"), \
-         patch("main_processor.register_all_pipelines"):
+         patch("matching.pipeline.get_es_client", return_value=mock_es), \
+         patch("matching.pipeline.create_index"), \
+         patch("matching.pipeline.register_all_pipelines"):
         mp.process_all_data()
 
     # Find the UPDATE SQL calls — the batch-end flush should be among them
@@ -316,7 +316,7 @@ def test_per_row_exception_does_not_halt_batch():
     """
     from unittest.mock import patch, MagicMock, call as mcall
     import logging
-    import main_processor as mp
+    import matching.pipeline as mp
     import config as cfg
 
     # Build three fake rows using actual column mapping keys
@@ -390,10 +390,10 @@ def test_per_row_exception_does_not_halt_batch():
          patch.object(mp, "BATCH_SIZE", 10), \
          patch.object(mp, "ES_INDEX", "test_index"), \
          patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
-         patch("main_processor.get_es_client", return_value=mock_es), \
-         patch("main_processor.create_index"), \
-         patch("main_processor.register_all_pipelines"), \
-         patch("main_processor.logger") as mock_logger:
+         patch("matching.pipeline.get_es_client", return_value=mock_es), \
+         patch("matching.pipeline.create_index"), \
+         patch("matching.pipeline.register_all_pipelines"), \
+         patch("matching.pipeline.logger") as mock_logger:
         # Must NOT raise — per-row exception should be swallowed, logged, loop continues
         mp.process_all_data()
 
@@ -429,7 +429,7 @@ def test_es_bulk_failure_logs_at_warning_with_exc_info():
     """
     from unittest.mock import patch, MagicMock
     import logging
-    import main_processor as mp
+    import matching.es_writer as mp
 
     # Simulate ES bulk failure
     mock_es = MagicMock()
@@ -450,7 +450,7 @@ def test_es_bulk_failure_logs_at_warning_with_exc_info():
     ]
 
     # Capture log records at all levels
-    with patch("main_processor.logger") as mock_logger:
+    with patch("matching.es_writer.logger") as mock_logger:
         # Call the function that contains the bulk operation
         mp.update_es_variations(mock_es, matched_records)
 
@@ -487,14 +487,14 @@ def test_add_variation_to_master_logs_es_failure_at_warning_with_exc_info():
     """
     from unittest.mock import patch, MagicMock
     import logging
-    import main_processor as mp
+    import matching.es_writer as mp
 
     # Simulate ES get failure (network/auth/cluster down)
     mock_es = MagicMock()
     mock_es.get.side_effect = Exception("ES cluster down")
 
     # Capture log records at all levels
-    with patch("main_processor.logger") as mock_logger:
+    with patch("matching.es_writer.logger") as mock_logger:
         # Call _add_variation_to_master with minimal args
         # signature: _add_variation_to_master(es, master_doc_id, variation, country, rec=None)
         mp._add_variation_to_master(
@@ -536,7 +536,7 @@ def test_add_variation_preserves_existing_variations_stripped_and_suffix():
     Also verifies the input dict is not mutated in-place.
     """
     from unittest.mock import MagicMock
-    import main_processor as mp
+    import matching.es_writer as mp
 
     mock_es = MagicMock()
 
@@ -616,7 +616,7 @@ def test_all_pg_updates_appends_use_float_score():
     or the test will FAIL when asserting isinstance(tuple[1], float).
     """
     from unittest.mock import patch, MagicMock
-    import main_processor as mp
+    import matching.pipeline as mp
     import config as cfg
 
     captured_updates: list[tuple] = []
@@ -680,9 +680,9 @@ def test_all_pg_updates_appends_use_float_score():
          patch.object(mp, "BATCH_SIZE", 10), \
          patch.object(mp, "ES_INDEX", "test_index"), \
          patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
-         patch("main_processor.get_es_client", return_value=mock_es), \
-         patch("main_processor.create_index"), \
-         patch("main_processor.register_all_pipelines"):
+         patch("matching.pipeline.get_es_client", return_value=mock_es), \
+         patch("matching.pipeline.create_index"), \
+         patch("matching.pipeline.register_all_pipelines"):
 
         # Row 1 gets a winner, row 2 gets no winner (empty dict)
         mock_match.side_effect = [
@@ -725,7 +725,7 @@ def test_pg_update_flush_sql_uses_safe_identifiers():
     """
     from unittest.mock import patch, MagicMock
     import psycopg2.sql
-    import main_processor as mp
+    import matching.pipeline as mp
     import config as cfg
 
     # Build a minimal fake row using actual column mapping values
@@ -775,9 +775,9 @@ def test_pg_update_flush_sql_uses_safe_identifiers():
          patch.object(mp, "BATCH_SIZE", 10), \
          patch.object(mp, "ES_INDEX", "test_index"), \
          patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
-         patch("main_processor.get_es_client", return_value=mock_es), \
-         patch("main_processor.create_index"), \
-         patch("main_processor.register_all_pipelines"):
+         patch("matching.pipeline.get_es_client", return_value=mock_es), \
+         patch("matching.pipeline.create_index"), \
+         patch("matching.pipeline.register_all_pipelines"):
         mp.process_all_data()
 
     update_calls = [(sql, args) for sql, args in captured if "UPDATE" in str(sql).upper()]
@@ -797,7 +797,7 @@ def test_pg_update_flush_sql_uses_safe_identifiers():
 def test_main_processor_does_not_hardcode_thresholds():
     """M1m: magic number'lar config'den gelmeli, main_processor.py'de hardcoded olmamalı."""
     import inspect
-    import main_processor as mp
+    import matching.pipeline as mp
     import config
 
     # 1) config'de sabitler var mi?
@@ -861,7 +861,8 @@ def test_create_new_masters_variation_shape_matches_add_variation():
     This test fails when build_new_master_doc is still using the string format.
     """
     from unittest.mock import patch, MagicMock
-    import main_processor as mp
+    import matching.pipeline as pipeline
+    import matching.es_writer as es_writer
 
     # ── Part A: capture the variation entry from create_new_masters ──────────
     records = [
@@ -875,11 +876,11 @@ def test_create_new_masters_variation_shape_matches_add_variation():
         captured_bulk_docs.extend(docs)
         return (len(docs), [])
 
-    with patch("main_processor.helpers.bulk", side_effect=fake_bulk), \
-         patch.object(mp, "NEW_MASTER_SUBBATCH_SIZE", 10), \
-         patch.object(mp, "ES_INDEX", "test_index"), \
-         patch.object(mp, "execute_values"), \
-         patch.object(mp, "STAGES", [{"name": "CANONICAL_EXACT", "order": 2,
+    with patch("matching.pipeline.helpers.bulk", side_effect=fake_bulk), \
+         patch.object(pipeline, "NEW_MASTER_SUBBATCH_SIZE", 10), \
+         patch.object(pipeline, "ES_INDEX", "test_index"), \
+         patch.object(pipeline, "execute_values"), \
+         patch.object(pipeline, "STAGES", [{"name": "CANONICAL_EXACT", "order": 2,
                                        "query_fn": "CANONICAL_EXACT",
                                        "min_score": 50.0, "enabled": True}]):
         mock_es = MagicMock()
@@ -887,7 +888,7 @@ def test_create_new_masters_variation_shape_matches_add_variation():
         mock_es.msearch.return_value = {
             "responses": [{"hits": {"hits": [], "total": {"value": 0}}}]
         }
-        mp.create_new_masters(mock_es, MagicMock(), MagicMock(), records)
+        pipeline.create_new_masters(mock_es, MagicMock(), MagicMock(), records)
 
     assert captured_bulk_docs, "create_new_masters must index at least one ES doc"
     source_from_create = captured_bulk_docs[0].get("_source", {})
@@ -896,7 +897,7 @@ def test_create_new_masters_variation_shape_matches_add_variation():
     initial_entry = variations_from_create[0]
 
     # ── Part B: capture the variation entry appended by build_new_master_doc ─
-    doc_from_build, _mid = mp.build_new_master_doc(
+    doc_from_build, _mid = es_writer.build_new_master_doc(
         name="Acme Corp", country="TR", tax="", phone="", address=""
     )
     variations_from_build = doc_from_build["_source"].get("variations", [])
@@ -914,7 +915,7 @@ def test_create_new_masters_variation_shape_matches_add_variation():
             "variations_suffix": [],
         }
     }
-    mp._add_variation_to_master(mock_es2, "m-1", "New Variation", "TR", rec=None)
+    es_writer._add_variation_to_master(mock_es2, "m-1", "New Variation", "TR", rec=None)
     assert mock_es2.index.called, "_add_variation_to_master must call es.index"
     body_from_add = mock_es2.index.call_args[1].get("body", {})
     variations_from_add = body_from_add.get("variations", [])
@@ -953,7 +954,7 @@ def test_excluded_input_isolated_not_matched_not_indexed():
     """P0-B: garbage girdi (placeholder) match_single_record'a GİRMEZ, ES'e İNDEKSLENMEZ;
     EXCLUDED match_type ile izole edilir (kendi master_code)."""
     from unittest.mock import patch, MagicMock
-    import main_processor as mp
+    import matching.pipeline as mp
     import config as cfg
 
     row = {
@@ -988,9 +989,9 @@ def test_excluded_input_isolated_not_matched_not_indexed():
          patch.object(mp, "BATCH_SIZE", 10), \
          patch.object(mp, "ES_INDEX", "test_index"), \
          patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
-         patch("main_processor.get_es_client", return_value=mock_es), \
-         patch("main_processor.create_index"), \
-         patch("main_processor.register_all_pipelines"):
+         patch("matching.pipeline.get_es_client", return_value=mock_es), \
+         patch("matching.pipeline.create_index"), \
+         patch("matching.pipeline.register_all_pipelines"):
         mp.process_all_data()
 
     msr.assert_not_called()   # eşleştirmeye girmedi
@@ -1004,7 +1005,7 @@ def test_excluded_input_isolated_not_matched_not_indexed():
 def test_input_filter_disabled_processes_normally(monkeypatch):
     """ENABLE_INPUT_FILTER=False iken garbage bile normal akışa girer (match denenir)."""
     from unittest.mock import patch, MagicMock
-    import main_processor as mp
+    import matching.pipeline as mp
     import config as cfg
 
     row = {cfg.COLUMN_MAPPING["id"]: 1, cfg.COLUMN_MAPPING["company_name"]: "Sin Razon Social",
@@ -1030,9 +1031,9 @@ def test_input_filter_disabled_processes_normally(monkeypatch):
          patch.object(mp, "BATCH_SIZE", 10), \
          patch.object(mp, "ES_INDEX", "test_index"), \
          patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
-         patch("main_processor.get_es_client", return_value=mock_es), \
-         patch("main_processor.create_index"), \
-         patch("main_processor.register_all_pipelines"):
+         patch("matching.pipeline.get_es_client", return_value=mock_es), \
+         patch("matching.pipeline.create_index"), \
+         patch("matching.pipeline.register_all_pipelines"):
         mp.process_all_data()
 
     # filtre kapalı → garbage bile eşleştirmeye girdi (batched matcher 1 kayıtla çağrıldı)
@@ -1044,7 +1045,7 @@ def test_per_batch_dedup_invoked_with_batch_master_ids():
     """P0-C: batch sonunda auto_merge_duplicates, o batch'te oluşan NEW_MASTER id'leriyle
     (restrict_master_ids) ve refresh=False ile çağrılır."""
     from unittest.mock import patch, MagicMock
-    import main_processor as mp
+    import matching.pipeline as mp
     import config as cfg
 
     def mkrow(rid, name):
@@ -1080,9 +1081,9 @@ def test_per_batch_dedup_invoked_with_batch_master_ids():
          patch.object(mp, "BATCH_SIZE", 10), \
          patch.object(mp, "ES_INDEX", "test_index"), \
          patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
-         patch("main_processor.get_es_client", return_value=mock_es), \
-         patch("main_processor.create_index"), \
-         patch("main_processor.register_all_pipelines"):
+         patch("matching.pipeline.get_es_client", return_value=mock_es), \
+         patch("matching.pipeline.create_index"), \
+         patch("matching.pipeline.register_all_pipelines"):
         mp.process_all_data()
 
     assert captured.get("ids") == ["mA", "mB"], f"batch master id'leri geçilmeli, görülen: {captured}"
@@ -1110,7 +1111,7 @@ def _nohit():
 def test_match_records_batch_equivalent_to_single(monkeypatch):
     """Toplu eşleştirme, her kayıt için tekil eşleştirmeyle BİREBİR aynı winner/trace üretir."""
     from unittest.mock import MagicMock
-    import main_processor as mp
+    import matching.pipeline as mp
 
     stages = [_stage("CANONICAL_EXACT", 1, 3.0), _stage("STRIPPED_EXACT", 2, 3.0)]
 
@@ -1158,7 +1159,7 @@ def test_match_records_batch_equivalent_to_single(monkeypatch):
 
 
 def test_match_records_batch_empty_and_no_stages():
-    import main_processor as mp
+    import matching.pipeline as mp
     from unittest.mock import MagicMock
     assert mp.match_records_batch(MagicMock(), [], [_stage("X", 1, 1.0)]) == []
     out = mp.match_records_batch(MagicMock(), [{"raw_name": "A", "country": "MX"}], [])
@@ -1169,7 +1170,7 @@ def test_select_winner_no_size_cap_huge_cluster_still_wins():
     """A4 kararı: boyut tabanlı hard-gate YOK — dev küme (çok variation) yine kazanır.
     Aynı firmaysa 2M kayıt da birleşmeli; sabit tavan meşru kümeyi bölerdi (under-merge).
     Mıknatıs ZAYIF KENAR sorunudur (A1/A2 çözer), boyut sorunu değil."""
-    import main_processor as mp
+    import matching.pipeline as mp
     huge = {
         "_id": "m1", "_score": 50.0,
         "_source": {"master_id": "m1", "variations": [{"name": f"v{i}"} for i in range(5000)]},

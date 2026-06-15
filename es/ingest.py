@@ -248,7 +248,7 @@ def delete_all_pipelines(es: Elasticsearch) -> None:
 
 
 if __name__ == "__main__":
-    from es_manager import get_es_client
+    from es.manager import get_es_client
 
     es = get_es_client()
     register_all_pipelines(es)

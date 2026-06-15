@@ -143,7 +143,7 @@ def get_potential_duplicates(es: Elasticsearch, min_count: int = 2, size: int = 
 
 # Kullanım: python es_transform.py  → transform'u kurar ve başlatır.
 if __name__ == "__main__":
-    from es_manager import get_es_client
+    from es.manager import get_es_client
 
     es = get_es_client()
     create_dedup_transform(es)

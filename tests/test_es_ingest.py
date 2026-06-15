@@ -1,6 +1,6 @@
 # tests/test_es_ingest.py
 from unittest.mock import MagicMock
-import es_ingest
+import es.ingest as es_ingest
 
 
 def test_build_suffix_script_returns_string():
@@ -31,7 +31,7 @@ def test_build_suffix_script_uses_generic_set_contains():
 
 def test_pipeline_name_format():
     """Pipeline ismi country_code lowercase ile formatlanmalı."""
-    from es_ingest import pipeline_name
+    from es.ingest import pipeline_name
     assert pipeline_name("TR") == "company_name_tr"
     assert pipeline_name("DE") == "company_name_de"
     assert pipeline_name("IN") == "company_name_in"
@@ -54,7 +54,7 @@ def test_build_pipeline_body_suffix_processor_last():
 
 def test_build_pipeline_body_differs_per_country():
     """Farklı ülkelerin pipeline body'si farklı olmalı (TR vs AE)."""
-    from es_ingest import build_pipeline_body
+    from es.ingest import build_pipeline_body
     body_tr = build_pipeline_body("MX")
     body_ae = build_pipeline_body("US")
     # Sprint 2: clean script is now global, stripped script differs by country (legal_suffixes)
@@ -65,7 +65,7 @@ def test_build_pipeline_body_differs_per_country():
 
 def test_register_all_pipelines_calls_each_country():
     """register_all_pipelines her ülke için ayrı pipeline kaydeder."""
-    from es_ingest import register_all_pipelines
+    from es.ingest import register_all_pipelines
     from core.synonym_loader import get_all_country_codes
     mock_es = MagicMock()
     register_all_pipelines(mock_es)
@@ -75,7 +75,7 @@ def test_register_all_pipelines_calls_each_country():
 
 def test_register_pipeline_uses_correct_name():
     """register_pipeline doğru pipeline ismiyle kaydeder."""
-    from es_ingest import register_pipeline, pipeline_name
+    from es.ingest import register_pipeline, pipeline_name
     mock_es = MagicMock()
     register_pipeline(mock_es, "TR")
     mock_es.ingest.put_pipeline.assert_called_once()
@@ -85,7 +85,7 @@ def test_register_pipeline_uses_correct_name():
 
 def test_no_hardcoded_pipeline_name_constant():
     """PIPELINE_NAME sabit değişkeni artık olmamalı."""
-    import es_ingest
+    import es.ingest as es_ingest
     assert not hasattr(es_ingest, "PIPELINE_NAME")
 
 
@@ -95,7 +95,7 @@ def test_clean_script_collapses_consecutive_dup_tokens():
     tekrarı TOKEN_COVERAGE skorunu/coverage'ını şişirip over-merge üretiyor
     (R7 en yüksek skorlu hata: PERNOD RICARD ⇸ RICARD RICARD, score 27).
     Painless ES'te çalıştığından yapısal imza doğrulanır; davranış reindex G3'te."""
-    from es_ingest import _build_clean_script
+    from es.ingest import _build_clean_script
     script = _build_clean_script("AR")
     # Ardışık-tekrar dedup: önceki-token karşılaştırması ('prevTok') içermeli
     assert "prevTok" in script, "ardışık-tekrar token dedup mantığı (prevTok) bulunamadı"
@@ -107,7 +107,7 @@ def test_stripped_script_strips_geo_tokens():
     match_phrase bitişikliği query tarafıyla tutarsız kalır (recall kaybı:
     'AUDI ARGENTINA MOTORS' index'te 3 token, query'de 2). Geo token listesi
     countries.json'dan türetilir (get_country_name_tokens) — hardcode yok."""
-    from es_ingest import _build_stripped_script
+    from es.ingest import _build_stripped_script
     from core.synonym_loader import get_country_name_tokens
     script = _build_stripped_script("AR")
     geo_tokens = [t for t in get_country_name_tokens("AR") if " " not in t]

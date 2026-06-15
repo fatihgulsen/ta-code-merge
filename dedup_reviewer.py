@@ -6,8 +6,8 @@ import sys
 from elasticsearch import Elasticsearch
 
 from config import ES_INDEX
-from es_manager import get_es_client
-from es_transform import get_potential_duplicates
+from es.manager import get_es_client
+from es.transform import get_potential_duplicates
 
 logger = logging.getLogger(__name__)
 

@@ -254,7 +254,7 @@ def auto_merge_duplicates(
 # Varsayılan dry-run; --apply ile değişiklikler uygulanır.
 if __name__ == "__main__":
     import sys
-    from es_manager import get_es_client
+    from es.manager import get_es_client
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
     dry = "--apply" not in sys.argv

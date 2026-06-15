@@ -17,7 +17,7 @@ from config import (
     DB_CONFIG,
     RAW_TABLE_NAME,
 )
-from es_manager import create_index, get_es_client
+from es.manager import create_index, get_es_client
 
 logging.basicConfig(
     level=logging.INFO,

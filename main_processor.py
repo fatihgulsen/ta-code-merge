@@ -54,9 +54,9 @@ from config import (
     AUTO_DEDUP_EVERY_N_BATCHES,
     MATCH_BATCH_SIZE,
 )
-from es_manager import create_index, get_es_client
-from es_ingest import register_all_pipelines, pipeline_name
-import es_queries as _es_queries
+from es.manager import create_index, get_es_client
+from es.ingest import register_all_pipelines, pipeline_name
+import es.queries as _es_queries
 from core.input_filter import classify_input
 from dedup_auto_merge import auto_merge_duplicates
 
@@ -905,7 +905,7 @@ def process_all_data() -> None:
 
     # Eski analyzer şeması (acronym_glue yok) distinctive-core gate'i yanlış tetikler → under-merge.
     # create_index var olan index'i değiştirmez; reindex yapılmadıysa erken çık.
-    from es_manager import acronym_glue_active
+    from es.manager import acronym_glue_active
     glue = acronym_glue_active(es)
     if glue is False:
         raise RuntimeError(

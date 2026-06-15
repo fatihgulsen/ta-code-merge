@@ -7,8 +7,8 @@
 
 import sys
 
-import es_queries as _eq
-from es_manager import get_es_client
+import es.queries as _eq
+from es.manager import get_es_client
 from config import ES_INDEX
 
 

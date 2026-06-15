@@ -24,9 +24,9 @@ import copy
 import uuid
 
 import config
-import es_queries
-from es_ingest import build_pipeline_body, pipeline_name
-from es_manager import build_index_settings, get_es_client
+import es.queries as es_queries
+from es.ingest import build_pipeline_body, pipeline_name
+from es.manager import build_index_settings, get_es_client
 
 PROBE_INDEX = "living_companies_probe"
 

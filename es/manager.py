@@ -428,7 +428,7 @@ def create_index(es: Elasticsearch, force_recreate: bool = False) -> None:
     # cache'leri ESKİ analyzer sonuçlarını taşıyor olabilir (anahtar analyzer ADI, tanımı
     # değil). Reindex sonrası bayat sonuçları (özellikle gate'in yanlış MATCH_NONE'u) temizle.
     try:
-        from es_queries import clear_token_count_cache
+        from es.queries import clear_token_count_cache
         clear_token_count_cache()
     except Exception:
         logger.warning("es_queries cache temizlenemedi (import?) — reindex sonrası süreç yeniden başlatılmalı")

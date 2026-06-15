@@ -21,7 +21,7 @@ def test_stages_ordered_correctly():
 def test_stage_query_fns_exist_in_es_queries():
     """Verify that query_fn values match functions in es_queries module."""
     try:
-        import es_queries
+        import es.queries as es_queries
     except ImportError:
         # es_queries.py doesn't exist yet (will be created in Task 3)
         # This test is expected to fail at this stage

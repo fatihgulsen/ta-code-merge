@@ -1,6 +1,6 @@
 # tests/test_es_queries.py
-import es_queries
-from es_manager import build_index_settings
+import es.queries as es_queries
+from es.manager import build_index_settings
 
 
 def _get_country_filter(query_dict: dict) -> str | None:

@@ -142,7 +142,7 @@ AUTO_DEDUP_PER_BATCH = True
 # listesi ES `terms` sınırına (varsayılan 65536) yaklaşmasın diye güvenlik-cap ile erken
 # flush edilir. Tam-rematch sırasında en pürüzsüz alternatif: AUTO_DEDUP_PER_BATCH=False +
 # rematch sonrası `python dedup_auto_merge.py --apply` (global, restrict'siz, terms-sınırı yok).
-AUTO_DEDUP_EVERY_N_BATCHES = 1
+AUTO_DEDUP_EVERY_N_BATCHES = 10
 
 # Dedup fingerprint dejenere-guard eşiği (P-R2-1). Bir fingerprint'in dedup ANAHTARI
 # olabilmesi için EN AZ BİR token'ı bu uzunlukta (karakter) olmalı; aksi halde dejenere

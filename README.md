@@ -52,8 +52,8 @@ Below is the complete end-to-end data pipeline between PostgreSQL and Elasticsea
 
 ```mermaid
 graph TD
-    PG[PostgreSQL - p7_firms_v2] -->|1. Batch Read master_code IS NULL| MP[main_processor.py]
-    MP -->|2. active_stages| Msearch[es_queries.py: msearch]
+    PG[PostgreSQL - p7_firms_v2] -->|1. Batch Read master_code IS NULL| MP[main_processor.py → matching/pipeline.py]
+    MP -->|2. active_stages| Msearch[es/queries.py: msearch]
     Msearch -->|3. Parallel Search| ES[(Elasticsearch Index)]
     ES -->|4. Score & Hit Candidates| MP
     MP -->|5. Post-Verification & Verification| Winner{Match Found?}
@@ -76,7 +76,7 @@ To prevent multiple identical companies within the same batch from receiving dif
 ## 4. Elasticsearch Index Configuration
 
 *   **Routing**: Required on index (`_routing.required: true`). Always uses uppercase `country_code` for shard isolation.
-*   **Ingest Pipeline (`es_ingest.py`)**: Before indexing, a Painless script automatically applies lowercase, removes zero-width characters, cleans labels (`attn:`, `c/o`), and normalizes ampersands (`&` to `and`).
+*   **Ingest Pipeline (`es/ingest.py`)**: Before indexing, a Painless script automatically applies lowercase, removes zero-width characters, cleans labels (`attn:`, `c/o`), and normalizes ampersands (`&` to `and`).
 
 ### Custom Analyzers
 1.  **`clean_analyzer_{CC}`**: Tokenizes, normalizes, and applies country-specific synonyms (immutable list in `synonyms_data/`).
@@ -90,7 +90,7 @@ To prevent multiple identical companies within the same batch from receiving dif
 
 The engine executes queries stage-by-stage inside a single `msearch` packet. The first stage that yields a score >= `min_score` is short-circuited as the winner.
 
-| Order | Stage Name | Query Type (`es_queries.py`) | Min Score | Description |
+| Order | Stage Name | Query Type (`es/queries.py`) | Min Score | Description |
 | :---: | :--- | :--- | :---: | :--- |
 | **1** | `TAX_EXACT` | Deterministic exact match on `tax_number` + `country_code`. | `100.0` | Exact verification. Short-circuits post-verify. |
 | **2** | `CANONICAL_EXACT` | `match_phrase` on canonical variations. | `3.0` | Order-sensitive exact canonical matching. |
@@ -107,9 +107,9 @@ The engine executes queries stage-by-stage inside a single `msearch` packet. The
 | Operation | Command | Purpose |
 | :--- | :--- | :--- |
 | **Start Process** | `python main_processor.py` | Run deduplication on all remaining records. |
-| **Force Re-indexing** | `python es_manager.py --force` | Re-create ES Index, mapping, and analyzers. |
-| **Ingest Register** | `python es_ingest.py` | Refresh Ingest Painless clean scripts. |
-| **Full Reset** | `python reset_matching.py` | Clear PostgreSQL and Elasticsearch to start from scratch. |
-| **Postgres-Only Reset** | `python reset_matching.py --pg` | Reset DB match fields but keep Elasticsearch indices intact. |
-| **ES-Only Reset** | `python reset_matching.py --es` | Reset Elasticsearch indices only. |
-| **Duplicate Reviewer** | `python dedup_reviewer.py` | Interactive console tool to review & merge potential duplicates. |
+| **Force Re-indexing** | `python -m es.manager --force` | Re-create ES Index, mapping, and analyzers. |
+| **Ingest Register** | `python -m es.ingest` | Refresh Ingest Painless clean scripts. |
+| **Full Reset** | `python tools/reset_matching.py` | Clear PostgreSQL and Elasticsearch to start from scratch. |
+| **Postgres-Only Reset** | `python tools/reset_matching.py --pg` | Reset DB match fields but keep Elasticsearch indices intact. |
+| **ES-Only Reset** | `python tools/reset_matching.py --es` | Reset Elasticsearch indices only. |
+| **Duplicate Reviewer** | `python -m dedup.reviewer` | Interactive console tool to review & merge potential duplicates. |

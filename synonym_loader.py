@@ -1,14 +1,8 @@
-# ============================================================================
-# synonym_loader.py - Ülke Bazlı Synonym Yükleme
-# ============================================================================
-# ES index ayarlarına ülke başına synonym listesi üretir.
-#
-# Kural:
-#   - Tüm ülkeler: common.json + countries.json
-#   - Ülke dosyası varsa (örn. tr.json): üstteki + tr.json
-#
-# ES formatı (Solr): "kaynak1,kaynak2 => hedef"
-# ============================================================================
+"""ES index ayarlarına ülke başına synonym listesi üretir.
+
+Kural: common.json + countries.json her ülke için; varsa {cc}.json da eklenir.
+ES formatı (Solr): "kaynak1,kaynak2 => hedef".
+"""
 
 import json
 import logging
@@ -18,10 +12,7 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-# synonyms_data/ klasörünün yolu (bu dosyayla aynı dizinde)
 SYNONYMS_DIR = Path(__file__).parent / "synonyms_data"
-
-# Her zaman yüklenecek ortak dosyalar
 COMMON_FILES = ["common.json", "countries.json"]
 
 
@@ -46,7 +37,6 @@ def _extract_rules_from_file(filepath: Path) -> list[str]:
     rules = []
     for category_rules in data.values():
         if isinstance(category_rules, list):
-            # NFKC normalizasyonu uygula
             rules.extend([normalize_text(r) for r in category_rules])
 
     return rules
@@ -64,12 +54,10 @@ def load_synonyms_for_country(country_code: str) -> tuple[str, ...]:
     """
     rules: list[str] = []
 
-    # 1. Ortak dosyalar — her ülke için geçerli
     for filename in COMMON_FILES:
         path = SYNONYMS_DIR / filename
         rules.extend(_extract_rules_from_file(path))
 
-    # 2. Ülkeye özgü dosya — varsa ekle, yoksa ortak kurallarla devam et
     country_file = SYNONYMS_DIR / f"{country_code.lower()}.json"
     if country_file.exists():
         rules.extend(_extract_rules_from_file(country_file))
@@ -81,7 +69,6 @@ def load_synonyms_for_country(country_code: str) -> tuple[str, ...]:
             country_file.name,
         )
 
-    # Boş ve tekrarlı kuralları temizle
     seen = set()
     clean_rules = []
     for rule in rules:
@@ -94,11 +81,10 @@ def load_synonyms_for_country(country_code: str) -> tuple[str, ...]:
 
 
 def _parse_category_tokens(paths: list, category: str) -> frozenset:
-    """Verilen JSON dosyalarindan belirli bir kategoriden tum token'lari cikarir.
+    """Verilen JSON dosyalarındaki belirtilen kategorinin tüm token'larını döner.
 
-    Solr synonym format: 'src1,src2,src3=>target'
-    Her iki taraftaki (sol ve sag) her token ayri ayri donulur.
-    Noktalar silinir, kucuk harfe cevrilir.
+    Solr formatı: 'src1,src2=>target'. Sol ve sağ taraftaki her token ayrı ayrı
+    döner; noktalar silinir, küçük harfe çevrilir.
     """
     tokens: set[str] = set()
     for path in paths:
@@ -125,10 +111,9 @@ def _parse_category_tokens(paths: list, category: str) -> frozenset:
 
 @lru_cache(maxsize=None)
 def get_legal_suffix_tokens(country_code: str) -> frozenset:
-    """Ulkeye ozgu legal_suffixes token'larini doner.
+    """Ülkeye özgü 'legal_suffixes' token'larını döner (common.json + ülke dosyası).
 
-    Hem common.json hem de ulke dosyasindan 'legal_suffixes' kategorisini okur.
-    Bunlar stripping pipeline'inda silinir (tuzel kisi ekleri).
+    Stripping pipeline'ında tüzel kişi eklerini (gmbh, ltd, sa vb.) düşürür.
     """
     country_code = country_code.upper()
     paths = [SYNONYMS_DIR / f for f in COMMON_FILES]
@@ -138,21 +123,18 @@ def get_legal_suffix_tokens(country_code: str) -> frozenset:
     return _parse_category_tokens(paths, "legal_suffixes")
 
 
-# Yasal-ek kısaltma parçaları için maksimum parça uzunluğu. Bu sınır, çok-kelimeli
-# yasal ifadelerdeki KISALTMA parçalarını (s, a, de, c, v, sa, cv, rl, sapi…)
-# yakalarken TAM iş kelimelerini (general, civil, company, partnership; len>4)
-# hariç tutar — aksi halde meşru isim token'ları yanlışlıkla silinir.
+# Çok-kelimeli yasal ifadelerdeki KISALTMA parçaları (s, a, de, cv…) bu uzunluğa
+# kadar kabul edilir; tam iş kelimeleri (general, civil, len>4) korunur.
 _LEGAL_FRAGMENT_MAX_LEN = 4
 
 
 @lru_cache(maxsize=None)
 def get_legal_suffix_fragments(country_code: str) -> frozenset:
-    """Ülkeye özgü yasal-ek KISALTMA parçaları (JSON'dan türetilir, hardcode değil).
+    """Ülkeye özgü yasal-ek kısaltma parçalarını döner (JSON'dan türetilir).
 
-    legal_suffixes ifadelerini (örn. 's a de c v', 's de rl de cv') boşlukta böler;
-    yalnızca KISA (<=_LEGAL_FRAGMENT_MAX_LEN harf) alfabetik parçaları döner. Böylece
-    'S.A. DE C.V.' → {s, a, de, c, v}; 'general partnership' → {} (tam kelimeler korunur).
-    core_name çekirdek-token indirgemesinde ve es_manager fonetik gürültü stop'unda kullanılır.
+    legal_suffixes ifadelerini boşlukta böler; yalnızca kısa (<=_LEGAL_FRAGMENT_MAX_LEN)
+    alfabetik parçalar döner — örn. 'S.A. DE C.V.' → {s, a, de, c, v}.
+    core_name ve es_manager fonetik stop filtresi kullanır.
     """
     frags: set[str] = set()
     for phrase in get_legal_suffix_tokens(country_code):
@@ -164,10 +146,11 @@ def get_legal_suffix_fragments(country_code: str) -> frozenset:
 
 @lru_cache(maxsize=None)
 def get_all_legal_suffix_fragments() -> frozenset:
-    """Tüm ülkelerin (common dahil) yasal-ek kısaltma parçalarının birleşimi.
+    """Tüm ülkelerin yasal-ek kısaltma parçalarının birleşimi.
 
-    es_manager bunu phonetic_analyzer'da metaphone gürültüsünü (S, A, T, K, F)
-    üreten parçaları stop'lamak için kullanır. Tamamen JSON'dan türetilir."""
+    es_manager phonetic_analyzer'da metaphone gürültüsü yaratan parçaları
+    stop'lamak için kullanır. Tamamen JSON'dan türetilir.
+    """
     frags: set[str] = set()
     for phrase in get_all_company_type_tokens():
         for piece in phrase.split():
@@ -178,13 +161,11 @@ def get_all_legal_suffix_fragments() -> frozenset:
 
 @lru_cache(maxsize=None)
 def get_country_name_tokens(country_code: str) -> frozenset:
-    """Ülkenin kendi ad varyantlarının TEK-KELİMELİK token'ları (countries.json'dan).
+    """countries.json'dan ülkenin tek-kelimelik ad token'larını döner (örn. MX → {mexico, mex, mx}).
 
-    'countries' kategorisinde hedefi bu ülke kodu olan kuralın tek-kelimelik kaynak
-    adlarını döner (MX → mexico, méxico, mex, mx). Çok-kelimeli uzun adlar
-    (United Mexican States) ayrıştırılmaz; aksi halde jenerik kelimeler (united,
-    states) sızar. Tek-ülke korpusunda 'mexico' ayırt edici olmadığından PHONETIC
-    guard `drop_geo=True` ile bu token'ları çekirdek dışı bırakır."""
+    Çok-kelimeli adlar (United Mexican States) ayrıştırılmaz; jenerik kelimelerin
+    (united, states) sızmasını önler. PHONETIC guard drop_geo=True ile kullanır.
+    """
     cc = country_code.upper()
     path = SYNONYMS_DIR / "countries.json"
     if not path.exists():
@@ -206,21 +187,18 @@ def get_country_name_tokens(country_code: str) -> frozenset:
     return frozenset(out)
 
 
-# Geo-stopword tam-ad eşiği: bu uzunluğun ALTINDAKI geo token'lar (2-3 harfli ISO kodları:
-# ar, br, us, ge, mx, arg, bra...) marka token'larıyla çakışır (GE HEALTHCARE, US BANK) →
-# stripping'e GİRMEZ. Tam ülke adları (argentina, brasil, mexico, peru) ayırt edici değildir,
-# mıknatıs sürücüsüdür ve cross-geo marka birleşmesini (GM BRASIL=GM ARGENTINA) sağlar → sıyrılır.
+# Kısa ISO kodları (ar, br, us…) marka token'larıyla çakışır (GE, US BANK) → stripping'e girmez.
+# Tam ülke adları (argentina, mexico…) mıknatıs sürücüsü olduğundan sıyrılır.
 GEO_STOPWORD_MIN_LEN = 4
 
 
 @lru_cache(maxsize=None)
 def get_geo_stopword_tokens(min_len: int = GEO_STOPWORD_MIN_LEN) -> frozenset:
-    """TÜM ülke countries.json geo token'larının GLOBAL birleşimi, kısa ISO kodları
-    (len < min_len) HARİÇ. Hem ES stripped/fingerprint analyzer'ında (search-time) hem
-    ingest pipeline'ında (index-time) AYNI liste kullanılır → index/search simetrisi
-    (aksi halde isim-ortası geo token'ı match_phrase bitişikliğini bozar). Hardcode yok;
-    countries.json'dan türetilir. Global olduğundan 'GM BRASIL' (AR kaydı) da 'GM
-    ARGENTINA' ile aynı çekirdeğe (['gm']) iner — cross-geo marka politikası."""
+    """Tüm ülkelerin geo token'larının birleşimi; kısa ISO kodları (len < min_len) hariç.
+
+    ES stripped/fingerprint analyzer ve ingest pipeline'ı aynı listeyi kullanır →
+    index/search simetrisi. countries.json'dan türetilir, hardcode yok.
+    """
     union: set[str] = set()
     for cc in get_all_country_codes():
         union |= {t for t in get_country_name_tokens(cc) if len(t) >= min_len and " " not in t}
@@ -229,14 +207,11 @@ def get_geo_stopword_tokens(min_len: int = GEO_STOPWORD_MIN_LEN) -> frozenset:
 
 @lru_cache(maxsize=None)
 def get_business_sector_tokens(country_code: str) -> frozenset:
-    """Ulkeye ozgu business_sector token'larini doner.
+    """Ülkeye özgü 'business_sectors' token'larını döner.
 
-    Bunlar stripping'e GIRMEZ — firma ismini AYIRT eden sektor/is kolu kelimeleridir.
-    "Apex Pharma" ve "Apex Steel" farkli firmalardir.
-
-    Data integrity: legal_suffixes ve business_sectors kategorilerinin
-    disjoint olmasi JSON seviyesinde garanti edilir (bkz. common.json ve
-    per-country files). Runtime subtraction yok.
+    Stripping'e girmez; sektör kelimeleri firma kimliğini ayırt eder
+    ("Apex Pharma" ≠ "Apex Steel"). legal_suffixes ile ayrışıklık JSON seviyesinde
+    garanti edilir (bkz. common.json).
     """
     country_code = country_code.upper()
     paths = [SYNONYMS_DIR / f for f in COMMON_FILES]
@@ -248,14 +223,10 @@ def get_business_sector_tokens(country_code: str) -> frozenset:
 
 @lru_cache(maxsize=None)
 def get_business_sector_canonical_map(country_code: str) -> dict:
-    """Ulkeye ozgu business_sectors kurallarindan {source: target} map'i doner.
+    """Ülkeye özgü business_sectors kurallarından {kaynak: hedef} eşlem döner.
 
-    Her kural 'src1,src2,src3=>target' formatinda. Soldaki her token ve
-    target'in kendisi target'a map edilir. Hem cogul normalizasyonu
-    (industry -> industries) hem de kisaltma normalizasyonu (intl ->
-    international) tek bir yerden yonetilir.
-
-    Donus: dict (NOT frozenset — bu bir map)
+    Çoğul/kısaltma normalizasyonunu (industry→industries, intl→international)
+    tek bir yerden yönetir. Dönüş: dict (NOT frozenset).
     """
     country_code = country_code.upper()
     paths = [SYNONYMS_DIR / f for f in COMMON_FILES]
@@ -284,38 +255,30 @@ def get_business_sector_canonical_map(country_code: str) -> dict:
                 src_token = src.strip().lower().replace(".", "")
                 if src_token:
                     mapping[src_token] = target
-            # Target also maps to itself (idempotent canonicalisation)
-            mapping[target] = target
+            mapping[target] = target  # idempotent: hedef kendisiyle de eşleşir
     return mapping
 
 
 @lru_cache(maxsize=None)
 def get_company_type_tokens(country_code: str) -> frozenset:
-    """DEPRECATED shim — use get_legal_suffix_tokens directly.
+    """DEPRECATED — doğrudan get_legal_suffix_tokens kullanın.
 
-    Sprint 2: Bu fonksiyon artik yalnizca legal_suffixes kategorisini doner.
-    business_sectors ayri bir kategori haline geldi ve stripping'e girmez.
-    Eski cagrilar icin backward-compat saglamak uzere korunuyor.
+    Geriye dönük uyumluluk için korunuyor; yalnızca legal_suffixes döner.
     """
     return get_legal_suffix_tokens(country_code)
 
 
 @lru_cache(maxsize=None)
 def get_all_company_type_tokens() -> frozenset:
-    """
-    Tüm ülke dosyaları + ortak dosyalar dahil olmak üzere
-    tüm legal_suffixes tokenlarının birleşimini döner.
-    Underscore ile baslayan dosyalar (_template.json) ve
-    ortak dosyalar (common, countries) hariç tutulur.
+    """Tüm ülke + ortak dosyaların legal_suffixes token'larının birleşimini döner.
 
-    Sprint 2: company_types -> legal_suffixes (business sectors ayri).
-
-    Dönüş: frozenset (lru_cache için hashable, immutable)
+    Underscore ile başlayan dosyalar (_template.json) ve ortak dosyalar hariç.
+    Dönüş: frozenset.
     """
     paths = [SYNONYMS_DIR / f for f in COMMON_FILES]
     for f in SYNONYMS_DIR.glob("*.json"):
         if f.stem.startswith("_"):
-            continue  # _template.json, _internal, etc.
+            continue  # _template.json vb. dahili dosyalar
         if f.stem.lower() in {"common", "countries"}:
             continue
         paths.append(f)
@@ -325,12 +288,7 @@ def get_all_company_type_tokens() -> frozenset:
 
 @lru_cache(maxsize=None)
 def get_article_stopwords(country_code: str) -> frozenset:
-    """
-    Ülkeye özgü article/stopword listesi döner.
-    common.json articles + ülke dosyası articles birleştirilerek hesaplanır.
-
-    Dönüş: frozenset (lru_cache için hashable, immutable)
-    """
+    """Ülkeye özgü article/stopword listesi döner (common.json + ülke dosyası)."""
     country_code = country_code.upper()
     stopwords: set[str] = set()
     paths = [SYNONYMS_DIR / f for f in COMMON_FILES]
@@ -353,17 +311,13 @@ def get_article_stopwords(country_code: str) -> frozenset:
 
 @lru_cache(maxsize=None)
 def get_non_firm_placeholders(country_code: str) -> frozenset:
-    """Ülkeye-özgü + ortak "firma DEĞİL" placeholder ifadeleri (JSON'dan, hardcode DEĞİL).
+    """Firma olmayan placeholder ifadelerini döner (JSON'dan, hardcode değil).
 
-    'non_firm_placeholders' kategorisi bir Solr synonym kuralı DEĞİLDİR — düz ifade
-    listesidir ("sin razon social", "same as cnee"). "Ticari unvan yok" ya da
-    "alıcı=gönderici" anlamına gelen, firma OLMAYAN girdileri işaretler; input_filter
-    bunları EXCLUDED yapar (ES'e indekslenmez → magnet olamaz). common.json (TÜM ülkeler)
-    + {cc}.json birleşimini döner. HAM string döner; eşleşme normalizasyonu (aksan-fold,
-    lowercase, noktalama→boşluk) tutarlılık için input_filter._norm'da yapılır.
-
-    CLAUDE.md §1.4 istisnası: synonyms_data SABİT kuralının bu kategori için bilinçli
-    istisnasıdır — placeholder'ları hardcode'dan çıkarıp data-driven tutmak için."""
+    Düz ifade listesidir ("sin razon social", "same as cnee") — Solr synonym kuralı değil.
+    input_filter bunları EXCLUDED yapar; ES'e indekslenmez. HAM string döner;
+    normalizasyon input_filter._norm'da yapılır.
+    (bkz. CLAUDE.md §1.4 — non_firm_placeholders istisnası)
+    """
     country_code = country_code.upper()
     paths = [SYNONYMS_DIR / f for f in COMMON_FILES]
     country_file = SYNONYMS_DIR / f"{country_code.lower()}.json"
@@ -383,16 +337,15 @@ def get_non_firm_placeholders(country_code: str) -> frozenset:
 
 
 def get_all_country_codes() -> list[str]:
-    """
-    synonyms_data/ klasöründeki tüm ülke dosyalarının kodlarını döner.
-    Ortak dosyalar (common, countries) hariç tutulur.
-    Underscore ile baslayan dosyalar (_template.json, _archive/) de hariç.
+    """synonyms_data/ klasöründeki ülke dosya kodlarını döner.
+
+    Ortak dosyalar (common, countries) ve alt çizgiyle başlayanlar hariç.
     """
     excluded = {"common", "countries"}
     codes = []
     for f in SYNONYMS_DIR.glob("*.json"):
         if f.stem.startswith("_"):
-            continue  # _template.json, _internal, etc.
+            continue  # _template.json vb. dahili dosyalar
         if f.stem.lower() in excluded:
             continue
         codes.append(f.stem.upper())
@@ -400,15 +353,11 @@ def get_all_country_codes() -> list[str]:
 
 
 def get_common_synonyms() -> tuple[str, ...]:
-    """
-    Sadece ortak synonym kurallarını döner.
-    Ülke dosyası olmayan firmalar için kullanılır.
-    """
+    """Yalnızca ortak (ülkesiz) synonym kurallarını döner."""
     return load_synonyms_for_country("__common__")
 
 
 if __name__ == "__main__":
-    # Hızlı test
     codes = get_all_country_codes()
     print(f"Ülke dosyası bulunan ülkeler ({len(codes)}): {codes[:10]}...")
 

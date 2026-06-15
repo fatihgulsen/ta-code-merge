@@ -1,15 +1,11 @@
-# ============================================================================
-# reset_matching.py - Eslestirme Verilerini Sifirla
-# ============================================================================
-# PostgreSQL'deki eslestirme sonuclarini temizler ve ES index'i yeniden olusturur.
-# Bastan eslestirme yapmak istediginde kullan.
-#
-# Kullanim:
-#   python reset_matching.py          # PG + ES sifirla
-#   python reset_matching.py --pg     # Sadece PG sifirla
-#   python reset_matching.py --es     # Sadece ES sifirla
-#   python reset_matching.py --audit  # Sadece Audit tablolarını sıfırla
-# ============================================================================
+"""Eşleştirme verilerini sıfırlar: PG match alanlarını NULL'a çeker ve/veya ES index'i yeniden oluşturur.
+
+Kullanım:
+  python reset_matching.py          # PG + ES sıfırla
+  python reset_matching.py --pg     # Yalnızca PG sıfırla
+  python reset_matching.py --es     # Yalnızca ES sıfırla
+  python reset_matching.py --audit  # Yalnızca audit tabloları sıfırla
+"""
 
 import logging
 import sys
@@ -31,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 
 def reset_audit_tables() -> None:
-    """PostgreSQL'deki audit log tablolarini temizler."""
+    """match_audit ve match_stages_log tablolarını TRUNCATE eder."""
     conn = psycopg2.connect(**DB_CONFIG)
     cursor = conn.cursor()
     try:
@@ -47,7 +43,7 @@ def reset_audit_tables() -> None:
         conn.close()
 
 def reset_postgres() -> None:
-    """PostgreSQL'deki eslestirme sonuclarini NULL'a cevirir."""
+    """PG'deki master_code, match_score, match_type, match_details alanlarını NULL'a çeker."""
     conn = psycopg2.connect(**DB_CONFIG)
     cursor = conn.cursor()
 
@@ -56,7 +52,6 @@ def reset_postgres() -> None:
     col_type = COLUMN_MAPPING["match_type"]
     col_details = COLUMN_MAPPING.get("match_details", "match_details")
 
-    # Kac kayit sifirlanacak?
     cursor.execute(
         f"SELECT COUNT(*) FROM {RAW_TABLE_NAME} WHERE {col_master} IS NOT NULL"
     )
@@ -72,7 +67,7 @@ def reset_postgres() -> None:
     logger.info(f"PG: {count} kayit sifirlanacak...")
 
     try:
-        # Check if match_details column exists before trying to update it
+        # match_details kolonu opsiyonel; varlığını kontrol et
         cursor.execute(
             f"SELECT column_name FROM information_schema.columns WHERE table_name = %s AND column_name = %s",
             (RAW_TABLE_NAME, col_details)
@@ -111,12 +106,11 @@ def reset_postgres() -> None:
     cursor.close()
     conn.close()
     
-    # PG resetleniyorsa auditleri de resetle
     reset_audit_tables()
 
 
 def reset_elasticsearch() -> None:
-    """ES index'i silip yeniden olusturur."""
+    """ES index'i siler ve mapping'leriyle birlikte yeniden oluşturur."""
     es = get_es_client()
     logger.info("ES: Index yeniden olusturuluyor (--force)...")
     create_index(es, force_recreate=True)
@@ -127,7 +121,6 @@ if __name__ == "__main__":
     args = set(sys.argv[1:])
 
     if not args or args == {"--all"}:
-        # Her ikisini de sifirla
         reset_postgres()
         reset_elasticsearch()
         logger.info("Tamamlandi. Simdi 'python main_processor.py' ile yeniden eslestirme yapabilirsiniz.")

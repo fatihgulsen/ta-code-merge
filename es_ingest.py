@@ -1,17 +1,9 @@
-# ============================================================================
-# es_ingest.py - Elasticsearch Ingest Pipeline
-# ============================================================================
-# light_clean() adımlarını ES ingest processor'larına taşır.
-# Doküman index'lenirken otomatik temizleme uygulanır.
-#
-# Pipeline: company_name_clean
-#   1. lowercase
-#   2. Painless script: NFKC normalize, zero-width temizlik, parantez kaldırma,
-#      label temizleme, ampersand normalizasyonu, özel karakter temizleme,
-#      nokta-harf pattern normalizasyonu, suffix typo düzeltme
-#   3. variations_stripped alanını otomatik hesapla
-#   4. variations_suffix alanını otomatik hesapla
-# ============================================================================
+"""Elasticsearch ingest pipeline yönetimi.
+
+İndeksleme anında firma isimlerini temizler ve türev alanları hesaplar
+(variations_stripped, variations_suffix). Temizlik mantığı Painless
+script'lerine devredilmiştir — Python tarafında fuzzy/string-işlem yoktur.
+"""
 
 import logging
 
@@ -50,14 +42,11 @@ def pipeline_name(country_code: str) -> str:
 
 
 def _build_clean_script(country_code: str) -> str:
-    """
-    Painless script: variations array'indeki her name için light_clean uygular.
-    Temizlenmiş name'leri variations'a yazar.
+    """Painless script: variations array'indeki her name için light_clean uygular.
 
-    NOT: Painless "..." string'lerinde sadece \\\\ ve \\" escape geçerli.
-    Unicode karakterler için /regex/ literal kullanılır.
+    Temizlenmiş name'leri variations'a yazar.
+    Painless'te /regex/ literal kullanılır; f-string yerine raw string tercih edilir.
     """
-    # Script'i raw string olarak oluştur (f-string escape karmaşasından kaçın)
     script_parts = [
         # Null kontrolü
         "if (ctx.variations == null) { return; }",
@@ -83,9 +72,8 @@ def _build_clean_script(country_code: str) -> str:
         r"  text = /[^\w\s&.\-]/.matcher(text).replaceAll(' ');",
         # 6. Cift bosluk temizligi
         r"  text = /\s+/.matcher(text).replaceAll(' ').trim();",
-        # 7. Ardisik-tekrar token dedup (A2): 'RICARD RICARD' -> 'RICARD'.
-        #    Kaynak-veri token tekrari coverage/skoru sisirip over-merge uretiyor
-        #    (PERNOD RICARD <- RICARD RICARD). Yalnizca ARDISIK tekrar elenir.
+        # 7. Ardisik-tekrar token dedup: 'RICARD RICARD' -> 'RICARD'.
+        #    Kaynak-veri tekrarı coverage/skoru şişirip over-merge üretiyor; yalnızca ardışık tekrar elenir.
         r"  def dedupToks = / /.split(text);",
         "  StringBuilder dsb = new StringBuilder();",
         "  String prevTok = null;",
@@ -113,22 +101,12 @@ def _build_clean_script(country_code: str) -> str:
 
 
 def _build_stripped_script(country_code: str) -> str:
-    """
-    Painless script: variations'tan generic token'ları kaldırarak
-    variations_stripped array'ini oluşturur.
+    """Painless script: variations'tan generic token'ları kaldırarak variations_stripped'ı oluşturur.
 
-    Sprint 2: Hem legal suffix token'ları hem article token'ları çıkarılır —
-    stripped_search_analyzer ile tutarlı olması için. business_sectors
-    kategorisi PRESERVED (firma ismini ayırt eden sektör kelimeleri).
+    legal_suffixes + articles + geo token'ları (global liste) çıkarılır;
+    business_sectors korunur. Geo token'ları global listeden alınır — search
+    analyzer'daki geo_stopwords_global ile simetri için (bkz. docs/audit/).
     """
-    # Sprint 2: yalnizca legal_suffixes + articles stripping'e girer.
-    # business_sectors kategorisi PRESERVED — firma ismini ayirt eden kelimeler.
-    # A1 (geo-mıknatıs fix): geo token'ları (countries.json'dan) da çıkarılır — yoksa
-    # 'SAL ARGENTINA' → ['argentina'] tek-geo-token mıknatısı oluşur ve isim-ortası geo
-    # token'ı (AUDI ARGENTINA MOTORS) match_phrase bitişikliğini query tarafıyla bozar.
-    # GLOBAL liste kullanılır (per-country DEĞİL) → search analyzer'daki geo_stopwords_global
-    # ile SİMETRİ (HIGH-1 review): AR kaydındaki 'brasil'/'us' index+search aynı işlenir.
-    # len>=4 filtresi kısa ISO kodlarını korur (HIGH-2). Hardcode yok — get_geo_stopword_tokens.
     suffix_tokens = [t for t in get_legal_suffix_tokens(country_code) if " " not in t]
     article_tokens = [t for t in get_article_stopwords(country_code) if " " not in t]
     geo_tokens = [t for t in get_geo_stopword_tokens() if " " not in t]
@@ -210,11 +188,7 @@ def _build_suffix_script(generic_tokens: list[str]) -> str:
 
 
 def build_pipeline_body(country_code: str) -> dict:
-    """Ingest pipeline tanımını oluşturur.
-
-    Sprint 2: variations_suffix artik yalnizca legal_suffixes iceriyor.
-    business_sectors variations_stripped'da KORUNUR.
-    """
+    """Ülkeye özgü ingest pipeline tanım sözlüğünü oluşturur."""
     legal_suffix_tokens = list(get_legal_suffix_tokens(country_code))
     return {
         "description": f"Firma ismi temizleme ve normalizasyon pipeline'i ({country_code.upper()})",
@@ -273,7 +247,6 @@ def delete_all_pipelines(es: Elasticsearch) -> None:
         delete_pipeline(es, cc)
 
 
-# ============================================================================
 if __name__ == "__main__":
     from es_manager import get_es_client
 

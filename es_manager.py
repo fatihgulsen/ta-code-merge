@@ -1,24 +1,4 @@
-# ============================================================================
-# es_manager.py - Elasticsearch Index Yönetimi (v3)
-# ============================================================================
-# Index oluşturma, mapping tanımlama, ülke bazlı synonym yönetimi.
-#
-# Her ülke için ayrı bir analyzer tanımlanır:
-#   clean_analyzer_common  → common + countries + other synonymleri
-#   clean_analyzer_TR      → TR synonymleri + common + countries + other
-#   clean_analyzer_DE      → DE synonymleri + common + countries + other
-#   ...
-#
-# "variations" alanı INDEX-TIME'da clean_analyzer_common ile analiz edilir.
-# SEARCH-TIME'da sorguya clean_analyzer_{CC} eklenerek ülkeye özgü expand yapılır.
-#
-# v3 Eklemeler:
-#   - Country routing (_routing.required = true)
-#   - ICU analyzer (icu_tokenizer + icu_folding) → variations.unidecode
-#   - Fingerprint analyzer → variations.fingerprint
-#   - N-gram analyzer (3-4) → variations.ngram
-#   - Phonetic analyzer (double_metaphone) → variations.phonetic
-# ============================================================================
+"""ES index/mapping/analyzer yönetimi; custom analyzer (fingerprint, ngram, phonetic, stripped) ve mapping'leri kurar."""
 
 import logging
 
@@ -97,19 +77,10 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     filters["arabic_norm"] = {"type": "arabic_normalization"}
 
     char_filters = {
-        # ── Akronim-glue (Round-3, docs/audit/2026-06-05-round3-unicode-config-dedup.md) ──
-        # Noktayı YALNIZCA iki tek-harf arasında siler (acronym): 'C.M.S.A.D.C' → 'CMSADC',
-        # 'B.A.T' → 'BAT'. punctuation_remover'dan ÖNCE çalışır. Aksi halde nokta→boşluk
-        # akronimi tek harflere bölüyor, legal_fragment_stop tek-harf yasal-ek parçalarını
-        # (a b c d e f h i l p r s u v y) atınca geriye tek "junk" harf kalıp ('m'/'g'/'t')
-        # alakasız firmaları aynı fingerprint'te topluyordu (STRIPPED_EXACT magnet).
-        # REGRESYON YOK: akronim-biçimli yasal ekler (S.A.P.I.→sapi) zaten fragment set'inde
-        # (≤4 harf) → strip'lenmeye devam eder. Boşlukla ayrılmış tek-harf markalar
-        # ('M S.A.') glue'dan ETKİLENMEZ; onlar DEDUP_MIN=2 + token_count çekirdek-gate ile
-        # eşleşme-zamanında engellenir. REINDEX (es_manager.py --force) GEREKTİRİR.
-        # Lookbehind-SIZ (Java/JVM-portable): tek-harf + nokta + (sonrası harf) → harf.
-        # `\b(\p{L})\.` yalnız KELİME-BAŞI tek harfi yakalar → 'WORD.WORD'/'ACME.INC' GLUE'lanmaz
-        # ('MARCA REGISTRADA' ayrı kalır); yalnız akronim segmentleri ('C.M.', 'U.S.') birleşir.
+        # Akronim noktalarını siler ('C.M.S.' → 'CMS'), punctuation_remover'dan ÖNCE çalışır.
+        # Aksi hâlde nokta→boşluk akronimi parçalıyor; legal_fragment_stop tek harfleri
+        # atınca alakasız firmalar aynı fingerprint'e düşüyordu (bkz. docs/audit/2026-06-05-round3-unicode-config-dedup.md).
+        # Lookbehind-sız, JVM-portable: `\b(\p{L})\.` yalnız kelime-başı tek harfi yakalar.
         "acronym_glue": {
             "type": "pattern_replace",
             "pattern": r"\b(\p{L})\.(?=\p{L})",
@@ -155,17 +126,10 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
         "filter": base_clean_filters + ["synonym_filter_common"],
     }
 
-    # ── Geo/ülke-adı stop filtresi (tüm ülke countries.json'larından TÜRETİLİR) ──
-    # MX: 'mexico', 'mexicana' vb. Coğrafi token'lar ayırt edici DEĞİL; fingerprint
-    # dedup'unda 'BRAND DE MEXICO' ile 'BRAND'in aynı parmak izine inmesini sağlar
-    # (docs/audit/2026-06-03 §3.3, recall kaybının %27'si geo token farkından).
-    # A1 (2026-06-15): stripped analyzer zincirlerinde de kullanılıyor → 'SAL ARGENTINA'
-    # → ['argentina'] tek-geo-token mıknatısı kırılır. Bu nedenle stripped analyzer
-    # döngüsünden ÖNCE tanımlanmalı (forward-ref). Token listesi countries.json'dan
-    # türetilir — hardcode yok.
-    # Global geo-stop = tüm ülke tam-adları (len>=4), kısa ISO kodları hariç (HIGH-2
-    # review: 'us'/'ge'/'es' marka çakışması). Index (ingest) + search aynı listeyi
-    # kullanır → simetri (HIGH-1). Kaynak countries.json — hardcode yok.
+    # Coğrafi token'lar ('mexico', 'argentina') ayırt edici değil; fingerprint dedup'ta
+    # 'BRAND DE MEXICO' ile 'BRAND'ı farklı parmak izine düşürüyordu (bkz. docs/audit/2026-06-03 §3.3).
+    # ISO kısa kodları (len<4) marka çakışması riski nedeniyle hariç; kaynak countries.json — hardcode yok.
+    # Stripped analyzer döngüsünden ÖNCE tanımlanmalı (forward-ref).
     geo_tokens_global = sorted(get_geo_stopword_tokens())
     filters["geo_stopwords_global"] = {
         "type": "stop",
@@ -298,13 +262,9 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
             "analyzer": "clean_analyzer_common",
             "enable_position_increments": False,
         },
-        # Fingerprint: token sort + dedup (sırasız eşleşme).
-        # Özel fingerprint_analyzer: jenerik + yasal-ek + geo stop → sort/dedup.
-        # Built-in 'fingerprint' yerine; aynı-firma varyantları (suffix/geo/word-order)
-        # tek kanonik parmak izine iner → ES Transform / dedup_auto_merge (Option-2).
-        # fielddata=True: dedup terms/composite aggregation için zorunlu. Analyzer TEK
-        # token (birleşik fingerprint) ürettiğinden alan başına kardinalite düşük →
-        # fielddata maliyeti sınırlı. (Daha ucuz alternatif: ingest'te keyword fingerprint.)
+        # Fingerprint: jenerik + yasal-ek + geo stop → token sort/dedup → kanonik parmak izi.
+        # Aynı-firma varyantları (suffix/geo/kelime-sırası farkı) tek ize iner → ES Transform / dedup_auto_merge.
+        # fielddata=True: aggregation için; analyzer tek token ürettiğinden kardinalite düşük.
         "fingerprint": {
             "type": "text",
             "analyzer": "fingerprint_analyzer",

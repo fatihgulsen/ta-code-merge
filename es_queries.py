@@ -1,13 +1,9 @@
-# ============================================================================
-# es_queries.py - Stage Sorgu Fonksiyonları
-# ============================================================================
-# Her fonksiyon bir ES query body döner.
-# Fonksiyon adı config.STAGES[*]["query_fn"] ile birebir eşleşmeli.
-#
-# Stage eklemek için:
-#   1. Bu dosyaya yeni fonksiyon ekle (aynı imza: name, country, **kwargs)
-#   2. config.STAGES listesine yeni dict ekle (query_fn = fonksiyon adı)
-# ============================================================================
+"""Her stage için Elasticsearch Query DSL üretici fonksiyonları.
+
+Her fonksiyon bir ES query body döner ve adı config.STAGES[*]["query_fn"] ile birebir eşleşir.
+Stage eklemek için: (1) bu dosyaya aynı imzada (name, country, **kwargs) fonksiyon ekle,
+(2) config.STAGES listesine ilgili dict'i ekle.
+"""
 
 import logging
 from elasticsearch import Elasticsearch
@@ -46,6 +42,7 @@ def _get_analyzer(country: str) -> str:
 
 
 def _get_stripped_analyzer(country: str) -> str:
+    """Ülkeye özel stripped analyzer adını döner; bilinmeyen ülkede global fallback kullanılır."""
     global _KNOWN_COUNTRY_CODES
     if _KNOWN_COUNTRY_CODES is None:
         _KNOWN_COUNTRY_CODES = get_all_country_codes()
@@ -55,15 +52,12 @@ def _get_stripped_analyzer(country: str) -> str:
     return "stripped_search_analyzer"
 
 
-# Token-count memoization (perf): analyzer index'e sabit olduğundan bir koşu boyunca
-# (analyzer, text) → token sayısı DEĞİŞMEZ. Tekrarlı isimlerde es.indices.analyze
-# round-trip'lerini eler. Hata sonuçları CACHE'LENMEZ (zehirlenmeyi önler). Bellek için
-# basit cap (dolunca yeni anahtar eklenmez; mevcutlar yine hızlı döner).
+# Perf: (analyzer, text) → token sayısı bir koşu boyunca değişmez; tekrarlı ES round-trip'lerini
+# önlemek için memoize edilir. Hata sonuçları cache'lenmez (zehirlenmeyi önler).
 _TOKEN_COUNT_CACHE: dict[tuple[str, str], int] = {}
 _TOKEN_COUNT_CACHE_MAX = 200_000
 
-# Ayırt-edici çekirdek GATE cache'i (perf): (analyzer, name, require_alpha) → bool.
-# Token-count cache ile aynı gerekçe (analyzer bir koşu boyunca sabit). Hatalar cache'lenmez.
+# Perf: (analyzer, name, require_alpha) → bool; token-count cache ile aynı gerekçe.
 _DISTINCTIVE_CORE_CACHE: dict[tuple[str, str, bool], bool] = {}
 
 
@@ -74,15 +68,23 @@ def clear_token_count_cache() -> None:
 
 
 def _has_distinctive_core(es: Elasticsearch, name: str, country: str, require_alpha: bool) -> bool:
-    """İsim, ES STRIPPED analyzer çıktısında AYIRT EDİCİ bir çekirdek taşıyor mu?
+    """İsim, ES STRIPPED analyzer çıktısında ayırt edici bir çekirdek taşıyor mu?
 
     Ayırt edici = en az bir token uzunluğu >= MATCH_CORE_MIN_TOKEN_LEN (require_alpha ise
-    ayrıca alfabetik — salt-sayı değil). Karar %100 ES analyzer çıktısından gelir (gerçek
-    index analyzer'ı; acronym_glue dahil) → Python fuzzy/normalize YOK, reindex sonrası
-    tutarlı. Bu bir GUARD'dır (stage çalışsın mı), eşleşme DOĞRULAMASI değil.
+    ayrıca alfabetik — salt-sayı değil). Karar %100 ES analyzer çıktısından gelir →
+    Python fuzzy/normalize yok, reindex sonrası tutarlı. Bu bir GUARD'dır (stage çalışsın mı),
+    eşleşme doğrulaması değil. es yoksa, gate kapalıysa veya _analyze hata verirse True döner
+    (mevcut davranışı bozma); hata durumu cache'lenmez.
 
-    es yoksa (ör. unit test) veya gate kapalıysa True döner (guard devre dışı). _analyze
-    hatasında True döner (mevcut davranışı bozma) ve CACHE'LENMEZ."""
+    Args:
+        es: Elasticsearch istemcisi (None ise guard devre dışı).
+        name: Sorgu firma adı.
+        country: Ülke kodu (büyük/küçük harf fark etmez).
+        require_alpha: True ise salt-sayı token'lar ayırt edici sayılmaz.
+
+    Returns:
+        True → stage çalışabilir; False → MATCH_NONE sentinel döndür.
+    """
     if not ENABLE_CORE_GATE or es is None or not name:
         return True
     analyzer = _get_stripped_analyzer(country)
@@ -106,8 +108,16 @@ def _has_distinctive_core(es: Elasticsearch, name: str, country: str, require_al
 
 
 def _get_token_count(es: Elasticsearch, text: str, analyzer: str) -> int:
-    """Elasticsearch _analyze API kullanarak metnin kaç token ürettiğini hesaplar.
-    (analyzer, text) anahtarıyla memoize edilir; hatalar cache'lenmez."""
+    """ES _analyze API ile metnin token sayısını döner; (analyzer, text) ile memoize edilir.
+
+    Args:
+        es: Elasticsearch istemcisi.
+        text: Analiz edilecek metin.
+        analyzer: Kullanılacak ES analyzer adı.
+
+    Returns:
+        Token sayısı; es/text boşsa veya hata olursa 0 (cache'lenmez).
+    """
     if not es or not text:
         return 0
     key = (analyzer, text)
@@ -120,7 +130,7 @@ def _get_token_count(es: Elasticsearch, text: str, analyzer: str) -> int:
         res = es.indices.analyze(index=ES_INDEX, body={"analyzer": analyzer, "text": text})
         count = len(res.get("tokens", []))
     except Exception:
-        # Hata durumunda (index henüz oluşmamış vb.) 0 döner, CACHE'LENMEZ → sonra tekrar denenir.
+        # Index henüz oluşmamış vb. → 0 döner, cache'lenmez (sonra tekrar denenir).
         return 0
     if len(_TOKEN_COUNT_CACHE) < _TOKEN_COUNT_CACHE_MAX:
         _TOKEN_COUNT_CACHE[key] = count
@@ -128,26 +138,22 @@ def _get_token_count(es: Elasticsearch, text: str, analyzer: str) -> int:
 
 
 def _core_coverage_filter(es: Elasticsearch, name: str, country: str) -> list:
-    """Çözüm A (Round-4): ES-side ayırt-edici-çekirdek COVERAGE filtresi (loose stage'ler için).
+    """Loose stage'ler için ES-side ayırt-edici-çekirdek coverage filtresi.
 
-    Eşleşen master, sorgunun STRIPPED ayırt-edici çekirdek token SAYISINA eşit bir
-    variations_stripped varyantı taşımak ZORUNDA → kısa/kesik isim (SPM ⊂ SPM FLOW CONTROL)
-    farklı core-count taşıdığı için master'a giremez (subset/truncation over-merge ES'de elenir).
+    Eşleşen master, sorgunun STRIPPED çekirdek token sayısına eşit bir variations_stripped
+    varyantı taşımak zorundadır → kısa/kesik isim (subset over-merge) ES'de elenir.
+    STRIPPED analyzer kullanılır (synonym yok); clean_analyzer token_count eşitliği
+    synonym_graph genişlemesi nedeniyle indeks/sorgu sayısını tutarsız kıldığından geri alınmıştır
+    (bkz. docs/audit/). es yoksa veya count=0 ise filtre eklenmez (graceful).
 
-    STRIPPED analyzer kullanılır (synonym YOK) — clean_analyzer token_count eşitliği Round-3'te
-    recall'ı kırıp geri alınmıştı. Karar ES analyzer çıktısından (_get_token_count); Python fuzzy/
-    doğrulama YOK. es yoksa veya sayı 0 ise (çekirdeksiz) filtre eklenmez (graceful).
+    Args:
+        es: Elasticsearch istemcisi.
+        name: Sorgu firma adı.
+        country: Ülke kodu.
 
-    NOT (analyzer hizası): sayı, indekslenen alanın (variations_stripped.name.token_count,
-    es_manager: "stripped_search_analyzer" GLOBAL) analyzer'ıyla TUTARLI olmak için global
-    stripped analyzer ile hesaplanır (ülke-özel değil). 100% MX veride ikisi aynı token sayısını
-    üretir; global kullanmak çok-ülkeli durumda da stored count ile birebir eşleşmeyi garantiler.
-
-    NOT (korelasyon): bu, `variations` eşleşmesinden AYRI bir nested clause'tur — guard/defans
-    amaçlıdır (subset/truncation seed'i master'a girmesin). Tek-firma master'larında varyant
-    çekirdekleri aynı sayıda kümelendiğinden ve gate kısa-isim sızıntısını zaten engellediğinden
-    (kendini-pekiştiren), bir master'ın alâkasız kısa varyantı üzerinden sayıyı sağlaması ikincil
-    bir durumdur; STRIPPED_EXACT'in birebir token_count'u + fingerprint dedup bunu tamamlar."""
+    Returns:
+        Nested must clause listesi (boş olabilir).
+    """
     if not ENABLE_CORE_COVERAGE_GATE or es is None:
         return []
     count = _get_token_count(es, name, "stripped_search_analyzer")
@@ -168,13 +174,19 @@ MATCH_NONE = {"query": {"bool": {"must_not": [{"match_all": {}}]}}, "size": 0}
 
 
 def CANONICAL_EXACT(name: str, country: str, es: Elasticsearch = None, **kwargs) -> dict:
-    """
-    Synonym-aware canonical form tam phrase eşleşmesi.
-    Ülkeye özel analyzer arama zamanında canonical form üretir.
-    Nested structure ve token_count filtresi ile 1-1 birebir (identity) eşleşme zorlanır.
+    """Synonym-aware canonical form tam phrase eşleşmesi.
 
-    GATE (#3): ayırt edici çekirdek yoksa (tek-harf akronim artığı) eşleşmez → NEW_MASTER.
-    STRIPPED_EXACT ile simetrik (require_alpha=False → salt-sayı exact dedup korunur).
+    Ülkeye özel analyzer arama zamanında canonical form üretir. Nested yapı ve token_count
+    filtresi ile 1-1 birebir (identity) eşleşme zorlanır. GATE: ayırt edici çekirdek yoksa
+    (tek-harf akronim artığı) MATCH_NONE döner. require_alpha=False → salt-sayı exact dedup korunur.
+
+    Args:
+        name: Sorgu firma adı.
+        country: Ülke kodu.
+        es: Elasticsearch istemcisi (gate + token_count için).
+
+    Returns:
+        ES query body dict.
     """
     if not _has_distinctive_core(es, name, country, require_alpha=False):
         return MATCH_NONE
@@ -216,13 +228,19 @@ def CANONICAL_EXACT(name: str, country: str, es: Elasticsearch = None, **kwargs)
 
 
 def STRIPPED_EXACT(name: str, country: str, es: Elasticsearch = None, **kwargs) -> dict:
-    """
-    Suffix temizlenmiş tam phrase eşleşmesi.
-    variations_stripped alanı ingest pipeline tarafından doldurulur.
-    Nested structure ve token_count filtresi ile 1-1 birebir (identity) eşleşme zorlanır.
+    """Suffix temizlenmiş tam phrase eşleşmesi.
 
-    GATE (#3): ayırt edici çekirdek yoksa (tek-harf akronim artığı 'M S.A.'→'m') eşleşmez →
-    NEW_MASTER. Tam eşleşme güvenli olduğundan salt-sayı çekirdek (require_alpha=False) korunur.
+    variations_stripped alanı ingest pipeline tarafından doldurulur. Nested yapı ve token_count
+    filtresi ile 1-1 birebir (identity) eşleşme zorlanır. GATE: ayırt edici çekirdek yoksa
+    (örn. 'M S.A.' → 'm') MATCH_NONE döner. require_alpha=False → salt-sayı exact dedup korunur.
+
+    Args:
+        name: Sorgu firma adı.
+        country: Ülke kodu.
+        es: Elasticsearch istemcisi (gate + token_count için).
+
+    Returns:
+        ES query body dict.
     """
     if not _has_distinctive_core(es, name, country, require_alpha=False):
         return MATCH_NONE
@@ -265,12 +283,19 @@ def STRIPPED_EXACT(name: str, country: str, es: Elasticsearch = None, **kwargs) 
 
 
 def SUFFIX_FUZZY(name: str, country: str, es: Elasticsearch = None, **kwargs) -> dict:
-    """
-    Suffix fuzzy eşleştirme:
-      - must: variations_stripped'a match_phrase (Ana isim tam eslesmeli)
-      - should: variations_suffix'e fuzziness AUTO:4,7 (suffix typo'larını yakalar)
+    """Suffix fuzzy eşleştirme: çekirdek tam, suffix typo toleranslı.
 
-    GATE (#3): ayırt edici alfabetik çekirdek yoksa eşleşmez → NEW_MASTER.
+    must: variations_stripped'a match_phrase (ana isim tam eşleşmeli).
+    should: variations_suffix'e fuzziness AUTO:4,7 (suffix typo'larını yakalar).
+    GATE: ayırt edici alfabetik çekirdek yoksa MATCH_NONE döner.
+
+    Args:
+        name: Sorgu firma adı.
+        country: Ülke kodu.
+        es: Elasticsearch istemcisi (gate için).
+
+    Returns:
+        ES query body dict.
     """
     if not _has_distinctive_core(es, name, country, require_alpha=MATCH_CORE_FUZZY_REQUIRE_ALPHA):
         return MATCH_NONE
@@ -313,21 +338,24 @@ def SUFFIX_FUZZY(name: str, country: str, es: Elasticsearch = None, **kwargs) ->
 
 
 def TOKEN_COVERAGE(name: str, country: str, es: Elasticsearch = None, **kwargs) -> dict:
-    """
-    Tüm anlamlı token'ların presence kontrolü (operator:and).
-    Kelime sırası önemsiz, tüm token'lar bulunmalı.
+    """Tüm anlamlı token'ların presence kontrolü (operator:and), kelime sırası önemsiz.
 
-    GATE (#3): en düşük-precision stage. Ayırt edici alfabetik çekirdek yoksa ('#N/A 300'
-    → salt-sayı; 'I.I.Q' → tek-harf) eşleşmez → NEW_MASTER. Hata sınıfı B (çöp sızma) kapanır.
+    En düşük-precision stage. GATE: ayırt edici alfabetik çekirdek yoksa ('#N/A 300' → salt-sayı;
+    'I.I.Q' → tek-harf) MATCH_NONE döner. Token_count eşitliği bu stage'de synonym_graph
+    genişlemesi nedeniyle recall'ı kırdığından uygulanmaz (bkz. docs/audit/); subset over-merge
+    _core_coverage_filter (STRIPPED token_count, ES-side) ile engellenir.
+
+    Args:
+        name: Sorgu firma adı.
+        country: Ülke kodu.
+        es: Elasticsearch istemcisi (gate + coverage filtresi için).
+
+    Returns:
+        ES query body dict.
     """
     if not _has_distinctive_core(es, name, country, require_alpha=MATCH_CORE_FUZZY_REQUIRE_ALPHA):
         return MATCH_NONE
     analyzer = _get_analyzer(country)
-    # NOT (#4): token_count EŞİTLİĞİ burada DENENDİ ve GERİ ALINDI — clean_analyzer
-    # synonym_graph genişlemesi sorgu-zamanı sayısını indeks-zamanı sayısıyla tutarsız
-    # kılıyor → live_probe recall 8/10→4/10 düştü (WITTE/VIBRACOUSTIC gibi gerçek varyantlar
-    # bloklandı). ALCATEL ⊂ ALCATEL LUCENT subset over-merge'i bunun yerine config.STAGES
-    # min_score kalibrasyonu (rematch sonrası) + ileride çekirdek-coverage ile ele alınmalı.
     return {
         "query": {
             "bool": {
@@ -357,13 +385,19 @@ def TOKEN_COVERAGE(name: str, country: str, es: Elasticsearch = None, **kwargs) 
 
 
 def FUZZY_PHRASE(name: str, country: str, es: Elasticsearch = None, **kwargs) -> dict:
-    """
-    Kelime sırası toleranslı phrase eşleşmesi (slop=1).
-    Aynı kelimeler ama farklı sırada veya araya kelime girmiş durumları yakalar.
+    """Kelime sırası toleranslı phrase eşleşmesi (slop=1).
 
-    GATE (#3): hata hacmi en yüksek stage. Ayırt edici alfabetik çekirdek yoksa eşleşmez →
-    NEW_MASTER (çöp/akronim seed engeli). Farklı-marka birleşmeleri (C sınıfı) için ayrıca
-    config.STAGES min_score yükseltilmeli (rematch ile kalibre).
+    Aynı kelimeler farklı sırada veya araya bir kelime girmiş durumları yakalar.
+    GATE: ayırt edici alfabetik çekirdek yoksa MATCH_NONE döner (çöp/akronim seed engeli).
+    Subset over-merge _core_coverage_filter ile ES-side engellenir.
+
+    Args:
+        name: Sorgu firma adı.
+        country: Ülke kodu.
+        es: Elasticsearch istemcisi (gate + coverage filtresi için).
+
+    Returns:
+        ES query body dict.
     """
     if not _has_distinctive_core(es, name, country, require_alpha=MATCH_CORE_FUZZY_REQUIRE_ALPHA):
         return MATCH_NONE
@@ -397,16 +431,18 @@ def FUZZY_PHRASE(name: str, country: str, es: Elasticsearch = None, **kwargs) ->
 
 
 def NGRAM_MATCH(name: str, country: str, **kwargs) -> dict:
-    """
-    Trigram index-time fuzzy eslesmesi — suffix'ler cikarilmis form uzerinden.
-    minimum_should_match: "75%" eklenerek hatalı kısa eşleşmeler önlenir.
-    Ülkeye özel analyzer arama zamanında ngram field'ı işlemek için kullanılır.
+    """Trigram index-time fuzzy eşleşmesi — suffix temizlenmiş form üzerinden.
 
-    Guard (Faz 3, PHONETIC ile tutarlı): ayırt edici çekirdek BOŞ ise (yalnızca
-    yasal ek / ülke adı / çöp) trigram'lar paylaşılan suffix parçaları üzerinden
-    farklı firmaları birleştirir → sentinel ile bloklanır. Asıl precision'ı
-    stage-bağımsız coverage post-verify (main_processor) sağlar; bu guard yalnızca
-    çöp/magnet sızıntısını keser. min_score (config.STAGES) rematch ile kalibre edilir.
+    minimum_should_match "75%" ile hatalı kısa eşleşmeler önlenir. GATE: çekirdek token sayısı
+    NGRAM_MIN_CORE_TOKENS'in altındaysa (yalnızca yasal ek / ülke adı / çöp) trigram'lar
+    paylaşılan suffix parçaları üzerinden farklı firmaları birleştirebilir → sentinel ile bloklanır.
+
+    Args:
+        name: Sorgu firma adı.
+        country: Ülke kodu.
+
+    Returns:
+        ES query body dict.
     """
     if len(normalize_core(name, country, drop_geo=True)) < NGRAM_MIN_CORE_TOKENS:
         return MATCH_NONE
@@ -438,24 +474,23 @@ def NGRAM_MATCH(name: str, country: str, **kwargs) -> dict:
 
 
 def PHONETIC_MATCH(name: str, country: str, es: Elasticsearch = None, **kwargs) -> dict:
-    """
-    Sestese dayalı (phonetic) eşleşme — sadece ana isim üzerinden.
-    Double Metaphone algoritması ile suffix gürültüsü olmadan eşleşir.
+    """Sese dayalı (Double Metaphone) eşleşme — suffix gürültüsü olmadan.
 
-    Coverage (over-merge) güvencesi TAMAMEN ES TARAFINDADIR (Python doğrulaması YOK):
-    nested query'ye bir token_count filtresi eklenir — kazanan dokümanın stripped
-    token sayısı sorgununkiyle EŞİT olmalı. Böylece subset over-merge'i (ALCATEL ⊂
-    ALCATEL-LUCENT: 5 ≠ 6 token) ES eler; tipo varyantları (MANAGMENT ↔ MANAGEMENT,
-    aynı token sayısı) korunur. Bu, CANONICAL_EXACT/STRIPPED_EXACT'in token_count
-    deseninin aynısıdır.
+    Coverage güvencesi tamamen ES tarafındadır: nested query'ye token_count filtresi eklenir →
+    kazanan dokümanın stripped token sayısı sorgununkiyle eşit olmalı. Böylece subset over-merge
+    (ALCATEL ⊂ ALCATEL-LUCENT: 5≠6 token) ES eler; typo varyantları (aynı token sayısı) korunur.
+    GATE: çekirdek token sayısı PHONETIC_MIN_CORE_TOKENS'in altındaysa (yalnızca-suffix /
+    yalnızca-ülke-adı / çöp) MATCH_NONE döner; gerçek tek-marka firmalar elenmez çünkü fonetik
+    alandan yasal-ek parçaları es_manager'da temizlenir (bkz. docs/audit/).
+
+    Args:
+        name: Sorgu firma adı.
+        country: Ülke kodu.
+        es: Elasticsearch istemcisi (token_count için).
+
+    Returns:
+        ES query body dict.
     """
-    # Guard yalnızca AYIRT EDİCİ çekirdek token sayısı eşiğin ALTINDA ise bloklar.
-    # drop_geo=True: yasal ekler + ülke-adı/coğrafi token'lar ('mexico') çekirdek
-    # dışıdır → yalnızca-suffix / yalnızca-ülke-adı / çöp isimler (0 token) bloklanır.
-    # Gerçek tek-marka firmalar (IGSA, AUDI MEXICO, VIBRACOUSTIC) ELENMEZ: fonetik
-    # alandan yasal-ek parçaları temizlendiğinden (es_manager legal_fragment_stop)
-    # farklı markalar operator:and altında zaten eşleşmez. Canlı doğrulama:
-    # analysis/live_probe.py.
     core = normalize_core(name, country, drop_geo=True)
     if len(core) < PHONETIC_MIN_CORE_TOKENS:
         return MATCH_NONE

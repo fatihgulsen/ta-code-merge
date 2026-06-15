@@ -1,9 +1,4 @@
-# ============================================================================
-# dedup_reviewer.py - Duplicate İnceleme ve Birleştirme Aracı
-# ============================================================================
-# ES Transform tarafından tespit edilen potansiyel duplicate'ları
-# listeler ve insan onayı ile birleştirme yapar.
-# ============================================================================
+"""ES Transform çıktısındaki duplicate adaylarını interaktif olarak inceler ve insan onayıyla birleştirir."""
 
 import logging
 import sys
@@ -18,10 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 def review_duplicates(es: Elasticsearch, min_count: int = 2) -> None:
-    """
-    Potansiyel duplicate'ları interaktif olarak inceler.
-    Her grup için kullanıcıdan onay ister.
-    """
+    """Duplicate adaylarını konsolda gösterir; kullanıcı onayıyla birleştirme uygular."""
     duplicates = get_potential_duplicates(es, min_count=min_count)
 
     if not duplicates:
@@ -40,13 +32,11 @@ def review_duplicates(es: Elasticsearch, min_count: int = 2) -> None:
         print(f"  Sample Names: {dup['sample_names']}")
         print()
 
-        # Her master_id için detay göster
+        # Her master_id için ES'ten detay çek ve göster
         master_ids = dup.get("master_ids", [])
         if isinstance(master_ids, list) and len(master_ids) > 0:
-            # master_ids bir terms agg sonucu olabilir
             for mid_info in master_ids:
                 mid = mid_info if isinstance(mid_info, str) else mid_info.get("key", "?")
-                # ES'ten detay çek
                 try:
                     doc = es.get(index=ES_INDEX, id=mid)
                     src = doc["_source"]
@@ -77,18 +67,14 @@ def review_duplicates(es: Elasticsearch, min_count: int = 2) -> None:
 
 
 def _merge_masters(es: Elasticsearch, primary_id: str, secondary_ids: list[str]) -> None:
-    """
-    Secondary master'ları primary'e birleştirir.
-    - Secondary'lerin variation'larını primary'e ekler
-    - Secondary dokümanları siler
-    """
+    """Secondary master'ların variation'larını primary'e taşır, secondary doc'ları siler."""
     for sec_id in secondary_ids:
         try:
             sec_doc = es.get(index=ES_INDEX, id=sec_id)
             sec_variations = sec_doc["_source"].get("variations", [])
             sec_stripped = sec_doc["_source"].get("variations_stripped", [])
 
-            # Primary'e variation ekle
+            # Variation'ları primary'e ekle
             es.update(
                 index=ES_INDEX,
                 id=primary_id,
@@ -114,7 +100,6 @@ def _merge_masters(es: Elasticsearch, primary_id: str, secondary_ids: list[str])
                 },
             )
 
-            # Secondary'i sil
             es.delete(index=ES_INDEX, id=sec_id)
             logger.info(f"Master {sec_id} -> {primary_id} birlestirildi.")
 
@@ -122,7 +107,7 @@ def _merge_masters(es: Elasticsearch, primary_id: str, secondary_ids: list[str])
             logger.error(f"Birlestirme hatasi ({sec_id} -> {primary_id}): {e}")
 
 
-# ============================================================================
+# Kullanım: python dedup_reviewer.py [min_master_count]  (varsayılan: 2)
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 

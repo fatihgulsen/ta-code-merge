@@ -1,8 +1,11 @@
+"""Master-variant ülke uyumsuzluklarını PG'den sorgulayıp mismatch_results.txt dosyasına yazar."""
+
 import psycopg2
 from config import DB_CONFIG
 
 
 def analyze_mismatches():
+    """NEW_MASTER ile eşleşen farklı ülkeli kayıtları mismatch_results.txt'e döker."""
     try:
         conn = psycopg2.connect(**DB_CONFIG)
         cur = conn.cursor()
@@ -40,5 +43,6 @@ def analyze_mismatches():
         print(f"Error: {e}")
 
 
+# Kullanım: python analyze_mismatches.py  → mismatch_results.txt oluşturur.
 if __name__ == "__main__":
     analyze_mismatches()

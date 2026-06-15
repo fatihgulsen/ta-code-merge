@@ -1,16 +1,5 @@
-# ============================================================================
-# main_processor.py - Stage-by-Stage Batch Eşleştirme Orkestrasyonu
-# ============================================================================
-# Mimari:
-#   1. PostgreSQL'den master_code IS NULL kayıtları batch olarak oku
-#   2. config.STAGES listesindeki her aktif stage için:
-#      a. Tüm unmatched kayıtlara msearch ile stage sorgusu gönder
-#      b. Eşleşenleri PG'ye yaz, match_stages_log'a kaydet, unmatched'dan çıkar
-#      c. Eşleşmeyenleri match_stages_log'a kaydet (matched=False)
-#      d. ES refresh (yeni master'lar varsa)
-#   3. Tüm stage'lerden sonra hala unmatched → NEW_MASTER
-#      Sub-batch'ler halinde index'le + refresh (within-batch duplike minimizasyonu)
-# ============================================================================
+"""Orkestrasyon: PG'den oku, her kayıt için msearch, kazananı seç,
+master_code'u PG'ye yaz, batch-içi dedup."""
 
 import logging
 import sys
@@ -27,7 +16,7 @@ try:
 except ImportError:  # pragma: no cover
 
     class tqdm:  # type: ignore[misc]
-        """No-op tqdm stub — install tqdm for a real progress bar."""
+        """tqdm yoksa sessizce devam eder; gerçek progress bar için tqdm kurun."""
 
         def __init__(self, iterable=None, **kwargs):
             self._iterable = iterable
@@ -92,9 +81,7 @@ def _make_pg_update_tuple(master_id: str, score: float, stage_name: str, details
     return (master_id, float(score), stage_name, details, row_id)
 
 
-# ─────────────────────────────────────────────────────────────────────
-# DB YARDIMCILARI
-# ─────────────────────────────────────────────────────────────────────
+# ── DB yardımcıları ──────────────────────────────────────────────────
 
 
 def get_db_connection():
@@ -180,9 +167,7 @@ def validate_db_schema(conn) -> None:
     logger.info(f"Schema doğrulama başarılı: '{RAW_TABLE_NAME}'")
 
 
-# ─────────────────────────────────────────────────────────────────────
-# STAGE ORKESTRASYONU
-# ─────────────────────────────────────────────────────────────────────
+# ── Stage orkestrasyonu ──────────────────────────────────────────────
 
 
 def run_stage(
@@ -190,20 +175,7 @@ def run_stage(
     records: list[dict],
     stage: dict,
 ) -> tuple[list[dict], list[dict]]:
-    """
-    Bir stage'i tüm unmatched kayıtlara uygular.
-
-    Args:
-        es:      Elasticsearch client
-        records: [{"row_id", "raw_name", "country", "tax", "phone"}, ...]
-        stage:   config.STAGES'den bir stage dict'i
-
-    Returns:
-        (matched, unmatched)
-        matched:   [{"row_id", "raw_name", "country", "master_id", "es_score",
-                     "stage_name", "stage_order"}, ...]
-        unmatched: records ile aynı format, eşleşmeyenler
-    """
+    """Bir stage'i tüm unmatched kayıtlara uygular; (matched, unmatched) döner."""
     stage_name = stage["name"]
     stage_order = stage["order"]
     min_score = stage["min_score"]
@@ -264,15 +236,7 @@ def _execute_msearch(
     es,
     queries: list[tuple[dict, str, dict]],
 ) -> dict[int, list[dict]]:
-    """
-    msearch API ile toplu sorgu çalıştırır.
-
-    Args:
-        queries: [(query_body, routing_country, record), ...]
-
-    Returns:
-        {index: hits_list} mapping
-    """
+    """msearch API ile toplu sorgu çalıştırır; {index: hits_list} döner."""
     results: dict[int, list[dict]] = {}
     indices = list(range(len(queries)))
 
@@ -304,9 +268,7 @@ def _execute_msearch(
     return results
 
 
-# ─────────────────────────────────────────────────────────────────────
-# YAZMA İŞLEMLERİ
-# ─────────────────────────────────────────────────────────────────────
+# ── Yazma işlemleri ──────────────────────────────────────────────────
 
 
 def update_es_variations(es, matched: list[dict]) -> None:
@@ -318,7 +280,7 @@ def update_es_variations(es, matched: list[dict]) -> None:
     if not matched:
         return
 
-    # Master bazinda gruplayarak toplu update yap
+    # Master bazında gruplayarak toplu bulk update
     master_updates: dict[str, dict] = {}
     for r in matched:
         mid = r["master_id"]
@@ -340,7 +302,7 @@ def update_es_variations(es, matched: list[dict]) -> None:
 
     bulk_body = []
     for master_id, info in master_updates.items():
-        # Variations update
+        # Variations listesine ekle
         for variation in info["variations"]:
             v_clean = variation.strip().rstrip(".,")
             bulk_body.append(
@@ -367,7 +329,7 @@ def update_es_variations(es, matched: list[dict]) -> None:
                 }
             )
 
-        # Tax, phone, address listelerine ekleme (duplicate kontrollu)
+        # Tax/phone/address listelerine duplicate kontrollu ekleme
         _append_list_fields(bulk_body, master_id, info)
 
     if bulk_body:
@@ -526,14 +488,10 @@ def build_new_master_doc(
 
 
 def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> None:
-    """
-    Unmatched kayitlari NEW_MASTER olarak ES'e index'ler.
+    """Unmatched kayıtları NEW_MASTER olarak ES'e index'ler.
 
-    Akis:
-    1. Tum kayitlar icinde exact dedup: ayni (isim_lower, country) tek master
-    2. Sub-batch'ler halinde ES'e index + refresh
-    3. Her sub-batch sonrasi kalan kayitlari CANONICAL_EXACT ile ES'te arat
-       (onceki sub-batch'te olusturulan master'larla eslesebilirler)
+    Aynı (isim_lower, country) çiftleri tek master'a yönlendirilir. Sub-batch'ler
+    arası çakışma CANONICAL_EXACT ile yakalanır (bkz. docs/audit/).
     """
     col_id = COLUMN_MAPPING["id"]
     col_master = COLUMN_MAPPING["master_code"]
@@ -541,19 +499,17 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
     col_type = COLUMN_MAPPING["match_type"]
     col_details = COLUMN_MAPPING["match_details"]
 
-    # Stage order'lari STAGES konfigurasyonundan dinamik olarak al
-    # NEW_MASTER tum stage'lerden sonra gelir; mevcut stage sayisi kadar order atanir
+    # NEW_MASTER tüm stage'lerden sonra gelir; sıra sayısı STAGES uzunluğundan türetilir.
     _new_master_stage_order = len(STAGES)
     _canonical_exact_stage_order = next(s["order"] for s in STAGES if s["name"] == "CANONICAL_EXACT")
 
-    # Adim 1: Tum kayitlar icinde exact dedup
+    # 1. Exact dedup: aynı (isim_lower, country) tek master'a yönlendirilir.
     seen: dict[tuple[str, str], str] = {}  # (name_lower, country) → master_id
-    unique_records: list[dict] = []  # ES'e index'lenecek (ilk gorulen)
-    duplicate_updates: list[tuple] = []  # PG update (seen'deki master'a bagla)
+    unique_records: list[dict] = []
+    duplicate_updates: list[tuple] = []
     duplicate_logs: list[tuple] = []
 
     for rec in records:
-        # Basit dedup: lower + strip
         norm_name = rec["raw_name"].lower().strip()
         dedup_key = (norm_name, rec["country"])
         existing_master_id = seen.get(dedup_key)
@@ -583,7 +539,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
             f"  NEW_MASTER dedup: {len(duplicate_updates)} duplike tespit edildi (index sonrasi yazilacak)."
         )
 
-    # Adim 2: Unique kayitlari sub-batch'ler halinde index'le
+    # 2. Unique kayıtları sub-batch'ler halinde index'le + refresh.
     remaining = unique_records
 
     while remaining:
@@ -678,7 +634,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
         write_conn.commit()
         logger.info(f"  NEW_MASTER sub-batch: {len(chunk)} yeni firma olusturuldu.")
 
-        # Adim 3: Kalan kayitlari ES'te arat — onceki sub-batch'lerle eslesiyor mu?
+        # 3. Kalan kayıtları önceki sub-batch master'larıyla CANONICAL_EXACT'ta eşleştir.
         if remaining:
             canonical_stage = next(s for s in STAGES if s["name"] == "CANONICAL_EXACT")
             found_in_es, still_remaining = run_stage(es, remaining, canonical_stage)
@@ -686,7 +642,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
                 write_matched_to_pg(write_cursor, write_conn, found_in_es)
                 if canonical_stage.get("index_variation", True):
                     update_es_variations(es, found_in_es)
-                # Stage log'a CANONICAL_EXACT olarak yaz (NEW_MASTER'dan once yakalandi)
+                # CANONICAL_EXACT olarak logla (NEW_MASTER önce yakalandı)
                 for r in found_in_es:
                     execute_values(
                         write_cursor,
@@ -712,8 +668,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
                 )
                 remaining = still_remaining
 
-    # Adim 3: Duplicate'larin PG yazimi + ES varyasyon update
-    # (ES'te master doc'lar artik mevcut)
+    # 3. Dedup yazımı: master doc'lar artık ES'te mevcut, varyasyonlarını ekle.
     if duplicate_updates:
         execute_values(
             write_cursor,
@@ -756,16 +711,12 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
         )
 
 
-# ─────────────────────────────────────────────────────────────────────
-# TEKIL KAYIT ESLESTIRME (ES-Authority)
-# ─────────────────────────────────────────────────────────────────────
+# ── Tekil kayıt eşleştirme (ES-Authority) ────────────────────────────
 
 def _select_winner(stage_responses: list[dict], active_stages: list[dict]) -> dict:
-    """Bir kaydın stage yanıtlarından (sıralı) kazananı seçer.
+    """Stage yanıtlarından kazananı seçer (kısa devre: ilk score >= min_score).
 
-    Stage'ler `order` sırasında; ilk `score >= min_score` eşleşen kazanır (kısa devre).
-    Hem tekil hem toplu eşleştirme bu mantığı paylaşır → birebir aynı semantik.
-    Returns: {"winner": dict|None, "trace": list}
+    Tekil ve toplu eşleştirme aynı mantığı paylaşır → aynı semantik.
     """
     trace = []
     winner = None
@@ -818,12 +769,10 @@ def match_single_record(es, rec: dict, active_stages: list[dict]) -> dict:
 
 
 def match_records_batch(es, recs: list[dict], active_stages: list[dict]) -> list[dict]:
-    """Birden çok kaydı TOPLU msearch ile eşleştirir; her kayıt için {winner, trace}
-    döner (sıra korunur; `match_single_record` ile BİREBİR aynı winner-seçim semantiği).
+    """Birden çok kaydı toplu msearch ile eşleştirir; sıra korunan [{winner, trace}] döner.
 
-    Görünürlük: tüm kayıtlar AYNI index anlık-görüntüsüne karşı sorgulanır. Çağıran,
-    chunk'ı refresh penceresiyle hizalamalıdır (refresh=False yazımlar zaten pencere
-    içinde görünmez) → davranış tekil-akışla aynı, yalnız round-trip azalır.
+    Tüm kayıtlar aynı index anlık-görüntüsüne karşı sorgulanır; round-trip azaltmak
+    dışında `match_single_record` ile birebir aynı winner-seçim semantiği.
     """
     if not recs:
         return []
@@ -892,12 +841,7 @@ def _index_new_master(es, rec: dict) -> str:
 def _add_variation_to_master(
     es, master_doc_id: str, variation: str, country: str, rec: dict | None = None
 ) -> None:
-    """Eslesen kaydin varyasyonunu ve meta bilgilerini master doc'a ekler.
-
-    Doc'u okur → variations listesine yeni varyasyonu ekler →
-    tax/phone/address listelerine yeni degerleri ekler →
-    pipeline ile yeniden index'ler.
-    """
+    """Eşleşen kaydın varyasyonunu ve meta bilgilerini master doc'a ekler."""
     v_lower = variation.lower().strip().rstrip(".,")
     cc = country.upper()
     try:
@@ -916,14 +860,12 @@ def _add_variation_to_master(
 
         if v_lower not in existing_names:
             body["variations"] = list(existing_variations) + [{"name": variation}]
-            # Preserve existing stripped/suffix lists — do NOT reset to []
-            # The ingest pipeline will populate the new entry's tokens;
-            # we only keep whatever was already accumulated.
+            # Stripped/suffix listelerini sıfırlama; ingest pipeline yeni girişi işler.
             body["variations_stripped"] = list(source.get("variations_stripped") or [])
             body["variations_suffix"] = list(source.get("variations_suffix") or [])
             changed = True
 
-        # tax/phone/address listelerine yeni degerleri ekle
+        # tax/phone/address listelerine yeni değerleri ekle
         if rec:
             for field, key in [
                 ("phone_number", "phone"),
@@ -953,9 +895,7 @@ def _add_variation_to_master(
         logger.warning(f"Varyasyon ekleme basarisiz: {v_lower[:50]}", exc_info=True)
 
 
-# ─────────────────────────────────────────────────────────────────────
-# ANA ISLEM DONGUSU (Row-by-Row, ES-Authority)
-# ─────────────────────────────────────────────────────────────────────
+# ── Ana işlem döngüsü ────────────────────────────────────────────────
 
 
 def process_all_data() -> None:
@@ -963,9 +903,8 @@ def process_all_data() -> None:
     logger.info("Elasticsearch index kontrol ediliyor...")
     create_index(es)
 
-    # Reindex-ordering güvenlik kontrolü: distinctive-core GATE canlı analyzer'a güvenir.
-    # Index hâlâ ESKİ analyzer'daysa (acronym_glue yok) gate akronim isimleri yanlış bloklar
-    # (under-merge). create_index var olan index'i DEĞİŞTİRMEZ → eski şema sessizce kalabilir.
+    # Eski analyzer şeması (acronym_glue yok) distinctive-core gate'i yanlış tetikler → under-merge.
+    # create_index var olan index'i değiştirmez; reindex yapılmadıysa erken çık.
     from es_manager import acronym_glue_active
     glue = acronym_glue_active(es)
     if glue is False:
@@ -1011,9 +950,8 @@ def process_all_data() -> None:
         if col_address:
             select_cols.append(col_address)
 
-        # Toplam islenmemis kayit sayisi — progress bar icin
-        # Identifiers (table/column names) use psycopg2.sql.Identifier for safety.
-        # The COUNTRY_CODE_FILTER value is passed as a %s parameter — never interpolated.
+        # Toplam işlenmemiş kayıt sayısı — progress bar için
+        # Sütun adları Identifier, filtre değeri %s parametresi (enjeksiyon riski yok).
         where_clause = psycopg2.sql.SQL("{col_master} IS NULL").format(
             col_master=psycopg2.sql.Identifier(col_master)
         )
@@ -1042,8 +980,8 @@ def process_all_data() -> None:
         total_matched = 0
         total_new = 0
         total_skipped = 0
-        total_excluded = 0  # P0-B: firma-olmayan girdi (EXCLUDED, izole, indekslenmez)
-        total_deduped = 0   # P0-C: batch-içi fingerprint dedup ile birleştirilen master sayısı
+        total_excluded = 0  # firma-olmayan girdi (EXCLUDED, indekslenmez)
+        total_deduped = 0   # batch-içi fingerprint dedup ile birleştirilen master sayısı
         stage_counts: dict[str, int] = {}
         last_id = 0  # Sayfalama icin son islenen id
 
@@ -1058,9 +996,8 @@ def process_all_data() -> None:
             ),
         )
 
-        # Dedup sıklığı (perf): NEW_MASTER id'leri + ülkeleri N batch boyunca biriktirilir,
-        # AUTO_DEDUP_EVERY_N_BATCHES'te bir topluca deduplike edilir; sonda kalan flush edilir.
-        # Güvenlik-cap: biriken id listesi ES `terms` sınırına yaklaşmasın diye erken flush.
+        # NEW_MASTER id'leri biriktirilerek N batch'te bir dedup koşulur; ES `terms` limitini
+        # aşmamak için güvenlik-cap'te erken flush yapılır (bkz. _DEDUP_PENDING_CAP).
         pending_dedup_ids: list[str] = []
         pending_dedup_ccs: set[str] = set()
         _dedup_batch_counter = 0
@@ -1092,8 +1029,7 @@ def process_all_data() -> None:
                 pending_dedup_ccs.clear()
 
         while True:
-            # Server-side cursor yerine basit SELECT + LIMIT
-            # Her seferinde master_code IS NULL olan sonraki BATCH_SIZE kaydi cek
+            # Server-side cursor yerine sayfalama: id > last_id LIMIT BATCH_SIZE
             read_cur = read_conn.cursor(cursor_factory=DictCursor)
             read_cur.execute(
                 psycopg2.sql.SQL(
@@ -1116,18 +1052,14 @@ def process_all_data() -> None:
             if not rows:
                 break
 
-            # PG toplu yazim icin biriktiriciler
+            # PG toplu yazım için biriktiriciler
             pg_updates: list[tuple] = []
             log_rows: list[tuple] = []
             audit_rows: list[tuple] = []
-            # P0-C: bu batch'te oluşturulan NEW_MASTER id'leri (batch-içi dedup kapsamı)
+            # Bu batch'te oluşturulan NEW_MASTER id'leri (batch-içi dedup kapsamı)
             batch_new_master_ids: list[str] = []
 
-            # Kayıtları MATCH_BATCH_SIZE'lık chunk'larda işle (Q1 — toplu msearch).
-            # chunk = refresh penceresi → görünürlük tekil-akışla AYNI; refresh chunk
-            # sonunda. Cross-chunk aynı-firma kayıtları normal matching ile (önceki
-            # chunk refresh'lendiğinden) eşleşir; within-chunk dup'ları batch-sonu dedup
-            # toplar. chunk_sz=1 → eski kayıt-başına davranış.
+            # Her chunk bir ES refresh penceresi; chunk_sz=1 → tekil-kayıt davranışı.
             chunk_sz = max(1, MATCH_BATCH_SIZE)
             for c0 in range(0, len(rows), chunk_sz):
                 chunk = rows[c0:c0 + chunk_sz]
@@ -1136,7 +1068,7 @@ def process_all_data() -> None:
                 match_items: list[tuple] = []  # (row_id, raw_name, country, rec)
                 for row in chunk:
                     row_id = row[col_id]
-                    last_id = row_id  # Sayfalama icin son id'yi takip et
+                    last_id = row_id  # Sayfalama için son id'yi takip et
                     try:
                         country = (
                             (row[col_country] or "").strip().upper()
@@ -1151,8 +1083,7 @@ def process_all_data() -> None:
                             pbar.update(1)
                             continue
 
-                        # Boundary girdi filtresi (P0-B): firma-olmayan girdiyi izole et.
-                        # EXCLUDED → kendi master_code'u, ES'e İNDEKSLENMEZ (magnet olamaz).
+                        # Firma-olmayan girdi → EXCLUDED (izole, ES'e indekslenmez).
                         excl_reason = classify_input(raw_name, country) if ENABLE_INPUT_FILTER else None
                         if excl_reason:
                             master_id = str(uuid.uuid4())
@@ -1314,10 +1245,8 @@ def process_all_data() -> None:
 
             es.indices.refresh(index=ES_INDEX)
 
-            # P0-C: otomatik dedup — aynı kanonik fingerprint'li NEW_MASTER'ları ES-tarafı
-            # birleştir. PERF: her batch yerine AUTO_DEDUP_EVERY_N_BATCHES'te bir koşar
-            # (fielddata aggregation = donma kaynağı daha seyrek); güvenlik-cap'te erken flush.
-            # Ülke kümesiyle sınırlı (FIX 2) → gereksiz boş-ülke agg'ı yok. refresh=False.
+            # Aynı fingerprint'li NEW_MASTER'ları N batch'te bir birleştir; fielddata
+            # aggregation sıklığını düşürür, güvenlik-cap'te erken flush tetiklenir.
             _dedup_batch_counter += 1
             if (
                 _dedup_batch_counter % AUTO_DEDUP_EVERY_N_BATCHES == 0
@@ -1325,22 +1254,21 @@ def process_all_data() -> None:
             ):
                 _run_pending_dedup()
 
-        # Sonda flush: AUTO_DEDUP_EVERY_N_BATCHES > 1 ise son N-altı batch'in biriken
-        # NEW_MASTER'ları henüz deduplike edilmemiş olabilir → kapanıştan önce çalıştır.
+        # Son N-altı batch'in biriken NEW_MASTER'larını kapanıştan önce flush et.
         _run_pending_dedup()
 
         pbar.close()
 
-        # Final ozet
+        # Özet
         write_cursor.close()
         logger.info(f"{'=' * 60}")
         logger.info(f"TAMAMLANDI: {total_processed:,} kayit islendi")
         logger.info(f"  Eslesen:     {total_matched:,}")
         logger.info(f"  Yeni master: {total_new:,}")
         if total_excluded:
-            logger.info(f"  Excluded (P0-B): {total_excluded:,} firma-olmayan girdi izole edildi (indekslenmedi)")
+            logger.info(f"  Excluded:    {total_excluded:,} firma-olmayan girdi izole edildi")
         if total_deduped:
-            logger.info(f"  Dedup (P0-C): {total_deduped:,} duplike master batch-ici birlestirildi")
+            logger.info(f"  Dedup:       {total_deduped:,} duplike master batch-içi birleştirildi")
         if total_skipped:
             logger.info(f"  Atlanan:     {total_skipped:,} (bos isim)")
         logger.info(f"  Stage dagilimi:")

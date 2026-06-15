@@ -20,6 +20,7 @@ from elasticsearch import Elasticsearch
 from synonym_loader import (
     get_all_country_codes,
     get_article_stopwords,
+    get_geo_stopword_tokens,
     get_legal_suffix_tokens,
 )
 
@@ -82,6 +83,22 @@ def _build_clean_script(country_code: str) -> str:
         r"  text = /[^\w\s&.\-]/.matcher(text).replaceAll(' ');",
         # 6. Cift bosluk temizligi
         r"  text = /\s+/.matcher(text).replaceAll(' ').trim();",
+        # 7. Ardisik-tekrar token dedup (A2): 'RICARD RICARD' -> 'RICARD'.
+        #    Kaynak-veri token tekrari coverage/skoru sisirip over-merge uretiyor
+        #    (PERNOD RICARD <- RICARD RICARD). Yalnizca ARDISIK tekrar elenir.
+        r"  def dedupToks = / /.split(text);",
+        "  StringBuilder dsb = new StringBuilder();",
+        "  String prevTok = null;",
+        "  for (int di = 0; di < dedupToks.length; di++) {",
+        "    String dt = dedupToks[di];",
+        "    if (dt.length() == 0) { continue; }",
+        "    if (prevTok == null || !prevTok.equals(dt)) {",
+        "      if (dsb.length() > 0) { dsb.append(' '); }",
+        "      dsb.append(dt);",
+        "      prevTok = dt;",
+        "    }",
+        "  }",
+        "  text = dsb.toString().trim();",
         # Sonuca ekle
         "  if (text.length() > 0) {",
         "    boolean exists = false;",
@@ -106,10 +123,17 @@ def _build_stripped_script(country_code: str) -> str:
     """
     # Sprint 2: yalnizca legal_suffixes + articles stripping'e girer.
     # business_sectors kategorisi PRESERVED — firma ismini ayirt eden kelimeler.
+    # A1 (geo-mıknatıs fix): geo token'ları (countries.json'dan) da çıkarılır — yoksa
+    # 'SAL ARGENTINA' → ['argentina'] tek-geo-token mıknatısı oluşur ve isim-ortası geo
+    # token'ı (AUDI ARGENTINA MOTORS) match_phrase bitişikliğini query tarafıyla bozar.
+    # GLOBAL liste kullanılır (per-country DEĞİL) → search analyzer'daki geo_stopwords_global
+    # ile SİMETRİ (HIGH-1 review): AR kaydındaki 'brasil'/'us' index+search aynı işlenir.
+    # len>=4 filtresi kısa ISO kodlarını korur (HIGH-2). Hardcode yok — get_geo_stopword_tokens.
     suffix_tokens = [t for t in get_legal_suffix_tokens(country_code) if " " not in t]
     article_tokens = [t for t in get_article_stopwords(country_code) if " " not in t]
+    geo_tokens = [t for t in get_geo_stopword_tokens() if " " not in t]
     all_tokens = list(
-        dict.fromkeys(suffix_tokens + article_tokens)
+        dict.fromkeys(suffix_tokens + article_tokens + geo_tokens)
     )  # dedup, order preserved
     tokens_literal = ", ".join(_pl_str(t) for t in all_tokens)
 

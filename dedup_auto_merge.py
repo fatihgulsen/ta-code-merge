@@ -21,7 +21,7 @@ import psycopg2
 import psycopg2.sql
 from elasticsearch import Elasticsearch
 
-from config import DB_CONFIG, ES_INDEX, RAW_TABLE_NAME, COLUMN_MAPPING, DEDUP_MIN_FINGERPRINT_TOKEN_LEN
+from config import DB_CONFIG, ES_INDEX, RAW_TABLE_NAME, COLUMN_MAPPING, DEDUP_MIN_FINGERPRINT_TOKEN_LEN, MatchType
 
 logger = logging.getLogger(__name__)
 
@@ -172,19 +172,26 @@ for (s in params.new_stripped) { if (!ctx._source.variations_stripped.contains(s
 
 def _repoint_pg(cur, primary: str, secondaries: list[str], country: str) -> int:
     """secondary master'lara işaret eden satırları primary'e yönlendirir.
-    country_code = HARD FILTER (parametrik). Etkilenen satır sayısını döner."""
+    country_code = HARD FILTER (parametrik). Etkilenen satır sayısını döner.
+
+    A3: aynı atomik UPDATE'te ikincil NEW_MASTER anchor'ları AUTO_DEDUP'a demote eder
+    (CASE) — böylece tek master_code'da >1 NEW_MASTER kalmaz (watch query kör noktası).
+    Variant satırları (NEW_MASTER olmayan) tipini korur, sadece master_code'u değişir."""
     col_master = COLUMN_MAPPING["master_code"]
     col_country = COLUMN_MAPPING["country_code"]
+    col_mt = COLUMN_MAPPING["match_type"]
     cur.execute(
         psycopg2.sql.SQL(
-            "UPDATE {table} SET {master} = %s "
+            "UPDATE {table} SET {master} = %s, "
+            "{mt} = CASE WHEN {mt} = %s THEN %s ELSE {mt} END "
             "WHERE {master} = ANY(%s) AND {country} = %s"
         ).format(
             table=psycopg2.sql.Identifier(RAW_TABLE_NAME),
             master=psycopg2.sql.Identifier(col_master),
+            mt=psycopg2.sql.Identifier(col_mt),
             country=psycopg2.sql.Identifier(col_country),
         ),
-        (primary, secondaries, country),
+        (primary, MatchType.NEW_MASTER, MatchType.AUTO_DEDUP, secondaries, country),
     )
     return cur.rowcount
 
@@ -195,6 +202,13 @@ def apply_merge(es: Elasticsearch, cur, pg_conn, plan: dict) -> dict:
     primary, secondaries, cc = plan["primary"], plan["secondaries"], plan["country_code"]
     try:
         repointed = _repoint_pg(cur, primary, secondaries, cc)
+        # MEDIUM-1 (review): secondary'lere işaret eden satır yoksa (kaskad/zaten-repoint
+        # edilmiş) izlenebilir olsun — sessiz no-op olmasın.
+        if repointed == 0 and secondaries:
+            logger.warning(
+                "dedup repoint 0 satır etkiledi (kaskad/stale secondary?) "
+                f"fp={plan.get('fingerprint')!r} primary={primary} secondaries={secondaries}"
+            )
         for sec_id in secondaries:
             sec = es.get(index=ES_INDEX, id=sec_id, routing=cc)["_source"]
             es.update(

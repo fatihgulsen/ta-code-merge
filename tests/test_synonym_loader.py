@@ -251,3 +251,19 @@ def test_get_business_sector_canonical_map_maps_to_rule_target():
     # Sector words from IN-specific file
     assert mapping.get("pharmaceutical") == "pharma"
     assert mapping.get("pharmaceuticals") == "pharma"
+
+
+def test_geo_stopword_tokens_excludes_short_iso_codes():
+    """A1/HIGH-2: global geo-stop tam ülke adlarını (argentina, brasil, mexico) içerir
+    ama kısa ISO kodlarını (ar, br, us, mx, arg, bra) HARİÇ tutar — kısa kodlar marka
+    token'larıyla çakışır (GE HEALTHCARE, US BANK). Kaynak countries.json (hardcode yok)."""
+    from synonym_loader import get_geo_stopword_tokens
+    geo = {t.lower() for t in get_geo_stopword_tokens()}
+    # Tam adlar dahil
+    assert "argentina" in geo
+    assert "brasil" in geo or "brazil" in geo
+    # Kısa ISO kodları hariç (len<4)
+    for short in ["ar", "br", "us", "mx", "pe", "ge", "es", "arg", "bra", "usa"]:
+        assert short not in geo, f"kısa kod {short!r} geo-stop'ta OLMAMALI (marka çakışması)"
+    # Hepsi >= 4 karakter
+    assert all(len(t) >= 4 for t in geo)

@@ -15,6 +15,11 @@ class MatchType:
     PHONETIC_MATCH = "PHONETIC_MATCH"
     NGRAM_MATCH = "NGRAM_MATCH"
     NEW_MASTER = "NEW_MASTER"
+    # A3 (2026-06-15): fingerprint auto-merge (dedup_auto_merge) ile bir primary'e
+    # birleştirilen İKİNCİL NEW_MASTER anchor'ları bu tipe demote edilir. Böylece aynı
+    # master_code'da >1 NEW_MASTER kalmaz → over-merge watch query (match_type!=NEW_MASTER
+    # join) kör noktası kapanır. Variant'lar (zaten bir stage ile eşleşmiş) tipini korur.
+    AUTO_DEDUP = "AUTO_DEDUP"
     # Boundary girdi-geçerliliği filtresi (P0-B / Faz 4): firma-olmayan girdiler
     # (placeholder, salt-kod/sayı, baş-harf, aşırı uzun gümrük dizesi) eşleştirmeye
     # SOKULMADAN izole edilir → ES'e indekslenmez (magnet olamaz). Bkz. input_filter.py.
@@ -147,6 +152,15 @@ AUTO_DEDUP_PER_BATCH = True
 # asıl çözüm analyzer-side akronim-glue (Öneri-1) + reindex.
 DEDUP_MIN_FINGERPRINT_TOKEN_LEN = 2
 
+# NOT (A4 kararı, 2026-06-15): Sabit "max-cluster-size" tavanı (örn. 100 variation)
+# DENENDİ ve GERİ ALINDI. Gerekçe (kullanıcı): boyut tek başına hata değildir — 2M kayıt
+# gerçekten aynı firmaysa hepsi birleşmeli; sabit tavan meşru dev kümeleri (büyük
+# ithalatçı, milyonlarca gümrük kaydı) zorla böler → ciddi UNDER-MERGE. Asıl sorun
+# boyut değil ZAYIF KENAR (geo/jenerik token üzerinden birleşme) → A1 (geo-stop) + A2
+# (token-dedup) + _core_coverage_filter bunu kök seviyede çözer. Büyük küme bir
+# İZLEME sinyalidir (engellenmez): C6 monitör SQL'i + dedup_reviewer (C3) ile insan
+# denetimine işaretlenir, eşleştirme yolunda hard-gate YOKTUR.
+
 # Firma-OLMAYAN placeholder'lar ("ticari unvan yok" / "alıcı=gönderici") artık DATA-DRIVEN:
 # synonyms_data/{common,<cc>}.json içindeki "non_firm_placeholders" kategorisinde tanımlıdır.
 #   - __common__ karşılığı  → common.json (gümrük "same as ..." işaretçileri, tüm ülkelere)
@@ -213,11 +227,22 @@ STAGES = [
         "index_variation": True,
     },
     {
+        # DEVRE DIŞI (2026-06-15, docs/audit/2026-06-15-round7-rescan-comparison.md):
+        # SUFFIX_FUZZY precision tüm stage'lerin en düşüğü (Round-7 doğrulanmış %68.0;
+        # diğer tüm stage'ler %92+). "Kazanımlarının" çoğu asıl amacı olan suffix-typo
+        # toleransı DEĞİL, subset/truncation over-merge'ü (SAMSUNG ELECTRONICS CO LTD ⊂
+        # SAMSUNG ... HAINAN FIBER OPTICS KOREA, BANCO MACRO ⊂ BANCO MACRO BANSUD,
+        # C/O acente + slash multi-entity). Asıl suffix-typo işini yeterince yapamıyor;
+        # gerçek suffix-stripped varyantlar zaten STRIPPED_EXACT, fuzzy varyantlar
+        # FUZZY_PHRASE tarafından yakalanıyor. PHONETIC/NGRAM ile aynı karar deseni:
+        # düşük-precision kaynağı kapatılır, recall kaybı sınırlı. Yeniden açmak için
+        # önce es_queries.SUFFIX_FUZZY'ye _core_coverage_filter eklenmeli (subset over-merge'i
+        # ES-side eler) + geo-stop reindex sonrası canlı doğrulama (live_probe).
         "name": "SUFFIX_FUZZY",
         "order": 3,
         "query_fn": "SUFFIX_FUZZY",
         "min_score": SUFFIX_FUZZY_MIN_SCORE,
-        "enabled": True,
+        "enabled": False,
         "index_variation": False,
     },
     {

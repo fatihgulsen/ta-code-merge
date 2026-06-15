@@ -87,3 +87,31 @@ def test_no_hardcoded_pipeline_name_constant():
     """PIPELINE_NAME sabit değişkeni artık olmamalı."""
     import es_ingest
     assert not hasattr(es_ingest, "PIPELINE_NAME")
+
+
+def test_clean_script_collapses_consecutive_dup_tokens():
+    """A2 (token-tekrar fix): _build_clean_script ardışık yinelenen token'ları tek'e
+    indirmeli ('RICARD RICARD ARGENTINA' → 'RICARD ARGENTINA'). Kaynak-veri token
+    tekrarı TOKEN_COVERAGE skorunu/coverage'ını şişirip over-merge üretiyor
+    (R7 en yüksek skorlu hata: PERNOD RICARD ⇸ RICARD RICARD, score 27).
+    Painless ES'te çalıştığından yapısal imza doğrulanır; davranış reindex G3'te."""
+    from es_ingest import _build_clean_script
+    script = _build_clean_script("AR")
+    # Ardışık-tekrar dedup: önceki-token karşılaştırması ('prevTok') içermeli
+    assert "prevTok" in script, "ardışık-tekrar token dedup mantığı (prevTok) bulunamadı"
+
+
+def test_stripped_script_strips_geo_tokens():
+    """A1 (geo-mıknatıs fix, index tarafı): _build_stripped_script saklanan
+    variations_stripped string'inden geo token'larını da çıkarmalı — yoksa
+    match_phrase bitişikliği query tarafıyla tutarsız kalır (recall kaybı:
+    'AUDI ARGENTINA MOTORS' index'te 3 token, query'de 2). Geo token listesi
+    countries.json'dan türetilir (get_country_name_tokens) — hardcode yok."""
+    from es_ingest import _build_stripped_script
+    from synonym_loader import get_country_name_tokens
+    script = _build_stripped_script("AR")
+    geo_tokens = [t for t in get_country_name_tokens("AR") if " " not in t]
+    assert geo_tokens, "AR için countries.json'dan geo token bekleniyordu"
+    # En ayırt edici geo token (argentina) generic-strip listesinde olmalı
+    assert "argentina" in script.lower(), \
+        "_build_stripped_script çıktısı 'argentina' geo token'ını strip listesinde içermeli"

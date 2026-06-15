@@ -1,0 +1,180 @@
+{"master_ta_code":"ar80076275","variant_ta_code":"ar80063069","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix difference only (S.A.I.C. vs none)","country_leak":false}
+{"master_ta_code":"ar80076275","variant_ta_code":"ar80076277","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix difference (SA vs none)","country_leak":false}
+{"master_ta_code":"ar80076275","variant_ta_code":"ar80000442","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix variation (S.A.IC vs none)","country_leak":false}
+{"master_ta_code":"ar80076658","variant_ta_code":"ar80011639","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix only S.A.","country_leak":false}
+{"master_ta_code":"ar80076658","variant_ta_code":"ar80015910","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix only SA","country_leak":false}
+{"master_ta_code":"ar80076658","variant_ta_code":"ar80106704","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"TO prefix only","country_leak":false}
+{"master_ta_code":"ar80077988","variant_ta_code":"ar00017146","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"VOLKSWAGEN OF AMERICA vs VOLKSWAGEN ARGENTINA","country_leak":false}
+{"master_ta_code":"ar80077988","variant_ta_code":"ar80019039","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"VOLKSWAGEN OF AMERICA vs VOLKSWAGEN ARGENTINA","country_leak":false}
+{"master_ta_code":"ar80077988","variant_ta_code":"ar80018046","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"VOLKSWAGEN OF AMERICA vs VOLKSWAGEN ARGENTINA","country_leak":false}
+{"master_ta_code":"ar80079712","variant_ta_code":"ar00010047","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix only S.A.U. vs SA","country_leak":false}
+{"master_ta_code":"ar80079712","variant_ta_code":"ar80086296","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"ABB S.A.U. vs ABB INC","country_leak":false}
+{"master_ta_code":"ar80079712","variant_ta_code":"ar80000077","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix only S.A.U. vs S.A.","country_leak":false}
+{"master_ta_code":"ar80103723","variant_ta_code":"ar80001472","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"CARRIER S.R.L. vs CARRIER S.A.","country_leak":false}
+{"master_ta_code":"ar80103723","variant_ta_code":"ar80015677","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"CARRIER S.R.L. vs CARRIER S.A.","country_leak":false}
+{"master_ta_code":"ar80103723","variant_ta_code":"ar00011202","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"CARRIER S.R.L. vs CARRIER SA","country_leak":false}
+{"master_ta_code":"ar80113964","variant_ta_code":"ar80087287","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"TETRA PAK S.A vs INC","country_leak":false}
+{"master_ta_code":"ar80113964","variant_ta_code":"ar80065128","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"TETRA PAK S.A vs CIA. LTDA","country_leak":false}
+{"master_ta_code":"ar80113964","variant_ta_code":"ar80077846","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same core brand","country_leak":false}
+{"master_ta_code":"ar80117847","variant_ta_code":"ar80018306","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix only SACI vs SA","country_leak":false}
+{"master_ta_code":"ar80117847","variant_ta_code":"ar80085581","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Core name only","country_leak":false}
+{"master_ta_code":"ar80117847","variant_ta_code":"ar80005504","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix only SACI vs S.A.","country_leak":false}
+{"master_ta_code":"ar80126568","variant_ta_code":"ar80017317","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix only S.A.","country_leak":false}
+{"master_ta_code":"ar80126568","variant_ta_code":"ar80028176","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix only SA","country_leak":false}
+{"master_ta_code":"ar80126568","variant_ta_code":"ar80011054","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix only S.A.","country_leak":false}
+{"master_ta_code":"ar80132751","variant_ta_code":"ar80121026","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix only S vs SA","country_leak":false}
+{"master_ta_code":"ar80132751","variant_ta_code":"ar80138802","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same core brand","country_leak":false}
+{"master_ta_code":"ar80132751","variant_ta_code":"ar80121025","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix only S vs S.A.","country_leak":false}
+{"master_ta_code":"ar80133447","variant_ta_code":"ar80005289","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix only S.A.S","country_leak":false}
+{"master_ta_code":"ar80133447","variant_ta_code":"ar80010758","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix only S.A.S vs S.A.","country_leak":false}
+{"master_ta_code":"ar80133447","variant_ta_code":"ar80075956","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix only S.A.S vs S","country_leak":false}
+{"master_ta_code":"ar00010344","variant_ta_code":"ar80076282","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix and article DE only","country_leak":false}
+{"master_ta_code":"ar00010344","variant_ta_code":"ar80015360","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix and article DE only","country_leak":false}
+{"master_ta_code":"ar00010881","variant_ta_code":"ar80037665","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"Y vs & connector, same company","country_leak":false}
+{"master_ta_code":"ar00010881","variant_ta_code":"ar80001134","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Y vs & connector, same company","country_leak":false}
+{"master_ta_code":"ar00011056","variant_ta_code":"ar80018172","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix only S.R.L.","country_leak":false}
+{"master_ta_code":"ar00011056","variant_ta_code":"ar80001533","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Hyphen only difference","country_leak":false}
+{"master_ta_code":"ar00011220","variant_ta_code":"ar80059048","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix variation only","country_leak":false}
+{"master_ta_code":"ar00011220","variant_ta_code":"ar80043484","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix variation S.A.C. e I. vs S.A.U.","country_leak":false}
+{"master_ta_code":"ar00011238","variant_ta_code":"ar80070620","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"Y vs & connector","country_leak":false}
+{"master_ta_code":"ar00011238","variant_ta_code":"ar80076510","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Missing DE only","country_leak":false}
+{"master_ta_code":"ar00011327","variant_ta_code":"ar80027192","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix SA only","country_leak":false}
+{"master_ta_code":"ar00011327","variant_ta_code":"ar80011599","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00011761","variant_ta_code":"ar80002195","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00011761","variant_ta_code":"ar80132638","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix SA only","country_leak":false}
+{"master_ta_code":"ar00011855","variant_ta_code":"ar00044128","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"DANSA SA vs DANSA SRL","country_leak":false}
+{"master_ta_code":"ar00011855","variant_ta_code":"ar80076673","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix only","country_leak":false}
+{"master_ta_code":"ar00011962","variant_ta_code":"ar00057284","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"DEVRE INTERNACIONAL vs SA INTERNACIONAL","country_leak":false}
+{"master_ta_code":"ar00011962","variant_ta_code":"ar00085786","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"DEVRE vs BROTHERS, different brands","country_leak":false}
+{"master_ta_code":"ar00012076","variant_ta_code":"ar80068547","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"Sucursal Argentina only","country_leak":false}
+{"master_ta_code":"ar00012076","variant_ta_code":"ar80021417","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"Sucursal Argentina branch","country_leak":false}
+{"master_ta_code":"ar00012137","variant_ta_code":"ar80018606","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Punctuation only","country_leak":false}
+{"master_ta_code":"ar00012137","variant_ta_code":"ar80002698","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix SA only","country_leak":false}
+{"master_ta_code":"ar00012386","variant_ta_code":"ar80002995","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Punctuation only in person name","country_leak":false}
+{"master_ta_code":"ar00012386","variant_ta_code":"ar80002994","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Punctuation and suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00012543","variant_ta_code":"ar00086188","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix and initials variation","country_leak":false}
+{"master_ta_code":"ar00012543","variant_ta_code":"ar80019980","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix and initials variation","country_leak":false}
+{"master_ta_code":"ar00012607","variant_ta_code":"ar00014835","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"FAMA MUSIC vs MUSIC CO","country_leak":false}
+{"master_ta_code":"ar00012607","variant_ta_code":"ar80045225","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A. only","country_leak":false}
+{"master_ta_code":"ar00012998","variant_ta_code":"ar80016363","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Punctuation in suffix only","country_leak":false}
+{"master_ta_code":"ar00012998","variant_ta_code":"ar80014509","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00013541","variant_ta_code":"ar80074070","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix variation S.A. vs S. A.C","country_leak":false}
+{"master_ta_code":"ar00013541","variant_ta_code":"ar80034412","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00013814","variant_ta_code":"ar80021768","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"SYSTEMS vs SYSTEM, singular/plural","country_leak":false}
+{"master_ta_code":"ar00013814","variant_ta_code":"ar80011774","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.R.L. only","country_leak":false}
+{"master_ta_code":"ar00014166","variant_ta_code":"ar80016920","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00014166","variant_ta_code":"ar80055623","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix SA only","country_leak":false}
+{"master_ta_code":"ar00014411","variant_ta_code":"ar80011817","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A. and comma","country_leak":false}
+{"master_ta_code":"ar00014411","variant_ta_code":"ar80005824","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00014687","variant_ta_code":"ar80123347","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix SA only","country_leak":false}
+{"master_ta_code":"ar00014687","variant_ta_code":"ar80006271","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00015080","variant_ta_code":"ar00078342","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"OP TRADING vs TRADING HNOS","country_leak":false}
+{"master_ta_code":"ar00015080","variant_ta_code":"ar00088886","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"OP TRADING vs C B TRADING","country_leak":false}
+{"master_ta_code":"ar00015101","variant_ta_code":"ar80049958","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix SA only","country_leak":false}
+{"master_ta_code":"ar00015101","variant_ta_code":"ar80017259","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00015115","variant_ta_code":"ar80006875","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"Y vs & connector","country_leak":false}
+{"master_ta_code":"ar00015115","variant_ta_code":"ar80105755","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Y vs & connector","country_leak":false}
+{"master_ta_code":"ar00015400","variant_ta_code":"ar80087072","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"PLASTIC OMNIUM SA vs LLC","country_leak":false}
+{"master_ta_code":"ar00015400","variant_ta_code":"ar80090168","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix SA vs S.A.U.","country_leak":false}
+{"master_ta_code":"ar00016008","variant_ta_code":"ar80008033","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix SA only","country_leak":false}
+{"master_ta_code":"ar00016008","variant_ta_code":"ar80011220","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00016608","variant_ta_code":"ar80008865","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00016608","variant_ta_code":"ar80011967","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A. and comma","country_leak":false}
+{"master_ta_code":"ar00017356","variant_ta_code":"ar00085467","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00017356","variant_ta_code":"ar00023907","match_type":"TOKEN_COVERAGE","verdict":"DIFFERENT","reason":"AGT vs G&G ARGENTINA","country_leak":false}
+{"master_ta_code":"ar00018021","variant_ta_code":"ar80023341","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00018021","variant_ta_code":"ar80067224","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00018968","variant_ta_code":"ar80000913","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix LTDA vs LTD","country_leak":false}
+{"master_ta_code":"ar00018968","variant_ta_code":"ar80047022","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix LTDA only","country_leak":false}
+{"master_ta_code":"ar00019129","variant_ta_code":"ar80007011","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00019129","variant_ta_code":"ar80007012","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A. and punctuation","country_leak":false}
+{"master_ta_code":"ar00020036","variant_ta_code":"ar80076488","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.C.I. only","country_leak":false}
+{"master_ta_code":"ar00020036","variant_ta_code":"ar80076490","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.C.I. vs SA","country_leak":false}
+{"master_ta_code":"ar00020230","variant_ta_code":"ar00101448","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"CD WAY vs U WAY","country_leak":false}
+{"master_ta_code":"ar00020230","variant_ta_code":"ar80018181","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00020569","variant_ta_code":"ar80001740","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00020569","variant_ta_code":"ar80036263","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A. vs S.R.L.","country_leak":false}
+{"master_ta_code":"ar00021253","variant_ta_code":"ar80053561","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.C.I. y F. vs S.A.","country_leak":false}
+{"master_ta_code":"ar00021253","variant_ta_code":"ar80043591","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.C.I. y F. only","country_leak":false}
+{"master_ta_code":"ar00022336","variant_ta_code":"ar00012183","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.R.L. vs SA","country_leak":false}
+{"master_ta_code":"ar00022336","variant_ta_code":"ar80076742","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.R.L. only","country_leak":false}
+{"master_ta_code":"ar00022973","variant_ta_code":"ar80010407","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Y vs & connector","country_leak":false}
+{"master_ta_code":"ar00022973","variant_ta_code":"ar80003078","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Y vs & connector and suffix","country_leak":false}
+{"master_ta_code":"ar00024847","variant_ta_code":"ar80010591","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.R.L. variation","country_leak":false}
+{"master_ta_code":"ar00024847","variant_ta_code":"ar80004163","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.R.L.","country_leak":false}
+{"master_ta_code":"ar00025131","variant_ta_code":"ar00027686","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"IE.MAT. vs MAT only","country_leak":false}
+{"master_ta_code":"ar00025131","variant_ta_code":"ar00089285","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix and dot only","country_leak":false}
+{"master_ta_code":"ar00025346","variant_ta_code":"ar80088316","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A. only","country_leak":false}
+{"master_ta_code":"ar00025346","variant_ta_code":"ar80016509","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A. and case","country_leak":false}
+{"master_ta_code":"ar00026476","variant_ta_code":"ar80001308","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"LA CANADA vs C.A.","country_leak":false}
+{"master_ta_code":"ar00026476","variant_ta_code":"ar00045546","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"LA CANADA vs CA only","country_leak":false}
+{"master_ta_code":"ar00027583","variant_ta_code":"ar80100494","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A. and case","country_leak":false}
+{"master_ta_code":"ar00027583","variant_ta_code":"ar80064387","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A. only","country_leak":false}
+{"master_ta_code":"ar00027799","variant_ta_code":"ar00100940","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"MEC S.A. vs MEC SAS","country_leak":false}
+{"master_ta_code":"ar00027799","variant_ta_code":"ar00074644","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"MEC S.A. vs MEC S.R.L.","country_leak":false}
+{"master_ta_code":"ar00027914","variant_ta_code":"ar00027915","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"HNOS vs core only, same firm","country_leak":false}
+{"master_ta_code":"ar00027914","variant_ta_code":"ar00086743","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.R.L. variation","country_leak":false}
+{"master_ta_code":"ar00028157","variant_ta_code":"ar80006216","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"Long suffix variation only","country_leak":false}
+{"master_ta_code":"ar00028157","variant_ta_code":"ar80006217","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"Punctuation in suffix only","country_leak":false}
+{"master_ta_code":"ar00028520","variant_ta_code":"ar00036886","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.H. only","country_leak":false}
+{"master_ta_code":"ar00028520","variant_ta_code":"ar80006459","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.H.","country_leak":false}
+{"master_ta_code":"ar00029225","variant_ta_code":"ar80077433","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.R.L. only","country_leak":false}
+{"master_ta_code":"ar00029225","variant_ta_code":"ar80026170","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.R.L. and case","country_leak":false}
+{"master_ta_code":"ar00030154","variant_ta_code":"ar00030155","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A. vs S.R.L., same firm","country_leak":false}
+{"master_ta_code":"ar00030154","variant_ta_code":"ar80014946","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00030532","variant_ta_code":"ar00018322","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"RC vs FYC INTERNATIONAL","country_leak":false}
+{"master_ta_code":"ar00030532","variant_ta_code":"ar80016581","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"RC INTERNATIONAL vs INTERNATIONAL only","country_leak":false}
+{"master_ta_code":"ar00031001","variant_ta_code":"ar00070235","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"RODAMIENTOS BROTHERS vs RODAMIENTOS only","country_leak":false}
+{"master_ta_code":"ar00031001","variant_ta_code":"ar80034045","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"RODAMIENTOS BROTHERS vs FA Rodamientos","country_leak":false}
+{"master_ta_code":"ar00031240","variant_ta_code":"ar00018931","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"SYC METALURGICA vs METALURGICA RAE","country_leak":false}
+{"master_ta_code":"ar00031240","variant_ta_code":"ar00089702","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"SYC METALURGICA vs RYC METALURGICA","country_leak":false}
+{"master_ta_code":"ar00031341","variant_ta_code":"ar80008050","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"COMPANIA vs CIA only","country_leak":false}
+{"master_ta_code":"ar00031341","variant_ta_code":"ar80008049","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"COMPANIA vs CIA, suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00031752","variant_ta_code":"ar80008301","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"DE only difference","country_leak":false}
+{"master_ta_code":"ar00031752","variant_ta_code":"ar80011943","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"DE only difference, suffix","country_leak":false}
+{"master_ta_code":"ar00032179","variant_ta_code":"ar80040519","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"TRADING CORP vs TRADE only","country_leak":false}
+{"master_ta_code":"ar00032179","variant_ta_code":"ar00087226","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"TRADING CORP vs TRADE","country_leak":false}
+{"master_ta_code":"ar00032212","variant_ta_code":"ar80083462","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"SPONSOR POP MERCHANDISING vs Pop Co","country_leak":false}
+{"master_ta_code":"ar00032212","variant_ta_code":"ar80018365","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"SPONSOR POP MERCHANDISING vs POP COMPANY","country_leak":false}
+{"master_ta_code":"ar00033024","variant_ta_code":"ar80020920","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A. only","country_leak":false}
+{"master_ta_code":"ar00033024","variant_ta_code":"ar80024136","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00034160","variant_ta_code":"ar80018060","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Hyphen variation only","country_leak":false}
+{"master_ta_code":"ar00034160","variant_ta_code":"ar80030101","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Hyphen variation S.A.","country_leak":false}
+{"master_ta_code":"ar00041613","variant_ta_code":"ar00086987","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00041613","variant_ta_code":"ar00060228","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"PRINTING COMPANY vs DD PRINTING","country_leak":false}
+{"master_ta_code":"ar00041869","variant_ta_code":"ar80001712","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.R.L.","country_leak":false}
+{"master_ta_code":"ar00041869","variant_ta_code":"ar80001322","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Character encoding only","country_leak":false}
+{"master_ta_code":"ar00044333","variant_ta_code":"ar80027242","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"MIHLAGER COMPANY vs COL","country_leak":false}
+{"master_ta_code":"ar00044333","variant_ta_code":"ar00020711","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"MIHLAGER COMPANY vs COL","country_leak":false}
+{"master_ta_code":"ar00045800","variant_ta_code":"ar80018356","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"INDUSTRIA GRAFICA only","country_leak":false}
+{"master_ta_code":"ar00045800","variant_ta_code":"ar00089304","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A. only","country_leak":false}
+{"master_ta_code":"ar00046168","variant_ta_code":"ar80077862","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A. only","country_leak":false}
+{"master_ta_code":"ar00046168","variant_ta_code":"ar80035740","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00048248","variant_ta_code":"ar80113586","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.R.L. vs S.A.","country_leak":false}
+{"master_ta_code":"ar00048248","variant_ta_code":"ar80037176","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.R.L.","country_leak":false}
+{"master_ta_code":"ar00060292","variant_ta_code":"ar80005138","match_type":"STRIPPED_EXACT","verdict":"UNSURE","reason":"EMILIA vs LA EMILIA - subset","country_leak":false}
+{"master_ta_code":"ar00060292","variant_ta_code":"ar00026493","match_type":"STRIPPED_EXACT","verdict":"UNSURE","reason":"EMILIA vs LA EMILIA - subset","country_leak":false}
+{"master_ta_code":"ar00064123","variant_ta_code":"ar80035695","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix variation only","country_leak":false}
+{"master_ta_code":"ar00064123","variant_ta_code":"ar00032834","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix variation only","country_leak":false}
+{"master_ta_code":"ar00066976","variant_ta_code":"ar80060268","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A. only","country_leak":false}
+{"master_ta_code":"ar00066976","variant_ta_code":"ar80092454","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"POWER TRAIN TECHNOLOGIES vs SA","country_leak":false}
+{"master_ta_code":"ar00069243","variant_ta_code":"ar00081052","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"C&C HOME vs D&F HOME","country_leak":false}
+{"master_ta_code":"ar00069243","variant_ta_code":"ar00074475","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"C&C HOME vs HOME only","country_leak":false}
+{"master_ta_code":"ar00071287","variant_ta_code":"ar80121993","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.R.L.","country_leak":false}
+{"master_ta_code":"ar00071287","variant_ta_code":"ar80121992","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.R.L. variation","country_leak":false}
+{"master_ta_code":"ar00072047","variant_ta_code":"ar80050327","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"BO HERMANOS vs BOLIVIA","country_leak":false}
+{"master_ta_code":"ar00072047","variant_ta_code":"ar80028783","match_type":"STRIPPED_EXACT","verdict":"UNSURE","reason":"BO HERMANOS vs B.O - abbreviation","country_leak":false}
+{"master_ta_code":"ar00076193","variant_ta_code":"ar80027018","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"Location suffix only","country_leak":false}
+{"master_ta_code":"ar00076193","variant_ta_code":"ar80033273","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"Location suffix only","country_leak":false}
+{"master_ta_code":"ar00080266","variant_ta_code":"ar80098621","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"INTERNATIONAL vs INTL abbreviation","country_leak":false}
+{"master_ta_code":"ar00080266","variant_ta_code":"ar80000640","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.R.L.","country_leak":false}
+{"master_ta_code":"ar00080664","variant_ta_code":"ar00074831","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"C&D ELECTRONICA vs SE ELECTRONICA","country_leak":false}
+{"master_ta_code":"ar00080664","variant_ta_code":"ar00085807","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.R.L.","country_leak":false}
+{"master_ta_code":"ar00083217","variant_ta_code":"ar80076048","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.","country_leak":false}
+{"master_ta_code":"ar00083217","variant_ta_code":"ar00087023","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A. only","country_leak":false}
+{"master_ta_code":"ar00086599","variant_ta_code":"ar80133486","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Hyphen and suffix variation","country_leak":false}
+{"master_ta_code":"ar00086599","variant_ta_code":"ar80121705","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"LEAD-WAYTRADING vs LEAD only","country_leak":false}
+{"master_ta_code":"ar00086640","variant_ta_code":"ar80077271","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"LOS MARTINEZ vs MARTINEZ HNOS","country_leak":false}
+{"master_ta_code":"ar00086640","variant_ta_code":"ar80064391","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"LOS MARTINEZ vs MARTINEZ HNOS","country_leak":false}
+{"master_ta_code":"ar80000156","variant_ta_code":"ar00028124","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"Name order only (person name)","country_leak":false}
+{"master_ta_code":"ar80000156","variant_ta_code":"ar80060848","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Character encoding only","country_leak":false}

@@ -1,0 +1,111 @@
+{"master_ta_code":"ar00020951","variant_ta_code":"ar00023158","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"CON vs FL: tamamen farklı marka çekirdeği"}
+{"master_ta_code":"ar00020951","variant_ta_code":"ar00019760","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"CON vs CDSI: farklı çekirdek markalar"}
+{"master_ta_code":"ar00020951","variant_ta_code":"ar00072138","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"CON vs F&L: farklı marka çekirdeği"}
+{"master_ta_code":"ar00020951","variant_ta_code":"ar00073678","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"CON vs SME: farklı firmalar"}
+{"master_ta_code":"ar00020951","variant_ta_code":"ar00035424","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"CON vs AP: ayrı markalar"}
+{"master_ta_code":"ar00020951","variant_ta_code":"ar00068181","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"CON vs DEL: tamamen farklı marka adları"}
+{"master_ta_code":"ar00020951","variant_ta_code":"ar80000837","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"CON vs BI: farklı kurumsal markalar"}
+{"master_ta_code":"ar00020951","variant_ta_code":"ar80018473","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"CON ARGENTINA vs sadece ARGENTINA: jenerik isim"}
+{"master_ta_code":"ar00020951","variant_ta_code":"ar80020523","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"CON vs C.: farklı marka kısaltmaları"}
+{"master_ta_code":"ar00020951","variant_ta_code":"ar80054171","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"CON vs LA ARGENTINA: tamamen farklı isimler"}
+{"master_ta_code":"ar80023638","variant_ta_code":"ar80003506","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"FORD ARGENTINA SCA vs SA: yalnızca tüzel-ek farkı"}
+{"master_ta_code":"ar80023638","variant_ta_code":"ar80003509","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"FORD ARGENTINA SCA vs SA: yalnızca hukuki form farkı"}
+{"master_ta_code":"ar00058311","variant_ta_code":"ar00067232","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"SAL vs UNLIMITED: farklı marka çekirdeği"}
+{"master_ta_code":"ar00058311","variant_ta_code":"ar80023354","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"SAL ARGENTINA vs sadece ARGENTINA: jenerik isim"}
+{"master_ta_code":"ar00058311","variant_ta_code":"ar00015982","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"SAL vs SPF: tamamen farklı çekirdek"}
+{"master_ta_code":"ar00058311","variant_ta_code":"ar80062985","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"SAL vs AC: ayrı markalar"}
+{"master_ta_code":"ar00058311","variant_ta_code":"ar00010015","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"SAL vs AEB: farklı çekirdek markalar"}
+{"master_ta_code":"ar00058311","variant_ta_code":"ar00088735","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"SAL vs ARGENTINA LTD: farklı çekirdek"}
+{"master_ta_code":"ar00058311","variant_ta_code":"ar80106054","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"SAL vs RB: ayrı marka isimleri"}
+{"master_ta_code":"ar00058311","variant_ta_code":"ar80015458","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"SAL vs AT: farklı firmalar"}
+{"master_ta_code":"ar80107381","variant_ta_code":"ar80112076","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"FIRMENICH SAIC vs INCORPORATED: aynı marka farklı tüzel-ek"}
+{"master_ta_code":"ar80127216","variant_ta_code":"ar80112076","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"FIRMENICH SAICYF vs INCORPORATED: aynı marka farklı tüzel-ek"}
+{"master_ta_code":"ar00030532","variant_ta_code":"ar80060175","match_type":"TOKEN_COVERAGE","final":"DIFFERENT_CONFIRMED","reason":"RC INTERNATIONAL vs OVERSEAS: hiç ortak anlamlı token"}
+{"master_ta_code":"ar00030532","variant_ta_code":"ar00080406","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"RC INTERNATIONAL vs B&D INTERNATIONAL: farklı prefix"}
+{"master_ta_code":"ar00030532","variant_ta_code":"ar80016581","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"RC INTERNATIONAL vs sadece INTERNATIONAL: jenerik"}
+{"master_ta_code":"ar00030532","variant_ta_code":"ar00018322","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"RC INTERNATIONAL vs FYC INTERNATIONAL: farklı prefix"}
+{"master_ta_code":"ar00030532","variant_ta_code":"ar80016593","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"RC INTERNATIONAL vs sadece INC: jenerik fragment"}
+{"master_ta_code":"ar00030532","variant_ta_code":"ar80114619","match_type":"TOKEN_COVERAGE","final":"DIFFERENT_CONFIRMED","reason":"RC INTERNATIONAL vs INT F&F: hiç eşleşen token"}
+{"master_ta_code":"ar80007131","variant_ta_code":"ar80077639","match_type":"TOKEN_COVERAGE","final":"DIFFERENT_CONFIRMED","reason":"PERNOD RICARD vs RICARD RICARD: PERNOD eksik bozuk kayıt"}
+{"master_ta_code":"ar80007131","variant_ta_code":"ar80077638","match_type":"TOKEN_COVERAGE","final":"DIFFERENT_CONFIRMED","reason":"PERNOD RICARD vs RICARD RICARD: PERNOD eksik bozuk kayıt"}
+{"master_ta_code":"ar80003471","variant_ta_code":"ar80137700","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"FLOWSERVE vs FLOWSERVE S DE RL: aynı marka yalnızca tüzel-ek farkı"}
+{"master_ta_code":"ar80004677","variant_ta_code":"ar80004675","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"ISI SRL vs ISI RL: S sadece tüzel suffix varyantı"}
+{"master_ta_code":"ar80004677","variant_ta_code":"ar80011762","match_type":"STRIPPED_EXACT","final":"UNSURE","reason":"ISI S RL vs ISI R. RL: R. belirsiz initial veya OCR hatası"}
+{"master_ta_code":"ar80034305","variant_ta_code":"ar80027685","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"HELLMANN WORLDWIDE LOGISTICS SAC vs INC: aynı marka tüzel-ek farkı"}
+{"master_ta_code":"ar80034305","variant_ta_code":"ar80136169","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"HELLMANN WORLDWIDE LOGISTICS SAC vs LTD: aynı marka tüzel-ek farkı"}
+{"master_ta_code":"ar80034305","variant_ta_code":"ar80063990","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"HELLMANN WORLDWIDE LOGISTICS SAC vs LLC: aynı marka tüzel-ek farkı"}
+{"master_ta_code":"ar80035301","variant_ta_code":"ar80047988","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"QUIMICA D&D vs QUIMICA: D&D ayırt edici token eksik"}
+{"master_ta_code":"ar80035301","variant_ta_code":"ar80029772","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"QUIMICA D&D vs sadece QUIMICA: jenerik isim"}
+{"master_ta_code":"ar80035301","variant_ta_code":"ar80134682","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"QUIMICA D&D vs UP QUIMICA: farklı prefix ve çekirdek"}
+{"master_ta_code":"ar80035301","variant_ta_code":"ar00051614","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"QUIMICA D&D vs QUIMICA R&F: D&D vs R&F farklı"}
+{"master_ta_code":"ar80105246","variant_ta_code":"ar80065236","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"LIFT-VAN INTERNATIONAL vs VAN INTERNATIONAL: LIFT ayırt edici eksik"}
+{"master_ta_code":"ar00020904","variant_ta_code":"ar80006435","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"COMPANIA MSA DE ARGENTINA vs MSA ARGENTINA: COMPANIA jenerik MSA çekirdek aynı"}
+{"master_ta_code":"ar00031001","variant_ta_code":"ar80003170","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"RODAMIENTOS BROTHERS vs FA RODAMIENTOS: BROTHERS ayırt edici eksik"}
+{"master_ta_code":"ar00031001","variant_ta_code":"ar80045916","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"RODAMIENTOS BROTHERS vs sadece RODAMIENTOS: BROTHERS eksik"}
+{"master_ta_code":"ar00031001","variant_ta_code":"ar80034045","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"RODAMIENTOS BROTHERS vs FA Rodamientos: farklı marka"}
+{"master_ta_code":"ar00031001","variant_ta_code":"ar00070235","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"RODAMIENTOS BROTHERS vs sadece RODAMIENTOS: BROTHERS eksik"}
+{"master_ta_code":"ar00037773","variant_ta_code":"ar00076257","match_type":"FUZZY_PHRASE","final":"DIFFERENT_CONFIRMED","reason":"CABA vs BA: farklı kısaltmalar farklı anlam"}
+{"master_ta_code":"ar00037773","variant_ta_code":"ar80063178","match_type":"FUZZY_PHRASE","final":"DIFFERENT_CONFIRMED","reason":"CABA vs BA: farklı kısaltmalar"}
+{"master_ta_code":"ar00037773","variant_ta_code":"ar80031983","match_type":"FUZZY_PHRASE","final":"DIFFERENT_CONFIRMED","reason":"CABA vs BUENOS: tamamen farklı"}
+{"master_ta_code":"ar00061306","variant_ta_code":"ar80099323","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"DISTRIBUIDORA BSB vs DISTRIBUIDORA DE: BSB ayırt edici eksik"}
+{"master_ta_code":"ar00061306","variant_ta_code":"ar00078078","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"DISTRIBUIDORA BSB vs SAS DISTRIBUIDORA: farklı marka"}
+{"master_ta_code":"ar00061306","variant_ta_code":"ar80011654","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"DISTRIBUIDORA BSB vs DISTRIBUIDORA SACI: BSB eksik"}
+{"master_ta_code":"ar00061306","variant_ta_code":"ar80076706","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"DISTRIBUIDORA BSB vs sadece DISTRIBUIDORA: jenerik"}
+{"master_ta_code":"ar00068105","variant_ta_code":"ar00030533","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"C&C GROUP vs RCR GROUP: farklı çekirdek"}
+{"master_ta_code":"ar00068105","variant_ta_code":"ar80067626","match_type":"TOKEN_COVERAGE","final":"DIFFERENT_CONFIRMED","reason":"C&C GROUP vs GRUPO: C&C ayırt edici eksik"}
+{"master_ta_code":"ar00068105","variant_ta_code":"ar00052610","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"C&C GROUP vs IH GROUP: farklı çekirdek"}
+{"master_ta_code":"ar00068105","variant_ta_code":"ar00061264","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"C&C GROUP vs D&L GROUP: farklı çekirdek"}
+{"master_ta_code":"ar80000766","variant_ta_code":"ar80076328","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"ATANOR SCA vs ATANOR SC: yalnızca suffix A harfi farkı"}
+{"master_ta_code":"ar80016973","variant_ta_code":"ar00015979","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"M CASSAB ARGENTINA vs SMC ARGENTINA: farklı çekirdek markalar"}
+{"master_ta_code":"ar80106857","variant_ta_code":"ar80106863","match_type":"FUZZY_PHRASE","final":"DIFFERENT_CONFIRMED","reason":"VANGUARD LOGISTICS NZ vs SVC: NZ coğrafi tanımlayıcı farklı varlık"}
+{"master_ta_code":"ar80106857","variant_ta_code":"ar80106864","match_type":"FUZZY_PHRASE","final":"DIFFERENT_CONFIRMED","reason":"VANGUARD LOGISTICS NZ vs SVC ARGENTINA: coğrafi ikame NZ vs AR"}
+{"master_ta_code":"ar80106857","variant_ta_code":"ar80018426","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"VANGUARD LOGISTICS NZ vs SA: NZ vs Argentina coğrafi ikame"}
+{"master_ta_code":"ar80106857","variant_ta_code":"ar80077941","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"VANGUARD LOGISTICS NZ vs ARGENTINA: coğrafi ikame farklı varlık"}
+{"master_ta_code":"ar00015080","variant_ta_code":"ar00070265","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"OP TRADING vs S&L TRADING: farklı prefix"}
+{"master_ta_code":"ar00015080","variant_ta_code":"ar00088886","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"OP TRADING vs CB TRADING: farklı prefix"}
+{"master_ta_code":"ar00015080","variant_ta_code":"ar00078342","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"OP TRADING vs TRADING HNOS: OP eksik HNOS ekstra"}
+{"master_ta_code":"ar00037349","variant_ta_code":"ar00031006","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"A RODAR vs RODAR: A ayırt edici prefix kayıtlı ismin parçası"}
+{"master_ta_code":"ar00037349","variant_ta_code":"ar00101216","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"A RODAR vs RODAR: A prefix eksik farklı kayıtlı isim"}
+{"master_ta_code":"ar00037770","variant_ta_code":"ar00023159","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"CYE INGENIERIA vs FP INGENIERIA: farklı prefix"}
+{"master_ta_code":"ar00037770","variant_ta_code":"ar00074961","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"CYE INGENIERIA vs UP INGENIERIA: farklı prefix"}
+{"master_ta_code":"ar00037770","variant_ta_code":"ar00046254","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"CYE INGENIERIA vs BYH INGENIERIA: farklı prefix"}
+{"master_ta_code":"ar00061262","variant_ta_code":"ar80040437","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"DC LOGISTICA vs SAB LOGISTICA: tamamen farklı"}
+{"master_ta_code":"ar00061262","variant_ta_code":"ar80077227","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"DC LOGISTICA ARGENTINA vs LOGISTICA ARGENTINA: DC eksik"}
+{"master_ta_code":"ar00061262","variant_ta_code":"ar00082409","match_type":"FUZZY_PHRASE","final":"DIFFERENT_CONFIRMED","reason":"DC LOGISTICA DE ARGENTINA vs LOGISTICA DE ARGENTINA: DC eksik"}
+{"master_ta_code":"ar00073643","variant_ta_code":"ar00079170","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"SH SERVICIOS vs LYB SERVICIOS: farklı prefix"}
+{"master_ta_code":"ar00073643","variant_ta_code":"ar00011811","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"SH SERVICIOS vs D&R SERVICIOS: farklı prefix"}
+{"master_ta_code":"ar00073643","variant_ta_code":"ar00055229","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"SH SERVICIOS vs ELA SERVICIOS: farklı prefix"}
+{"master_ta_code":"ar00080664","variant_ta_code":"ar00074831","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"C&D ELECTRONICA vs SE ELECTRONICA: farklı prefix"}
+{"master_ta_code":"ar00080664","variant_ta_code":"ar00045104","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"C&D ELECTRONICA vs FBA ELECTRONICA: farklı prefix"}
+{"master_ta_code":"ar00086599","variant_ta_code":"ar80121705","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"LEAD-WAYTRADING vs LEAD: WAYTRADING ayırt edici token eksik"}
+{"master_ta_code":"ar80011847","variant_ta_code":"ar80077335","match_type":"FUZZY_PHRASE","final":"SAME_CONFIRMED_OVERTURN","reason":"MOLINOS RIO DE LA PLATA vs MOLINOS RIO LA PLATA: DE yalnızca edat"}
+{"master_ta_code":"ar80011955","variant_ta_code":"ar80020843","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"SP&P vs SP: P harfi eksik farklı kısaltma"}
+{"master_ta_code":"ar80011955","variant_ta_code":"ar80020889","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"SP&P vs SP: P ve & eksik farklı kısaltma"}
+{"master_ta_code":"ar80017158","variant_ta_code":"ar80033240","match_type":"FUZZY_PHRASE","final":"SAME_CONFIRMED_OVERTURN","reason":"MRS ARACELI CAMPOS vs ARACELI CAMPOS: MRS unvan eki değil marka"}
+{"master_ta_code":"ar80057468","variant_ta_code":"ar80100124","match_type":"TOKEN_COVERAGE","final":"SAME_CONFIRMED_OVERTURN","reason":"JAS FORWARDING ARGENTINA vs JAS ARGENTINA: JAS çekirdek aynı FORWARDING tanımlayıcı"}
+{"master_ta_code":"ar80057468","variant_ta_code":"ar80063825","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"JAS FORWARDING ARGENTINA vs FORWARDING SA: JAS çekirdek eksik"}
+{"master_ta_code":"ar80064892","variant_ta_code":"ar80077227","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"SAB LOGISTICA vs LOGISTICA ARGENTINA: SAB ayırt edici eksik"}
+{"master_ta_code":"ar80064892","variant_ta_code":"ar00082409","match_type":"FUZZY_PHRASE","final":"DIFFERENT_CONFIRMED","reason":"SAB LOGISTICA vs LOGISTICA DE ARGENTINA: SAB ayırt edici eksik"}
+{"master_ta_code":"ar80074153","variant_ta_code":"ar80067512","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"MENDEZ & COMPANY INC vs E MENDEZ: şirket vs bireysel farklı varlık"}
+{"master_ta_code":"ar80076838","variant_ta_code":"ar80023612","match_type":"FUZZY_PHRASE","final":"SAME_CONFIRMED_OVERTURN","reason":"FCA AUTOMOBILES vs FCA AUTOMOBILE: tekil-çoğul OCR varyantı aynı marka"}
+{"master_ta_code":"ar80077988","variant_ta_code":"ar00017146","match_type":"FUZZY_PHRASE","final":"DIFFERENT_CONFIRMED","reason":"VOLKSWAGEN OF AMERICA vs VOLKSWAGEN ARGENTINA: coğrafi ikame farklı varlık"}
+{"master_ta_code":"ar80077988","variant_ta_code":"ar80019039","match_type":"FUZZY_PHRASE","final":"DIFFERENT_CONFIRMED","reason":"VOLKSWAGEN OF AMERICA vs VOLKSWAGEN ARGENTINA: coğrafi ikame farklı varlık"}
+{"master_ta_code":"ar80077988","variant_ta_code":"ar80018046","match_type":"FUZZY_PHRASE","final":"DIFFERENT_CONFIRMED","reason":"VOLKSWAGEN OF AMERICA vs VOLKSWAGEN ARGENTINA: coğrafi ikame farklı varlık"}
+{"master_ta_code":"ar80087005","variant_ta_code":"ar80026134","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"NOVA CORP vs NOVA: CORP tüzel-ek aynı çekirdek"}
+{"master_ta_code":"ar80087005","variant_ta_code":"ar80017223","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"NOVA CORP vs NOVA SA: farklı tüzel-ek aynı NOVA çekirdeği"}
+{"master_ta_code":"ar80087005","variant_ta_code":"ar80121964","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"NOVA CORP vs NOVA SAU: farklı tüzel-ek aynı NOVA çekirdeği"}
+{"master_ta_code":"ar00010204","variant_ta_code":"ar80039391","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"AIR COMPUTERS vs AIR SRL: COMPUTERS anlamlı token eksik"}
+{"master_ta_code":"ar00010204","variant_ta_code":"ar80026935","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"AIR COMPUTERS vs AIR SRL: COMPUTERS ayırt edici token eksik"}
+{"master_ta_code":"ar00011015","variant_ta_code":"ar80017909","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"BROUWER SA vs TO BROUWER SA: TO garbled prefix aynı çekirdek"}
+{"master_ta_code":"ar00011160","variant_ta_code":"ar80024044","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"CAPI COLOR vs S. COLOR: CAPI vs S. farklı prefix"}
+{"master_ta_code":"ar00011855","variant_ta_code":"ar00044128","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"DANSA SA vs DANSA SRL: aynı marka yalnızca tüzel-ek farkı"}
+{"master_ta_code":"ar00011962","variant_ta_code":"ar00085786","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"DEVRE INTERNACIONAL vs BROTHERS INTERNACIONAL: tamamen farklı markalar"}
+{"master_ta_code":"ar00011962","variant_ta_code":"ar00057284","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"DEVRE INTERNACIONAL vs SA INTERNACIONAL: DEVRE eksik jenerik"}
+{"master_ta_code":"ar00012607","variant_ta_code":"ar00014835","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"FAMA MUSIC vs MUSIC CO: FAMA ayırt edici eksik"}
+{"master_ta_code":"ar00013837","variant_ta_code":"ar80077128","match_type":"FUZZY_PHRASE","final":"SAME_CONFIRMED_OVERTURN","reason":"JUAN A CIBERT vs JUAN CIBERT: A orta isim eksikliği aynı kişi"}
+{"master_ta_code":"ar00014734","variant_ta_code":"ar80115011","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"MOLINARI SA vs E. MOLINARI: E. initial şirket vs bireysel farklı varlık"}
+{"master_ta_code":"ar00015400","variant_ta_code":"ar80087072","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"PLASTIC OMNIUM SA vs LLC: aynı marka yalnızca tüzel-ek farkı"}
+{"master_ta_code":"ar00016969","variant_ta_code":"ar00053224","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"UNLIMITED TRADE vs TRADE & COMPANY: UNLIMITED eksik farklı"}
+{"master_ta_code":"ar00016969","variant_ta_code":"ar80057170","match_type":"TOKEN_COVERAGE","final":"DIFFERENT_CONFIRMED","reason":"UNLIMITED TRADE vs TRD SA: çok kısa fragment farklı"}
+{"master_ta_code":"ar00017356","variant_ta_code":"ar00023907","match_type":"TOKEN_COVERAGE","final":"DIFFERENT_CONFIRMED","reason":"AGT ARGENTINA vs G&G ARGENTINA: farklı harf kodları"}
+{"master_ta_code":"ar00020230","variant_ta_code":"ar00101448","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"CD WAY vs U WAY: CD vs U farklı prefix"}

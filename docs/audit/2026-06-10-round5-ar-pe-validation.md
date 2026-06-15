@@ -2,7 +2,7 @@
 
 **Tarih:** 2026-06-10 · **Tablo:** `p7_firms_v2_ar_pe` (PE 229.277 + AR 171.328 = 400.605) · **Index:** `living_companies_v1`
 **Snapshot:** 49.700 işlenmiş (%12,4) — rematch denetim sırasında AKTİF koşuyordu → tüm sayılar **kısmi + erken-id-dilimi yanlı**; kıyaslar oran-bazlı.
-**Yöntem:** Haiku LLM-judge (25 batch, 400 kayıt AR) + adversarial verify turu (10 batch, 68 master) + ES `_analyze`/sorgu canlı doğrulama (salt-oku). Seed sabit (20260610).
+**Yöntem:** Haiku LLM-judge — önce 400'lük rastgele örneklem, ardından kullanıcı isteğiyle **TAM KAPSAM** (783 eşleşmiş AR kaydının TÜMÜ, 684 master, 38+10 batch) + her iki turda adversarial verify + ES `_analyze`/sorgu canlı doğrulama (salt-oku).
 
 ---
 
@@ -75,23 +75,24 @@ Sonuç PG'de görünür: aynı isimli PE çiftleri ayrı master'lara bölünüyo
 
 ---
 
-## 2. ADIM 1 — ★ Kalibre RASTGELE precision
+## 2. ADIM 1 — ★ Precision: TAM KAPSAM (örneklem değil, popülasyon)
 
-**PE: ÖLÇÜLEMEZ** (0 eşleşme — yapısal bloker). **AR: n=400** rastgele matched kayıt (695 havuzdan), 365 master, Haiku judge + adversarial verify (68 bayraklı master'ın **44'ü çürütüldü** — ilk-tur Haiku "S.A. vs S.R.L. farklı tüzel kişilik" diyerek kuralı çiğnemişti; verify turu suffix-only itirazları eledi).
+**PE: ÖLÇÜLEMEZ** (0 eşleşme — yapısal bloker). **AR: TÜM eşleşmiş kayıtlar yargılandı** — 783 kayıt / 684 master (snapshot; rematch koşarken büyüyen popülasyonun o anki tamamı). İki tur: Haiku judge (38+10 batch; 20 batch oturum-limiti kesintisi sonrası 18:30 reset'inde tamamlandı) + adversarial verify (77 bayraklı master'ın **38'i çürütüldü** — ilk-tur Haiku "S.A. vs S.R.L. farklı tüzel kişilik" diyerek kuralı çiğniyor; verify suffix-only itirazları eliyor).
 
-### AR kalibre precision = **%95,8** (383/400, record-level) · stage-weighted %95,7 · master-level clean %93,4
+### AR TAM-KAPSAM precision = **%95,9** (751/783 kayıt) · master-level clean %94,3 (645/684) · COUNTRY_LEAK 0/684
 
-| Stage | AR R5 kalibre | n | MX R4 (ref) |
-|---|---|---|---|
-| STRIPPED_EXACT | **%97,2** | 289 | %98,6 |
-| FUZZY_PHRASE | **%91,8** | 49 | %83,6 |
-| TOKEN_COVERAGE | **%94,4** | 18 | %53,3 |
-| SUFFIX_FUZZY | **%90,9** | 44 | %100 (n=9) |
-| **Birleşik** | **%95,8** | 400 | **%90,0** |
+| Stage | AR R5 (popülasyon) | n | yanlış | MX R4 (ref, örneklem) |
+|---|---|---|---|---|
+| STRIPPED_EXACT | **%98,6** | 567 | 8 | %98,6 |
+| FUZZY_PHRASE | **%94,4** | 90 | 5 | %83,6 |
+| TOKEN_COVERAGE | **%94,3** | 35 | 2 | %53,3 |
+| SUFFIX_FUZZY | **%81,3** | 91 | **17** | %100 (n=9) |
+| **Birleşik** | **%95,9** | 783 | 32 | **%90,0** |
 
-- Judge'ın COUNTRY_LEAK dediği tek vaka (`POLIRESINAS SAN LUIS, S.A. DE C.V.` vs `POLIRESINAS SAN LUIS S.A.`) **gerçek sızıntı DEĞİL** — iki kayıt da AR satırı, DB'de leak=0; isim-içi MX yasal eki veri kalitesi gürültüsü. Çekirdek marka aynı → büyük olasılıkla aynı firma; precision muhtemelen ~%96,0'a yuvarlanır.
-- TOKEN_COVERAGE %53→%94: A-gate'in en net etkisi (MX R4'te baskın hata kaynağıydı).
-- SUFFIX_FUZZY tek zayıf stage (%90,9, 4 hata) — A-gate bu stage'e **uygulanmıyor** (yalnız FUZZY/TOKEN'da). Bkz. §4 öneri.
+- Ön-koşulan 400'lük rastgele örneklem %95,8 vermişti → popülasyon %95,9 ile **örneklem doğrulandı**; ama tam kapsam SUFFIX_FUZZY'nin gerçek zayıflığını ortaya çıkardı (örneklemde %90,9 görünüyordu, popülasyonda **%81,3**).
+- **Yanlışların %53'ü (17/32) SUFFIX_FUZZY'den** geliyor — oysa eşleşmelerin yalnız %11,6'sını taşıyor. Desen istisnasız subset/bileşik-isim: `OCEAN WAY`⊂`SUN OCEAN WAY`, `AIR`⊂`AIR COMPUTERS`, `BANCO MACRO`⊂`BANCO MACRO BANSUD`, `CG`⊂`SCHRO-CG`, `WORLDWIDE LOGISTICS`⊂`HELLMAN WORLDWIDE LOGISTICS`, `S. COLOR`⊂`CAPI COLOR`, + bileşik master'lar (`FEET BIT INTL/SOUTHBAY`, `LEURU C/O LEVI STRAUSS`, `UCSA-ROTTIO U.T.E.`). **A-gate bu stage'e uygulanmıyor — en yüksek-getirili düzeltme.**
+- TOKEN_COVERAGE %53→%94 (MX→AR): A-gate'in en net etkisi.
+- Hata desen dağılımı (32 yanlış): D3 generic-diff-brand 20 · D5 garbage 8 · D1 truncation 2 · D2 subset 2.
 
 ---
 
@@ -153,13 +154,13 @@ Canlı OFF→ON (modül-içi toggle, salt-oku):
 
 ## 5. ADIM 5 — Karşılaştırma tablosu (MX R4 referans · AR/PE R5)
 
-| Metrik | MX R4 (ref) | **AR R5** | **PE R5** | AR+PE |
+| Metrik | MX R4 (ref, örneklem) | **AR R5 (TAM KAPSAM)** | **PE R5** | AR+PE |
 |---|---|---|---|---|
-| Kalibre random precision | %90,0 (40/400) | **%95,8** (17/400) | **ÖLÇÜLEMEZ** (0 eşleşme — analyzer bloker) | yalnız AR ölçülebildi |
-| STRIPPED_EXACT | %98,6 | %97,2 | — | — |
-| FUZZY_PHRASE | %83,6 | %91,8 | — | — |
-| TOKEN_COVERAGE | %53,3 | %94,4 | — | — |
-| SUFFIX_FUZZY | %100 (n=9) | %90,9 (n=44) | — | — |
+| Precision | %90,0 (40/400 örneklem) | **%95,9** (32/783, popülasyon) | **ÖLÇÜLEMEZ** (0 eşleşme — analyzer bloker) | yalnız AR ölçülebildi |
+| STRIPPED_EXACT | %98,6 | %98,6 (n=567) | — | — |
+| FUZZY_PHRASE | %83,6 | %94,4 (n=90) | — | — |
+| TOKEN_COVERAGE | %53,3 | %94,3 (n=35) | — | — |
+| SUFFIX_FUZZY | %100 (n=9) | **%81,3** (n=91, 17 yanlış — A-gate kapsam dışı) | — | — |
 | **COUNTRY_LEAK** | yapısal imkânsız (tek ülke) | **0** ✓ | **0** ✓ | **0 / kapı GEÇTİ** |
 | Max master boyutu | 19 | 15 (TLP COMPL — meşru dedup) | 6 (DHL adres-dup — meşru) | — |
 | Akronim magnet (size≥5) | 0/635 | **0/16** | **0/2** | 0 ✓ |
@@ -178,7 +179,7 @@ Canlı OFF→ON (modül-içi toggle, salt-oku):
 1. **[P0] PE eşleştirme tamamen kırık** — index `pe.json`'suz kurulmuş; `stripped_search_analyzer_pe`/`clean_analyzer_PE` yok → 29.490 PE kaydının tamamı hatalı NEW_MASTER. **Rematch'i durdur → `es_manager.py --force` → reindex → PE'yi yeniden eşleştir.** (AR'da da `sociedad anonima`/geo stale — rebuild ikisini de düzeltir.)
 2. **[KANIT] A-gate ülke-bağımsız çalışıyor:** AR subset probe'ları 10-21 hit→0, kontroller korunuyor; magnet 0/16 (AR) + 0/2 (PE); TOKEN_COVERAGE precision %53→%94 (MX→AR).
 3. **[KANIT] COUNTRY_LEAK = 0** — iki-ülkeli tabloda hiçbir master ülke karıştırmıyor (term filter 7/7 sorguda + uppercase routing).
-4. **[TEMEL] AR kalibre precision %95,8** (MX R4 %90,0'dan iyi) — kalan hatalar: SUFFIX_FUZZY subset sızıntısı (A-gate kapsam dışı) + geo-only/kod/adres çöpü. Öneri: A-gate'i SUFFIX_FUZZY'ye genişlet + core-gate'e geo-stop (JSON-türevli) değerlendir. **D (min_score) yine gereksiz — açma.**
+4. **[TEMEL] AR TAM-KAPSAM precision %95,9** (783 kaydın tümü yargılandı; MX R4 örneklem %90,0'dan iyi). **Yanlışların %53'ü SUFFIX_FUZZY'den (stage precision %81,3)** — desen istisnasız subset/bileşik-isim, A-gate bu stage'i kapsamıyor. **En yüksek-getirili düzeltme: A-gate'i SUFFIX_FUZZY'ye genişlet** (tahmini etki: toplam precision %95,9→~%98). İkincil: core-gate'e geo-stop (JSON-türevli). **D (min_score) yine gereksiz — açma.**
 5. **[HİJYEN] A+C kodu hâlâ commit edilmemiş** (12 modified + pe.json untracked) — rebuild öncesi commit önerilir.
 
 **Onay istenen kararlar:** (a) rematch durdurulup index rebuild yapılacak mı; (b) A-gate SUFFIX_FUZZY genişletmesi denensin mi (TDD + live_probe ile); (c) geo-stop core-gate önerisi araştırılsın mı; (d) live_probe golden setine AR/PE eklensin mi.

@@ -1,0 +1,72 @@
+{"master_ta_code":"ar80127068","variant_ta_code":"ar80127067","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, variant missing S.A. suffix","country_leak":false}
+{"master_ta_code":"ar80127119","variant_ta_code":"ar00100371","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Exact company name match","country_leak":false}
+{"master_ta_code":"ar80127200","variant_ta_code":"ar80047340","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, different legal suffix (S.A. vs S.R.L.)","country_leak":false}
+{"master_ta_code":"ar80127213","variant_ta_code":"ar00100922","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"Same person, different word order (common name formats)","country_leak":false}
+{"master_ta_code":"ar80127229","variant_ta_code":"ar80076895","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, variant missing S.A. suffix","country_leak":false}
+{"master_ta_code":"ar80127237","variant_ta_code":"ar00029658","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"Same person, different word order (name reordering)","country_leak":false}
+{"master_ta_code":"ar80127251","variant_ta_code":"ar00086359","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, variant slightly truncated","country_leak":false}
+{"master_ta_code":"ar80127257","variant_ta_code":"ar80127256","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, punctuation difference (SA vs S.A.)","country_leak":false}
+{"master_ta_code":"ar80127263","variant_ta_code":"ar00100716","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Exact company name match","country_leak":false}
+{"master_ta_code":"ar80127269","variant_ta_code":"ar00100738","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, punctuation difference (SA vs S.A.)","country_leak":false}
+{"master_ta_code":"ar80127272","variant_ta_code":"ar00081984","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"Same person, different word order (name reordering)","country_leak":false}
+{"master_ta_code":"ar80127287","variant_ta_code":"ar80027745","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"Same company, variant missing S.R.L. suffix","country_leak":false}
+{"master_ta_code":"ar80127295","variant_ta_code":"ar00104257","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, variant has S.R.L. suffix","country_leak":false}
+{"master_ta_code":"ar80127302","variant_ta_code":"ar80004672","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, variant missing S.R.L. suffix","country_leak":false}
+{"master_ta_code":"ar80127331","variant_ta_code":"ar00100844","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"Same company, punctuation difference only","country_leak":false}
+{"master_ta_code":"ar80127354","variant_ta_code":"ar00089345","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"Same person, different word order (name reordering)","country_leak":false}
+{"master_ta_code":"ar80127372","variant_ta_code":"ar00082477","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, ampersand vs Y (& vs Y in name)","country_leak":false}
+{"master_ta_code":"ar80127399","variant_ta_code":"ar80019398","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"Master has numeric suffix (1189), likely different company number","country_leak":false}
+{"master_ta_code":"ar80127405","variant_ta_code":"ar80127404","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, punctuation difference (SACI vs S.A.C.I.)","country_leak":false}
+{"master_ta_code":"ar80127411","variant_ta_code":"ar00014697","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"Same company, punctuation difference (SA vs S.A.)","country_leak":false}
+{"master_ta_code":"ar80127477","variant_ta_code":"ar80029444","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"Completely different names (PERCAR SACIF vs L.E. S.A.C.I.F. y A.)","country_leak":false}
+{"master_ta_code":"ar80127484","variant_ta_code":"ar00029774","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Exact company name match","country_leak":false}
+{"master_ta_code":"ar80127496","variant_ta_code":"ar80127497","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, punctuation difference (SRL vs S.R.L.)","country_leak":false}
+{"master_ta_code":"ar80127520","variant_ta_code":"ar80127851","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"Master has R/E prefix, likely different entity","country_leak":false}
+{"master_ta_code":"ar80127572","variant_ta_code":"ar00047145","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, variant has LA prefix added","country_leak":false}
+{"master_ta_code":"ar80127584","variant_ta_code":"ar00031154","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, variant has S.A. suffix added","country_leak":false}
+{"master_ta_code":"ar80127595","variant_ta_code":"ar00078042","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, punctuation/dash difference","country_leak":false}
+{"master_ta_code":"ar80127611","variant_ta_code":"ar00101288","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Exact company name match","country_leak":false}
+{"master_ta_code":"ar80127631","variant_ta_code":"ar00078234","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Exact company name match","country_leak":false}
+{"master_ta_code":"ar80127837","variant_ta_code":"ar80127836","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, punctuation difference (SACI vs S.A.C.I.)","country_leak":false}
+{"master_ta_code":"ar80127855","variant_ta_code":"ar80035854","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"Same company core (VASILE CIA), variant is proper suffix form","country_leak":false}
+{"master_ta_code":"ar80128525","variant_ta_code":"ar80012014","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"Different legal structure (SA vs S.R.L. suffix, likely different entities)","country_leak":false}
+{"master_ta_code":"ar80130075","variant_ta_code":"ar00066836","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"Different company names (MONTES vs MONTES HERMANOS)","country_leak":false}
+{"master_ta_code":"ar80131973","variant_ta_code":"ar00100004","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, punctuation difference (SRL vs S.R.L.)","country_leak":false}
+{"master_ta_code":"ar80132031","variant_ta_code":"ar00038548","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"Same person, different word order (name reordering)","country_leak":false}
+{"master_ta_code":"ar80132037","variant_ta_code":"ar00100023","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, punctuation difference (SRL vs S.R.L.)","country_leak":false}
+{"master_ta_code":"ar80132171","variant_ta_code":"ar00010445","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"Same company, variant missing INDUSTRIAL suffix","country_leak":false}
+{"master_ta_code":"ar80132256","variant_ta_code":"ar00010666","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, variant has S.R.L. suffix added","country_leak":false}
+{"master_ta_code":"ar80132258","variant_ta_code":"ar80120638","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"Same company, variant missing (BRAZIL) note","country_leak":false}
+{"master_ta_code":"ar80132282","variant_ta_code":"ar80099304","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"Same person, different word order (name reordering)","country_leak":false}
+{"master_ta_code":"ar80132512","variant_ta_code":"ar80070644","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, variant has S.R.L. suffix added","country_leak":false}
+{"master_ta_code":"ar80132520","variant_ta_code":"ar80120933","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"Same company, variant reordered with parentheses","country_leak":false}
+{"master_ta_code":"ar80132820","variant_ta_code":"ar80135957","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"Same company, punctuation difference (PVT. LTD vs PVT LTD)","country_leak":false}
+{"master_ta_code":"ar80132824","variant_ta_code":"ar00047082","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"Different legal structure (S.R.L. vs S.A.)","country_leak":false}
+{"master_ta_code":"ar80132987","variant_ta_code":"ar00012809","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, punctuation difference (SRL vs S.R.L.)","country_leak":false}
+{"master_ta_code":"ar80133173","variant_ta_code":"ar00024971","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Exact company name match","country_leak":false}
+{"master_ta_code":"ar80133256","variant_ta_code":"ar80121541","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, variant truncated (COMPANY LTD vs CO L)","country_leak":false}
+{"master_ta_code":"ar80133309","variant_ta_code":"ar00068317","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, variant has S.A. suffix added","country_leak":false}
+{"master_ta_code":"ar80133391","variant_ta_code":"ar00061562","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"Different legal structure (SRL vs S.A.)","country_leak":false}
+{"master_ta_code":"ar80133524","variant_ta_code":"ar80018767","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, variant has full S.R.L. suffix","country_leak":false}
+{"master_ta_code":"ar80133568","variant_ta_code":"ar00100936","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Exact company name match","country_leak":false}
+{"master_ta_code":"ar80133571","variant_ta_code":"ar80036876","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, variant missing (CO) country note","country_leak":false}
+{"master_ta_code":"ar80133684","variant_ta_code":"ar00087038","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"Same company, variant missing MESSR prefix","country_leak":false}
+{"master_ta_code":"ar80133712","variant_ta_code":"ar80100597","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"Master has TEXTIL suffix, variant missing it","country_leak":false}
+{"master_ta_code":"ar80133891","variant_ta_code":"ar80123400","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, variant missing SA suffix","country_leak":false}
+{"master_ta_code":"ar80134334","variant_ta_code":"ar00025238","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"Completely different names (SHANDONG WEICHAI vs IMPORT E A C)","country_leak":false}
+{"master_ta_code":"ar80134409","variant_ta_code":"ar00101324","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, punctuation difference (SA vs S.A.)","country_leak":false}
+{"master_ta_code":"ar80134678","variant_ta_code":"ar80011425","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, variant has corrupted characters removed","country_leak":false}
+{"master_ta_code":"ar80134688","variant_ta_code":"ar80106842","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"Same company, punctuation difference (LLP vs LLP.)","country_leak":false}
+{"master_ta_code":"ar80134784","variant_ta_code":"ar00067292","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"Different legal structure (SRL vs S.A.)","country_leak":false}
+{"master_ta_code":"ar80134839","variant_ta_code":"ar80000385","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, variant has S.A. suffix added","country_leak":false}
+{"master_ta_code":"ar80134886","variant_ta_code":"ar80036141","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, different legal suffix variant","country_leak":false}
+{"master_ta_code":"ar80135021","variant_ta_code":"ar00012650","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"Same company, variant missing SOCEID suffix","country_leak":false}
+{"master_ta_code":"ar80135117","variant_ta_code":"ar80137840","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, variant truncated and normalized","country_leak":false}
+{"master_ta_code":"ar80135386","variant_ta_code":"ar80021801","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, master has TO prefix","country_leak":false}
+{"master_ta_code":"ar80136438","variant_ta_code":"ar00101220","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"Same person, different word order (name reordering)","country_leak":false}
+{"master_ta_code":"ar80136530","variant_ta_code":"ar80018349","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"Same company, variant normalized and missing CUIT","country_leak":false}
+{"master_ta_code":"ar80136640","variant_ta_code":"ar00101495","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"Same person, different word order (name reordering)","country_leak":false}
+{"master_ta_code":"ar80136786","variant_ta_code":"ar80122217","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, ampersand vs AND and suffix difference","country_leak":false}
+{"master_ta_code":"ar80137257","variant_ta_code":"ar80122858","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, variant abbreviated (Company vs Co)","country_leak":false}
+{"master_ta_code":"ar80138081","variant_ta_code":"ar00052866","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same company, variant has S.R.L. suffix added","country_leak":false}
+{"master_ta_code":"ar80138370","variant_ta_code":"ar80017754","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"Different legal structure (S R L vs S.A.)","country_leak":false}

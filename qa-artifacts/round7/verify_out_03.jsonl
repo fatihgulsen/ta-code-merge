@@ -1,0 +1,111 @@
+{"master_ta_code":"ar00017395","variant_ta_code":"ar80000058","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"A.MUTZ Y CIA same core, SRL vs SA legal form only"}
+{"master_ta_code":"ar00018066","variant_ta_code":"ar80098536","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"ALPAC same core, SRL vs SA legal form only"}
+{"master_ta_code":"ar00018100","variant_ta_code":"ar80049649","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"ELEKTRIM same core, SRL vs SA legal form only"}
+{"master_ta_code":"ar00018106","variant_ta_code":"ar80009913","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"ALTER same core, SRL vs SAIC legal form only"}
+{"master_ta_code":"ar00018212","variant_ta_code":"ar80052513","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"FABAHER same core, SRL vs SA legal form only"}
+{"master_ta_code":"ar00018226","variant_ta_code":"ar00010382","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"ANAEROBICOS same core, SA vs SRL legal form only"}
+{"master_ta_code":"ar00018395","variant_ta_code":"ar00066086","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"ARCANO same core, SA vs SRL legal form only"}
+{"master_ta_code":"ar00018865","variant_ta_code":"ar00040084","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"B&B SERVICIOS AGROPECUARIOS vs SERVICIOS AGROPECUARIOS, B&B brand missing"}
+{"master_ta_code":"ar00019179","variant_ta_code":"ar00070144","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"PLANETA AGUA same core, SA vs SRL legal form only"}
+{"master_ta_code":"ar00019211","variant_ta_code":"ar00049350","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"BETTER WATER ARGENTINA vs WATER ARGENTINA, BETTER brand token missing"}
+{"master_ta_code":"ar00019759","variant_ta_code":"ar80015262","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"C A.S. INSTRUMENTAL SRL vs A.S&C, completely different core brands"}
+{"master_ta_code":"ar00020439","variant_ta_code":"ar80086484","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"CHEMIA same core, CORP is legal-form suffix not brand add"}
+{"master_ta_code":"ar00020943","variant_ta_code":"ar00037988","match_type":"SUFFIX_FUZZY","final":"SAME_CONFIRMED_OVERTURN","reason":"COMSA core same, UTE union suffix not a brand change"}
+{"master_ta_code":"ar00021268","variant_ta_code":"ar80021341","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"COSTA LIBRE same core, SA vs SA DE C.V. legal form only"}
+{"master_ta_code":"ar00022163","variant_ta_code":"ar80002643","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"DR. LENOX SA vs DR SA, core brand LENOX entirely missing"}
+{"master_ta_code":"ar00022715","variant_ta_code":"ar80135454","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"ENERGIA ALCALINA vs AC ENERGIA, different core brands"}
+{"master_ta_code":"ar00023384","variant_ta_code":"ar00023385","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"FERIOLI same core, Y CIA is common company suffix abbreviation"}
+{"master_ta_code":"ar00023800","variant_ta_code":"ar00089389","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"FRUTOS DE LOS LAGOS vs LAGOS SA, multi-token brand prefix dropped"}
+{"master_ta_code":"ar00024450","variant_ta_code":"ar00074250","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"GREEN SA vs DAS GREEN SAS, DAS prefix marks different entity"}
+{"master_ta_code":"ar00024803","variant_ta_code":"ar00100258","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"HER-BRON vs BRON, HER- is part of composite brand"}
+{"master_ta_code":"ar00025309","variant_ta_code":"ar80015682","match_type":"FUZZY_PHRASE","final":"DIFFERENT_CONFIRMED","reason":"IN.ME.CAR. vs CAR, only tail fragment matches"}
+{"master_ta_code":"ar00025420","variant_ta_code":"ar00014625","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"INDUSTRIAL METALMECANICA vs METALMECANICA, INDUSTRIAL prefix missing"}
+{"master_ta_code":"ar00025689","variant_ta_code":"ar00044401","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"INSTITUTO PRIVADO RADIOTERAPIA ONCOLOGICA vs PRIVADO SA, almost all core missing"}
+{"master_ta_code":"ar00025992","variant_ta_code":"ar80077096","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"J.A.S. SAIC vs JAS FOR, FOR is different brand element"}
+{"master_ta_code":"ar00026455","variant_ta_code":"ar00088680","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"ACROPOLIS same core, LA article + SRL vs SA trivial difference"}
+{"master_ta_code":"ar00026531","variant_ta_code":"ar00086878","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"LA OPTICA vs OPTICA R&R, R&R suffix marks different firm"}
+{"master_ta_code":"ar00026593","variant_ta_code":"ar00074136","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"LABORATORIO CONTROL CALIDAD MELACROM vs C F CONTROL, different firms"}
+{"master_ta_code":"ar00026836","variant_ta_code":"ar80099209","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"LED SA vs D LED SH, prefix D and suffix SH mark different firm"}
+{"master_ta_code":"ar00028269","variant_ta_code":"ar00053045","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"MIX SRL vs R-MIX SRL, R- prefix creates distinct brand"}
+{"master_ta_code":"ar00028958","variant_ta_code":"ar80047245","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"NUEVO VIENTO vs DEL VIENTO, NUEVO vs DEL different descriptor"}
+{"master_ta_code":"ar00029473","variant_ta_code":"ar00066925","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"PAPER SRL vs PAPER U SRL, U token adds distinct brand element"}
+{"master_ta_code":"ar00029757","variant_ta_code":"ar80037071","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"PHARMADN same core, SRL vs SA legal form only"}
+{"master_ta_code":"ar00030034","variant_ta_code":"ar00015459","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"PORTA SUR vs PORTA HNOS, SUR vs HNOS different distinguishing tokens"}
+{"master_ta_code":"ar00030200","variant_ta_code":"ar00015523","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"PRODUCTORA INTEGRAL ACCESORIOS vs PRODUCTORA SA, core qualifiers missing"}
+{"master_ta_code":"ar00030571","variant_ta_code":"ar80066404","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"RACE core same, IN vs INC abbreviation equivalence, legal form only"}
+{"master_ta_code":"ar00031261","variant_ta_code":"ar80008004","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"S.C.I. same core, SRL vs SA legal form only"}
+{"master_ta_code":"ar00031506","variant_ta_code":"ar00016081","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"SCHAEFFLER ARGENTINA same core, SA vs SRL legal form only"}
+{"master_ta_code":"ar00031528","variant_ta_code":"ar00011359","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"SCHRO-CG vs CG SA, SCHRO prefix of composite brand missing"}
+{"master_ta_code":"ar00031647","variant_ta_code":"ar00017158","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"SEMIRREMOLQUES VULCANO vs VULCANO SA, SEMIRREMOLQUES is sector qualifier"}
+{"master_ta_code":"ar00031930","variant_ta_code":"ar80136915","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"SINIS same core, SRL vs SA legal form only"}
+{"master_ta_code":"ar00032029","variant_ta_code":"ar00067115","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"SLAP same core, SRL vs SA legal form only"}
+{"master_ta_code":"ar00032244","variant_ta_code":"ar80136957","match_type":"SUFFIX_FUZZY","final":"SAME_CONFIRMED_OVERTURN","reason":"STAHL BRASIL SA core same; OFICINA REPRESENTACION is branch-office suffix not new brand"}
+{"master_ta_code":"ar00032338","variant_ta_code":"ar00067154","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"SUBITO same core, SRL vs SA legal form only"}
+{"master_ta_code":"ar00032637","variant_ta_code":"ar00063065","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"TAP SA vs ON TAP SA, ON prefix changes brand identity"}
+{"master_ta_code":"ar00032670","variant_ta_code":"ar00060223","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"TEAM CO vs C-TEAM INC, reordered and different brand"}
+{"master_ta_code":"ar00032903","variant_ta_code":"ar00016654","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"TELTRON BAIRES vs TELTRON SA, BAIRES is distinguishing location token"}
+{"master_ta_code":"ar00033445","variant_ta_code":"ar80065199","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"TUBOMEC INGENIERIA same core, SRL vs SA legal form only"}
+{"master_ta_code":"ar00033500","variant_ta_code":"ar00050264","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"U U NET ARGENTINA vs NET ARGENTINA, U U prefix brand element missing"}
+{"master_ta_code":"ar00033867","variant_ta_code":"ar80090390","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"VIHA same core, S.R.L. vs S.DE R.LTDA both mean SRL, legal form only"}
+{"master_ta_code":"ar00033989","variant_ta_code":"ar00017152","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"VORTEX same core, CORP SA vs SRL legal form variants only"}
+{"master_ta_code":"ar00035054","variant_ta_code":"ar80017428","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"ACEROS SH vs R. ACEROS, SH and R different brand initials"}
+{"master_ta_code":"ar00035677","variant_ta_code":"ar80000934","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"BANCO MACRO BANSUD vs BANCO MACRO, BANSUD is distinguishing brand token"}
+{"master_ta_code":"ar00036346","variant_ta_code":"ar80034012","match_type":"FUZZY_PHRASE","final":"DIFFERENT_CONFIRMED","reason":"ESTABLECIMIENTO METALURGICO TAF vs without TAF, TAF is key identifier"}
+{"master_ta_code":"ar00037348","variant_ta_code":"ar80022468","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"A C TEXTIL vs TEXTIL SA, A C brand initials missing"}
+{"master_ta_code":"ar00037538","variant_ta_code":"ar00010474","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"ARGENCERES SAN JUAN vs ARGENCERES SA, SAN JUAN is location distinguisher"}
+{"master_ta_code":"ar00037669","variant_ta_code":"ar80001108","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"BIO TRINIDAD vs BIO SA, TRINIDAD is core distinguishing token"}
+{"master_ta_code":"ar00039087","variant_ta_code":"ar00101430","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"LIHUE TUE SA vs TUE SA, LIHUE distinctive prefix missing"}
+{"master_ta_code":"ar00039516","variant_ta_code":"ar00076403","match_type":"TOKEN_COVERAGE","final":"DIFFERENT_CONFIRMED","reason":"OBVIOUS BUSINESS vs BUSINESS & BUSINESS, different core brands"}
+{"master_ta_code":"ar00039619","variant_ta_code":"ar80058638","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"PB-L PRODUCTOS BIO-LOGICOS vs PRODUCTOS BIO-LOGICOS, PB-L brand prefix missing"}
+{"master_ta_code":"ar00040305","variant_ta_code":"ar00046169","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"TITAN ARGENTINA vs TITAN SRL, ARGENTINA is location disambiguator"}
+{"master_ta_code":"ar00040342","variant_ta_code":"ar00087333","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"TRANSPORTE IBARRA HNOS vs TRANSPORTE C D C, completely different core names"}
+{"master_ta_code":"ar00040353","variant_ta_code":"ar80042491","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"TRIBECA COMPANY vs TRIBECA, COMPANY is generic legal-form word not brand"}
+{"master_ta_code":"ar00040425","variant_ta_code":"ar00046349","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"VANDERS GROUP vs L&L GROUP, VANDERS vs L&L different brands"}
+{"master_ta_code":"ar00041849","variant_ta_code":"ar80024514","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"ALL TRADE FOOD vs ALL TRADE SA, FOOD is core sector descriptor"}
+{"master_ta_code":"ar00041895","variant_ta_code":"ar80023939","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"ESTABLECIMIENTOS METALURGICOS ONCATIVO vs ONCATIVO SA, full prefix dropped"}
+{"master_ta_code":"ar00044537","variant_ta_code":"ar80018245","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"FUERZA BRUTA UTE with OZONO PRODUCCIONES vs FUERZA BRUTA only; master is union entity"}
+{"master_ta_code":"ar00044664","variant_ta_code":"ar00025529","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"INDUSTRIAS DEL SUR vs INDUSTRIAS SUR, DEL is article not brand token"}
+{"master_ta_code":"ar00045007","variant_ta_code":"ar80064838","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"AGROPECUARIA RIO CHICO vs RIO CHICO, AGROPECUARIA is sector qualifier"}
+{"master_ta_code":"ar00045268","variant_ta_code":"ar00089751","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"SERVIMAGNUS BRASIL ROWING union vs ROWING SA, tiny subset of multi-brand entity"}
+{"master_ta_code":"ar00045428","variant_ta_code":"ar00051011","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"AERO SERVICIOS NOA vs AERO SRL, SERVICIOS NOA core descriptors missing"}
+{"master_ta_code":"ar00045544","variant_ta_code":"ar00011073","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"C YC PRO SA vs C YC SRL, PRO is brand token and different legal form"}
+{"master_ta_code":"ar00045613","variant_ta_code":"ar00049269","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"DACAR IMPRESORA vs R C IMPRESORA, DACAR vs R C different core brands"}
+{"master_ta_code":"ar00045899","variant_ta_code":"ar00011248","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"MAGIC STAR SA UTE CASINO BUENOS AIRES vs CASINO BUENOS AIRES SA, union vs one part"}
+{"master_ta_code":"ar00048153","variant_ta_code":"ar80022495","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"ITURAN ROAD TRACK ARGENTINA vs TRACK ARGENTINA, ITURAN ROAD brand prefix missing"}
+{"master_ta_code":"ar00048301","variant_ta_code":"ar00053290","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"WD same core acronym, SA vs SRL legal form only"}
+{"master_ta_code":"ar00051333","variant_ta_code":"ar80064880","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"H.P. ELECTRIC vs S&C ELECTRIC CO, H.P. vs S&C different brands"}
+{"master_ta_code":"ar00051416","variant_ta_code":"ar80107595","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"LATEX same core, CO and SACIF vs SRL are legal-form variants"}
+{"master_ta_code":"ar00051535","variant_ta_code":"ar80078557","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"NUEVA LA vs LA NUEVA, inverted article-noun same name; SA vs SRL legal form"}
+{"master_ta_code":"ar00052545","variant_ta_code":"ar00089214","match_type":"TOKEN_COVERAGE","final":"DIFFERENT_CONFIRMED","reason":"GLOBAL TRADING IMPORTACIONES vs GLOBAL INTERNATIONAL TRADE, different descriptor tokens"}
+{"master_ta_code":"ar00055389","variant_ta_code":"ar80118324","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"INTERNATIONAL LOGISTICS COMPANY vs R&F INTERNATIONAL LOGISTICS, R&F brand prefix added"}
+{"master_ta_code":"ar00056291","variant_ta_code":"ar00073557","match_type":"FUZZY_PHRASE","final":"DIFFERENT_CONFIRMED","reason":"OCEAN EXPORT vs OCEAN IMPORT, EXPORT vs IMPORT opposite activities"}
+{"master_ta_code":"ar00057204","variant_ta_code":"ar00045894","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"LUMMA same core, SA vs SRL legal form only"}
+{"master_ta_code":"ar00060275","variant_ta_code":"ar00059422","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"EDGE same core, THE article trivial; SA vs SRL legal form only"}
+{"master_ta_code":"ar00060871","variant_ta_code":"ar00076255","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"V&R COMERCIO EXTERIOR vs B C COMERCIO EXTERIOR, V&R vs B C different brands"}
+{"master_ta_code":"ar00060893","variant_ta_code":"ar80046985","match_type":"FUZZY_PHRASE","final":"DIFFERENT_CONFIRMED","reason":"VISCO.ARG SRL vs ARG SRL, VISCO is core brand element missing"}
+{"master_ta_code":"ar00061162","variant_ta_code":"ar80099208","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"CASA SRL vs D CASA SA DE C.V., D prefix marks different entity"}
+{"master_ta_code":"ar00061223","variant_ta_code":"ar80006866","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"COMPANIA DE DISENOS BASICOS SA vs OS SA, almost entirely different"}
+{"master_ta_code":"ar00061431","variant_ta_code":"ar80003764","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"GENNEIA VIENTOS ARGENTINOS vs GENNEIA SA, VIENTOS ARGENTINOS descriptor missing"}
+{"master_ta_code":"ar00061510","variant_ta_code":"ar00046117","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"IN SITU SOLUCIONES GRAFICAS vs SOLUCIONES GRAFICAS, IN SITU brand prefix missing"}
+{"master_ta_code":"ar00061544","variant_ta_code":"ar00085468","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"JCB PRODUCCIONES vs A&R PRODUCCIONES, JCB vs A&R different brands"}
+{"master_ta_code":"ar00061617","variant_ta_code":"ar00086659","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"M T ARGENTINA vs M&F ARGENTINA, T vs F different brand initial"}
+{"master_ta_code":"ar00064136","variant_ta_code":"ar00077341","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"VICTORIA same core, LA article trivial; SRL same legal form"}
+{"master_ta_code":"ar00066796","variant_ta_code":"ar00021443","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"MEGAFRIO SA vs D F MEGAFRIO SRL, D F prefix marks different entity"}
+{"master_ta_code":"ar00066930","variant_ta_code":"ar00088918","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"PATAGONIC CASING vs CASING SA, PATAGONIC brand prefix missing"}
+{"master_ta_code":"ar00067149","variant_ta_code":"ar80106518","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"STROYPROJECT WEATHER MODIFICATION same core; C suffix is truncation artifact"}
+{"master_ta_code":"ar00068063","variant_ta_code":"ar00010653","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"AXON NUTRICION ANIMAL vs AXON SA, NUTRICION ANIMAL sector qualifier missing"}
+{"master_ta_code":"ar00068099","variant_ta_code":"ar80020104","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"BUILDING CO same core, CO and SRL are legal-form elements"}
+{"master_ta_code":"ar00068532","variant_ta_code":"ar00046079","match_type":"STRIPPED_EXACT","final":"SAME_CONFIRMED_OVERTURN","reason":"SALAS same core, Y CIA is partner suffix; same SA legal form"}
+{"master_ta_code":"ar00068540","variant_ta_code":"ar00037763","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"S-BUSINESS SA vs BUSINESS PARTNERS SRL, different core brand"}
+{"master_ta_code":"ar00069270","variant_ta_code":"ar00061157","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"CAPUTO SAIC y F vs CAPUTO HERMANOS SA, HERMANOS adds distinct branch name"}
+{"master_ta_code":"ar00069352","variant_ta_code":"ar00088806","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"CONSULTORA IMPORTADORA GRUPO PAMPAS vs B&B CONSULTORA, entirely different core brands"}
+{"master_ta_code":"ar00069429","variant_ta_code":"ar00089040","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"DISTRIBUIDORA H&G vs DISTRIBUIDORA V G, H&G vs V G different brands"}
+{"master_ta_code":"ar00069708","variant_ta_code":"ar80048256","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"H-UNION SRL vs UNION/AT, /AT suffix and H- prefix mark different entity"}
+{"master_ta_code":"ar00069716","variant_ta_code":"ar00074487","match_type":"FUZZY_PHRASE","final":"SAME_CONFIRMED_OVERTURN","reason":"IMP is standard abbreviation for IMPORT; ARGENTINA same; legal form same"}
+{"master_ta_code":"ar00069842","variant_ta_code":"ar80121749","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"LIGHTING Y LOGISTICA INTERNACIONAL vs LOGISTICA INTERNACIONAL, LIGHTING brand missing"}
+{"master_ta_code":"ar00070286","variant_ta_code":"ar80042415","match_type":"FUZZY_PHRASE","final":"DIFFERENT_CONFIRMED","reason":"SARL.UX SA vs SARL., UX is brand token; SARL. alone is truncated/different"}
+{"master_ta_code":"ar00072081","variant_ta_code":"ar00085680","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"COMMERCE SRL vs B&D COMMERCE SAS, B&D prefix marks different brand"}
+{"master_ta_code":"ar00072100","variant_ta_code":"ar00052341","match_type":"SUFFIX_FUZZY","final":"SAME_CONFIRMED_OVERTURN","reason":"DGM DE DIEGO MARTIN vs DGM SRL, DGM is initialism of DE DIEGO MARTIN"}
+{"master_ta_code":"ar00072250","variant_ta_code":"ar00073280","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"LATA SA vs EN LATA SAS, EN prefix changes brand identity"}
+{"master_ta_code":"ar00072365","variant_ta_code":"ar80041662","match_type":"SUFFIX_FUZZY","final":"DIFFERENT_CONFIRMED","reason":"ROS METAL SRL vs ROS SRL, METAL is core sector descriptor"}
+{"master_ta_code":"ar00073369","variant_ta_code":"ar00073370","match_type":"STRIPPED_EXACT","final":"DIFFERENT_CONFIRMED","reason":"GRUPO K&B vs GRUPO K, &B brand element missing"}

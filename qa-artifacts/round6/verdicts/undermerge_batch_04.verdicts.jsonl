@@ -1,0 +1,500 @@
+{"ta_code_b":"pe00044810","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80018834"}
+{"ta_code_b":"pe80194984","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe00015900"}
+{"ta_code_b":"pe80042359","reason":"address var","verdict":"SHOULD_MERGE","ta_code_a":"pe80042358"}
+{"ta_code_b":"pe80202637","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe00121334"}
+{"ta_code_b":"pe80079898","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80025350"}
+{"ta_code_b":"pe80022001","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80014260"}
+{"ta_code_b":"pe00017325","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80022027"}
+{"ta_code_b":"pe80034518","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00010092"}
+{"ta_code_b":"pe80029526","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80000024"}
+{"ta_code_b":"pe80191807","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80191806"}
+{"ta_code_b":"pe80096323","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80141381"}
+{"ta_code_b":"pe00060305","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80000843"}
+{"ta_code_b":"pe80067947","reason":"address var","verdict":"SHOULD_MERGE","ta_code_a":"pe80061271"}
+{"ta_code_b":"pe80059005","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe00093047"}
+{"ta_code_b":"pe00043344","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe00076573"}
+{"ta_code_b":"pe80022026","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80018804"}
+{"ta_code_b":"pe80000821","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80000823"}
+{"ta_code_b":"pe80123218","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80153558"}
+{"ta_code_b":"pe00015381","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80088891"}
+{"ta_code_b":"pe80014531","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80001769"}
+{"ta_code_b":"pe00016161","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80042673"}
+{"ta_code_b":"pe00130518","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80208497"}
+{"ta_code_b":"pe80035218","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe80035143"}
+{"ta_code_b":"pe80020570","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80014683"}
+{"ta_code_b":"pe80014531","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80001767"}
+{"ta_code_b":"pe80129128","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00129193"}
+{"ta_code_b":"pe80025350","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80030115"}
+{"ta_code_b":"pe00014601","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80014675"}
+{"ta_code_b":"pe00011885","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80002153"}
+{"ta_code_b":"pe80079898","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80030115"}
+{"ta_code_b":"pe80096404","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80104815"}
+{"ta_code_b":"pe80025384","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80022169"}
+{"ta_code_b":"pe00010147","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80025905"}
+{"ta_code_b":"pe80025528","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80002811"}
+{"ta_code_b":"pe80014162","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00012666"}
+{"ta_code_b":"pe80039322","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00012507"}
+{"ta_code_b":"pe80142735","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe00128698"}
+{"ta_code_b":"pe80198832","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00109194"}
+{"ta_code_b":"pe80001232","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80001228"}
+{"ta_code_b":"pe80022236","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80014749"}
+{"ta_code_b":"pe00010074","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80000168"}
+{"ta_code_b":"pe80202864","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80160331"}
+{"ta_code_b":"pe80136724","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe00112324"}
+{"ta_code_b":"pe80001502","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80001500"}
+{"ta_code_b":"pe80159726","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80014043"}
+{"ta_code_b":"pe80000793","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80014204"}
+{"ta_code_b":"pe00010213","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80029516"}
+{"ta_code_b":"pe80014176","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80036604"}
+{"ta_code_b":"pe00046359","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80043373"}
+{"ta_code_b":"pe80030001","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80029997"}
+{"ta_code_b":"pe80022039","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00011429"}
+{"ta_code_b":"pe80001243","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80001239"}
+{"ta_code_b":"pe80014444","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80029997"}
+{"ta_code_b":"pe80002709","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00023809"}
+{"ta_code_b":"pe80064745","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00045881"}
+{"ta_code_b":"pe80025115","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80025116"}
+{"ta_code_b":"pe80014516","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00010239"}
+{"ta_code_b":"pe80000931","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80000932"}
+{"ta_code_b":"pe80000957","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80014257"}
+{"ta_code_b":"pe80014341","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00011429"}
+{"ta_code_b":"pe80014444","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80030001"}
+{"ta_code_b":"pe80090423","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00103008"}
+{"ta_code_b":"pe80001525","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80014446"}
+{"ta_code_b":"pe80002330","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80002325"}
+{"ta_code_b":"pe80138608","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80071980"}
+{"ta_code_b":"pe80014134","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80060873"}
+{"ta_code_b":"pe80029556","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80093150"}
+{"ta_code_b":"pe80025474","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80068136"}
+{"ta_code_b":"pe80141245","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80042012"}
+{"ta_code_b":"pe80025020","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80025019"}
+{"ta_code_b":"pe00046075","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80014501"}
+{"ta_code_b":"pe80061218","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe00093086"}
+{"ta_code_b":"pe80021865","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80013977"}
+{"ta_code_b":"pe80053624","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80025055"}
+{"ta_code_b":"pe80000092","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80013977"}
+{"ta_code_b":"pe80035140","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80035215"}
+{"ta_code_b":"pe80020337","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00010175"}
+{"ta_code_b":"pe80025043","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80000090"}
+{"ta_code_b":"pe80079762","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00090054"}
+{"ta_code_b":"pe80058898","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80036541"}
+{"ta_code_b":"pe80034523","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80094206"}
+{"ta_code_b":"pe80014057","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80018707"}
+{"ta_code_b":"pe80086805","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80018707"}
+{"ta_code_b":"pe00045796","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80001128"}
+{"ta_code_b":"pe80025097","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00015490"}
+{"ta_code_b":"pe80000938","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80000937"}
+{"ta_code_b":"pe80173595","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00122401"}
+{"ta_code_b":"pe80173556","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe00017601"}
+{"ta_code_b":"pe80025569","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00072897"}
+{"ta_code_b":"pe80003725","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00011800"}
+{"ta_code_b":"pe00011352","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80025614"}
+{"ta_code_b":"pe00010607","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe80030720"}
+{"ta_code_b":"pe80117622","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00103196"}
+{"ta_code_b":"pe80188898","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00122433"}
+{"ta_code_b":"pe00010147","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80003080"}
+{"ta_code_b":"pe80197135","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00131891"}
+{"ta_code_b":"pe80003872","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80026125"}
+{"ta_code_b":"pe80087155","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80003224"}
+{"ta_code_b":"pe00011352","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80003224"}
+{"ta_code_b":"pe80002996","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00025911"}
+{"ta_code_b":"pe80025669","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80015050"}
+{"ta_code_b":"pe80025614","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80003224"}
+{"ta_code_b":"pe80087155","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80003222"}
+{"ta_code_b":"pe00011352","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80003222"}
+{"ta_code_b":"pe80003224","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80003222"}
+{"ta_code_b":"pe80025614","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80003222"}
+{"ta_code_b":"pe00122386","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80110796"}
+{"ta_code_b":"pe80188936","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe00122500"}
+{"ta_code_b":"pe00132176","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe80208805"}
+{"ta_code_b":"pe80003865","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00020495"}
+{"ta_code_b":"pe80015173","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80030720"}
+{"ta_code_b":"pe00083507","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80037218"}
+{"ta_code_b":"pe80025709","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80026125"}
+{"ta_code_b":"pe00033121","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80076196"}
+{"ta_code_b":"pe80044747","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe00073589"}
+{"ta_code_b":"pe00079458","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80089290"}
+{"ta_code_b":"pe80068595","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe00104301"}
+{"ta_code_b":"pe80152221","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00123150"}
+{"ta_code_b":"pe80039766","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00010963"}
+{"ta_code_b":"pe80031162","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80025951"}
+{"ta_code_b":"pe00016517","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80004269"}
+{"ta_code_b":"pe00033550","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80005321"}
+{"ta_code_b":"pe80006238","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80015919"}
+{"ta_code_b":"pe00010963","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80068635"}
+{"ta_code_b":"pe80110985","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80132182"}
+{"ta_code_b":"pe80045075","reason":"address var","verdict":"SHOULD_MERGE","ta_code_a":"pe80045074"}
+{"ta_code_b":"pe80113904","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80117780"}
+{"ta_code_b":"pe00047016","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80084564"}
+{"ta_code_b":"pe80031162","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80005226"}
+{"ta_code_b":"pe80030819","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80015233"}
+{"ta_code_b":"pe00133253","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe80209058"}
+{"ta_code_b":"pe80020892","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80029275"}
+{"ta_code_b":"pe00099989","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80069303"}
+{"ta_code_b":"pe00012232","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80015423"}
+{"ta_code_b":"pe80015433","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80004722"}
+{"ta_code_b":"pe80089327","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80132474"}
+{"ta_code_b":"pe80099150","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00123780"}
+{"ta_code_b":"pe80030727","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80030726"}
+{"ta_code_b":"pe80026136","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00071502"}
+{"ta_code_b":"pe00028911","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80015304"}
+{"ta_code_b":"pe00096515","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80209299"}
+{"ta_code_b":"pe80037513","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80037514"}
+{"ta_code_b":"pe80005135","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80015578"}
+{"ta_code_b":"pe80004192","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80015265"}
+{"ta_code_b":"pe80025951","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80005226"}
+{"ta_code_b":"pe80024387","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00010496"}
+{"ta_code_b":"pe80005688","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80034749"}
+{"ta_code_b":"pe80155007","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00123452"}
+{"ta_code_b":"pe00044672","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80105392"}
+{"ta_code_b":"pe80005928","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80005926"}
+{"ta_code_b":"pe00107560","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80139495"}
+{"ta_code_b":"pe00049164","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80020981"}
+{"ta_code_b":"pe80039766","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80068635"}
+{"ta_code_b":"pe80022767","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80039990"}
+{"ta_code_b":"pe80020855","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00012971"}
+{"ta_code_b":"pe80020889","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80005102"}
+{"ta_code_b":"pe80004084","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00012159"}
+{"ta_code_b":"pe00123621","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80197523"}
+{"ta_code_b":"pe80031409","reason":"address var","verdict":"SHOULD_MERGE","ta_code_a":"pe80031415"}
+{"ta_code_b":"pe80068827","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80068826"}
+{"ta_code_b":"pe80004793","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80026403"}
+{"ta_code_b":"pe00020536","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80004407"}
+{"ta_code_b":"pe80005836","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00010422"}
+{"ta_code_b":"pe00014764","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80005367"}
+{"ta_code_b":"pe80203951","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe00123002"}
+{"ta_code_b":"pe00118786","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80134936"}
+{"ta_code_b":"pe00010560","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80020791"}
+{"ta_code_b":"pe80020899","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80005155"}
+{"ta_code_b":"pe00011137","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80005155"}
+{"ta_code_b":"pe00134534","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80204450"}
+{"ta_code_b":"pe80005228","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80005192"}
+{"ta_code_b":"pe00011534","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80005088"}
+{"ta_code_b":"pe00013665","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80057061"}
+{"ta_code_b":"pe80044480","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe00081353"}
+{"ta_code_b":"pe80155308","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00123834"}
+{"ta_code_b":"pe80204587","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe00113030"}
+{"ta_code_b":"pe80162840","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe00014763"}
+{"ta_code_b":"pe00077393","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80114201"}
+{"ta_code_b":"pe00098400","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80069449"}
+{"ta_code_b":"pe80155502","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80155497"}
+{"ta_code_b":"pe80015981","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80006497"}
+{"ta_code_b":"pe80189794","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe00096610"}
+{"ta_code_b":"pe00085684","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80040071"}
+{"ta_code_b":"pe80026200","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00068810"}
+{"ta_code_b":"pe00115874","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80204899"}
+{"ta_code_b":"pe00124333","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe80204912"}
+{"ta_code_b":"pe80026499","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80026508"}
+{"ta_code_b":"pe80033216","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80033217"}
+{"ta_code_b":"pe80013910","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80013911"}
+{"ta_code_b":"pe80137504","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe00012235"}
+{"ta_code_b":"pe00014473","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80013894"}
+{"ta_code_b":"pe80041513","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe00072188"}
+{"ta_code_b":"pe80033218","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80033217"}
+{"ta_code_b":"pe80082404","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe00116398"}
+{"ta_code_b":"pe80210051","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe00085972"}
+{"ta_code_b":"pe80013853","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80013850"}
+{"ta_code_b":"pe80048785","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80048784"}
+{"ta_code_b":"pe80028104","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80017224"}
+{"ta_code_b":"pe80026374","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00030023"}
+{"ta_code_b":"pe80063074","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00098502"}
+{"ta_code_b":"pe80028097","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80017220"}
+{"ta_code_b":"pe00017154","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80027508"}
+{"ta_code_b":"pe80033815","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80033814"}
+{"ta_code_b":"pe00012084","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80031949"}
+{"ta_code_b":"pe80033216","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80033220"}
+{"ta_code_b":"pe80017239","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80010692"}
+{"ta_code_b":"pe00084392","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80040518"}
+{"ta_code_b":"pe80040313","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80040312"}
+{"ta_code_b":"pe80056628","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80079675"}
+{"ta_code_b":"pe80040812","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80071385"}
+{"ta_code_b":"pe80207202","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00103766"}
+{"ta_code_b":"pe80033218","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80033220"}
+{"ta_code_b":"pe80010532","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80026871"}
+{"ta_code_b":"pe80077654","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80071385"}
+{"ta_code_b":"pe80040812","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80077654"}
+{"ta_code_b":"pe80017928","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80012970"}
+{"ta_code_b":"pe80016339","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80007904"}
+{"ta_code_b":"pe80032897","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80157049"}
+{"ta_code_b":"pe80007916","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80007912"}
+{"ta_code_b":"pe80198474","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80107393"}
+{"ta_code_b":"pe80207162","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80177363"}
+{"ta_code_b":"pe80008995","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe00022371"}
+{"ta_code_b":"pe80017893","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80012734"}
+{"ta_code_b":"pe80008993","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe00022371"}
+{"ta_code_b":"pe80031939","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80007912"}
+{"ta_code_b":"pe80007277","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00015037"}
+{"ta_code_b":"pe80124787","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00103765"}
+{"ta_code_b":"pe80138041","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00141633"}
+{"ta_code_b":"pe80017878","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80012693"}
+{"ta_code_b":"pe80021433","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00015754"}
+{"ta_code_b":"pe80035335","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80035163"}
+{"ta_code_b":"pe80008995","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80008993"}
+{"ta_code_b":"pe80209602","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe00096653"}
+{"ta_code_b":"pe80019853","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80047885"}
+{"ta_code_b":"pe80036048","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80007968"}
+{"ta_code_b":"pe80017107","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80047885"}
+{"ta_code_b":"pe80007911","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80007912"}
+{"ta_code_b":"pe80031937","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80007912"}
+{"ta_code_b":"pe80120156","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80049385"}
+{"ta_code_b":"pe80007903","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80007912"}
+{"ta_code_b":"pe80191589","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe00142060"}
+{"ta_code_b":"pe80032838","reason":"address var","verdict":"SHOULD_MERGE","ta_code_a":"pe80032844"}
+{"ta_code_b":"pe80027434","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe80188036"}
+{"ta_code_b":"pe80032838","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80032843"}
+{"ta_code_b":"pe00137344","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80109022"}
+{"ta_code_b":"pe80007919","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80007907"}
+{"ta_code_b":"pe80064155","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00050142"}
+{"ta_code_b":"pe80007916","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80031937"}
+{"ta_code_b":"pe80165876","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00050142"}
+{"ta_code_b":"pe80031939","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80031937"}
+{"ta_code_b":"pe00032776","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80017846"}
+{"ta_code_b":"pe80007969","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80007968"}
+{"ta_code_b":"pe80032843","reason":"address var","verdict":"SHOULD_MERGE","ta_code_a":"pe80032846"}
+{"ta_code_b":"pe80034186","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80018035"}
+{"ta_code_b":"pe80032838","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80032846"}
+{"ta_code_b":"pe80032844","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80032846"}
+{"ta_code_b":"pe80033695","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00016534"}
+{"ta_code_b":"pe80038163","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80008696"}
+{"ta_code_b":"pe80018152","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80013594"}
+{"ta_code_b":"pe80041555","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe00086077"}
+{"ta_code_b":"pe80007916","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80007903"}
+{"ta_code_b":"pe80031939","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80007903"}
+{"ta_code_b":"pe80033217","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80033220"}
+{"ta_code_b":"pe80027256","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80026398"}
+{"ta_code_b":"pe80007911","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80007903"}
+{"ta_code_b":"pe80031937","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80007903"}
+{"ta_code_b":"pe80007916","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80007911"}
+{"ta_code_b":"pe80033648","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00010142"}
+{"ta_code_b":"pe80033221","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80033220"}
+{"ta_code_b":"pe80017224","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80010661"}
+{"ta_code_b":"pe80031939","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80007911"}
+{"ta_code_b":"pe80007819","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80007968"}
+{"ta_code_b":"pe80031937","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80007911"}
+{"ta_code_b":"pe80028104","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80010661"}
+{"ta_code_b":"pe80007819","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80036048"}
+{"ta_code_b":"pe00010142","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80049241"}
+{"ta_code_b":"pe80033648","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80049241"}
+{"ta_code_b":"pe80031895","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80031894"}
+{"ta_code_b":"pe00126794","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80092996"}
+{"ta_code_b":"pe00103435","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80155883"}
+{"ta_code_b":"pe00012908","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80021487"}
+{"ta_code_b":"pe00087850","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80070079"}
+{"ta_code_b":"pe80017084","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00012961"}
+{"ta_code_b":"pe80049189","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00016483"}
+{"ta_code_b":"pe80048132","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe00051254"}
+{"ta_code_b":"pe80165698","reason":"address var","verdict":"SHOULD_MERGE","ta_code_a":"pe80165696"}
+{"ta_code_b":"pe80007541","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80027133"}
+{"ta_code_b":"pe80083922","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00113755"}
+{"ta_code_b":"pe80111378","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00115905"}
+{"ta_code_b":"pe80033004","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe00030938"}
+{"ta_code_b":"pe80049164","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80049165"}
+{"ta_code_b":"pe80038453","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80017050"}
+{"ta_code_b":"pe80019832","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe80027927"}
+{"ta_code_b":"pe80018131","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80034302"}
+{"ta_code_b":"pe80035159","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe80035312"}
+{"ta_code_b":"pe80071220","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00051837"}
+{"ta_code_b":"pe80017014","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80010060"}
+{"ta_code_b":"pe80026298","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80073714"}
+{"ta_code_b":"pe80046154","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00047302"}
+{"ta_code_b":"pe00119440","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80106185"}
+{"ta_code_b":"pe80032736","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80010049"}
+{"ta_code_b":"pe00012176","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80034817"}
+{"ta_code_b":"pe00077527","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe00136059"}
+{"ta_code_b":"pe80008054","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80035942"}
+{"ta_code_b":"pe80017751","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80021664"}
+{"ta_code_b":"pe80017931","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80039042"}
+{"ta_code_b":"pe80027889","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00078043"}
+{"ta_code_b":"pe80064019","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00048798"}
+{"ta_code_b":"pe80052555","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00078035"}
+{"ta_code_b":"pe00082116","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80171676"}
+{"ta_code_b":"pe80092762","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe00114011"}
+{"ta_code_b":"pe80216487","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80008068"}
+{"ta_code_b":"pe80028166","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80140514"}
+{"ta_code_b":"pe80026762","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80026761"}
+{"ta_code_b":"pe80013332","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80071603"}
+{"ta_code_b":"pe80069556","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe00042807"}
+{"ta_code_b":"pe00012420","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80010868"}
+{"ta_code_b":"pe80198733","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00113487"}
+{"ta_code_b":"pe80194983","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80139860"}
+{"ta_code_b":"pe00089587","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80040574"}
+{"ta_code_b":"pe80049062","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80049061"}
+{"ta_code_b":"pe80007819","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80007969"}
+{"ta_code_b":"pe00064992","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80107560"}
+{"ta_code_b":"pe80010950","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80017319"}
+{"ta_code_b":"pe80010892","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80017302"}
+{"ta_code_b":"pe80027269","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80016400"}
+{"ta_code_b":"pe00031096","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe80012173"}
+{"ta_code_b":"pe00029510","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80009229"}
+{"ta_code_b":"pe80016771","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80009248"}
+{"ta_code_b":"pe80063740","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe00010636"}
+{"ta_code_b":"pe00043963","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80013411"}
+{"ta_code_b":"pe80018086","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00010162"}
+{"ta_code_b":"pe80009625","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80016875"}
+{"ta_code_b":"pe80021311","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80009320"}
+{"ta_code_b":"pe80016867","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00051233"}
+{"ta_code_b":"pe80156090","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80156089"}
+{"ta_code_b":"pe00011698","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80008160"}
+{"ta_code_b":"pe80032504","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80034926"}
+{"ta_code_b":"pe80111466","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80032051"}
+{"ta_code_b":"pe80016791","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80027673"}
+{"ta_code_b":"pe80033216","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80033218"}
+{"ta_code_b":"pe80012955","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80023810"}
+{"ta_code_b":"pe80009311","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80027673"}
+{"ta_code_b":"pe80035296","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80035156"}
+{"ta_code_b":"pe80008856","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00011645"}
+{"ta_code_b":"pe80033478","reason":"address var","verdict":"SHOULD_MERGE","ta_code_a":"pe80071144"}
+{"ta_code_b":"pe80038748","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80028383"}
+{"ta_code_b":"pe80017408","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe00010576"}
+{"ta_code_b":"pe80088237","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80088236"}
+{"ta_code_b":"pe80012128","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80033453"}
+{"ta_code_b":"pe80194598","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe80011280"}
+{"ta_code_b":"pe80017311","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80010927"}
+{"ta_code_b":"pe80184811","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80184810"}
+{"ta_code_b":"pe80018581","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe00045746"}
+{"ta_code_b":"pe80020170","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80028879"}
+{"ta_code_b":"pe80017965","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80013092"}
+{"ta_code_b":"pe00019179","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80019990"}
+{"ta_code_b":"pe80011068","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80017351"}
+{"ta_code_b":"pe80021644","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00010217"}
+{"ta_code_b":"pe80012097","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80020072"}
+{"ta_code_b":"pe80016791","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80027672"}
+{"ta_code_b":"pe80009311","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80027672"}
+{"ta_code_b":"pe00011835","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80011089"}
+{"ta_code_b":"pe00093362","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80190174"}
+{"ta_code_b":"pe80116886","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80012046"}
+{"ta_code_b":"pe80035089","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80017968"}
+{"ta_code_b":"pe00010785","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80016799"}
+{"ta_code_b":"pe80048506","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80017484"}
+{"ta_code_b":"pe00012890","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80035043"}
+{"ta_code_b":"pe00010252","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80055683"}
+{"ta_code_b":"pe80009320","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00012767"}
+{"ta_code_b":"pe80016365","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00010487"}
+{"ta_code_b":"pe80017649","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00014241"}
+{"ta_code_b":"pe80139975","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80194986"}
+{"ta_code_b":"pe80021311","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00012767"}
+{"ta_code_b":"pe80039095","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00082093"}
+{"ta_code_b":"pe80187466","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe00077730"}
+{"ta_code_b":"pe80024529","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80026502"}
+{"ta_code_b":"pe80026500","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80026502"}
+{"ta_code_b":"pe00026129","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe80209851"}
+{"ta_code_b":"pe80030388","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80030387"}
+{"ta_code_b":"pe00085292","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80104962"}
+{"ta_code_b":"pe00067834","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80035729"}
+{"ta_code_b":"pe80062279","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00071698"}
+{"ta_code_b":"pe80031480","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00014135"}
+{"ta_code_b":"pe80020889","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe00050516"}
+{"ta_code_b":"pe80044926","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe80044925"}
+{"ta_code_b":"pe80006136","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00022057"}
+{"ta_code_b":"pe80084534","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80030900"}
+{"ta_code_b":"pe80216185","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80026034"}
+{"ta_code_b":"pe00022082","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80045336"}
+{"ta_code_b":"pe00081415","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80051525"}
+{"ta_code_b":"pe80031415","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80031416"}
+{"ta_code_b":"pe80031409","reason":"address var","verdict":"SHOULD_MERGE","ta_code_a":"pe80031416"}
+{"ta_code_b":"pe80208968","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe00132844"}
+{"ta_code_b":"pe80051115","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80051113"}
+{"ta_code_b":"pe80044983","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80044982"}
+{"ta_code_b":"pe80030941","reason":"address var","verdict":"SHOULD_MERGE","ta_code_a":"pe80030936"}
+{"ta_code_b":"pe80041278","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00089263"}
+{"ta_code_b":"pe80037349","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00012081"}
+{"ta_code_b":"pe80054649","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80026034"}
+{"ta_code_b":"pe80020875","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80015543"}
+{"ta_code_b":"pe80015798","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe00032255"}
+{"ta_code_b":"pe80030731","reason":"address var","verdict":"SHOULD_MERGE","ta_code_a":"pe80030730"}
+{"ta_code_b":"pe80006389","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80006307"}
+{"ta_code_b":"pe80030964","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80004667"}
+{"ta_code_b":"pe80003974","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80030779"}
+{"ta_code_b":"pe80005102","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe00050516"}
+{"ta_code_b":"pe00012119","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80015820"}
+{"ta_code_b":"pe00010557","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80003818"}
+{"ta_code_b":"pe80020899","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00011137"}
+{"ta_code_b":"pe80030964","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80004666"}
+{"ta_code_b":"pe80129424","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe00061438"}
+{"ta_code_b":"pe00010671","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80015068"}
+{"ta_code_b":"pe80192046","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00131719"}
+{"ta_code_b":"pe00123067","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80091386"}
+{"ta_code_b":"pe80034642","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00025431"}
+{"ta_code_b":"pe80113958","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80031043"}
+{"ta_code_b":"pe80025904","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80025906"}
+{"ta_code_b":"pe80025614","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80087155"}
+{"ta_code_b":"pe80154633","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe00133126"}
+{"ta_code_b":"pe80137200","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00047076"}
+{"ta_code_b":"pe00016367","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80025852"}
+{"ta_code_b":"pe80006012","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00010305"}
+{"ta_code_b":"pe00011352","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80087155"}
+{"ta_code_b":"pe00032820","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80004157"}
+{"ta_code_b":"pe80115842","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80098725"}
+{"ta_code_b":"pe80035151","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe80035268"}
+{"ta_code_b":"pe00118764","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe80189130"}
+{"ta_code_b":"pe80015680","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80005486"}
+{"ta_code_b":"pe80025981","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80035846"}
+{"ta_code_b":"pe00133753","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe80204227"}
+{"ta_code_b":"pe00068029","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80039721"}
+{"ta_code_b":"pe80031318","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80015687"}
+{"ta_code_b":"pe00112665","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80161627"}
+{"ta_code_b":"pe00103212","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80161418"}
+{"ta_code_b":"pe80025709","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80003872"}
+{"ta_code_b":"pe80154330","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe00068051"}
+{"ta_code_b":"pe00027432","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80015440"}
+{"ta_code_b":"pe80015444","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00071575"}
+{"ta_code_b":"pe80045235","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00011510"}
+{"ta_code_b":"pe80015479","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00049260"}
+{"ta_code_b":"pe80094843","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00117362"}
+{"ta_code_b":"pe80087401","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80192183"}
+{"ta_code_b":"pe80015119","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80003700"}
+{"ta_code_b":"pe00099894","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80069140"}
+{"ta_code_b":"pe80054649","reason":"address var","verdict":"SHOULD_MERGE","ta_code_a":"pe80216185"}
+{"ta_code_b":"pe00075055","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80031530"}
+{"ta_code_b":"pe80039740","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80037256"}
+{"ta_code_b":"pe80021006","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00029795"}
+{"ta_code_b":"pe80006468","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80006432"}
+{"ta_code_b":"pe80059677","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00011966"}
+{"ta_code_b":"pe80015952","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00083816"}
+{"ta_code_b":"pe80153562","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00117135"}
+{"ta_code_b":"pe00022448","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80042275"}
+{"ta_code_b":"pe80030252","reason":"address var","verdict":"SHOULD_MERGE","ta_code_a":"pe80030253"}
+{"ta_code_b":"pe00131337","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80135110"}
+{"ta_code_b":"pe80120366","reason":"address var","verdict":"SHOULD_MERGE","ta_code_a":"pe80042614"}
+{"ta_code_b":"pe80022216","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80022215"}
+{"ta_code_b":"pe80030115","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80001887"}
+{"ta_code_b":"pe80079898","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80001887"}
+{"ta_code_b":"pe80025350","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80001887"}
+{"ta_code_b":"pe80025120","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80014054"}
+{"ta_code_b":"pe80039490","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe00085196"}
+{"ta_code_b":"pe00045784","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80001676"}
+{"ta_code_b":"pe80018922","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe00011745"}
+{"ta_code_b":"pe80029805","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80029804"}
+{"ta_code_b":"pe00093011","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80060830"}
+{"ta_code_b":"pe80001650","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80001649"}
+{"ta_code_b":"pe80067947","reason":"address var","verdict":"SHOULD_MERGE","ta_code_a":"pe80067949"}
+{"ta_code_b":"pe80061271","reason":"address var","verdict":"SHOULD_MERGE","ta_code_a":"pe80067949"}
+{"ta_code_b":"pe80001636","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00023903"}
+{"ta_code_b":"pe80022026","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00013278"}
+{"ta_code_b":"pe80018804","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00013278"}
+{"ta_code_b":"pe80024035","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00014584"}
+{"ta_code_b":"pe80014057","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe80086805"}
+{"ta_code_b":"pe80002128","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00011994"}
+{"ta_code_b":"pe80064591","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80029574"}
+{"ta_code_b":"pe00122448","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80208694"}
+{"ta_code_b":"pe80173556","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80193257"}
+{"ta_code_b":"pe80096216","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00121249"}
+{"ta_code_b":"pe80001178","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe00012478"}
+{"ta_code_b":"pe80022039","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80014341"}
+{"ta_code_b":"pe00017601","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe80193257"}
+{"ta_code_b":"pe80035211","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe80035139"}
+{"ta_code_b":"pe80214079","reason":"diff names","verdict":"CORRECTLY_SEPARATE","ta_code_a":"pe00106050"}
+{"ta_code_b":"pe00107185","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80188611"}
+{"ta_code_b":"pe80104618","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80104619"}
+{"ta_code_b":"pe80104266","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80104264"}
+{"ta_code_b":"pe80196937","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe80025365"}
+{"ta_code_b":"pe00081233","reason":"overlap","verdict":"SHOULD_MERGE","ta_code_a":"pe00103156"}
+{"ta_code_b":"pe00010621","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80034588"}
+{"ta_code_b":"pe00010879","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80013981"}
+{"ta_code_b":"pe80000092","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80021865"}
+{"ta_code_b":"pe00012920","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80002103"}
+{"ta_code_b":"pe80182317","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe00122209"}
+{"ta_code_b":"pe00130712","reason":"identical","verdict":"SHOULD_MERGE","ta_code_a":"pe80203165"}
+{"ta_code_b":"pe80194985","reason":"subset","verdict":"SHOULD_MERGE","ta_code_a":"pe80082916"}
+{"ta_code_b":"pe80029123","reason":"same core","verdict":"SHOULD_MERGE","ta_code_a":"pe80029539"}
+{"ta_code_b":"pe80084422","reason":"minor diff","verdict":"SHOULD_MERGE","ta_code_a":"pe80084423"}

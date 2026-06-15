@@ -1,0 +1,4997 @@
+{
+ "mt": {
+  "STRIPPED_EXACT": {
+   "DIFFERENT": 333,
+   "SAME": 3289,
+   "PLACEHOLDER": 4,
+   "UNSURE": 30
+  },
+  "SUFFIX_FUZZY": {
+   "SAME": 245,
+   "DIFFERENT": 131,
+   "UNSURE": 10
+  },
+  "FUZZY_PHRASE": {
+   "SAME": 441,
+   "DIFFERENT": 64,
+   "UNSURE": 6,
+   "PLACEHOLDER": 3
+  },
+  "TOKEN_COVERAGE": {
+   "DIFFERENT": 23,
+   "SAME": 245,
+   "UNSURE": 1
+  },
+  "?": {
+   "SAME": 1
+  }
+ },
+ "diff": [
+  {
+   "master_ta_code": "ar00020951",
+   "variant_ta_code": "ar00023158",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CON ARGENTINA S.R.L.",
+   "variant_name": "F L ARGENTINA S.A.",
+   "match_score": 5,
+   "reason": "CON vs F L: farklı marka çekirdeği"
+  },
+  {
+   "master_ta_code": "ar00020951",
+   "variant_ta_code": "ar00019760",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CON ARGENTINA S.R.L.",
+   "variant_name": "C D S I ARGENTINA S.A.",
+   "match_score": 4,
+   "reason": "CON vs C D S I: farklı çekirdek markalar"
+  },
+  {
+   "master_ta_code": "ar00020951",
+   "variant_ta_code": "ar00072138",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CON ARGENTINA S.R.L.",
+   "variant_name": "F & L ARGENTINA S.R.L.",
+   "match_score": 4,
+   "reason": "CON vs F & L: marka çekirdeği farklı"
+  },
+  {
+   "master_ta_code": "ar00020951",
+   "variant_ta_code": "ar00073678",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CON ARGENTINA S.R.L.",
+   "variant_name": "SME ARGENTINA S.A.",
+   "match_score": 4,
+   "reason": "CON vs SME: farklı firmalar"
+  },
+  {
+   "master_ta_code": "ar00020951",
+   "variant_ta_code": "ar00035424",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CON ARGENTINA S.R.L.",
+   "variant_name": "A P ARGENTINA S.A.",
+   "match_score": 5,
+   "reason": "CON vs A P: ayrı markalar"
+  },
+  {
+   "master_ta_code": "ar00020951",
+   "variant_ta_code": "ar00068181",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CON ARGENTINA S.R.L.",
+   "variant_name": "DEL ARGENTINA S.A.",
+   "match_score": 4,
+   "reason": "CON vs DEL: marka adları tamamen farklı"
+  },
+  {
+   "master_ta_code": "ar00020951",
+   "variant_ta_code": "ar80000837",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CON ARGENTINA S.R.L.",
+   "variant_name": "B I ARGENTINA S.A.",
+   "match_score": 6,
+   "reason": "CON vs B I: farklı kişisel/kurumsal markalar"
+  },
+  {
+   "master_ta_code": "ar00020951",
+   "variant_ta_code": "ar80018473",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CON ARGENTINA S.R.L.",
+   "variant_name": "ARGENTINA S.A.",
+   "match_score": 5,
+   "reason": "CON ARGENTINA vs sadece ARGENTINA: jenerik"
+  },
+  {
+   "master_ta_code": "ar00020951",
+   "variant_ta_code": "ar80020523",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CON ARGENTINA S.R.L.",
+   "variant_name": "C. ARGENTINA S.A.",
+   "match_score": 5,
+   "reason": "CON vs C.: farklı marka"
+  },
+  {
+   "master_ta_code": "ar00020951",
+   "variant_ta_code": "ar80054171",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CON ARGENTINA S.R.L.",
+   "variant_name": "LA ARGENTINA SA",
+   "match_score": 4,
+   "reason": "CON vs LA: tamamen farklı isimler"
+  },
+  {
+   "master_ta_code": "ar80023638",
+   "variant_ta_code": "ar80003506",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "FORD ARGENTINA SCA",
+   "variant_name": "FORD ARGENTINA S.A.",
+   "match_score": 15,
+   "reason": "FORD SCA vs FORD S.A.: farklı legal form"
+  },
+  {
+   "master_ta_code": "ar80023638",
+   "variant_ta_code": "ar80003509",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "FORD ARGENTINA SCA",
+   "variant_name": "FORD ARGENTINA SA",
+   "match_score": 14,
+   "reason": "FORD SCA vs FORD SA: hukuki form farkı"
+  },
+  {
+   "master_ta_code": "ar00058311",
+   "variant_ta_code": "ar00067232",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SAL ARGENTINA S.R.L.",
+   "variant_name": "UNLIMITED ARGENTINA S.R.L.",
+   "match_score": 6,
+   "reason": "SAL vs UNLIMITED: farklı marka çekirdeği"
+  },
+  {
+   "master_ta_code": "ar00058311",
+   "variant_ta_code": "ar80023354",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SAL ARGENTINA S.R.L.",
+   "variant_name": "ARGENTINA",
+   "match_score": 7,
+   "reason": "SAL ARGENTINA vs sadece ARGENTINA: jenerik"
+  },
+  {
+   "master_ta_code": "ar00058311",
+   "variant_ta_code": "ar00015982",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SAL ARGENTINA S.R.L.",
+   "variant_name": "S P F ARGENTINA SA",
+   "match_score": 5,
+   "reason": "SAL vs S P F: tamamen farklı"
+  },
+  {
+   "master_ta_code": "ar00058311",
+   "variant_ta_code": "ar80062985",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SAL ARGENTINA S.R.L.",
+   "variant_name": "AC ARGENTINA SA",
+   "match_score": 7,
+   "reason": "SAL vs AC: ayrı markalar"
+  },
+  {
+   "master_ta_code": "ar00058311",
+   "variant_ta_code": "ar00010015",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SAL ARGENTINA S.R.L.",
+   "variant_name": "A E B ARGENTINA SA",
+   "match_score": 5,
+   "reason": "SAL vs A E B: farklı çekirdek"
+  },
+  {
+   "master_ta_code": "ar00058311",
+   "variant_ta_code": "ar00088735",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SAL ARGENTINA S.R.L.",
+   "variant_name": "ARGENTINA LTD S.A.S.",
+   "match_score": 4,
+   "reason": "SAL vs ARGENTINA LTD: çekirdek farklı"
+  },
+  {
+   "master_ta_code": "ar00058311",
+   "variant_ta_code": "ar80106054",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SAL ARGENTINA S.R.L.",
+   "variant_name": "R B ARGENTINA",
+   "match_score": 5,
+   "reason": "SAL vs R B: marka isimleri ayrı"
+  },
+  {
+   "master_ta_code": "ar00058311",
+   "variant_ta_code": "ar80015458",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SAL ARGENTINA S.R.L.",
+   "variant_name": "AT ARGENTINA",
+   "match_score": 4,
+   "reason": "SAL vs AT: farklı firmalar"
+  },
+  {
+   "master_ta_code": "ar80107381",
+   "variant_ta_code": "ar80112076",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "Firmenich S.A. I C y",
+   "variant_name": "FIRMENICH INCORPORATED",
+   "match_score": 11,
+   "reason": "FIRMENICH SAIC vs FIRMENICH INCORPORATED: farklı"
+  },
+  {
+   "master_ta_code": "ar80127216",
+   "variant_ta_code": "ar80112076",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "FIRMENICH S.A.I.C Y F.-ARGENTINA",
+   "variant_name": "FIRMENICH INCORPORATED",
+   "match_score": 11,
+   "reason": "FIRMENICH SAIC Y F vs INCORPORATED: tamamen farklı"
+  },
+  {
+   "master_ta_code": "ar00030532",
+   "variant_ta_code": "ar80060175",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "R C INTERNATIONAL S.R.L.",
+   "variant_name": "OVERSEAS",
+   "match_score": 4,
+   "reason": "R C INTERNATIONAL vs OVERSEAS: hiç ortak token"
+  },
+  {
+   "master_ta_code": "ar00030532",
+   "variant_ta_code": "ar00080406",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "R C INTERNATIONAL S.R.L.",
+   "variant_name": "B & D INTERNATIONAL S.R.L.",
+   "match_score": 5,
+   "reason": "R C INTERNATIONAL vs B & D INTERNATIONAL: farklı"
+  },
+  {
+   "master_ta_code": "ar00030532",
+   "variant_ta_code": "ar80016581",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "R C INTERNATIONAL S.R.L.",
+   "variant_name": "INTERNATIONAL",
+   "match_score": 5,
+   "reason": "R C INTERNATIONAL vs INTERNATIONAL: jenerik"
+  },
+  {
+   "master_ta_code": "ar00030532",
+   "variant_ta_code": "ar00018322",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "R C INTERNATIONAL S.R.L.",
+   "variant_name": "F Y C INTERNATIONAL S.R.L.",
+   "match_score": 5,
+   "reason": "R C INTERNATIONAL vs F Y C INTERNATIONAL: prefix farklı"
+  },
+  {
+   "master_ta_code": "ar00030532",
+   "variant_ta_code": "ar80016593",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "R C INTERNATIONAL S.R.L.",
+   "variant_name": "INTERNATIONAL, INC.",
+   "match_score": 5,
+   "reason": "R C INTERNATIONAL vs INC: tamamen farklı"
+  },
+  {
+   "master_ta_code": "ar00030532",
+   "variant_ta_code": "ar80114619",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "R C INTERNATIONAL S.R.L.",
+   "variant_name": "INT F&F",
+   "match_score": 16,
+   "reason": "R C INTERNATIONAL vs INT F&F: hiç eşleşme"
+  },
+  {
+   "master_ta_code": "ar80007131",
+   "variant_ta_code": "ar80077639",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "PERNOD RICARD ARGENTINA SA",
+   "variant_name": "RICARD RICARD ARGENTINA SRL",
+   "match_score": 27,
+   "reason": "PERNOD RICARD vs RICARD RICARD: PERNOD eksik"
+  },
+  {
+   "master_ta_code": "ar80007131",
+   "variant_ta_code": "ar80077638",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "PERNOD RICARD ARGENTINA SA",
+   "variant_name": "RICARD RICARD ARGENTINA",
+   "match_score": 24,
+   "reason": "PERNOD RICARD vs RICARD RICARD: PERNOD eksik"
+  },
+  {
+   "master_ta_code": "ar80003471",
+   "variant_ta_code": "ar80137700",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "FLOWSERVE",
+   "variant_name": "FLOWSERVE S. DE R.L. DE C.V",
+   "match_score": 12,
+   "reason": "FLOWSERVE vs FLOWSERVE S. DE R.L.: farklı legal form"
+  },
+  {
+   "master_ta_code": "ar80004677",
+   "variant_ta_code": "ar80004675",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ISI S R.L",
+   "variant_name": "ISI R.L",
+   "match_score": 11,
+   "reason": "ISI S R.L. vs ISI R.L.: S harfi eksik"
+  },
+  {
+   "master_ta_code": "ar80004677",
+   "variant_ta_code": "ar80011762",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ISI S R.L",
+   "variant_name": "ISI R. R.L.",
+   "match_score": 12,
+   "reason": "ISI S R.L. vs ISI R. R.L.: ikinci R eksik"
+  },
+  {
+   "master_ta_code": "ar80034305",
+   "variant_ta_code": "ar80027685",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "HELLMANN WORLDWIDE LOGISTICS S.A.C.",
+   "variant_name": "HELLMANN WORLDWIDE LOGISTICS, INC.",
+   "match_score": 18,
+   "reason": "HELLMANN LOGISTICS SAC vs INC: farklı legal form"
+  },
+  {
+   "master_ta_code": "ar80034305",
+   "variant_ta_code": "ar80136169",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "HELLMANN WORLDWIDE LOGISTICS S.A.C.",
+   "variant_name": "HELLMANN WORLDWIDE LOGISTICS LTD.",
+   "match_score": 18,
+   "reason": "HELLMANN LOGISTICS SAC vs LTD: farklı legal form"
+  },
+  {
+   "master_ta_code": "ar80034305",
+   "variant_ta_code": "ar80063990",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "HELLMANN WORLDWIDE LOGISTICS S.A.C.",
+   "variant_name": "HELLMANN WORLDWIDE LOGISTICS LLC.",
+   "match_score": 18,
+   "reason": "HELLMANN LOGISTICS SAC vs LLC: farklı legal form"
+  },
+  {
+   "master_ta_code": "ar80035301",
+   "variant_ta_code": "ar80047988",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "QUIMICA D & D S.R.L.",
+   "variant_name": "QUIMICA S.A.",
+   "match_score": 7,
+   "reason": "QUIMICA D & D vs QUIMICA: D&D eksik"
+  },
+  {
+   "master_ta_code": "ar80035301",
+   "variant_ta_code": "ar80029772",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "QUIMICA D & D S.R.L.",
+   "variant_name": "QUIMICA",
+   "match_score": 7,
+   "reason": "QUIMICA D & D vs QUIMICA: jenerik"
+  },
+  {
+   "master_ta_code": "ar80035301",
+   "variant_ta_code": "ar80134682",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "QUIMICA D & D S.R.L.",
+   "variant_name": "UP QUIMICA LTDA",
+   "match_score": 7,
+   "reason": "QUIMICA D & D vs UP QUIMICA: farklı"
+  },
+  {
+   "master_ta_code": "ar80035301",
+   "variant_ta_code": "ar00051614",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "QUIMICA D & D S.R.L.",
+   "variant_name": "QUIMICA R&F S.R.L.",
+   "match_score": 7,
+   "reason": "QUIMICA D & D vs QUIMICA R&F: farklı çekirdek"
+  },
+  {
+   "master_ta_code": "ar80105246",
+   "variant_ta_code": "ar80065236",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "LIFT-VAN INTERNATIONAL COMPANY S.A.",
+   "variant_name": "VAN INTERNATIONAL CO.",
+   "match_score": 15,
+   "reason": "LIFT-VAN INTERNATIONAL vs VAN INTERNATIONAL: LIFT eksik"
+  },
+  {
+   "master_ta_code": "ar00020904",
+   "variant_ta_code": "ar80006435",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "COMPANIA MSA DE ARGENTINA S.A.",
+   "variant_name": "MSA ARGENTINA",
+   "match_score": 16,
+   "reason": "COMPANIA MSA DE ARGENTINA vs MSA ARGENTINA: COMPANIA eksik"
+  },
+  {
+   "master_ta_code": "ar00031001",
+   "variant_ta_code": "ar80003170",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "RODAMIENTOS BROTHERS S.R.L.",
+   "variant_name": "F A RODAMIENTOS S.A.",
+   "match_score": 10,
+   "reason": "RODAMIENTOS BROTHERS vs F A RODAMIENTOS: BROTHERS eksik"
+  },
+  {
+   "master_ta_code": "ar00031001",
+   "variant_ta_code": "ar80045916",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "RODAMIENTOS BROTHERS S.R.L.",
+   "variant_name": "RODAMIENTOS SRL",
+   "match_score": 10,
+   "reason": "RODAMIENTOS BROTHERS vs RODAMIENTOS: BROTHERS eksik"
+  },
+  {
+   "master_ta_code": "ar00031001",
+   "variant_ta_code": "ar80034045",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "RODAMIENTOS BROTHERS S.R.L.",
+   "variant_name": "F A Rodamientos S.A.",
+   "match_score": 11,
+   "reason": "RODAMIENTOS BROTHERS vs F A RODAMIENTOS: farklı"
+  },
+  {
+   "master_ta_code": "ar00031001",
+   "variant_ta_code": "ar00070235",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "RODAMIENTOS BROTHERS S.R.L.",
+   "variant_name": "RODAMIENTOS S.R.L.",
+   "match_score": 10,
+   "reason": "RODAMIENTOS BROTHERS vs RODAMIENTOS: BROTHERS eksik"
+  },
+  {
+   "master_ta_code": "ar00037773",
+   "variant_ta_code": "ar00076257",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "CABA",
+   "variant_name": "BA S.A.",
+   "match_score": 16,
+   "reason": "CABA vs BA: CABA'nın CA harfi eksik"
+  },
+  {
+   "master_ta_code": "ar00037773",
+   "variant_ta_code": "ar80063178",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "CABA",
+   "variant_name": "BA. S.A.",
+   "match_score": 16,
+   "reason": "CABA vs BA: CA harfleri eksik"
+  },
+  {
+   "master_ta_code": "ar00037773",
+   "variant_ta_code": "ar80031983",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "CABA",
+   "variant_name": "BUENOS",
+   "match_score": 9,
+   "reason": "CABA vs BUENOS: tamamen farklı"
+  },
+  {
+   "master_ta_code": "ar00061306",
+   "variant_ta_code": "ar80099323",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "DISTRIBUIDORA B S B S.R.L.",
+   "variant_name": "DISTRIBUIDORA DE",
+   "match_score": 5,
+   "reason": "DISTRIBUIDORA BSB vs DISTRIBUIDORA DE: BSB eksik"
+  },
+  {
+   "master_ta_code": "ar00061306",
+   "variant_ta_code": "ar00078078",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "DISTRIBUIDORA B S B S.R.L.",
+   "variant_name": "SAS DISTRIBUIDORA S.R.L.",
+   "match_score": 6,
+   "reason": "DISTRIBUIDORA BSB vs SAS DISTRIBUIDORA: farklı"
+  },
+  {
+   "master_ta_code": "ar00061306",
+   "variant_ta_code": "ar80011654",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "DISTRIBUIDORA B S B S.R.L.",
+   "variant_name": "DISTRIBUIDORA S.A.C.I.",
+   "match_score": 6,
+   "reason": "DISTRIBUIDORA BSB vs DISTRIBUIDORA: BSB eksik"
+  },
+  {
+   "master_ta_code": "ar00061306",
+   "variant_ta_code": "ar80076706",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "DISTRIBUIDORA B S B S.R.L.",
+   "variant_name": "DISTRIBUIDORA",
+   "match_score": 6,
+   "reason": "DISTRIBUIDORA BSB vs DISTRIBUIDORA: jenerik"
+  },
+  {
+   "master_ta_code": "ar00068105",
+   "variant_ta_code": "ar00030533",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "C & C GROUP S.A.",
+   "variant_name": "R C R GROUP S.R.L.",
+   "match_score": 6,
+   "reason": "C & C GROUP vs R C R GROUP: farklı"
+  },
+  {
+   "master_ta_code": "ar00068105",
+   "variant_ta_code": "ar80067626",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "C & C GROUP S.A.",
+   "variant_name": "GRUPO",
+   "match_score": 4,
+   "reason": "C & C GROUP vs GRUPO: C&C eksik"
+  },
+  {
+   "master_ta_code": "ar00068105",
+   "variant_ta_code": "ar00052610",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "C & C GROUP S.A.",
+   "variant_name": "I H GROUP SRL",
+   "match_score": 7,
+   "reason": "C & C GROUP vs I H GROUP: farklı"
+  },
+  {
+   "master_ta_code": "ar00068105",
+   "variant_ta_code": "ar00061264",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "C & C GROUP S.A.",
+   "variant_name": "D&L GROUP S.A.",
+   "match_score": 6,
+   "reason": "C & C GROUP vs D&L GROUP: farklı"
+  },
+  {
+   "master_ta_code": "ar80000766",
+   "variant_ta_code": "ar80076328",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ATANOR S.C.A",
+   "variant_name": "ATANOR S C",
+   "match_score": 14,
+   "reason": "ATANOR SCA vs ATANOR SC: A eksik"
+  },
+  {
+   "master_ta_code": "ar80016973",
+   "variant_ta_code": "ar00015979",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "M CASSAB ARGENTINA S.A.",
+   "variant_name": "S M C ARGENTINA SA",
+   "match_score": 10,
+   "reason": "M CASSAB ARGENTINA vs S M C ARGENTINA: çekirdek farklı"
+  },
+  {
+   "master_ta_code": "ar80106857",
+   "variant_ta_code": "ar80106863",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "VANGUARD LOGISTICS SERVICES (NZ)LTD",
+   "variant_name": "VANGUARD LOGISTICS SVC",
+   "match_score": 20,
+   "reason": "VANGUARD LOGISTICS (NZ) vs SVC: NZ eksik"
+  },
+  {
+   "master_ta_code": "ar80106857",
+   "variant_ta_code": "ar80106864",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "VANGUARD LOGISTICS SERVICES (NZ)LTD",
+   "variant_name": "VANGUARD LOGISTICS SVC ARGENTINA",
+   "match_score": 23,
+   "reason": "VANGUARD LOGISTICS (NZ) vs SVC ARGENTINA: NZ eksik"
+  },
+  {
+   "master_ta_code": "ar80106857",
+   "variant_ta_code": "ar80018426",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "VANGUARD LOGISTICS SERVICES (NZ)LTD",
+   "variant_name": "VANGUARD LOGISTICS SERVICES SA",
+   "match_score": 18,
+   "reason": "VANGUARD LOGISTICS (NZ) vs SA: NZ vs ARGENTINA"
+  },
+  {
+   "master_ta_code": "ar80106857",
+   "variant_ta_code": "ar80077941",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "VANGUARD LOGISTICS SERVICES (NZ)LTD",
+   "variant_name": "VANGUARD LOGISTICS SERVICES ARGENTINA",
+   "match_score": 21,
+   "reason": "VANGUARD LOGISTICS (NZ) vs ARGENTINA: NZ vs ARGENTINA"
+  },
+  {
+   "master_ta_code": "ar00015080",
+   "variant_ta_code": "ar00070265",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "OP TRADING S.R.L.",
+   "variant_name": "S&L TRADING",
+   "match_score": 7,
+   "reason": "OP TRADING vs S&L TRADING: OP vs S&L"
+  },
+  {
+   "master_ta_code": "ar00015080",
+   "variant_ta_code": "ar00088886",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "OP TRADING S.R.L.",
+   "variant_name": "C B TRADING SRL",
+   "match_score": 6,
+   "reason": "OP TRADING vs C B TRADING: farklı prefix"
+  },
+  {
+   "master_ta_code": "ar00015080",
+   "variant_ta_code": "ar00078342",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "OP TRADING S.R.L.",
+   "variant_name": "TRADING HNOS S.R.L.",
+   "match_score": 6,
+   "reason": "OP TRADING vs TRADING HNOS: OP eksik"
+  },
+  {
+   "master_ta_code": "ar00037349",
+   "variant_ta_code": "ar00031006",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "A RODAR S.R.L.",
+   "variant_name": "RODAR S.R.L.",
+   "match_score": 13,
+   "reason": "A RODAR vs RODAR: A eksik"
+  },
+  {
+   "master_ta_code": "ar00037349",
+   "variant_ta_code": "ar00101216",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "A RODAR S.R.L.",
+   "variant_name": "RODAR S.R.L",
+   "match_score": 14,
+   "reason": "A RODAR vs RODAR: A eksik"
+  },
+  {
+   "master_ta_code": "ar00037770",
+   "variant_ta_code": "ar00023159",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "C Y E INGENIERIA S.A.",
+   "variant_name": "F P INGENIERIA S.R.L.",
+   "match_score": 6,
+   "reason": "C Y E INGENIERIA vs F P INGENIERIA: farklı"
+  },
+  {
+   "master_ta_code": "ar00037770",
+   "variant_ta_code": "ar00074961",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "C Y E INGENIERIA S.A.",
+   "variant_name": "UP INGENIERIA S.A.S.",
+   "match_score": 7,
+   "reason": "C Y E INGENIERIA vs UP INGENIERIA: farklı"
+  },
+  {
+   "master_ta_code": "ar00037770",
+   "variant_ta_code": "ar00046254",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "C Y E INGENIERIA S.A.",
+   "variant_name": "B Y H INGENIERIA S.R.L.",
+   "match_score": 7,
+   "reason": "C Y E INGENIERIA vs B Y H INGENIERIA: farklı"
+  },
+  {
+   "master_ta_code": "ar00061262",
+   "variant_ta_code": "ar80040437",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "D C LOGISTICA DE ARGENTINA S.A.",
+   "variant_name": "SAB LOGISTICA S.A.",
+   "match_score": 6,
+   "reason": "D C LOGISTICA DE ARG vs SAB LOGISTICA: farklı"
+  },
+  {
+   "master_ta_code": "ar00061262",
+   "variant_ta_code": "ar80077227",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "D C LOGISTICA DE ARGENTINA S.A.",
+   "variant_name": "LOGISTICA ARGENTINA",
+   "match_score": 11,
+   "reason": "D C LOGISTICA DE ARG vs LOGISTICA ARGENTINA: DC eksik"
+  },
+  {
+   "master_ta_code": "ar00061262",
+   "variant_ta_code": "ar00082409",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "D C LOGISTICA DE ARGENTINA S.A.",
+   "variant_name": "LOGISTICA DE ARGENTINA S.A.",
+   "match_score": 10,
+   "reason": "D C LOGISTICA DE ARG vs LOGISTICA DE ARG: DC eksik"
+  },
+  {
+   "master_ta_code": "ar00073643",
+   "variant_ta_code": "ar00079170",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "S.H. SERVICIOS S.A.",
+   "variant_name": "L Y B SERVICIOS S.A.",
+   "match_score": 5,
+   "reason": "S.H. SERVICIOS vs L Y B SERVICIOS: farklı"
+  },
+  {
+   "master_ta_code": "ar00073643",
+   "variant_ta_code": "ar00011811",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "S.H. SERVICIOS S.A.",
+   "variant_name": "D & R SERVICIOS S.R.L.",
+   "match_score": 5,
+   "reason": "S.H. SERVICIOS vs D & R SERVICIOS: farklı"
+  },
+  {
+   "master_ta_code": "ar00073643",
+   "variant_ta_code": "ar00055229",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "S.H. SERVICIOS S.A.",
+   "variant_name": "E L A SERVICIOS S.A.",
+   "match_score": 4,
+   "reason": "S.H. SERVICIOS vs E L A SERVICIOS: farklı"
+  },
+  {
+   "master_ta_code": "ar00080664",
+   "variant_ta_code": "ar00074831",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "C&D ELECTRONICA S.R.L.",
+   "variant_name": "S E ELECTRONICA S.A.",
+   "match_score": 8,
+   "reason": "C&D ELECTRONICA vs S E ELECTRONICA: farklı"
+  },
+  {
+   "master_ta_code": "ar00080664",
+   "variant_ta_code": "ar00045104",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "C&D ELECTRONICA S.R.L.",
+   "variant_name": "F B A ELECTRONICA S.R.L.",
+   "match_score": 8,
+   "reason": "C&D ELECTRONICA vs F B A ELECTRONICA: farklı"
+  },
+  {
+   "master_ta_code": "ar00086599",
+   "variant_ta_code": "ar80121705",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "LEAD-WAYTRADING S.R.L.",
+   "variant_name": "LEAD SRL",
+   "match_score": 14,
+   "reason": "LEAD-WAYTRADING vs LEAD: WAYTRADING eksik"
+  },
+  {
+   "master_ta_code": "ar80011847",
+   "variant_ta_code": "ar80077335",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "MOLINOS RIO DE LA PLATA SA",
+   "variant_name": "MOLINOS RIO LA PLATA",
+   "match_score": 16,
+   "reason": "MOLINOS RIO LA PLATA missing DE preposition - different product line or abbreviation significant"
+  },
+  {
+   "master_ta_code": "ar80011955",
+   "variant_ta_code": "ar80020843",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SP & P S.R.L.",
+   "variant_name": "S.P. S.A.",
+   "match_score": 10,
+   "reason": "SP & P S.R.L. vs S.P. S.A. - different letter count, & vs period, unclear if same"
+  },
+  {
+   "master_ta_code": "ar80011955",
+   "variant_ta_code": "ar80020889",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SP & P S.R.L.",
+   "variant_name": "SP SA",
+   "match_score": 10,
+   "reason": "SP & P S.R.L. vs SP SA - too many letters different, & missing"
+  },
+  {
+   "master_ta_code": "ar80017158",
+   "variant_ta_code": "ar80033240",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "MRS ARACELI CAMPOS",
+   "variant_name": "ARACELI CAMPOS",
+   "match_score": 19,
+   "reason": "MRS ARACELI CAMPOS vs ARACELI CAMPOS - missing MRS prefix may indicate different legal entity"
+  },
+  {
+   "master_ta_code": "ar80057468",
+   "variant_ta_code": "ar80100124",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "JAS FORWARDING DE ARGENTINA SA",
+   "variant_name": "JAS ARGENTINA (AR)",
+   "match_score": 16,
+   "reason": "JAS FORWARDING DE ARGENTINA SA vs JAS ARGENTINA (AR) - missing FORWARDING, DE keyword"
+  },
+  {
+   "master_ta_code": "ar80057468",
+   "variant_ta_code": "ar80063825",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "JAS FORWARDING DE ARGENTINA SA",
+   "variant_name": "FORWARDING SA",
+   "match_score": 7,
+   "reason": "JAS FORWARDING DE ARGENTINA SA vs FORWARDING SA - missing JAS and DE, only fragment match"
+  },
+  {
+   "master_ta_code": "ar80064892",
+   "variant_ta_code": "ar80077227",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SAB LOGISTICA",
+   "variant_name": "LOGISTICA ARGENTINA",
+   "match_score": 11,
+   "reason": "SAB LOGISTICA vs LOGISTICA ARGENTINA - missing SAB core identifier"
+  },
+  {
+   "master_ta_code": "ar80064892",
+   "variant_ta_code": "ar00082409",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "SAB LOGISTICA",
+   "variant_name": "LOGISTICA DE ARGENTINA S.A.",
+   "match_score": 10,
+   "reason": "SAB LOGISTICA vs LOGISTICA DE ARGENTINA - swapped word order, missing SAB"
+  },
+  {
+   "master_ta_code": "ar80074153",
+   "variant_ta_code": "ar80067512",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "MENDEZ & COMPANY, INC.",
+   "variant_name": "E MENDEZ",
+   "match_score": 10,
+   "reason": "MENDEZ & COMPANY INC vs E MENDEZ - missing COMPANY, different letter E prefix"
+  },
+  {
+   "master_ta_code": "ar80076838",
+   "variant_ta_code": "ar80023612",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "FCA AUTOMOBILES ARGENTINA",
+   "variant_name": "FCA AUTOMOBILE ARGENTINA S.A.",
+   "match_score": 20,
+   "reason": "FCA AUTOMOBILES vs AUTOMOBILE singular - may be different legal entity or OCR error"
+  },
+  {
+   "master_ta_code": "ar80077988",
+   "variant_ta_code": "ar00017146",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "VOLKSWAGEN OF AMERICA",
+   "variant_name": "VOLKSWAGEN ARGENTINA SA",
+   "match_score": 17,
+   "reason": "VOLKSWAGEN OF AMERICA vs VOLKSWAGEN ARGENTINA - different location (America vs Argentina)"
+  },
+  {
+   "master_ta_code": "ar80077988",
+   "variant_ta_code": "ar80019039",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "VOLKSWAGEN OF AMERICA",
+   "variant_name": "VOLKSWAGEN ARGENTINA, S.A.",
+   "match_score": 17,
+   "reason": "VOLKSWAGEN OF AMERICA vs ARGENTINA location difference"
+  },
+  {
+   "master_ta_code": "ar80077988",
+   "variant_ta_code": "ar80018046",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "VOLKSWAGEN OF AMERICA",
+   "variant_name": "VOLKSWAGEN ARGENTINA S.A.",
+   "match_score": 17,
+   "reason": "VOLKSWAGEN OF AMERICA vs ARGENTINA location, different entity"
+  },
+  {
+   "master_ta_code": "ar80087005",
+   "variant_ta_code": "ar80026134",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "NOVA CORP.",
+   "variant_name": "NOVA",
+   "match_score": 11,
+   "reason": "NOVA CORP. vs NOVA bare name - CORP. is significant suffix, unclear if same entity"
+  },
+  {
+   "master_ta_code": "ar80087005",
+   "variant_ta_code": "ar80017223",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "NOVA CORP.",
+   "variant_name": "NOVA SA",
+   "match_score": 11,
+   "reason": "NOVA CORP. vs NOVA SA - different suffixes, may be different entities"
+  },
+  {
+   "master_ta_code": "ar80087005",
+   "variant_ta_code": "ar80121964",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "NOVA CORP.",
+   "variant_name": "NOVA SAU",
+   "match_score": 12,
+   "reason": "NOVA CORP. vs NOVA SAU - different suffixes, may indicate different entities"
+  },
+  {
+   "master_ta_code": "ar00010204",
+   "variant_ta_code": "ar80039391",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "AIR COMPUTERS S.R.L.",
+   "variant_name": "AIR SRL S.R.L.",
+   "match_score": 10,
+   "reason": "AIR COMPUTERS S.R.L. vs AIR SRL S.R.L. - COMPUTERS keyword missing, redundant SRL SRL"
+  },
+  {
+   "master_ta_code": "ar00010204",
+   "variant_ta_code": "ar80026935",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "AIR COMPUTERS S.R.L.",
+   "variant_name": "AIR SRL",
+   "match_score": 12,
+   "reason": "AIR COMPUTERS S.R.L. vs AIR SRL - COMPUTERS keyword missing"
+  },
+  {
+   "master_ta_code": "ar00011015",
+   "variant_ta_code": "ar80017909",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "BROUWER SA",
+   "variant_name": "TO, BROUWER S.A.",
+   "match_score": 16,
+   "reason": "BROUWER vs TO, BROUWER prefix extra distinct word"
+  },
+  {
+   "master_ta_code": "ar00011160",
+   "variant_ta_code": "ar80024044",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "CAPI COLOR S.R.L.",
+   "variant_name": "S. COLOR SRL",
+   "match_score": 14,
+   "reason": "CAPI COLOR vs S. COLOR distinct prefixes"
+  },
+  {
+   "master_ta_code": "ar00011855",
+   "variant_ta_code": "ar00044128",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "DANSA SA",
+   "variant_name": "DANSA SRL",
+   "match_score": 15,
+   "reason": "DANSA SA vs DANSA SRL different legal form"
+  },
+  {
+   "master_ta_code": "ar00011962",
+   "variant_ta_code": "ar00085786",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "DEVRE INTERNACIONAL SA",
+   "variant_name": "BROTHERS INTERNACIONAL SA",
+   "match_score": 6,
+   "reason": "DEVRE INTERNACIONAL vs BROTHERS distinct brand names"
+  },
+  {
+   "master_ta_code": "ar00011962",
+   "variant_ta_code": "ar00057284",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "DEVRE INTERNACIONAL SA",
+   "variant_name": "SA INTERNACIONAL S.A.",
+   "match_score": 6,
+   "reason": "DEVRE INTERNACIONAL vs SA INTERNACIONAL generic suffix only match"
+  },
+  {
+   "master_ta_code": "ar00012607",
+   "variant_ta_code": "ar00014835",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "FAMA MUSIC SA",
+   "variant_name": "MUSIC CO SA",
+   "match_score": 11,
+   "reason": "FAMA MUSIC vs MUSIC CO distinct brand names"
+  },
+  {
+   "master_ta_code": "ar00013837",
+   "variant_ta_code": "ar80077128",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "JUAN A CIBERT SA",
+   "variant_name": "JUAN CIBERT",
+   "match_score": 11,
+   "reason": "JUAN A CIBERT vs JUAN CIBERT missing initial A"
+  },
+  {
+   "master_ta_code": "ar00014734",
+   "variant_ta_code": "ar80115011",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "MOLINARI SA",
+   "variant_name": "E. MOLINARI",
+   "match_score": 14,
+   "reason": "MOLINARI vs E. MOLINARI prefix E. distinct"
+  },
+  {
+   "master_ta_code": "ar00015400",
+   "variant_ta_code": "ar80087072",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PLASTIC OMNIUM SA",
+   "variant_name": "PLASTIC OMNIUM LLC.",
+   "match_score": 19,
+   "reason": "PLASTIC OMNIUM SA vs LLC distinct legal form"
+  },
+  {
+   "master_ta_code": "ar00016969",
+   "variant_ta_code": "ar00053224",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "UNLIMITED TRADE S.R.L.",
+   "variant_name": "TRADE & COMPANY S.A.",
+   "match_score": 8,
+   "reason": "UNLIMITED TRADE S.R.L. vs TRADE & COMPANY S.A. distinct companies"
+  },
+  {
+   "master_ta_code": "ar00016969",
+   "variant_ta_code": "ar80057170",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "UNLIMITED TRADE S.R.L.",
+   "variant_name": "TRD SA",
+   "match_score": 6,
+   "reason": "UNLIMITED TRADE vs TRD SA too short, different legal structure"
+  },
+  {
+   "master_ta_code": "ar00017356",
+   "variant_ta_code": "ar00023907",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "A G T ARGENTINA S.A.",
+   "variant_name": "G&G ARGENTINA S.A.",
+   "match_score": 17,
+   "reason": "A G T ARGENTINA vs G&G ARGENTINA distinct letter codes"
+  },
+  {
+   "master_ta_code": "ar00020230",
+   "variant_ta_code": "ar00101448",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "CD WAY S.A.",
+   "variant_name": "U WAY SA",
+   "match_score": 10,
+   "reason": "CD WAY S.A. vs U WAY SA distinct prefixes CD vs U"
+  },
+  {
+   "master_ta_code": "ar00023618",
+   "variant_ta_code": "ar80063816",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "FOHAMA ELECTROMECANICA S.R.L.",
+   "variant_name": "FOHAMA ELECTROMECANICA SA",
+   "match_score": 24,
+   "reason": "FOHAMA ELECTROMECANICA S.R.L. vs SA different legal form"
+  },
+  {
+   "master_ta_code": "ar00025131",
+   "variant_ta_code": "ar00027686",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "IE.MAT. S.R.L.",
+   "variant_name": "MAT S.R.L.",
+   "match_score": 17,
+   "reason": "IE.MAT. S.R.L. vs MAT S.R.L. prefix IE distinct"
+  },
+  {
+   "master_ta_code": "ar00025306",
+   "variant_ta_code": "ar00101056",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "IN - PACK S.A.",
+   "variant_name": "ONE PACK S.A.",
+   "match_score": 10,
+   "reason": "IN - PACK S.A. vs ONE PACK S.A. distinct brand IN vs ONE"
+  },
+  {
+   "master_ta_code": "ar00026476",
+   "variant_ta_code": "ar00045546",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "LA CANADA S.A.",
+   "variant_name": "CA",
+   "match_score": 8,
+   "reason": "LA CANADA S.A. vs CA too generic/short"
+  },
+  {
+   "master_ta_code": "ar00026476",
+   "variant_ta_code": "ar80001308",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "LA CANADA S.A.",
+   "variant_name": "C.A. S.A.",
+   "match_score": 9,
+   "reason": "LA CANADA S.A. vs C.A. S.A. too generic"
+  },
+  {
+   "master_ta_code": "ar00027900",
+   "variant_ta_code": "ar00079113",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "MEN S S.A.",
+   "variant_name": "FOR MEN S.A.",
+   "match_score": 13,
+   "reason": "MEN S S.A. vs FOR MEN S.A. prefix FOR distinct"
+  },
+  {
+   "master_ta_code": "ar00031052",
+   "variant_ta_code": "ar80087160",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ROLANDO - RIVAS S.R.L.",
+   "variant_name": "ROLANDO RIVAS",
+   "match_score": 20,
+   "reason": "Variant dropped key suffix S.R.L.; only ROLANDO RIVAS left, incomplete firm name"
+  },
+  {
+   "master_ta_code": "ar00031196",
+   "variant_ta_code": "ar00031198",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "RUIZ HNOS S.A.",
+   "variant_name": "RUIZ Y CIA S.R.L.",
+   "match_score": 9,
+   "reason": "RUIZ HNOS vs RUIZ Y CIA; different partnership structure; not same firm"
+  },
+  {
+   "master_ta_code": "ar00031196",
+   "variant_ta_code": "ar80101216",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "RUIZ HNOS S.A.",
+   "variant_name": "RUIZ Y CIA SRL",
+   "match_score": 9,
+   "reason": "RUIZ HNOS vs RUIZ Y CIA SRL; different legal partner type"
+  },
+  {
+   "master_ta_code": "ar00031240",
+   "variant_ta_code": "ar00018931",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "S Y C METALURGICA S.R.L.",
+   "variant_name": "METALURGICA R A E I S.A.",
+   "match_score": 9,
+   "reason": "S Y C METALURGICA vs METALURGICA R A E I; dropped initial initials S Y C; not same firm"
+  },
+  {
+   "master_ta_code": "ar00031240",
+   "variant_ta_code": "ar00089702",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "S Y C METALURGICA S.R.L.",
+   "variant_name": "R Y C METALURGICA S.R.L.",
+   "match_score": 8,
+   "reason": "S Y C METALURGICA vs R Y C METALURGICA; different initials prefix (S vs R)"
+  },
+  {
+   "master_ta_code": "ar00032179",
+   "variant_ta_code": "ar80040519",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "SOUTH TRADING CORP. S.R.L.",
+   "variant_name": "SOUTH TRADE SRL",
+   "match_score": 7,
+   "reason": "TRADING CORP vs TRADE; CORP dropped; distinct suffix"
+  },
+  {
+   "master_ta_code": "ar00032212",
+   "variant_ta_code": "ar80018365",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "SPONSOR P.O.P. Y MERCHANDISING INDUSTRIES S.A.",
+   "variant_name": "POP COMPANY SA",
+   "match_score": 9,
+   "reason": "SPONSOR P.O.P. Y MERCHANDISING vs POP COMPANY; SPONSOR+MERCHANDISING dropped; not same firm"
+  },
+  {
+   "master_ta_code": "ar00032212",
+   "variant_ta_code": "ar80083462",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "SPONSOR P.O.P. Y MERCHANDISING INDUSTRIES S.A.",
+   "variant_name": "Pop Co. Sa",
+   "match_score": 9,
+   "reason": "SPONSOR P.O.P. Y MERCHANDISING vs Pop Co; too much core dropped"
+  },
+  {
+   "master_ta_code": "ar00033953",
+   "variant_ta_code": "ar00086021",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "VITO LOMBARDO",
+   "variant_name": "DE VITO Y CIA SA",
+   "match_score": 13,
+   "reason": "VITO LOMBARDO vs DE VITO Y CIA; added middle initial+partnership"
+  },
+  {
+   "master_ta_code": "ar00041613",
+   "variant_ta_code": "ar00060228",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PRINTING COMPANY S.A.",
+   "variant_name": "D D PRINTING S.R.L.",
+   "match_score": 11,
+   "reason": "PRINTING COMPANY vs D D PRINTING; prefix D D added; not same firm"
+  },
+  {
+   "master_ta_code": "ar00044333",
+   "variant_ta_code": "ar00020711",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "MIHLAGER COMPANY S.A.",
+   "variant_name": "COL S.A.",
+   "match_score": 5,
+   "reason": "MIHLAGER COMPANY S.A. vs COL S.A.; only common suffix; distinct firms"
+  },
+  {
+   "master_ta_code": "ar00044333",
+   "variant_ta_code": "ar80027242",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "MIHLAGER COMPANY S.A.",
+   "variant_name": "COL, S.A.",
+   "match_score": 5,
+   "reason": "MIHLAGER COMPANY vs COL, S.A.; only common S.A."
+  },
+  {
+   "master_ta_code": "ar00069243",
+   "variant_ta_code": "ar00074475",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "C & C HOME S.R.L.",
+   "variant_name": "HOME S.R.L.",
+   "match_score": 9,
+   "reason": "C & C HOME vs HOME; lost prefix C & C; not same firm"
+  },
+  {
+   "master_ta_code": "ar00069243",
+   "variant_ta_code": "ar00081052",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "C & C HOME S.R.L.",
+   "variant_name": "D&F HOME S.A.",
+   "match_score": 9,
+   "reason": "C & C HOME vs D&F HOME; different initials"
+  },
+  {
+   "master_ta_code": "ar00072047",
+   "variant_ta_code": "ar80050327",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "BO HERMANOS S.A.",
+   "variant_name": "BOLIVIA",
+   "match_score": 11,
+   "reason": "BO HERMANOS vs BOLIVIA; BOLIVIA is country name, not firm"
+  },
+  {
+   "master_ta_code": "ar00086450",
+   "variant_ta_code": "ar00012561",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "IMPRESORA CONTABLE S.A.",
+   "variant_name": "F P IMPRESORA SA",
+   "match_score": 11,
+   "reason": "IMPRESORA CONTABLE vs F P IMPRESORA; added prefix F P changes core"
+  },
+  {
+   "master_ta_code": "ar00086640",
+   "variant_ta_code": "ar80077271",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "LOS MARTINEZ SRL",
+   "variant_name": "MARTINEZ HNOS Y CIA",
+   "match_score": 8,
+   "reason": "LOS MARTINEZ SRL vs MARTINEZ HNOS Y CIA; HNOS+CIA not same partnership"
+  },
+  {
+   "master_ta_code": "ar00086640",
+   "variant_ta_code": "ar80064391",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "LOS MARTINEZ SRL",
+   "variant_name": "MARTINEZ HNOS Y CIA S.R.L.",
+   "match_score": 8,
+   "reason": "LOS MARTINEZ SRL vs MARTINEZ HNOS Y CIA S.R.L.; different firm structure"
+  },
+  {
+   "master_ta_code": "ar00088807",
+   "variant_ta_code": "ar00021651",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "B & F DECO S.A.",
+   "variant_name": "DECO S.R.L.",
+   "match_score": 10,
+   "reason": "B & F DECO vs DECO; dropped B & F prefix"
+  },
+  {
+   "master_ta_code": "ar00088807",
+   "variant_ta_code": "ar80002378",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "B & F DECO S.A.",
+   "variant_name": "DECO SRL",
+   "match_score": 9,
+   "reason": "B & F DECO vs DECO SRL; same as above"
+  },
+  {
+   "master_ta_code": "ar80005179",
+   "variant_ta_code": "ar80016755",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "LAB. F",
+   "variant_name": "LAB.D. S.A.",
+   "match_score": 9,
+   "reason": "LAB. F vs LAB.D. S.A.; different letter (F vs D)"
+  },
+  {
+   "master_ta_code": "ar80005179",
+   "variant_ta_code": "ar80029442",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "LAB. F",
+   "variant_name": "L.A.B. S.A.",
+   "match_score": 9,
+   "reason": "LAB. F vs L.A.B. S.A.; F vs L.A.B; not same"
+  },
+  {
+   "master_ta_code": "ar80006141",
+   "variant_ta_code": "ar80086943",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "MERCATOR SA",
+   "variant_name": "MERCATOR, INC.",
+   "match_score": 14,
+   "reason": "MERCATOR SA vs MERCATOR, INC.; different entity type (SA vs INC)"
+  },
+  {
+   "master_ta_code": "ar80008070",
+   "variant_ta_code": "ar80008068",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "SAMSUNG ELECTRONICS HAINAN FIBER OPTICS KOREA CO,LTD.",
+   "variant_name": "SAMSUNG ELECTRONICS CO LTD.",
+   "match_score": 17,
+   "reason": "SAMSUNG ELECTRONICS HAINAN FIBER OPTICS KOREA vs SAMSUNG ELECTRONICS CO; dropped HAINAN+FIBER+KOREA"
+  },
+  {
+   "master_ta_code": "ar80008070",
+   "variant_ta_code": "ar80011230",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "SAMSUNG ELECTRONICS HAINAN FIBER OPTICS KOREA CO,LTD.",
+   "variant_name": "SAMSUNG ELECTRONICS CO.,LTD.",
+   "match_score": 17,
+   "reason": "SAMSUNG ELECTRONICS HAINAN... vs SAMSUNG ELECTRONICS CO.,LTD.; same issue"
+  },
+  {
+   "master_ta_code": "ar80011335",
+   "variant_ta_code": "ar80077817",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SYNGENTA, S.A.",
+   "variant_name": "SYNGENTA, INC.",
+   "match_score": 14,
+   "reason": "SYNGENTA S.A. vs SYNGENTA INC - different entity types (S.A. vs INC)"
+  },
+  {
+   "master_ta_code": "ar80011944",
+   "variant_ta_code": "ar80007395",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "SERVICIOS Y PRODUCTOS PARA",
+   "variant_name": "PRODUCTOS Y SERVICIOS",
+   "match_score": 13,
+   "reason": "SERVICIOS Y PRODUCTOS PARA vs PRODUCTOS Y SERVICIOS - word order change suggests different entity or subsidiary"
+  },
+  {
+   "master_ta_code": "ar80013129",
+   "variant_ta_code": "ar00015414",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PLOW, S. DE R.L.",
+   "variant_name": "PLOW S.R.L.",
+   "match_score": 12,
+   "reason": "PLOW S. DE R.L. vs PLOW S.R.L. - different legal forms (S.DE R.L. vs S.R.L.)"
+  },
+  {
+   "master_ta_code": "ar80013987",
+   "variant_ta_code": "ar80090233",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ROBERT BOSCH LLC.",
+   "variant_name": "ROBERT BOSCH, GMBH",
+   "match_score": 19,
+   "reason": "ROBERT BOSCH LLC. vs ROBERT BOSCH GMBH - different legal entities (LLC vs GmbH)"
+  },
+  {
+   "master_ta_code": "ar80016637",
+   "variant_ta_code": "ar80011004",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "JAZMIN CHEBAR/ OBISPO SA",
+   "variant_name": "OBISPO SA",
+   "match_score": 10,
+   "reason": "JAZMIN CHEBAR/OBISPO SA vs OBISPO SA - first part removed, likely subsidiary or different entity"
+  },
+  {
+   "master_ta_code": "ar80022216",
+   "variant_ta_code": "ar80061789",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PRODUCTOS AVON SA",
+   "variant_name": "PRODUCTOS AVON S.A. DE C.V.",
+   "match_score": 15,
+   "reason": "PRODUCTOS AVON SA vs AVON S.A. DE C.V. (different legal suffixes)"
+  },
+  {
+   "master_ta_code": "ar80022216",
+   "variant_ta_code": "ar80031638",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PRODUCTOS AVON SA",
+   "variant_name": "PRODUCTOS AVON S.A.C.I.",
+   "match_score": 16,
+   "reason": "PRODUCTOS AVON SA vs AVON S.A.C.I. (different legal type)"
+  },
+  {
+   "master_ta_code": "ar80024967",
+   "variant_ta_code": "ar80042693",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "COTO CENTRO INTEGRAL DE COMERCIALIZACION",
+   "variant_name": "COTO CENTRO CENTRO INTEGRAL",
+   "match_score": 26,
+   "reason": "COTO CENTRO INTEGRAL vs COTO CENTRO CENTRO INTEGRAL (duplicated word)"
+  },
+  {
+   "master_ta_code": "ar80027038",
+   "variant_ta_code": "ar00076883",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "B. FERNANDEZ & HERMANOS, INC.",
+   "variant_name": "FERNANDEZ HERMANOS S.R.L.",
+   "match_score": 8,
+   "reason": "B. FERNANDEZ & HERMANOS vs FERNANDEZ HERMANOS (missing B. initial)"
+  },
+  {
+   "master_ta_code": "ar80029528",
+   "variant_ta_code": "ar80100389",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "LOGISTICA INTERNACIONAL DE ARGENTINA S.R.L.",
+   "variant_name": "LOGISTICA INTERNATIONAL DE ARGENTINA SRL",
+   "match_score": 15,
+   "reason": "INTERNACIONAL vs INTERNATIONAL (spelling variant)"
+  },
+  {
+   "master_ta_code": "ar80031155",
+   "variant_ta_code": "ar80043389",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "BANCO INDUSTRIAL S.A.",
+   "variant_name": "BANCO INDUSTRIAL S",
+   "match_score": 13,
+   "reason": "BANCO INDUSTRIAL S.A. vs BANCO INDUSTRIAL S (truncated)"
+  },
+  {
+   "master_ta_code": "ar80039021",
+   "variant_ta_code": "ar80106231",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "SAFER S.A.C.I.F",
+   "variant_name": "SAFER S.A.C.I.F. S.A.C.I.F.",
+   "match_score": 34,
+   "reason": "SAFER S.A.C.I.F vs SAFER duplicated suffix"
+  },
+  {
+   "master_ta_code": "ar80039504",
+   "variant_ta_code": "ar80076311",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "BLU LOGISTICS ARGENTINA SA",
+   "variant_name": "ARGENTINA TRANSPORT S.A.",
+   "match_score": 9,
+   "reason": "BLU LOGISTICS ARGENTINA vs ARGENTINA TRANSPORT (different brand)"
+  },
+  {
+   "master_ta_code": "ar80049498",
+   "variant_ta_code": "ar00010796",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "CAMPO CROP S.A. CAPITAN BERMUDEZ 2589 1636 OLIVOS",
+   "variant_name": "BERMUDEZ SA",
+   "match_score": 7,
+   "reason": "CAMPO CROP vs BERMUDEZ SA (address mistaken for company)"
+  },
+  {
+   "master_ta_code": "ar80053159",
+   "variant_ta_code": "ar80032228",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "A.I",
+   "variant_name": "F. S.A. A.I",
+   "match_score": 12,
+   "reason": "A.I vs F. S.A. A.I (additional company prefix)"
+  },
+  {
+   "master_ta_code": "ar80053159",
+   "variant_ta_code": "ar80038797",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "A.I",
+   "variant_name": "P. A.I",
+   "match_score": 11,
+   "reason": "A.I vs P. A.I (different prefix)"
+  },
+  {
+   "master_ta_code": "ar80057495",
+   "variant_ta_code": "ar80064325",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "LOGISTICA UNIVERSAL SA",
+   "variant_name": "LOGISTICA UNIVERSAL SRL",
+   "match_score": 15,
+   "reason": "LOGISTICA UNIVERSAL SA vs LOGISTICA UNIVERSAL SRL (legal form)"
+  },
+  {
+   "master_ta_code": "ar80057495",
+   "variant_ta_code": "ar00089420",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "LOGISTICA UNIVERSAL SA",
+   "variant_name": "LOGISTICA UNIVERSAL S.R.L.",
+   "match_score": 15,
+   "reason": "LOGISTICA UNIVERSAL SA vs LOGISTICA UNIVERSAL S.R.L. (legal form)"
+  },
+  {
+   "master_ta_code": "ar80059191",
+   "variant_ta_code": "ar80045061",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "COTO C I C",
+   "variant_name": "COTO",
+   "match_score": 10,
+   "reason": "COTO C I C vs COTO (incomplete abbreviation)"
+  },
+  {
+   "master_ta_code": "ar80063110",
+   "variant_ta_code": "ar80022635",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "APC",
+   "variant_name": "APC S.A.",
+   "match_score": 14,
+   "reason": "APC vs APC S.A. insufficient context single letter"
+  },
+  {
+   "master_ta_code": "ar80063110",
+   "variant_ta_code": "ar80063111",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "APC",
+   "variant_name": "APC CO. LTD.",
+   "match_score": 14,
+   "reason": "APC bare != APC CO. LTD. different entity types"
+  },
+  {
+   "master_ta_code": "ar80063233",
+   "variant_ta_code": "ar80076311",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "BLU LOGISTICS",
+   "variant_name": "ARGENTINA TRANSPORT S.A.",
+   "match_score": 9,
+   "reason": "BLU LOGISTICS != ARGENTINA TRANSPORT common word overlap"
+  },
+  {
+   "master_ta_code": "ar80063299",
+   "variant_ta_code": "ar00058366",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "C & C COMEX SA",
+   "variant_name": "U & P COMEX S.R.L.",
+   "match_score": 12,
+   "reason": "C & C COMEX != U & P COMEX different brand"
+  },
+  {
+   "master_ta_code": "ar80065344",
+   "variant_ta_code": "ar80000147",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ADIDAS ARGENTINA",
+   "variant_name": "ADIDAS ARGENTINA S.A. DE C.V.",
+   "match_score": 15,
+   "reason": "ADIDAS ARGENTINA != ADIDAS ARGENTINA S.A. DE C.V. mexico code added"
+  },
+  {
+   "master_ta_code": "ar80069871",
+   "variant_ta_code": "ar80105291",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "LOGISTICA INTERNATIONAL DE",
+   "variant_name": "LOGISTICA INTERNACIONAL",
+   "match_score": 10,
+   "reason": "LOGISTICA INTERNATIONAL DE != LOGISTICA INTERNACIONAL spelling"
+  },
+  {
+   "master_ta_code": "ar80070608",
+   "variant_ta_code": "ar00020010",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CARAM SRL",
+   "variant_name": "CARAM S.A.",
+   "match_score": 15,
+   "reason": "CARAM SRL != CARAM S.A. suffix type change"
+  },
+  {
+   "master_ta_code": "ar80076718",
+   "variant_ta_code": "ar80042728",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "DOW QUIMICA ARGENTINA",
+   "variant_name": "DOW QUIMICA ARGENTINA S.R.L.",
+   "match_score": 19,
+   "reason": "DOW QUIMICA ARGENTINA != DOW QUIMICA ARGENTINA S.R.L. suffix type"
+  },
+  {
+   "master_ta_code": "ar80077536",
+   "variant_ta_code": "ar80011901",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PPG INDUSTRIES ARGENTINA S.R.L.",
+   "variant_name": "PPG INDUSTRIES ARGENTINA SA",
+   "match_score": 22,
+   "reason": "PPG INDUSTRIES ARGENTINA S.R.L. != SRL vs SA suffix type"
+  },
+  {
+   "master_ta_code": "ar80077815",
+   "variant_ta_code": "ar80008722",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SYNGENTA AGRO",
+   "variant_name": "SYNGENTA AGRO, S.A. DE C.V.",
+   "match_score": 21,
+   "reason": "SYNGENTA AGRO != SYNGENTA AGRO, S.A. DE C.V. mexico code"
+  },
+  {
+   "master_ta_code": "ar80077887",
+   "variant_ta_code": "ar80114039",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "TRANSCARGO ARGENTINA",
+   "variant_name": "TRANSCARGO SA",
+   "match_score": 12,
+   "reason": "TRANSCARGO ARGENTINA != TRANSCARGO SA location suffix"
+  },
+  {
+   "master_ta_code": "ar80078774",
+   "variant_ta_code": "ar00051619",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "RAICO S.A. / S P & P S.R.L.",
+   "variant_name": "RAICO S.A.",
+   "match_score": 10,
+   "reason": "RAICO S.A. / S P & P S.R.L. vs RAICO S.A. partial name"
+  },
+  {
+   "master_ta_code": "ar80080700",
+   "variant_ta_code": "ar80011675",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "EMERSON (ARGENTINA)LTD.",
+   "variant_name": "EMERSON ARGENTINA S.A.",
+   "match_score": 14,
+   "reason": "EMERSON (ARGENTINA)LTD. != EMERSON ARGENTINA S.A. punct/suffix"
+  },
+  {
+   "master_ta_code": "ar80080700",
+   "variant_ta_code": "ar00012340",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "EMERSON (ARGENTINA)LTD.",
+   "variant_name": "EMERSON ARGENTINA SA",
+   "match_score": 14,
+   "reason": "EMERSON (ARGENTINA)LTD. != EMERSON ARGENTINA SA punct/suffix"
+  },
+  {
+   "master_ta_code": "ar80086679",
+   "variant_ta_code": "ar80065878",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "FORD MOTOR CO",
+   "variant_name": "Ford Motor Company S.A. De C.V",
+   "match_score": 17,
+   "reason": "FORD MOTOR CO != Ford Motor Company S.A. De C.V. punct/code"
+  },
+  {
+   "master_ta_code": "ar80086679",
+   "variant_ta_code": "ar80104471",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "FORD MOTOR CO",
+   "variant_name": "FORD MOTOR CO OF SA",
+   "match_score": 17,
+   "reason": "FORD MOTOR CO != FORD MOTOR CO OF SA extra token"
+  },
+  {
+   "master_ta_code": "ar80088156",
+   "variant_ta_code": "ar00081593",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "FREZZATE SA",
+   "variant_name": "FREZZATE S.R.L.",
+   "match_score": 16,
+   "reason": "FREZZATE SA != FREZZATE S.R.L. suffix type SRL vs SA"
+  },
+  {
+   "master_ta_code": "ar80100310",
+   "variant_ta_code": "ar80100309",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "LAT LOGISTIC ARGENTINA",
+   "variant_name": "LAT LOGISTIC (*)",
+   "match_score": 19,
+   "reason": "LAT LOGISTIC ARGENTINA != LAT LOGISTIC (*) placeholder variant"
+  },
+  {
+   "master_ta_code": "ar80100311",
+   "variant_ta_code": "ar80100309",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "LAT LOGISTIC S.A.S.",
+   "variant_name": "LAT LOGISTIC (*)",
+   "match_score": 19,
+   "reason": "LAT LOGISTIC S.A.S. != LAT LOGISTIC (*) placeholder/suffix"
+  },
+  {
+   "master_ta_code": "ar80103720",
+   "variant_ta_code": "ar80104845",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CARREFOUR ARGENTINA SA",
+   "variant_name": "INC S.A. (CARREFOUR ARGENTINA)",
+   "match_score": 16,
+   "reason": "CARREFOUR ARGENTINA SA != INC S.A. (CARREFOUR ARGENTINA)"
+  },
+  {
+   "master_ta_code": "ar80111814",
+   "variant_ta_code": "ar80076699",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "DIRANSA SA",
+   "variant_name": "DIRANSA SRL",
+   "match_score": 16,
+   "reason": "DIRANSA SA != DIRANSA SRL suffix type change"
+  },
+  {
+   "master_ta_code": "ar80111854",
+   "variant_ta_code": "ar80115743",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "DREAMCO SCA",
+   "variant_name": "DREAMCO SA",
+   "match_score": 16,
+   "reason": "DREAMCO SCA != DREAMCO SA suffix type change"
+  },
+  {
+   "master_ta_code": "ar80112106",
+   "variant_ta_code": "ar80034126",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "FMC TECHNOLOGIES LTD",
+   "variant_name": "FMC TECHNOLOGIES, INC.",
+   "match_score": 18,
+   "reason": "FMC TECHNOLOGIES LTD != FMC TECHNOLOGIES, INC. suffix type"
+  },
+  {
+   "master_ta_code": "ar80112106",
+   "variant_ta_code": "ar80016290",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "FMC TECHNOLOGIES LTD",
+   "variant_name": "FMC TECHNOLOGIES S.R.L.",
+   "match_score": 17,
+   "reason": "FMC TECHNOLOGIES LTD != FMC TECHNOLOGIES S.R.L. suffix"
+  },
+  {
+   "master_ta_code": "ar80112230",
+   "variant_ta_code": "ar80010528",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "GM BRASIL",
+   "variant_name": "GM ARGENTINA SRL",
+   "match_score": 14,
+   "reason": "GM BRASIL != GM ARGENTINA SRL different country branch"
+  },
+  {
+   "master_ta_code": "ar80112230",
+   "variant_ta_code": "ar80016400",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "GM BRASIL",
+   "variant_name": "GM DE ARGENTINA S.R.L.",
+   "match_score": 23,
+   "reason": "GM BRASIL != GM DE ARGENTINA S.R.L. different branches"
+  },
+  {
+   "master_ta_code": "ar80113805",
+   "variant_ta_code": "ar00019470",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SOLKEM SA",
+   "variant_name": "SOLKEM S.R.L.",
+   "match_score": 15,
+   "reason": "SOLKEM SA != SOLKEM S.R.L. suffix type change"
+  },
+  {
+   "master_ta_code": "ar80114507",
+   "variant_ta_code": "ar80114895",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "FEET BIT INTERNATIONAL COMPANY LTD/ SOUTHBAY SRL",
+   "variant_name": "SOUTHBAY SRL",
+   "match_score": 12,
+   "reason": "FEET BIT...LTD/ SOUTHBAY != SOUTHBAY SRL partial match only"
+  },
+  {
+   "master_ta_code": "ar80116852",
+   "variant_ta_code": "ar80000745",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "ASOCIACION DE COOP. ARGENTINAS COOP. LTD.",
+   "variant_name": "ASOCIACION DE COOP",
+   "match_score": 15,
+   "reason": "ASOCIACION DE COOP. ARGENTINAS...LTD. != ASOCIACION DE COOP incomplete"
+  },
+  {
+   "master_ta_code": "ar80116852",
+   "variant_ta_code": "ar80103402",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "ASOCIACION DE COOP. ARGENTINAS COOP. LTD.",
+   "variant_name": "ASOCIACION DE",
+   "match_score": 7,
+   "reason": "ASOCIACION DE COOP. ARGENTINAS...LTD. != ASOCIACION DE too short"
+  },
+  {
+   "master_ta_code": "ar80127382",
+   "variant_ta_code": "ar00027587",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "MARKETING AGRICOLA S.A.",
+   "variant_name": "MARKETING AGRICOLA S.R.L.",
+   "match_score": 16,
+   "reason": "MARKETING AGRICOLA S.A. != MARKETING...S.R.L. suffix type"
+  },
+  {
+   "master_ta_code": "ar80127382",
+   "variant_ta_code": "ar80025972",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "MARKETING AGRICOLA S.A.",
+   "variant_name": "MARKETING AGRICOLA SRL",
+   "match_score": 16,
+   "reason": "MARKETING AGRICOLA S.A. != MARKETING...SRL suffix type"
+  },
+  {
+   "master_ta_code": "ar80127532",
+   "variant_ta_code": "ar80127564",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "RAIZEN PARAGUAY S.A COMPL- 8553.S",
+   "variant_name": "RAIZEN SA",
+   "match_score": 9,
+   "reason": "RAIZEN PARAGUAY S.A COMPL-8553.S != RAIZEN SA variant code"
+  },
+  {
+   "master_ta_code": "ar80127533",
+   "variant_ta_code": "ar80127564",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "RAIZEN PARAGUAY S.A COMPL- 8553-C",
+   "variant_name": "RAIZEN SA",
+   "match_score": 9,
+   "reason": "RAIZEN PARAGUAY S.A COMPL-8553-C != RAIZEN SA variant code"
+  },
+  {
+   "master_ta_code": "ar80127534",
+   "variant_ta_code": "ar80127564",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "RAIZEN PARAGUAY S.A COMPL- 8553-D",
+   "variant_name": "RAIZEN SA",
+   "match_score": 9,
+   "reason": "RAIZEN PARAGUAY S.A COMPL-8553-D != RAIZEN SA variant code"
+  },
+  {
+   "master_ta_code": "ar80127535",
+   "variant_ta_code": "ar80127564",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "RAIZEN PARAGUAY S.A COMPL 8553-F",
+   "variant_name": "RAIZEN SA",
+   "match_score": 9,
+   "reason": "RAIZEN PARAGUAY S.A COMPL 8553-F != RAIZEN SA variant code"
+  },
+  {
+   "master_ta_code": "ar80133256",
+   "variant_ta_code": "ar00086679",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "INNOVATION LOGISTICS MANAGEMENT COMPANY LTD",
+   "variant_name": "MANAGEMENT COMPANY SA",
+   "match_score": 9,
+   "reason": "INNOVATION LOGISTICS MANAGEMENT COMPANY vs MANAGEMENT COMPANY SA - only shared words are generic"
+  },
+  {
+   "master_ta_code": "ar80134678",
+   "variant_ta_code": "ar80026742",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "UNIVERSAL CARGO SRL ï¿½ï¿½ï¿½",
+   "variant_name": "UNIVERSAL CARGO LTD.",
+   "match_score": 16,
+   "reason": "UNIVERSAL CARGO SRL vs LTD - different legal form suffix"
+  },
+  {
+   "master_ta_code": "ar80134839",
+   "variant_ta_code": "ar00052051",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ALL IN",
+   "variant_name": "ALL IN BROTHERS S.A.",
+   "match_score": 11,
+   "reason": "ALL IN vs ALL IN BROTHERS S.A. - BROTHERS is distinct noun, not suffix"
+  },
+  {
+   "master_ta_code": "ar80138370",
+   "variant_ta_code": "ar80017754",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SUTURAS ARGENTINA S R L",
+   "variant_name": "SUTURAS ARGENTINA S.A.",
+   "match_score": 12,
+   "reason": "SUTURAS ARGENTINA S R L vs S.A. - different legal form SRL vs SA"
+  },
+  {
+   "master_ta_code": "ar00010664",
+   "variant_ta_code": "ar00015978",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "B K GIULINI ARGENTINA SA",
+   "variant_name": "S K F ARGENTINA SA",
+   "match_score": 11,
+   "reason": "B K GIULINI ARGENTINA SA vs S K F ARGENTINA SA - B K != S K F"
+  },
+  {
+   "master_ta_code": "ar00010938",
+   "variant_ta_code": "ar00010940",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "BOLDT GAMING SA",
+   "variant_name": "BOLDT SA",
+   "match_score": 13,
+   "reason": "BOLDT GAMING SA vs BOLDT SA - GAMING is distinct noun"
+  },
+  {
+   "master_ta_code": "ar00011065",
+   "variant_ta_code": "ar00086088",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "C N SERVICIOS S.R.L.",
+   "variant_name": "E&N SERVICIOS SRL",
+   "match_score": 12,
+   "reason": "C N SERVICIOS S.R.L. vs E&N SERVICIOS SRL - C N != E N"
+  },
+  {
+   "master_ta_code": "ar00013192",
+   "variant_ta_code": "ar00069679",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "GRUPO LP. S.R.L.",
+   "variant_name": "GRUPO R Y A S.R.L.",
+   "match_score": 5,
+   "reason": "GRUPO LP vs GRUPO R Y A different company"
+  },
+  {
+   "master_ta_code": "ar00013233",
+   "variant_ta_code": "ar00024674",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "H & T METALS SA",
+   "variant_name": "H Y T METALS S.A.",
+   "match_score": 15,
+   "reason": "H & T vs H Y T different entity"
+  },
+  {
+   "master_ta_code": "ar00014048",
+   "variant_ta_code": "ar80078574",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "LABORATORIO SCOPE SA",
+   "variant_name": "LABORATORIO SA",
+   "match_score": 9,
+   "reason": "LABORATORIO SCOPE vs LABORATORIO only partial match"
+  },
+  {
+   "master_ta_code": "ar00014129",
+   "variant_ta_code": "ar80018302",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "LARING SAN LUIS SA",
+   "variant_name": "LARING SA",
+   "match_score": 12,
+   "reason": "LARING SAN LUIS vs LARING location variant"
+  },
+  {
+   "master_ta_code": "ar00015065",
+   "variant_ta_code": "ar00029109",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "OMNI SA",
+   "variant_name": "OMNI S.R.L.",
+   "match_score": 13,
+   "reason": "Farkli legal form SA vs S.R.L."
+  },
+  {
+   "master_ta_code": "ar00015377",
+   "variant_ta_code": "ar00029820",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PINO SUB SA",
+   "variant_name": "PINO-SUB SCA.",
+   "match_score": 24,
+   "reason": "Farkli legal form SA vs SCA"
+  },
+  {
+   "master_ta_code": "ar00015758",
+   "variant_ta_code": "ar80018382",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "REHAU SA",
+   "variant_name": "REHAU S.A. DE C.V.",
+   "match_score": 14,
+   "reason": "Farkli legal form SA vs S.A. DE C.V."
+  },
+  {
+   "master_ta_code": "ar00015933",
+   "variant_ta_code": "ar00088733",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "ROTATIVOS ARES SA",
+   "variant_name": "ARES SA",
+   "match_score": 12,
+   "reason": "ROTATIVOS ARES vs ARES farki"
+  },
+  {
+   "master_ta_code": "ar00016407",
+   "variant_ta_code": "ar00032315",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "STRADA SA",
+   "variant_name": "STRADA S.R.L.",
+   "match_score": 14,
+   "reason": "Farkli legal form SA vs S.R.L."
+  },
+  {
+   "master_ta_code": "ar00016497",
+   "variant_ta_code": "ar00016494",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "T P I ARGENTINA SA",
+   "variant_name": "T F L ARGENTINA SA",
+   "match_score": 10,
+   "reason": "T P I vs T F L tamamen farki akrostis"
+  },
+  {
+   "master_ta_code": "ar00016607",
+   "variant_ta_code": "ar00083758",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "TECNOMAQ S.R.L.",
+   "variant_name": "TECNOMAQ S.A.",
+   "match_score": 15,
+   "reason": "Farkli legal form S.R.L. vs S.A."
+  },
+  {
+   "master_ta_code": "ar00016736",
+   "variant_ta_code": "ar00011476",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "THOMAS DE SUDAMERICA SA",
+   "variant_name": "CO E S SUDAMERICA SA",
+   "match_score": 11,
+   "reason": "THOMAS DE SUDAMERICA vs CO E S SUDAMERICA, different brand cores (THOMAS vs CO E S)"
+  },
+  {
+   "master_ta_code": "ar00016742",
+   "variant_ta_code": "ar80101638",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "TIBEX S.R.L.",
+   "variant_name": "TIBEX SA",
+   "match_score": 16,
+   "reason": "TIBEX S.R.L. vs TIBEX SA, legal form change (SRL vs SA) suggests different entity"
+  },
+  {
+   "master_ta_code": "ar00017079",
+   "variant_ta_code": "ar00040453",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "VICKING SA",
+   "variant_name": "VICKING S.R.L.",
+   "match_score": 16,
+   "reason": "VICKING SA vs VICKING S.R.L., legal form change (SA vs SRL) suggests different entity"
+  },
+  {
+   "master_ta_code": "ar00017176",
+   "variant_ta_code": "ar80052110",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "WANCHESE ARGENTINA SA",
+   "variant_name": "WANCHESE ARGENTINA S.R.L.",
+   "match_score": 19,
+   "reason": "WANCHESE ARGENTINA SA vs WANCHESE ARGENTINA S.R.L., legal form change (SA vs SRL)"
+  },
+  {
+   "master_ta_code": "ar00017213",
+   "variant_ta_code": "ar80009665",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "WILDEN ARGENTINA S.R.L.",
+   "variant_name": "WILDEN ARGENTINA S.A.",
+   "match_score": 19,
+   "reason": "WILDEN ARGENTINA S.R.L. vs WILDEN ARGENTINA S.A., legal form change (SRL vs SA)"
+  },
+  {
+   "master_ta_code": "ar00017336",
+   "variant_ta_code": "ar00066876",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "NEWPLAST S.R.L.",
+   "variant_name": "NEWPLAST S.A.",
+   "match_score": 16,
+   "reason": "NEWPLAST S.R.L. vs NEWPLAST S.A., legal form change (SRL vs SA)"
+  },
+  {
+   "master_ta_code": "ar00017363",
+   "variant_ta_code": "ar00052960",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "A Y F PLASTICOS S.R.L.",
+   "variant_name": "PLASTICOS F R S.A.",
+   "match_score": 6,
+   "reason": "A Y F PLASTICOS vs PLASTICOS F R, different brand core (A Y F vs F R)"
+  },
+  {
+   "master_ta_code": "ar00017395",
+   "variant_ta_code": "ar80000058",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "A.MUTZ Y CIA. S.R.L.",
+   "variant_name": "A.MUTZ Y CIA S.A.",
+   "match_score": 16,
+   "reason": "A.MUTZ Y CIA. S.R.L. vs A.MUTZ Y CIA S.A., legal form change (SRL vs SA)"
+  },
+  {
+   "master_ta_code": "ar00018066",
+   "variant_ta_code": "ar80098536",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ALPAC S.R.L.",
+   "variant_name": "ALPAC S.A.",
+   "match_score": 16,
+   "reason": "ALPAC S.R.L. vs ALPAC S.A., legal form change (SRL vs SA)"
+  },
+  {
+   "master_ta_code": "ar00018100",
+   "variant_ta_code": "ar80049649",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ELEKTRIM S.R.L.",
+   "variant_name": "ELEKTRIM S.A.",
+   "match_score": 16,
+   "reason": "ELEKTRIM S.R.L. vs ELEKTRIM S.A., legal form change (SRL vs SA)"
+  },
+  {
+   "master_ta_code": "ar00018106",
+   "variant_ta_code": "ar80009913",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ALTER S.R.L.",
+   "variant_name": "ALTER S.A.I.C.",
+   "match_score": 15,
+   "reason": "ALTER S.R.L. vs ALTER S.A.I.C., legal form change (SRL vs SAIC)"
+  },
+  {
+   "master_ta_code": "ar00018212",
+   "variant_ta_code": "ar80052513",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "FABAHER S.R.L.",
+   "variant_name": "FABAHER S.A.",
+   "match_score": 16,
+   "reason": "FABAHER S.R.L. vs FABAHER S.A., legal form change (SRL vs SA)"
+  },
+  {
+   "master_ta_code": "ar00018226",
+   "variant_ta_code": "ar00010382",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ANAEROBICOS S.A.",
+   "variant_name": "ANAEROBICOS S.R.L.",
+   "match_score": 16,
+   "reason": "ANAEROBICOS S.A. vs ANAEROBICOS S.R.L., legal form change (SA vs SRL)"
+  },
+  {
+   "master_ta_code": "ar00018395",
+   "variant_ta_code": "ar00066086",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ARCANO S.A.",
+   "variant_name": "ARCANO S.R.L.",
+   "match_score": 16,
+   "reason": "ARCANO S.A. vs ARCANO S.R.L., legal form change (SA vs SRL)"
+  },
+  {
+   "master_ta_code": "ar00018865",
+   "variant_ta_code": "ar00040084",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "B & B SERVICIOS AGROPECUARIOS S.R.L.",
+   "variant_name": "SERVICIOS AGROPECUARIOS S.R.L.",
+   "match_score": 12,
+   "reason": "B & B SERVICIOS AGROPECUARIOS vs SERVICIOS AGROPECUARIOS, missing brand core (B & B)"
+  },
+  {
+   "master_ta_code": "ar00019179",
+   "variant_ta_code": "ar00070144",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PLANETA AGUA S.A.",
+   "variant_name": "PLANETA AGUA S.R.L.",
+   "match_score": 20,
+   "reason": "PLANETA AGUA S.A. vs PLANETA AGUA S.R.L., legal form change (SA vs SRL)"
+  },
+  {
+   "master_ta_code": "ar00019211",
+   "variant_ta_code": "ar00049350",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "BETTER WATER ARGENTINA S.R.L.",
+   "variant_name": "WATER ARGENTINA SRL",
+   "match_score": 19,
+   "reason": "BETTER WATER ARGENTINA vs WATER ARGENTINA, missing BETTER brand descriptor"
+  },
+  {
+   "master_ta_code": "ar00019759",
+   "variant_ta_code": "ar80015262",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "C A.S. INSTRUMENTAL S.R.L.",
+   "variant_name": "A.S&C",
+   "match_score": 12,
+   "reason": "Core brand different: C A.S. vs A.S&C"
+  },
+  {
+   "master_ta_code": "ar00020439",
+   "variant_ta_code": "ar80086484",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CHEMIA S.A.",
+   "variant_name": "CHEMIA CORP.",
+   "match_score": 16,
+   "reason": "Core brand different: CHEMIA vs CHEMIA CORP"
+  },
+  {
+   "master_ta_code": "ar00020943",
+   "variant_ta_code": "ar00037988",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "COMSA DE ARGENTINA S.A. - COMSA S.A. UTE",
+   "variant_name": "COMSA SA",
+   "match_score": 14,
+   "reason": "Master is UTE partner variant core brand same but suffix cuts core"
+  },
+  {
+   "master_ta_code": "ar00021268",
+   "variant_ta_code": "ar80021341",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "COSTA LIBRE S.A.",
+   "variant_name": "COSTA LIBRE S.A. DE C.V.",
+   "match_score": 19,
+   "reason": "Master SA vs Variant SA DE C.V."
+  },
+  {
+   "master_ta_code": "ar00022163",
+   "variant_ta_code": "ar80002643",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "DR. LENOX S.A.",
+   "variant_name": "DR SA",
+   "match_score": 10,
+   "reason": "Variant drops core brand LENOX entirely"
+  },
+  {
+   "master_ta_code": "ar00022715",
+   "variant_ta_code": "ar80135454",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "ENERGIA ALCALINA S.R.L.",
+   "variant_name": "AC ENERGIA SRL",
+   "match_score": 10,
+   "reason": "Core brand different: ENERGIA ALCALINA vs AC ENERGIA"
+  },
+  {
+   "master_ta_code": "ar00023384",
+   "variant_ta_code": "ar00023385",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "FERIOLI S.A.",
+   "variant_name": "FERIOLI Y CIA. S.R.L.",
+   "match_score": 14,
+   "reason": "Master is FERIOLI only; variant adds Y CIA"
+  },
+  {
+   "master_ta_code": "ar00023800",
+   "variant_ta_code": "ar00089389",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "FRUTOS DE LOS LAGOS S.A.",
+   "variant_name": "LAGOS SA",
+   "match_score": 11,
+   "reason": "Variant drops FRUTOS DE LOS prefix"
+  },
+  {
+   "master_ta_code": "ar00024450",
+   "variant_ta_code": "ar00074250",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "GREEN S.A.",
+   "variant_name": "DAS GREEN S.A.S.",
+   "match_score": 10,
+   "reason": "Master GREEN S.A. vs Variant DAS GREEN S.A.S."
+  },
+  {
+   "master_ta_code": "ar00024803",
+   "variant_ta_code": "ar00100258",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "HER-BRON S.R.L.",
+   "variant_name": "BRON SRL",
+   "match_score": 16,
+   "reason": "HER-BRON vs BRON (missing HER- prefix)"
+  },
+  {
+   "master_ta_code": "ar00025309",
+   "variant_ta_code": "ar80015682",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "IN.ME.CAR. S.R.L.",
+   "variant_name": "CAR",
+   "match_score": 8,
+   "reason": "IN.ME.CAR. S.R.L. vs CAR (CAR is just abbreviation suffix, missing IN.ME)"
+  },
+  {
+   "master_ta_code": "ar00025420",
+   "variant_ta_code": "ar00014625",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "INDUSTRIAL METALMECANICA S.A.",
+   "variant_name": "METALMECANICA SA",
+   "match_score": 11,
+   "reason": "INDUSTRIAL METALMECANICA vs METALMECANICA (missing INDUSTRIAL prefix)"
+  },
+  {
+   "master_ta_code": "ar00025689",
+   "variant_ta_code": "ar00044401",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "INSTITUTO PRIVADO DE RADIOTERAPIA ONCOLOGICA S.A.",
+   "variant_name": "PRIVADO SA",
+   "match_score": 10,
+   "reason": "INSTITUTO PRIVADO DE RADIOTERAPIA ONCOLOGICA S.A. vs PRIVADO SA (too much core content missing)"
+  },
+  {
+   "master_ta_code": "ar00025992",
+   "variant_ta_code": "ar80077096",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "J.A.S. S.A.I.C.",
+   "variant_name": "JAS FOR",
+   "match_score": 11,
+   "reason": "J.A.S. S.A.I.C. vs JAS FOR (FOR is different brand element)"
+  },
+  {
+   "master_ta_code": "ar00026455",
+   "variant_ta_code": "ar00088680",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "LA ACROPOLIS S.A.",
+   "variant_name": "ACROPOLIS SRL",
+   "match_score": 15,
+   "reason": "LA ACROPOLIS S.A. vs ACROPOLIS SRL (different form, LA/prefix stripped)"
+  },
+  {
+   "master_ta_code": "ar00026531",
+   "variant_ta_code": "ar00086878",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "LA OPTICA S.A.",
+   "variant_name": "OPTICA R & R SRL",
+   "match_score": 12,
+   "reason": "LA OPTICA S.A. vs OPTICA R & R SRL (R & R added, different firm)"
+  },
+  {
+   "master_ta_code": "ar00026593",
+   "variant_ta_code": "ar00074136",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "LABORATORIO DE CONTROL DE CALIDAD MELACROM S C",
+   "variant_name": "C F CONTROL S.R.L.",
+   "match_score": 11,
+   "reason": "LABORATORIO DE CONTROL DE CALIDAD MELACROM vs C F CONTROL (different firms, F CONTROL is partial)"
+  },
+  {
+   "master_ta_code": "ar00026836",
+   "variant_ta_code": "ar80099209",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "LED S.A.",
+   "variant_name": "D LED SH",
+   "match_score": 12,
+   "reason": "LED S.A. vs D LED SH (D prefix and SH suffix added, different firms)"
+  },
+  {
+   "master_ta_code": "ar00028269",
+   "variant_ta_code": "ar00053045",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "MIX S.R.L.",
+   "variant_name": "R-MIX S.R.L.",
+   "match_score": 13,
+   "reason": "MIX S.R.L. vs R-MIX S.R.L. (different firm, R-MIX is distinct brand)"
+  },
+  {
+   "master_ta_code": "ar00028958",
+   "variant_ta_code": "ar80047245",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "NUEVO VIENTO S.R.L.",
+   "variant_name": "DEL VIENTO SRL",
+   "match_score": 15,
+   "reason": "NUEVO VIENTO S.R.L. vs DEL VIENTO SRL (NUEVO missing, different firm)"
+  },
+  {
+   "master_ta_code": "ar00029473",
+   "variant_ta_code": "ar00066925",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PAPER S.R.L.",
+   "variant_name": "PAPER U S.R.L.",
+   "match_score": 11,
+   "reason": "PAPER S.R.L. vs PAPER U S.R.L. - additional U token suggests different entity"
+  },
+  {
+   "master_ta_code": "ar00029757",
+   "variant_ta_code": "ar80037071",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PHARMADN S.R.L.",
+   "variant_name": "PHARMADN SA",
+   "match_score": 16,
+   "reason": "PHARMADN S.R.L. vs PHARMADN SA - different legal form (SRL vs SA)"
+  },
+  {
+   "master_ta_code": "ar00030034",
+   "variant_ta_code": "ar00015459",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "PORTA SUR S.A.",
+   "variant_name": "PORTA HNOS SA",
+   "match_score": 12,
+   "reason": "PORTA SUR vs PORTA HNOS - different core identifiers (SUR vs HNOS brothers)"
+  },
+  {
+   "master_ta_code": "ar00030200",
+   "variant_ta_code": "ar00015523",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "PRODUCTORA INTEGRAL DE ACCESORIOS S.A.",
+   "variant_name": "PRODUCTORA SA",
+   "match_score": 8,
+   "reason": "PRODUCTORA INTEGRAL DE ACCESORIOS S.A. vs PRODUCTORA SA - core qualifier missing (INTEGRAL DE ACCESORIOS)"
+  },
+  {
+   "master_ta_code": "ar00030571",
+   "variant_ta_code": "ar80066404",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "RACE IN S.R.L.",
+   "variant_name": "RACE, INC.",
+   "match_score": 14,
+   "reason": "RACE IN S.R.L. vs RACE, INC. - IN vs INC differences suggest different interpretation"
+  },
+  {
+   "master_ta_code": "ar00031261",
+   "variant_ta_code": "ar80008004",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "S.C.I. S.R.L.",
+   "variant_name": "S.C.I. S.A.",
+   "match_score": 11,
+   "reason": "S.C.I. S.R.L. vs S.C.I. S.A. - different legal form (SRL vs SA)"
+  },
+  {
+   "master_ta_code": "ar00031506",
+   "variant_ta_code": "ar00016081",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SCHAEFFLER ARGENTINA S.A.",
+   "variant_name": "SCHAEFFLER ARGENTINA SRL",
+   "match_score": 18,
+   "reason": "SCHAEFFLER ARGENTINA S.A. vs SCHAEFFLER ARGENTINA SRL - different legal form"
+  },
+  {
+   "master_ta_code": "ar00031528",
+   "variant_ta_code": "ar00011359",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "SCHRO-CG S.A.",
+   "variant_name": "CG SA",
+   "match_score": 11,
+   "reason": "SCHRO-CG S.A. vs CG SA - SCHRO prefix missing, different entity"
+  },
+  {
+   "master_ta_code": "ar00031647",
+   "variant_ta_code": "ar00017158",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "SEMIRREMOLQUES VULCANO S.A.",
+   "variant_name": "VULCANO SA",
+   "match_score": 12,
+   "reason": "SEMIRREMOLQUES VULCANO S.A. vs VULCANO SA - SEMIRREMOLQUES prefix missing"
+  },
+  {
+   "master_ta_code": "ar00031930",
+   "variant_ta_code": "ar80136915",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SINIS S.R.L.",
+   "variant_name": "SINIS SA",
+   "match_score": 15,
+   "reason": "SINIS S.R.L. vs SINIS SA - different legal form"
+  },
+  {
+   "master_ta_code": "ar00032029",
+   "variant_ta_code": "ar00067115",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SLAP S.R.L.",
+   "variant_name": "SLAP S.A.",
+   "match_score": 16,
+   "reason": "SLAP S.R.L. vs SLAP S.A. - different legal form"
+  },
+  {
+   "master_ta_code": "ar00032244",
+   "variant_ta_code": "ar80136957",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "STAHL BRASIL S.A. OFICINA DE REPRESENTACION EN ARG.",
+   "variant_name": "STAHL BRASIL SA",
+   "match_score": 14,
+   "reason": "STAHL BRASIL S.A. OFICINA DE REPRESENTACION EN ARG. vs STAHL BRASIL SA - suffix indicates branch office, potentially different entity"
+  },
+  {
+   "master_ta_code": "ar00032338",
+   "variant_ta_code": "ar00067154",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SUBITO S.R.L.",
+   "variant_name": "SUBITO S.A.",
+   "match_score": 16,
+   "reason": "SUBITO S.R.L. vs SUBITO S.A. - different legal form"
+  },
+  {
+   "master_ta_code": "ar00032637",
+   "variant_ta_code": "ar00063065",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "TAP S.A.",
+   "variant_name": "ON TAP S.A.",
+   "match_score": 14,
+   "reason": "TAP S.A. vs ON TAP S.A. - ON prefix added, different brand identity"
+  },
+  {
+   "master_ta_code": "ar00032670",
+   "variant_ta_code": "ar00060223",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "TEAM CO S.R.L.",
+   "variant_name": "C-TEAM INC S.R.L.",
+   "match_score": 11,
+   "reason": "TEAM CO S.R.L. vs C-TEAM INC S.R.L. - different core identifiers (TEAM CO vs C-TEAM)"
+  },
+  {
+   "master_ta_code": "ar00032903",
+   "variant_ta_code": "ar00016654",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "TELTRON BAIRES S.A.",
+   "variant_name": "TELTRON SA",
+   "match_score": 14,
+   "reason": "TELTRON BAIRES S.A. vs TELTRON SA - BAIRES location suffix missing, different entity"
+  },
+  {
+   "master_ta_code": "ar00033445",
+   "variant_ta_code": "ar80065199",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "TUBOMEC INGENIERIA S.R.L.",
+   "variant_name": "TUBOMEC INGENIERIA SA",
+   "match_score": 20,
+   "reason": "TUBOMEC INGENIERIA S.R.L. vs TUBOMEC INGENIERIA SA - different legal form"
+  },
+  {
+   "master_ta_code": "ar00033500",
+   "variant_ta_code": "ar00050264",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "U U NET ARGENTINA S.R.L.",
+   "variant_name": "NET ARGENTINA S.R.L.",
+   "match_score": 11,
+   "reason": "U U NET ARGENTINA S.R.L. vs NET ARGENTINA S.R.L. - U U prefix removed, different entity"
+  },
+  {
+   "master_ta_code": "ar00033867",
+   "variant_ta_code": "ar80090390",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "VIHA S.R.L.",
+   "variant_name": "VIHA S. DE R. LTDA",
+   "match_score": 16,
+   "reason": "S.R.L. vs S.DE R.LTDA different legal entities"
+  },
+  {
+   "master_ta_code": "ar00033989",
+   "variant_ta_code": "ar00017152",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "VORTEX CORP. S.A.",
+   "variant_name": "VORTEX SRL",
+   "match_score": 14,
+   "reason": "CORP S.A. vs SRL different entity types"
+  },
+  {
+   "master_ta_code": "ar00035054",
+   "variant_ta_code": "ar80017428",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ACEROS SH S.A.",
+   "variant_name": "R. ACEROS S.A.",
+   "match_score": 9,
+   "reason": "ACEROS SH vs R.ACEROS different core initials"
+  },
+  {
+   "master_ta_code": "ar00035677",
+   "variant_ta_code": "ar80000934",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "BANCO MACRO BANSUD S.A.",
+   "variant_name": "BANCO MACRO SA",
+   "match_score": 17,
+   "reason": "BANSUD missing in variant, core descriptor loss"
+  },
+  {
+   "master_ta_code": "ar00036346",
+   "variant_ta_code": "ar80034012",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "ESTABLECIMIENTO METALURGICO TAF",
+   "variant_name": "ESTABLECIMIENTO METALURGICO",
+   "match_score": 20,
+   "reason": "TAF missing, distinctive identifier token"
+  },
+  {
+   "master_ta_code": "ar00037348",
+   "variant_ta_code": "ar80022468",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "A C TEXTIL S.A.",
+   "variant_name": "TEXTIL S.A.",
+   "match_score": 7,
+   "reason": "A C missing, initial prefix token loss"
+  },
+  {
+   "master_ta_code": "ar00037538",
+   "variant_ta_code": "ar00010474",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "ARGENCERES SAN JUAN S.A.",
+   "variant_name": "ARGENCERES SA",
+   "match_score": 12,
+   "reason": "SAN JUAN missing, location descriptor loss"
+  },
+  {
+   "master_ta_code": "ar00037669",
+   "variant_ta_code": "ar80001108",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "BIO TRINIDAD S.A.",
+   "variant_name": "BIO SA",
+   "match_score": 9,
+   "reason": "TRINIDAD missing, core distinguishing token"
+  },
+  {
+   "master_ta_code": "ar00039087",
+   "variant_ta_code": "ar00101430",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "LIHUE TUE S.A.",
+   "variant_name": "TUE SA",
+   "match_score": 14,
+   "reason": "LIHUE missing, distinctive first token"
+  },
+  {
+   "master_ta_code": "ar00039516",
+   "variant_ta_code": "ar00076403",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "OBVIOUS BUSINESS S.A.",
+   "variant_name": "BUSINESS & BUSINESS S.A.",
+   "match_score": 17,
+   "reason": "OBVIOUS vs BUSINESS & BUSINESS different core brands"
+  },
+  {
+   "master_ta_code": "ar00039619",
+   "variant_ta_code": "ar80058638",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "PB-L PRODUCTOS BIO-LOGICOS SA",
+   "variant_name": "PRODUCTOS BIO-LOGICOS SA",
+   "match_score": 20,
+   "reason": "PB-L prefix missing, composite brand loss"
+  },
+  {
+   "master_ta_code": "ar00040305",
+   "variant_ta_code": "ar00046169",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "TITAN ARGENTINA S.R.L.",
+   "variant_name": "TITAN SRL",
+   "match_score": 15,
+   "reason": "ARGENTINA missing, location suffix descriptor loss"
+  },
+  {
+   "master_ta_code": "ar00040342",
+   "variant_ta_code": "ar00087333",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "TRANSPORTE IBARRA HNOS S.A.",
+   "variant_name": "TRANSPORTE C D C SA",
+   "match_score": 10,
+   "reason": "IBARRA HNOS vs C D C completely different core names"
+  },
+  {
+   "master_ta_code": "ar00040353",
+   "variant_ta_code": "ar80042491",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "TRIBECA COMPANY S.R.L.",
+   "variant_name": "TRIBECA",
+   "match_score": 16,
+   "reason": "COMPANY missing, core descriptor loss"
+  },
+  {
+   "master_ta_code": "ar00040425",
+   "variant_ta_code": "ar00046349",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "VANDERS GROUP S.R.L.",
+   "variant_name": "l & L GROUP srl",
+   "match_score": 10,
+   "reason": "VANDERS vs l & L completely different brands"
+  },
+  {
+   "master_ta_code": "ar00041849",
+   "variant_ta_code": "ar80024514",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "ALL TRADE FOOD S.A.",
+   "variant_name": "ALL TRADE SA",
+   "match_score": 14,
+   "reason": "FOOD missing, descriptor loss"
+  },
+  {
+   "master_ta_code": "ar00041895",
+   "variant_ta_code": "ar80023939",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "ESTABLECIMIENTOS METALURGICOS ONCATIVO S.A.",
+   "variant_name": "ONCATIVO SA",
+   "match_score": 14,
+   "reason": "ESTABLECIMIENTOS METALURGICOS prefix missing, descriptors lost"
+  },
+  {
+   "master_ta_code": "ar00044537",
+   "variant_ta_code": "ar80018245",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "FUERZA BRUTA S.A. Y OZONO PRODUCCIONES S.R.L. UNION TRA",
+   "variant_name": "FUERZA BRUTA SA",
+   "match_score": 16,
+   "reason": "FUERZA BRUTA SA vs FUERZA BRUTA SRL union tra; master includes second brand OZONO PRODUCCIONES, variant doesn't"
+  },
+  {
+   "master_ta_code": "ar00044664",
+   "variant_ta_code": "ar00025529",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "INDUSTRIAS DEL SUR S.R.L.",
+   "variant_name": "INDUSTRIAS SUR S.R.L.",
+   "match_score": 14,
+   "reason": "INDUSTRIAS DEL SUR vs INDUSTRIAS SUR; master has DEL (of), variant omits it"
+  },
+  {
+   "master_ta_code": "ar00045007",
+   "variant_ta_code": "ar80064838",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "AGROPECUARIA RIO CHICO S.R.L.",
+   "variant_name": "RIO CHICO SRL",
+   "match_score": 20,
+   "reason": "AGROPECUARIA RIO CHICO vs RIO CHICO; master has AGROPECUARIA prefix, variant loses it"
+  },
+  {
+   "master_ta_code": "ar00045268",
+   "variant_ta_code": "ar00089751",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "SERVIMAGNUS S.A. SDC DO BRASIL ROWING S.A. SERVIDRAGA S",
+   "variant_name": "ROWING SA",
+   "match_score": 9,
+   "reason": "ROWING SA is tiny subset of master SERVIMAGNUS BRASIL ROWING; master is union of multiple companies"
+  },
+  {
+   "master_ta_code": "ar00045428",
+   "variant_ta_code": "ar00051011",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "AERO SERVICIOS NOA SRL",
+   "variant_name": "AERO SRL",
+   "match_score": 11,
+   "reason": "AERO SERVICIOS NOA vs AERO SRL; master has SERVICIOS NOA, variant omits them"
+  },
+  {
+   "master_ta_code": "ar00045544",
+   "variant_ta_code": "ar00011073",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "C YC PRO S.A.",
+   "variant_name": "C YC S.R.L.",
+   "match_score": 18,
+   "reason": "C YC PRO S.A. vs C YC S.R.L.; master has PRO (probably partnership designation), variant loses it"
+  },
+  {
+   "master_ta_code": "ar00045613",
+   "variant_ta_code": "ar00049269",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "DACAR IMPRESORA S.R.L.",
+   "variant_name": "R C IMPRESORA SRL",
+   "match_score": 13,
+   "reason": "DACAR IMPRESORA vs R C IMPRESORA; DACAR is different brand from R C"
+  },
+  {
+   "master_ta_code": "ar00045899",
+   "variant_ta_code": "ar00011248",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "MAGIC STAR S.A. - CASINO BUENOS AIRES S.A.U.T.E.",
+   "variant_name": "CASINO BUENOS AIRES SA",
+   "match_score": 20,
+   "reason": "MAGIC STAR SA vs CASINO BUENOS AIRES SA; master is union, CASINO is one part but different brand"
+  },
+  {
+   "master_ta_code": "ar00048153",
+   "variant_ta_code": "ar80022495",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "ITURAN ROAD TRACK ARGENTINA SA",
+   "variant_name": "TRACK ARGENTINA SA",
+   "match_score": 13,
+   "reason": "ITURAN ROAD TRACK ARGENTINA vs TRACK ARGENTINA; master has ITURAN ROAD, variant loses both"
+  },
+  {
+   "master_ta_code": "ar00048301",
+   "variant_ta_code": "ar00053290",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "WD S.A.",
+   "variant_name": "WD S.R.L.",
+   "match_score": 15,
+   "reason": "WD S.A. vs WD S.R.L.; same acronym but different legal entity types"
+  },
+  {
+   "master_ta_code": "ar00051333",
+   "variant_ta_code": "ar80064880",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "H. P. ELECTRIC S.R.L.",
+   "variant_name": "S & C ELECTRIC CO",
+   "match_score": 7,
+   "reason": "H. P. ELECTRIC S.R.L. vs S & C ELECTRIC CO; H.P. vs S&C are different brands"
+  },
+  {
+   "master_ta_code": "ar00051416",
+   "variant_ta_code": "ar80107595",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "LATEX CO S.A.C.I.F.",
+   "variant_name": "LATEX SRL",
+   "match_score": 12,
+   "reason": "LATEX CO S.A.C.I.F. vs LATEX SRL; master has CO and S.A.C.I.F., variant is bare LATEX"
+  },
+  {
+   "master_ta_code": "ar00051535",
+   "variant_ta_code": "ar80078557",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "NUEVA LA S.R.L.",
+   "variant_name": "LA NUEVA S.A.",
+   "match_score": 10,
+   "reason": "NUEVA LA vs LA NUEVA; these have different word orders suggesting different entity names"
+  },
+  {
+   "master_ta_code": "ar00052545",
+   "variant_ta_code": "ar00089214",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "GLOBAL TRADING IMPORTACIONES S.R.L.",
+   "variant_name": "GLOBAL INTERNATIONAL TRADE S.R.L.",
+   "match_score": 15,
+   "reason": "GLOBAL TRADING IMPORTACIONES vs GLOBAL INTERNATIONAL TRADE; TRADING vs INTERNATIONAL TRADE are different words"
+  },
+  {
+   "master_ta_code": "ar00055389",
+   "variant_ta_code": "ar80118324",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "INTERNATIONAL LOGISTICS COMPANY S.A.",
+   "variant_name": "R&F International Logistics Company LTD",
+   "match_score": 10,
+   "reason": "INTERNATIONAL LOGISTICS COMPANY vs R&F INTERNATIONAL LOGISTICS; R&F is different brand/prefix"
+  },
+  {
+   "master_ta_code": "ar00056291",
+   "variant_ta_code": "ar00073557",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "OCEAN EXPORT S.A.",
+   "variant_name": "OCEAN IMPORT S.A.",
+   "match_score": 20,
+   "reason": "OCEAN EXPORT vs OCEAN IMPORT; EXPORT vs IMPORT are different activities"
+  },
+  {
+   "master_ta_code": "ar00057204",
+   "variant_ta_code": "ar00045894",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "LUMMA S.A.",
+   "variant_name": "LUMMA S.R.L.",
+   "match_score": 16,
+   "reason": "LUMMA S.A. vs LUMMA S.R.L.; same brand but different entity types (might be related but registered separately)"
+  },
+  {
+   "master_ta_code": "ar00060275",
+   "variant_ta_code": "ar00059422",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "EDGE S.A.",
+   "variant_name": "THE EDGE S.R.L.",
+   "match_score": 13,
+   "reason": "EDGE S.A. vs THE EDGE S.R.L. article THE adds distinction"
+  },
+  {
+   "master_ta_code": "ar00060871",
+   "variant_ta_code": "ar00076255",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "V & R COMERCIO EXTERIOR S.A.",
+   "variant_name": "B C COMERCIO EXTERIOR S.R.L.",
+   "match_score": 12,
+   "reason": "V & R vs B C core brand different"
+  },
+  {
+   "master_ta_code": "ar00060893",
+   "variant_ta_code": "ar80046985",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "VISCO.ARG S.R.L.",
+   "variant_name": "ARG S.R.L.",
+   "match_score": 8,
+   "reason": "VISCO.ARG vs ARG subset, suffix lost, distinct"
+  },
+  {
+   "master_ta_code": "ar00061162",
+   "variant_ta_code": "ar80099208",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CASA S.R.L.",
+   "variant_name": "D CASA S.A. DE C.V.",
+   "match_score": 9,
+   "reason": "CASA S.R.L. vs D CASA S.A. de C.V. added prefix and different suffix"
+  },
+  {
+   "master_ta_code": "ar00061223",
+   "variant_ta_code": "ar80006866",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "COMPAÑIA DE DISEÑOS BASICOS S.A.",
+   "variant_name": "OS SA",
+   "match_score": 6,
+   "reason": "COMPAÑIA DE DISEÑOS BASICOS vs OS SA, too much lost"
+  },
+  {
+   "master_ta_code": "ar00061431",
+   "variant_ta_code": "ar80003764",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "GENNEIA VIENTOS ARGENTINOS S.A.",
+   "variant_name": "GENNEIA SA",
+   "match_score": 12,
+   "reason": "GENNEIA VIENTOS ARGENTINOS vs GENNEIA SA lost descriptor"
+  },
+  {
+   "master_ta_code": "ar00061510",
+   "variant_ta_code": "ar00046117",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "IN SITU SOLUCIONES GRAFICAS S.R.L.",
+   "variant_name": "SOLUCIONES GRAFICAS SRL",
+   "match_score": 16,
+   "reason": "IN SITU SOLUCIONES GRAFICAS vs SOLUCIONES GRAFICAS subset"
+  },
+  {
+   "master_ta_code": "ar00061544",
+   "variant_ta_code": "ar00085468",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "JCB PRODUCCIONES S.A.",
+   "variant_name": "A&R PRODUCCIONES SA",
+   "match_score": 10,
+   "reason": "JCB PRODUCCIONES vs A&R PRODUCCIONES different brand"
+  },
+  {
+   "master_ta_code": "ar00061617",
+   "variant_ta_code": "ar00086659",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "M T ARGENTINA S.R.L.",
+   "variant_name": "M & F ARGENTINA SRL",
+   "match_score": 12,
+   "reason": "M T ARGENTINA vs M & F ARGENTINA core letter different"
+  },
+  {
+   "master_ta_code": "ar00064136",
+   "variant_ta_code": "ar00077341",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "VICTORIA, S.R.L.",
+   "variant_name": "LA VICTORIA S.R.L.",
+   "match_score": 11,
+   "reason": "VICTORIA S.R.L. vs LA VICTORIA article added"
+  },
+  {
+   "master_ta_code": "ar00066796",
+   "variant_ta_code": "ar00021443",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "MEGAFRIO S.A.",
+   "variant_name": "D F MEGAFRIO S.R.L.",
+   "match_score": 16,
+   "reason": "MEGAFRIO S.A. vs D F MEGAFRIO S.R.L. prefix D F added"
+  },
+  {
+   "master_ta_code": "ar00066930",
+   "variant_ta_code": "ar00088918",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "PATAGONIC CASING S.A.",
+   "variant_name": "CASING SA",
+   "match_score": 14,
+   "reason": "PATAGONIC CASING vs CASING SA subset"
+  },
+  {
+   "master_ta_code": "ar00067149",
+   "variant_ta_code": "ar80106518",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "STROYPROJECT WEATHER MODIFICATION S.A.",
+   "variant_name": "STROYPROJECT WEATHER MODIFICATION C",
+   "match_score": 36,
+   "reason": "STROYPROJECT WEATHER MODIFICATION S.A. vs C truncation error"
+  },
+  {
+   "master_ta_code": "ar00068063",
+   "variant_ta_code": "ar00010653",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "AXON NUTRICION ANIMAL S.A.",
+   "variant_name": "AXON SA",
+   "match_score": 11,
+   "reason": "AXON NUTRICION ANIMAL vs AXON SA descriptor lost"
+  },
+  {
+   "master_ta_code": "ar00068099",
+   "variant_ta_code": "ar80020104",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "BUILDING CO. S.R.L.",
+   "variant_name": "BUILDING",
+   "match_score": 11,
+   "reason": "BUILDING CO. S.R.L. vs BUILDING subset"
+  },
+  {
+   "master_ta_code": "ar00068532",
+   "variant_ta_code": "ar00046079",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SALAS S.A.",
+   "variant_name": "SALAS Y CIA. S.A.",
+   "match_score": 11,
+   "reason": "SALAS S.A. vs SALAS Y CIA S.A. added Y CIA"
+  },
+  {
+   "master_ta_code": "ar00068540",
+   "variant_ta_code": "ar00037763",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "S-BUSINESS S.A.",
+   "variant_name": "BUSINESS PARTNERS S.R.L.",
+   "match_score": 8,
+   "reason": "S-BUSINESS S.A. vs BUSINESS PARTNERS different brand"
+  },
+  {
+   "master_ta_code": "ar00069270",
+   "variant_ta_code": "ar00061157",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CAPUTO S.A.I.C. y F.",
+   "variant_name": "CAPUTO HERMANOS S.A.",
+   "match_score": 11,
+   "reason": "CAPUTO S.A.I.C. y F. vs CAPUTO HERMANOS S.A. different legal form"
+  },
+  {
+   "master_ta_code": "ar00069352",
+   "variant_ta_code": "ar00088806",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "CONSULTORA & IMPORTADORA GRUPO PAMPAS ARGENTINA S.A.",
+   "variant_name": "B & B CONSULTORA SA",
+   "match_score": 8,
+   "reason": "CONSULTORA & IMPORTADORA GRUPO PAMPAS vs B & B different brand"
+  },
+  {
+   "master_ta_code": "ar00069429",
+   "variant_ta_code": "ar00089040",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "DISTRIBUIDORA H&G S.R.L.",
+   "variant_name": "DISTRIBUIDORA V G SA",
+   "match_score": 12,
+   "reason": "H&G vs V G different core brands"
+  },
+  {
+   "master_ta_code": "ar00069708",
+   "variant_ta_code": "ar80048256",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "H - UNION S.R.L.",
+   "variant_name": "UNION/AT",
+   "match_score": 9,
+   "reason": "H-UNION SRL vs UNION/AT different names"
+  },
+  {
+   "master_ta_code": "ar00069716",
+   "variant_ta_code": "ar00074487",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "I.M.P. ARGENTINA S.R.L.",
+   "variant_name": "IMPORT ARGENTINA S.R.L.",
+   "match_score": 19,
+   "reason": "IMP ARGENTINA vs IMPORT ARGENTINA different brands"
+  },
+  {
+   "master_ta_code": "ar00069842",
+   "variant_ta_code": "ar80121749",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "LIGHTING Y LOGISTICA INTERNACIONAL S.A.",
+   "variant_name": "LOGISTICA INTERNACIONAL SA",
+   "match_score": 10,
+   "reason": "LIGHTING Y LOGISTICA vs LOGISTICA missing core brand"
+  },
+  {
+   "master_ta_code": "ar00070286",
+   "variant_ta_code": "ar80042415",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "SARL.UX S.A.",
+   "variant_name": "SARL.",
+   "match_score": 7,
+   "reason": "SARL.UX S.A. vs SARL placeholder-like abbrev"
+  },
+  {
+   "master_ta_code": "ar00072081",
+   "variant_ta_code": "ar00085680",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "COMMERCE S.R.L.",
+   "variant_name": "B&D COMMERCE S.A.S.",
+   "match_score": 11,
+   "reason": "COMMERCE SRL vs B&D COMMERCE SAS"
+  },
+  {
+   "master_ta_code": "ar00072100",
+   "variant_ta_code": "ar00052341",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "DGM DE DIEGO MARTIN S.R.L.",
+   "variant_name": "DGM SRL",
+   "match_score": 13,
+   "reason": "DGM DE DIEGO MARTIN vs DGM abbreviation"
+  },
+  {
+   "master_ta_code": "ar00072250",
+   "variant_ta_code": "ar00073280",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "LATA S.A.",
+   "variant_name": "EN LATA S.A.S.",
+   "match_score": 14,
+   "reason": "LATA SA vs EN LATA SAS different brands"
+  },
+  {
+   "master_ta_code": "ar00072365",
+   "variant_ta_code": "ar80041662",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "ROS METAL S.R.L.",
+   "variant_name": "ROS SRL",
+   "match_score": 14,
+   "reason": "ROS METAL SRL vs ROS abbreviation"
+  },
+  {
+   "master_ta_code": "ar00073369",
+   "variant_ta_code": "ar00073370",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "GRUPO K & B S.R.L.",
+   "variant_name": "GRUPO K S.R.L.",
+   "match_score": 12,
+   "reason": "GRUPO K&B vs K different brand element"
+  },
+  {
+   "master_ta_code": "ar00073639",
+   "variant_ta_code": "ar00089739",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "RONA PLAST SAN JUAN S.R.L.",
+   "variant_name": "RONA PLAST SRL",
+   "match_score": 21,
+   "reason": "RONA PLAST SAN JUAN vs RONA PLAST"
+  },
+  {
+   "master_ta_code": "ar00074265",
+   "variant_ta_code": "ar00089834",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "DG STAR S.R.L.",
+   "variant_name": "STAR LTD SRL",
+   "match_score": 12,
+   "reason": "DG STAR SRL vs STAR LTD different"
+  },
+  {
+   "master_ta_code": "ar00074441",
+   "variant_ta_code": "ar80051661",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "GRUPO DE LA COSTA S.A.",
+   "variant_name": "GRUPO COSTA S.R.L.",
+   "match_score": 14,
+   "reason": "GRUPO DE LA COSTA vs GRUPO COSTA"
+  },
+  {
+   "master_ta_code": "ar00074442",
+   "variant_ta_code": "ar00012511",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "GRUPO EURO CHEMICAL S.A.",
+   "variant_name": "EURO SA",
+   "match_score": 9,
+   "reason": "GRUPO EURO CHEMICAL vs EURO very different"
+  },
+  {
+   "master_ta_code": "ar00074499",
+   "variant_ta_code": "ar80077039",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "INDUSTRIAS A S.A. S.A.",
+   "variant_name": "INDUSTRIAS",
+   "match_score": 6,
+   "reason": "INDUSTRIAS A S.A. vs INDUSTRIAS abbrev"
+  },
+  {
+   "master_ta_code": "ar00074681",
+   "variant_ta_code": "ar80005732",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "MS GLOBAL S.R.L.",
+   "variant_name": "M.S. INTERNATIONAL",
+   "match_score": 13,
+   "reason": "MS GLOBAL SRL vs M.S. INTERNATIONAL"
+  },
+  {
+   "master_ta_code": "ar00074941",
+   "variant_ta_code": "ar80060657",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "TRADE LOGISTICS S.A.S.",
+   "variant_name": "TRADE & LOGISTICS COMPANY",
+   "match_score": 12,
+   "reason": "TRADE LOGISTICS SAS vs TRADE & LOGISTICS COMPANY"
+  },
+  {
+   "master_ta_code": "ar00074949",
+   "variant_ta_code": "ar80120340",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "TSOLIS SHIPPING & SERVICES INTERNATIONAL S.A.S.",
+   "variant_name": "TSOLIS SHIPPING & SERVICE INTER",
+   "match_score": 17,
+   "reason": "TSOLIS SHIPPING SERVICES vs abbreviated"
+  },
+  {
+   "master_ta_code": "ar00076006",
+   "variant_ta_code": "ar80015264",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "AB ENERGIA S.A.",
+   "variant_name": "AB SA",
+   "match_score": 9,
+   "reason": "AB ENERGIA SA vs AB abbreviation"
+  },
+  {
+   "master_ta_code": "ar00076116",
+   "variant_ta_code": "ar80075257",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "AMFORTIS S.A.",
+   "variant_name": "AMFORTIS SRL",
+   "match_score": 16,
+   "reason": "AMFORTIS SA vs AMFORTIS SRL different legal forms"
+  },
+  {
+   "master_ta_code": "ar00076409",
+   "variant_ta_code": "ar00048270",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "C & P SUR S.A.",
+   "variant_name": "SUR HNOS. S.R.L.",
+   "match_score": 7,
+   "reason": "C & P SUR vs SUR HNOS completely different"
+  },
+  {
+   "master_ta_code": "ar00077448",
+   "variant_ta_code": "ar00085998",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "MAD GUN S.R.L.",
+   "variant_name": "D MAD SRL",
+   "match_score": 14,
+   "reason": "MAD GUN SRL vs D MAD different brand"
+  },
+  {
+   "master_ta_code": "ar00077533",
+   "variant_ta_code": "ar00027906",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "MENDIZABAL JORGE PABLO",
+   "variant_name": "MENDIZABAL JORGE PABLO F",
+   "match_score": 24,
+   "reason": "MENDIZABAL JORGE PABLO vs F middle initial"
+  },
+  {
+   "master_ta_code": "ar00077738",
+   "variant_ta_code": "ar00061789",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "P&L PRODUCTS S.A.",
+   "variant_name": "PRODUCTS S.A.",
+   "match_score": 6,
+   "reason": "P&L vs PRODUCTS only; 'P&L' is distinct brand"
+  },
+  {
+   "master_ta_code": "ar00078314",
+   "variant_ta_code": "ar00072424",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "TMT NON FOODS S.A.",
+   "variant_name": "TMT FOODS S.A.",
+   "match_score": 15,
+   "reason": "TMT NON FOODS vs TMT FOODS; 'NON' is critical"
+  },
+  {
+   "master_ta_code": "ar00078479",
+   "variant_ta_code": "ar00087271",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "WORLD TECHNOLOGY S.R.L.",
+   "variant_name": "TECH WORLD SRL",
+   "match_score": 18,
+   "reason": "WORLD TECHNOLOGY vs TECH WORLD; word order differs materially"
+  },
+  {
+   "master_ta_code": "ar00079258",
+   "variant_ta_code": "ar00012412",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "SPORT MEDICAL EQUIPMENT S.A.",
+   "variant_name": "EQUIPMENT SA",
+   "match_score": 8,
+   "reason": "SPORT MEDICAL EQUIPMENT vs EQUIPMENT only; missing core brand"
+  },
+  {
+   "master_ta_code": "ar00080352",
+   "variant_ta_code": "ar00088786",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "ASOCIACION DE BOMBEROS VOLUNTARIOS DE MONTE MAIZ",
+   "variant_name": "ASOCIACION DE BOMBEROS VOLUNTARIOS DE MONTE",
+   "match_score": 25,
+   "reason": "MONTE MAIZ vs MONTE only; location suffix removed materially"
+  },
+  {
+   "master_ta_code": "ar00080713",
+   "variant_ta_code": "ar00011159",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "CAPEX S.A. Y PETROMINERA CHUBUT SOCIEDAD DEL ESTADO UNION TRANSITO",
+   "variant_name": "CAPEX SA",
+   "match_score": 8,
+   "reason": "CAPEX + long descriptor vs CAPEX only; composition unclear"
+  },
+  {
+   "master_ta_code": "ar00081927",
+   "variant_ta_code": "ar00013275",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "HARDTECH S.A.",
+   "variant_name": "HARDTECH INC S.R.L.",
+   "match_score": 16,
+   "reason": "HARDTECH S.A. vs HARDTECH INC S.R.L.; 'INC' is differentiator"
+  },
+  {
+   "master_ta_code": "ar00082025",
+   "variant_ta_code": "ar00060345",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "I-FLOW S.A.",
+   "variant_name": "FLOW S.R.L.",
+   "match_score": 10,
+   "reason": "I-FLOW S.A. vs FLOW S.R.L.; 'I-' prefix is differentiator"
+  },
+  {
+   "master_ta_code": "ar00082887",
+   "variant_ta_code": "ar80006775",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "O.S. S.A.",
+   "variant_name": "O.S LTD.",
+   "match_score": 10,
+   "reason": "O.S. S.A. vs O.S LTD.; 'LTD' is distinct"
+  },
+  {
+   "master_ta_code": "ar00086335",
+   "variant_ta_code": "ar00081751",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "GLOBALLOGIC ARGENTINA S.A.",
+   "variant_name": "GLOBALLOGIC ARGENTINA S.R.L.",
+   "match_score": 18,
+   "reason": "GLOBALLOGIC ARGENTINA S.A. vs GLOBALLOGIC ARGENTINA S.R.L., legal entity type differs"
+  },
+  {
+   "master_ta_code": "ar00086893",
+   "variant_ta_code": "ar00082947",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "P POWDER",
+   "variant_name": "P POWDER S.A.S.",
+   "match_score": 11,
+   "reason": "P POWDER vs P POWDER S.A.S. - different legal forms"
+  },
+  {
+   "master_ta_code": "ar00087004",
+   "variant_ta_code": "ar00030296",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PROOBRA S.A.",
+   "variant_name": "PROOBRA S.R.L.",
+   "match_score": 16,
+   "reason": "S.A. vs S.R.L. different legal forms"
+  },
+  {
+   "master_ta_code": "ar00087016",
+   "variant_ta_code": "ar00083203",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PURE BEAUTY",
+   "variant_name": "PURE BEAUTY S.R.L.",
+   "match_score": 20,
+   "reason": "PURE BEAUTY vs PURE BEAUTY S.R.L. - suffix mismatch"
+  },
+  {
+   "master_ta_code": "ar00087114",
+   "variant_ta_code": "ar00083414",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SAIL WORLD",
+   "variant_name": "SAIL WORLD S.A.S.",
+   "match_score": 20,
+   "reason": "SAIL WORLD vs SAIL WORLD S.A.S. - suffix mismatch"
+  },
+  {
+   "master_ta_code": "ar00087141",
+   "variant_ta_code": "ar00083485",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SB TECNOLOGIA",
+   "variant_name": "SB TECNOLOGIA S.A.S.",
+   "match_score": 18,
+   "reason": "SB TECNOLOGIA vs SB TECNOLOGIA S.A.S. - suffix mismatch"
+  },
+  {
+   "master_ta_code": "ar00087163",
+   "variant_ta_code": "ar00078104",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SERBAN TECH",
+   "variant_name": "SERBAN TECH S.A.S.",
+   "match_score": 22,
+   "reason": "SERBAN TECH vs SERBAN TECH S.A.S. - suffix mismatch"
+  },
+  {
+   "master_ta_code": "ar00087216",
+   "variant_ta_code": "ar00083622",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SOLARTECH",
+   "variant_name": "SOLARTECH S.A.S.",
+   "match_score": 16,
+   "reason": "SOLARTECH vs SOLARTECH S.A.S. - suffix mismatch"
+  },
+  {
+   "master_ta_code": "ar00087234",
+   "variant_ta_code": "ar00083668",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SRVNDS",
+   "variant_name": "SRVNDS S.A.S.",
+   "match_score": 16,
+   "reason": "SRVNDS vs SRVNDS S.A.S. - suffix mismatch"
+  },
+  {
+   "master_ta_code": "ar00087249",
+   "variant_ta_code": "ar00067213",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "SUR TRADE S.A.",
+   "variant_name": "TRADING SUR S.A.",
+   "match_score": 14,
+   "reason": "SUR TRADE vs TRADING SUR - word order difference suggests name mismatch"
+  },
+  {
+   "master_ta_code": "ar00087268",
+   "variant_ta_code": "ar00083736",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "TAVROX",
+   "variant_name": "TAVROX S.A.S.",
+   "match_score": 16,
+   "reason": "TAVROX vs TAVROX S.A.S. - suffix mismatch"
+  },
+  {
+   "master_ta_code": "ar00088740",
+   "variant_ta_code": "ar80087527",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ARTES GRAFICAS S.A.",
+   "variant_name": "ARTES GRAFICAS",
+   "match_score": 20,
+   "reason": "ARTES GRAFICAS S.A. vs ARTES GRAFICAS - suffix mismatch"
+  },
+  {
+   "master_ta_code": "ar00088921",
+   "variant_ta_code": "ar00066232",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CATESUR S.A.",
+   "variant_name": "CATESUR S.R.L.",
+   "match_score": 16,
+   "reason": "S.A. vs S.R.L. different legal forms"
+  },
+  {
+   "master_ta_code": "ar00089044",
+   "variant_ta_code": "ar00056111",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "DML COMERCIO EXTERIOR SA",
+   "variant_name": "DML COMERCIO EXTERIOR",
+   "match_score": 24,
+   "reason": "DML COMERCIO EXTERIOR SA vs DML COMERCIO EXTERIOR - suffix mismatch"
+  },
+  {
+   "master_ta_code": "ar00089155",
+   "variant_ta_code": "ar80076870",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "FONSECA S.A.",
+   "variant_name": "FONSECA",
+   "match_score": 12,
+   "reason": "FONSECA S.A. vs FONSECA - suffix mismatch"
+  },
+  {
+   "master_ta_code": "ar00089213",
+   "variant_ta_code": "ar00081740",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "GLOBACCOM",
+   "variant_name": "GLOBACCOM S.A.S.",
+   "match_score": 16,
+   "reason": "GLOBACCOM vs GLOBACCOM S.A.S. - suffix mismatch"
+  },
+  {
+   "master_ta_code": "ar00089235",
+   "variant_ta_code": "ar80082910",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "GRUPO FELIPA",
+   "variant_name": "GRUPO FELIPA S.A.S.",
+   "match_score": 19,
+   "reason": "GRUPO FELIPA vs GRUPO FELIPA S.A.S. - suffix mismatch"
+  },
+  {
+   "master_ta_code": "ar00089558",
+   "variant_ta_code": "ar00060613",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "NAVALIA S.A.",
+   "variant_name": "NAVALIA S.R.L.",
+   "match_score": 16,
+   "reason": "S.A. vs S.R.L. different legal forms"
+  },
+  {
+   "master_ta_code": "ar00089641",
+   "variant_ta_code": "ar00045997",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PETROLEOS AUSTRALES S.A.",
+   "variant_name": "PETROLEOS AUSTRALES",
+   "match_score": 24,
+   "reason": "PETROLEOS AUSTRALES S.A. vs PETROLEOS AUSTRALES - suffix mismatch"
+  },
+  {
+   "master_ta_code": "ar00089647",
+   "variant_ta_code": "ar00083070",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PHUL",
+   "variant_name": "PHUL S.R.L.",
+   "match_score": 16,
+   "reason": "PHUL vs PHUL S.R.L. - suffix mismatch"
+  },
+  {
+   "master_ta_code": "ar00089713",
+   "variant_ta_code": "ar00083267",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "REFRIGERATION QUALITY SERVICE",
+   "variant_name": "REFRIGERATION QUALITY SERVICE S.A.",
+   "match_score": 24,
+   "reason": "REFRIGERATION QUALITY SERVICE vs REFRIGERATION QUALITY SERVICE S.A. - suffix mismatch"
+  },
+  {
+   "master_ta_code": "ar00089803",
+   "variant_ta_code": "ar00083566",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SILVERSIDE",
+   "variant_name": "SILVERSIDE S.A.S.",
+   "match_score": 16,
+   "reason": "SILVERSIDE vs SILVERSIDE S.A.S. - suffix mismatch"
+  },
+  {
+   "master_ta_code": "ar00089849",
+   "variant_ta_code": "ar00044455",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SURGENTE MOLINOS S.A.",
+   "variant_name": "SURGENTE MOLINOS",
+   "match_score": 24,
+   "reason": "SURGENTE MOLINOS S.A. vs SURGENTE MOLINOS - suffix mismatch"
+  },
+  {
+   "master_ta_code": "ar00089869",
+   "variant_ta_code": "ar00078275",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "TECNO AIRE S.A.",
+   "variant_name": "TECNO AIRE S.R.L.",
+   "match_score": 18,
+   "reason": "S.A. vs S.R.L. different legal forms"
+  },
+  {
+   "master_ta_code": "ar00089901",
+   "variant_ta_code": "ar00077475",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "TOOL MAQ S.A.",
+   "variant_name": "MAQ&MAQ S.A.",
+   "match_score": 21,
+   "reason": "TOOL MAQ vs MAQ&MAQ - core name mismatch"
+  },
+  {
+   "master_ta_code": "ar00089922",
+   "variant_ta_code": "ar00083898",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "TUBESTEEL",
+   "variant_name": "TUBESTEEL S.A.S.",
+   "match_score": 15,
+   "reason": "TUBESTEEL vs TUBESTEEL S.A.S. - suffix mismatch"
+  },
+  {
+   "master_ta_code": "ar00100120",
+   "variant_ta_code": "ar00073079",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "ASOCIACION BOMBEROS VOLUNTARIOS DE SAN JOSE DE LA ESQUINA",
+   "variant_name": "ASOCIACION BOMBEROS VOLUNTARIOS DE SAN JOSE",
+   "match_score": 22,
+   "reason": "DE LA ESQUINA suffix truncation changes meaning"
+  },
+  {
+   "master_ta_code": "ar00100214",
+   "variant_ta_code": "ar00027159",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "B H MADERAS S.A.",
+   "variant_name": "LP MADERAS S.R.L.",
+   "match_score": 7,
+   "reason": "B H MADERAS vs LP MADERAS different core names"
+  },
+  {
+   "master_ta_code": "ar00100518",
+   "variant_ta_code": "ar80121104",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "EQUIPOS Y SERVICIOS EN INGENIERIA S.A.",
+   "variant_name": "EQUIPOS Y SERVICIOS EN INGENIERIA",
+   "match_score": 21,
+   "reason": "EQUIPOS Y SERVICIOS EN INGENIERIA S.A. vs EQUIPOS Y SERVICIOS EN INGENIERIA - suffix mismatch"
+  },
+  {
+   "master_ta_code": "ar00100792",
+   "variant_ta_code": "ar00025074",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ITG S.A.",
+   "variant_name": "I.T.G. S.R.L.",
+   "match_score": 14,
+   "reason": "ITG S.A. vs I.T.G. S.R.L. - different abbreviation + legal form"
+  },
+  {
+   "master_ta_code": "ar00101027",
+   "variant_ta_code": "ar00066880",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "NEYMAR S R L",
+   "variant_name": "NEYMAR S.A.",
+   "match_score": 11,
+   "reason": "NEYMAR S.R.L. != NEYMAR S.A., different entity type"
+  },
+  {
+   "master_ta_code": "ar80000567",
+   "variant_ta_code": "ar80103334",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "APERAM STAINLESS SERVICES",
+   "variant_name": "APERAM STAINLESS SERVICES AND",
+   "match_score": 26,
+   "reason": "APERAM STAINLESS SERVICES != AND variant"
+  },
+  {
+   "master_ta_code": "ar80000741",
+   "variant_ta_code": "ar80098652",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "ASOCIACION CASA EDITORA SUDAMERICAN",
+   "variant_name": "ASOCIACION CASA EDITORA",
+   "match_score": 27,
+   "reason": "truncated SUDAMERICANA missing"
+  },
+  {
+   "master_ta_code": "ar80000779",
+   "variant_ta_code": "ar80063157",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ATLAS SHIPPING S.A.",
+   "variant_name": "ATLAS SHIPPING CORP.",
+   "match_score": 18,
+   "reason": "CORP. vs S.A., different entity type"
+  },
+  {
+   "master_ta_code": "ar80001122",
+   "variant_ta_code": "ar80129702",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "BIOSIDUS S.A.",
+   "variant_name": "BIOSIDUS SAU",
+   "match_score": 16,
+   "reason": "BIOSIDUS S.A. != SAU entity type"
+  },
+  {
+   "master_ta_code": "ar80001667",
+   "variant_ta_code": "ar80056218",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CHEMO ROMIKIN S.A.",
+   "variant_name": "Chemo ROMIKIN S.A.U.",
+   "match_score": 25,
+   "reason": "CHEMO ROMIKIN S.A. != S.A.U."
+  },
+  {
+   "master_ta_code": "ar80001941",
+   "variant_ta_code": "ar80033660",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "COMPAÑIA INDUSTRIAL CERVECERA SA",
+   "variant_name": "COMPA IA INDUSTRIAL CERVECERA, S",
+   "match_score": 24,
+   "reason": "text corruption, truncated S.A."
+  },
+  {
+   "master_ta_code": "ar80002175",
+   "variant_ta_code": "ar80055327",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CREW SA",
+   "variant_name": "CREW S.R.L.",
+   "match_score": 15,
+   "reason": "CREW SA != CREW S.R.L."
+  },
+  {
+   "master_ta_code": "ar80002200",
+   "variant_ta_code": "ar80104018",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "CROSS TRADE INTERNATIONAL SA",
+   "variant_name": "CROSS TRADE INTL",
+   "match_score": 19,
+   "reason": "CROSS TRADE INTL truncation"
+  },
+  {
+   "master_ta_code": "ar80002305",
+   "variant_ta_code": "ar00011850",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "DANFOSS, INC.",
+   "variant_name": "DANFOSS SA",
+   "match_score": 13,
+   "reason": "DANFOSS INC != SA"
+  },
+  {
+   "master_ta_code": "ar80002657",
+   "variant_ta_code": "ar80023547",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "DR.LAZER & CIA S.A.",
+   "variant_name": "DR",
+   "match_score": 7,
+   "reason": "DR. LAZER & CIA vs DR abbreviation"
+  },
+  {
+   "master_ta_code": "ar80003058",
+   "variant_ta_code": "ar80099493",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "ESTABLECIMIENTO GRAFICO IMPRESORES",
+   "variant_name": "ESTABLECIMIENTO GRAFICO",
+   "match_score": 20,
+   "reason": "IMPRESORES truncation"
+  },
+  {
+   "master_ta_code": "ar80003204",
+   "variant_ta_code": "ar00012583",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "FABRISUR S.A. ALSINA 1184(1088)",
+   "variant_name": "FABRISUR SA",
+   "match_score": 11,
+   "reason": "address info removed not core name"
+  },
+  {
+   "master_ta_code": "ar80004109",
+   "variant_ta_code": "ar00017244",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "HELLMAN WORLDWIDE LOGISTICS, S.A.",
+   "variant_name": "WORLDWIDE LOGISTICS SA",
+   "match_score": 11,
+   "reason": "HELLMAN prefix missing"
+  },
+  {
+   "master_ta_code": "ar80004283",
+   "variant_ta_code": "ar00064065",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "IBM DE ARGENTINA S.R.L.",
+   "variant_name": "IBM ARGENTINA, S.A.",
+   "match_score": 15,
+   "reason": "IBM DE ARGENTINA S.R.L. != S.A., different entity type"
+  },
+  {
+   "master_ta_code": "ar80004970",
+   "variant_ta_code": "ar00013446",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "JUNTAS ILLINOIS S.A.",
+   "variant_name": "ILLINOIS SA",
+   "match_score": 12,
+   "reason": "JUNTAS ILLINOIS S.A. != ILLINOIS SA, missing JUNTAS"
+  },
+  {
+   "master_ta_code": "ar80005006",
+   "variant_ta_code": "ar00065034",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "KELLOGG ARGENTINA S.R.L.",
+   "variant_name": "KELLOGG ARGENTINA, S.A.",
+   "match_score": 16,
+   "reason": "KELLOGG S.R.L. != S.A., different entity type"
+  },
+  {
+   "master_ta_code": "ar80005257",
+   "variant_ta_code": "ar80032506",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "LABORATORIOS",
+   "variant_name": "LABORATORIOS S.L.",
+   "match_score": 8,
+   "reason": "LABORATORIOS alone != S.L., incomplete name"
+  },
+  {
+   "master_ta_code": "ar80005717",
+   "variant_ta_code": "ar80032551",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "M.A. S.A.",
+   "variant_name": "MA.C",
+   "match_score": 10,
+   "reason": "M.A. S.A. != MA.C, initials incomplete"
+  },
+  {
+   "master_ta_code": "ar80006004",
+   "variant_ta_code": "ar00014495",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "MASISA DE ARGENTINA SA",
+   "variant_name": "MASISA ARGENTINA SA",
+   "match_score": 17,
+   "reason": "MASISA DE ARGENTINA != ARGENTINA, missing DE"
+  },
+  {
+   "master_ta_code": "ar80006198",
+   "variant_ta_code": "ar80017087",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "MFC RESOURCES SRL",
+   "variant_name": "MFC RESOURCES, INC.",
+   "match_score": 23,
+   "reason": "MFC RESOURCES SRL != INC., different entity"
+  },
+  {
+   "master_ta_code": "ar80006665",
+   "variant_ta_code": "ar80006667",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "NIDI TEC, INC 2014",
+   "variant_name": "NIDI TEC, INC.",
+   "match_score": 23,
+   "reason": "NIDI TEC 2014 != NIDI TEC, year suffix"
+  },
+  {
+   "master_ta_code": "ar80009348",
+   "variant_ta_code": "ar00054531",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "V.M",
+   "variant_name": "VM S.A.",
+   "match_score": 13,
+   "reason": "V.M != VM S.A., incomplete initials"
+  },
+  {
+   "master_ta_code": "ar80009610",
+   "variant_ta_code": "ar80106945",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "WDM WATER SYSTEMS SA",
+   "variant_name": "WDM WATER SYSTEMS S.A. DE C.V.",
+   "match_score": 24,
+   "reason": "S.A. DE C.V. suffix indicates Mexico structure, but both registered in AR. Possible false match."
+  },
+  {
+   "master_ta_code": "ar80011946",
+   "variant_ta_code": "ar80140992",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SIDERCA S.A.I.C.",
+   "variant_name": "SIDERCA S",
+   "match_score": 13,
+   "reason": "SIDERCA S.A.I.C. vs SIDERCA S. Severe truncation suggests different record."
+  },
+  {
+   "master_ta_code": "ar80012618",
+   "variant_ta_code": "ar00088998",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CULTIVAR SA",
+   "variant_name": "CULTIVAR SRL",
+   "match_score": 16,
+   "reason": "CULTIVAR SA vs SRL. Different legal entity type (SA vs SRL)."
+  },
+  {
+   "master_ta_code": "ar80013514",
+   "variant_ta_code": "ar80015938",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "DAI CO",
+   "variant_name": "DAI COMPANY",
+   "match_score": 14,
+   "reason": "DAI CO vs DAI COMPANY: CO is abbreviation, COMPANY is full form; different suffixes suggest different entities"
+  },
+  {
+   "master_ta_code": "ar80014954",
+   "variant_ta_code": "ar00030310",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PROTAN S.A.",
+   "variant_name": "PROTAN S.R.L.",
+   "match_score": 16,
+   "reason": "PROTAN S.A. vs PROTAN S.R.L.: Different legal forms (S.A. vs S.R.L.) indicate distinct entities"
+  },
+  {
+   "master_ta_code": "ar80015267",
+   "variant_ta_code": "ar80033095",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "ABB MEXICO S.A. DE C.V.",
+   "variant_name": "ABB S.A. ABB S.A.",
+   "match_score": 17,
+   "reason": "ABB MEXICO S.A. DE C.V. vs ABB S.A. ABB S.A.: First is Mexico-specific entity with country marker, second has duplication; different registrations"
+  },
+  {
+   "master_ta_code": "ar80015646",
+   "variant_ta_code": "ar80089572",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "BUHLER S.A.",
+   "variant_name": "BUHLER, INC.",
+   "match_score": 14,
+   "reason": "BUHLER S.A. vs BUHLER, INC.: Different legal forms (S.A. vs INC.) indicate different entities"
+  },
+  {
+   "master_ta_code": "ar80016663",
+   "variant_ta_code": "ar80012660",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "JUST US S.A.",
+   "variant_name": "JUST USA SA",
+   "match_score": 18,
+   "reason": "JUST US S.A. vs JUST USA SA: US is a word vs USA is acronym; spelling variant suggests different entity nuance"
+  },
+  {
+   "master_ta_code": "ar80016924",
+   "variant_ta_code": "ar80016952",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "LOS CONCE S.A. -TRANSFORMADORES",
+   "variant_name": "LOS CONCE",
+   "match_score": 19,
+   "reason": "LOS CONCE S.A. -TRANSFORMADORES vs LOS CONCE: Variant omits product descriptor; core brand same but different purposes"
+  },
+  {
+   "master_ta_code": "ar80017035",
+   "variant_ta_code": "ar00100412",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "MARCO S.A.",
+   "variant_name": "DE MARCO HNOS S R L",
+   "match_score": 10,
+   "reason": "MARCO S.A. vs DE MARCO HNOS S R L: Different brand names (MARCO vs DE MARCO); different legal forms; different entities"
+  },
+  {
+   "master_ta_code": "ar80017298",
+   "variant_ta_code": "ar00086907",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PAOLINI",
+   "variant_name": "PAOLINI HNOS. S.A.",
+   "match_score": 16,
+   "reason": "PAOLINI vs PAOLINI HNOS. S.A. - core is different (no HNOS in master)"
+  },
+  {
+   "master_ta_code": "ar80017344",
+   "variant_ta_code": "ar80037085",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "PLASTIC OMNIUM AUTO INERGY",
+   "variant_name": "PLASTIC OMNIUM INERGY ARGENTINA",
+   "match_score": 19,
+   "reason": "PLASTIC OMNIUM AUTO INERGY vs PLASTIC OMNIUM INERGY ARGENTINA - AUTO vs ARGENTINA mismatch"
+  },
+  {
+   "master_ta_code": "ar80017438",
+   "variant_ta_code": "ar80077584",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PURATOS S.A.",
+   "variant_name": "PURATOS",
+   "match_score": 14,
+   "reason": "PURATOS S.A. vs PURATOS - legal entity removed, different documents"
+  },
+  {
+   "master_ta_code": "ar80017575",
+   "variant_ta_code": "ar80007948",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "RURAL SANTA FE S.A.I.C. y A.",
+   "variant_name": "RURAL SANTA FE",
+   "match_score": 19,
+   "reason": "RURAL SANTA FE S.A.I.C y A. vs RURAL SANTA FE - legal suffixes removed, substantive difference"
+  },
+  {
+   "master_ta_code": "ar80017858",
+   "variant_ta_code": "ar80022480",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "Tintoreria Ullum S.A.",
+   "variant_name": "TINTORERIA ULLUM",
+   "match_score": 25,
+   "reason": "Tintoreria Ullum S.A. vs TINTORERIA ULLUM - legal entity removed"
+  },
+  {
+   "master_ta_code": "ar80017975",
+   "variant_ta_code": "ar80065834",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "UNI FARMA SA",
+   "variant_name": "FARMA SA",
+   "match_score": 11,
+   "reason": "UNI FARMA vs FARMA - core token UNI missing, not same firm"
+  },
+  {
+   "master_ta_code": "ar80018187",
+   "variant_ta_code": "ar80076552",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CIMET SA",
+   "variant_name": "CIMET",
+   "match_score": 16,
+   "reason": "CIMET SA vs CIMET - legal entity removed, substantive difference"
+  },
+  {
+   "master_ta_code": "ar80018305",
+   "variant_ta_code": "ar80069844",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "LEDESMA SA",
+   "variant_name": "LEDESMA",
+   "match_score": 13,
+   "reason": "LEDESMA SA vs LEDESMA - legal entity removed, substantive difference"
+  },
+  {
+   "master_ta_code": "ar80018642",
+   "variant_ta_code": "ar80003318",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "FENIX S.A.",
+   "variant_name": "FENIX",
+   "match_score": 12,
+   "reason": "FENIX S.A. vs FENIX - legal entity removed, substantive difference"
+  },
+  {
+   "master_ta_code": "ar80018941",
+   "variant_ta_code": "ar80077696",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SARQUIMICA S.R.L.",
+   "variant_name": "SARQUIMICA",
+   "match_score": 16,
+   "reason": "SARQUIMICA S.R.L. vs SARQUIMICA - legal entity removed, substantive difference"
+  },
+  {
+   "master_ta_code": "ar80019883",
+   "variant_ta_code": "ar80026871",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ФОРМАТО С.А.ПО КОНТРАКТУ С ФИРМОЙEUROPCELL GMBH",
+   "variant_name": "EUROPCELL GMBH",
+   "match_score": 14,
+   "reason": "Master contains 'FORMATO' + contract prefix; variant is just core brand 'EUROPCELL'"
+  },
+  {
+   "master_ta_code": "ar80020147",
+   "variant_ta_code": "ar00020787",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "COMMERCIAL VERTICE S.A.",
+   "variant_name": "COMERCIAL VERTICE S.A.",
+   "match_score": 19,
+   "reason": "COMMERCIAL vs COMERCIAL - different language spellings (one English, one Spanish form)"
+  },
+  {
+   "master_ta_code": "ar80021141",
+   "variant_ta_code": "ar80037602",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "BANCO DE LA",
+   "variant_name": "BANCO",
+   "match_score": 10,
+   "reason": "Master 'BANCO DE LA' is incomplete/truncated; variant 'BANCO' is too generic; incomplete names"
+  },
+  {
+   "master_ta_code": "ar80021250",
+   "variant_ta_code": "ar80014287",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CENTRO OPTICO CASIN S.A.",
+   "variant_name": "CENTRO OPTICO CASIN S.R.L.",
+   "match_score": 28,
+   "reason": "CENTRO OPTICO CASIN S.A. vs CENTRO OPTICO CASIN S.R.L. - different legal structures (SA vs SRL) suggest different registrations"
+  },
+  {
+   "master_ta_code": "ar80021418",
+   "variant_ta_code": "ar00014862",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "DOLE NAT CO S.A.",
+   "variant_name": "NAT & CIA SA",
+   "match_score": 12,
+   "reason": "DOLE NAT CO S.A. vs NAT & CIA SA - 'DOLE' brand missing in variant; DOLE is major corporation, NAT & CIA is not Dole"
+  },
+  {
+   "master_ta_code": "ar80023008",
+   "variant_ta_code": "ar80091303",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "LEVI STRAUSS DE MEXICO S.A. DE C.V.",
+   "variant_name": "LEVI STRAUSS DE MEXICO",
+   "match_score": 16,
+   "reason": "LEVI STRAUSS DE MEXICO S.A. DE C.V. vs LEVI STRAUSS DE MEXICO - variant drops Mexican corporate structure code; possibly different incorporation"
+  },
+  {
+   "master_ta_code": "ar80023496",
+   "variant_ta_code": "ar80055250",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "COMPUSPAR ARGENTINA B.A",
+   "variant_name": "BUENOS AIRES - ARGENTINA",
+   "match_score": 17,
+   "reason": "COMPUSPAR ARGENTINA B.A vs BUENOS AIRES - ARGENTINA - master is company name, variant is only location; different entities"
+  },
+  {
+   "master_ta_code": "ar80023585",
+   "variant_ta_code": "ar80002433",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ESTABLECIMIENTO DF S.A.",
+   "variant_name": "DF SA",
+   "match_score": 10,
+   "reason": "ESTABLECIMIENTO DF S.A. vs DF SA - master has 'ESTABLECIMIENTO'; variant drops it; likely different registration"
+  },
+  {
+   "master_ta_code": "ar80025613",
+   "variant_ta_code": "ar00011070",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "ITW EF&C MEXICO-US TRADING A DIVISION OF ILLINOIS TOOL WORKS, INC.",
+   "variant_name": "C V TRADING S.R.L.",
+   "match_score": 8,
+   "reason": "Completely different core names"
+  },
+  {
+   "master_ta_code": "ar80026048",
+   "variant_ta_code": "ar00066821",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "MITO SRL",
+   "variant_name": "MITO S.A.",
+   "match_score": 15,
+   "reason": "SRL vs S.A. legal form change"
+  },
+  {
+   "master_ta_code": "ar80026314",
+   "variant_ta_code": "ar80049159",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PYROTEK, INC.",
+   "variant_name": "PYROTEK S.A.",
+   "match_score": 14,
+   "reason": "INC vs S.A. different legal forms"
+  },
+  {
+   "master_ta_code": "ar80026858",
+   "variant_ta_code": "ar80122847",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "YPF ENERGIA ELECTRICA S.A.",
+   "variant_name": "YPF SOCIEDAD ANONIMA S.A.",
+   "match_score": 12,
+   "reason": "ENERGIA ELECTRICA vs SOCIEDAD ANONIMA"
+  },
+  {
+   "master_ta_code": "ar80027331",
+   "variant_ta_code": "ar00021577",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "DART SUDAMERICANA SRL",
+   "variant_name": "DART SUDAMERICANA S.A.",
+   "match_score": 20,
+   "reason": "SRL vs S.A. different legal form"
+  },
+  {
+   "master_ta_code": "ar80027425",
+   "variant_ta_code": "ar80070765",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "ECU LOGISTICS S.A.",
+   "variant_name": "E.C",
+   "match_score": 9,
+   "reason": "E.C abbreviation vs full ECU LOGISTICS"
+  },
+  {
+   "master_ta_code": "ar80032701",
+   "variant_ta_code": "ar00029581",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "P.C",
+   "variant_name": "PC ONE S.R.L.",
+   "match_score": 12,
+   "reason": "P.C is initials only, PC ONE S.R.L. is full name"
+  },
+  {
+   "master_ta_code": "ar80033285",
+   "variant_ta_code": "ar80065452",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "ATLETIC SERVICES SA",
+   "variant_name": "ATLETIC SERVICE S.A.",
+   "match_score": 20,
+   "reason": "SERVICES vs SERVICE: plural vs singular, core name differs"
+  },
+  {
+   "master_ta_code": "ar80033700",
+   "variant_ta_code": "ar80050442",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "COOPERATIVA AGROPECUARIA TECNOFLOR",
+   "variant_name": "COOPERATIVE AGROPECUARIA TECNOFLOR LTD.",
+   "match_score": 22,
+   "reason": "COOPERATIVA vs COOPERATIVE: different language terms (Spanish vs English)"
+  },
+  {
+   "master_ta_code": "ar80037377",
+   "variant_ta_code": "ar00040427",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "VANOLI Y CIA S.A.",
+   "variant_name": "VANOLI Y CIA. S.R.L.",
+   "match_score": 16,
+   "reason": "different suffixes S.A. vs S.R.L., distinct legal structures"
+  },
+  {
+   "master_ta_code": "ar80037608",
+   "variant_ta_code": "ar80073140",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "BANCO DE LA PROVINCIA DE",
+   "variant_name": "BANCO DE LA PROVINCIA",
+   "match_score": 20,
+   "reason": "master incomplete DE truncated, variant is complete PROVINCIA"
+  },
+  {
+   "master_ta_code": "ar80037832",
+   "variant_ta_code": "ar00010731",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "COMPANIA DE DISENOS BASICOS S.A.",
+   "variant_name": "BASICOS SA",
+   "match_score": 11,
+   "reason": "master COMPANIA DE DISENOS BASICOS vs variant BASICOS only, distinct core"
+  },
+  {
+   "master_ta_code": "ar80038046",
+   "variant_ta_code": "ar80010390",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ENSINCRO S.A.",
+   "variant_name": "ENSINCRO S.R.L.",
+   "match_score": 16,
+   "reason": "different legal structures S.A. vs S.R.L."
+  },
+  {
+   "master_ta_code": "ar80039798",
+   "variant_ta_code": "ar00012698",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "F.G.F. TRAPANI S.A.",
+   "variant_name": "FGF TRAPANI S.R.L.",
+   "match_score": 27,
+   "reason": "different legal structures S.A. vs S.R.L. for F.G.F. TRAPANI"
+  },
+  {
+   "master_ta_code": "ar80040304",
+   "variant_ta_code": "ar80057552",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PATRICIOS S.A.I.C.",
+   "variant_name": "PATRICIOS S.A.",
+   "match_score": 14,
+   "reason": "different legal structures S.A.I.C. vs S.A. for PATRICIOS"
+  },
+  {
+   "master_ta_code": "ar80040940",
+   "variant_ta_code": "ar80073235",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "COTECA S.A.",
+   "variant_name": "COTECA S.A.I.C.",
+   "match_score": 15,
+   "reason": "different legal structures S.A. vs S.A.I.C. for COTECA"
+  },
+  {
+   "master_ta_code": "ar80041232",
+   "variant_ta_code": "ar80059721",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "INTERNATIONAL FLAVOURS",
+   "variant_name": "INTERNATIONAL FLAVOURS AND",
+   "match_score": 16,
+   "reason": "variant adds AND, distinct core brands"
+  },
+  {
+   "master_ta_code": "ar80042099",
+   "variant_ta_code": "ar80033978",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "EMILIO ALAL S.A.",
+   "variant_name": "EMILIO ALAL S.A.C. I F L",
+   "match_score": 23,
+   "reason": "different legal structures S.A. vs S.A.C.I.F.L. for EMILIO ALAL"
+  },
+  {
+   "master_ta_code": "ar80042948",
+   "variant_ta_code": "ar80018313",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "MAPRIN S.A.C.I.",
+   "variant_name": "MAPRIN SA",
+   "match_score": 13,
+   "reason": "different legal structures S.A.C.I. vs S.A. for MAPRIN"
+  },
+  {
+   "master_ta_code": "ar80043278",
+   "variant_ta_code": "ar00052033",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "AGROINSUMOS S.A.",
+   "variant_name": "AGROINSUMOS B Y L S.A.",
+   "match_score": 13,
+   "reason": "variant adds B Y L, distinct core brands"
+  },
+  {
+   "master_ta_code": "ar80044617",
+   "variant_ta_code": "ar80019525",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "TRANSOCEANICA S.A.",
+   "variant_name": "TRANSOCEANICA CIA LTDA",
+   "match_score": 14,
+   "reason": "TRANSOCEANICA S.A. vs TRANSOCEANICA CIA LTDA - different legal structures (S.A. vs LTDA) and CIA added"
+  },
+  {
+   "master_ta_code": "ar80046362",
+   "variant_ta_code": "ar00020733",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "COLOR LIVING SA",
+   "variant_name": "COLOR LIVING S.R.L.",
+   "match_score": 20,
+   "reason": "COLOR LIVING SA vs COLOR LIVING S.R.L. - different legal types (SA vs SRL)"
+  },
+  {
+   "master_ta_code": "ar80047895",
+   "variant_ta_code": "ar00066915",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ORION TECHNOLOGIES S.A.",
+   "variant_name": "ORION TECHNOLOGIES S.R.L.",
+   "match_score": 17,
+   "reason": "ORION TECHNOLOGIES S.A. vs ORION TECHNOLOGIES S.R.L. - different legal type (S.A. vs S.R.L.)"
+  },
+  {
+   "master_ta_code": "ar80049319",
+   "variant_ta_code": "ar00016732",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "THERMODYNE VIAL SA",
+   "variant_name": "THERMODYNE VIAL S.R.L.",
+   "match_score": 24,
+   "reason": "THERMODYNE VIAL SA vs THERMODYNE VIAL S.R.L. - different legal type (SA vs SRL)"
+  },
+  {
+   "master_ta_code": "ar80049606",
+   "variant_ta_code": "ar80041732",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "DANSA S.A. INT. JUAN LUMBRERAS 1800 1748-SIP",
+   "variant_name": "SIP, SA",
+   "match_score": 8,
+   "reason": "DANSA S.A. INT. JUAN LUMBRERAS... vs SIP, SA - different core brand names (DANSA vs SIP)"
+  },
+  {
+   "master_ta_code": "ar80051753",
+   "variant_ta_code": "ar80057478",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "LAMAIGNERE LOGISTICA",
+   "variant_name": "LAMAIGNERE LOGISTICA S.L.",
+   "match_score": 20,
+   "reason": "LAMAIGNERE LOGISTICA vs LAMAIGNERE LOGISTICA S.L. - one lacks suffix, but S.L. is Spanish-specific; risk of two entities"
+  },
+  {
+   "master_ta_code": "ar80052181",
+   "variant_ta_code": "ar00016542",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "UNICO GLOBAL INC /'TARCO S.A.",
+   "variant_name": "TARCO SA",
+   "match_score": 12,
+   "reason": "UNICO GLOBAL INC /TARCO S.A. vs TARCO SA - master has two distinct brands (UNICO GLOBAL vs TARCO), variant is only TARCO; likely different entity"
+  },
+  {
+   "master_ta_code": "ar80053302",
+   "variant_ta_code": "ar80031984",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "BA BANK",
+   "variant_name": "BUENOS AIRES",
+   "match_score": 14,
+   "reason": "BA BANK vs BUENOS AIRES - BA is abbreviation but BANK and BUENOS AIRES are not synonymous; risky overmerge"
+  },
+  {
+   "master_ta_code": "ar80054186",
+   "variant_ta_code": "ar00012119",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "LAB. DRAWER S.A.",
+   "variant_name": "DRAWER SA",
+   "match_score": 13,
+   "reason": "LAB. DRAWER S.A. vs DRAWER SA - LAB prefix might indicate different context (laboratory dept vs standalone)"
+  },
+  {
+   "master_ta_code": "ar80054274",
+   "variant_ta_code": "ar80078607",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "LEURU S.A. C/O LEVI STRAUSS & CO",
+   "variant_name": "LEVI STRAUSS & CO",
+   "match_score": 20,
+   "reason": "LEURU S.A. C/O LEVI STRAUSS & CO vs LEVI STRAUSS & CO - master is LEURU (c/o agent), variant is principal; different entities"
+  },
+  {
+   "master_ta_code": "ar80058262",
+   "variant_ta_code": "ar80113048",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "Multiflora LLC.",
+   "variant_name": "MULTIFLORA CORP",
+   "match_score": 16,
+   "reason": "Multiflora LLC. vs MULTIFLORA CORP - core brand MULTIFLORA same, but LLC vs CORP are distinct US entity types; likely different entities"
+  },
+  {
+   "master_ta_code": "ar80058370",
+   "variant_ta_code": "ar00014134",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "RAPSODIA LAS BLONDAS S.A.",
+   "variant_name": "LAS BLONDAS SA",
+   "match_score": 19,
+   "reason": "RAPSODIA LAS BLONDAS S.A. vs LAS BLONDAS SA - RAPSODIA is descriptor/brand prefix; LAS BLONDAS alone is partial; risky overmerge"
+  },
+  {
+   "master_ta_code": "ar80058789",
+   "variant_ta_code": "ar00088724",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "ANTARES NAVIERA SA",
+   "variant_name": "ANTARES SA",
+   "match_score": 12,
+   "reason": "ANTARES NAVIERA SA vs ANTARES SA - NAVIERA (shipping company) is descriptor; risky if variant is different business line"
+  },
+  {
+   "master_ta_code": "ar80059058",
+   "variant_ta_code": "ar80111487",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "CELANESE SALES US LTD.",
+   "variant_name": "CELANESE LTD",
+   "match_score": 14,
+   "reason": "CELANESE SALES US LTD. vs CELANESE LTD - SALES US is descriptor; core CELANESE identical but sales division vs parent unclear"
+  },
+  {
+   "master_ta_code": "ar80059431",
+   "variant_ta_code": "ar80016204",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "FEDERACION ARGENTINA",
+   "variant_name": "FEDERACION ARGENTINA DE COOPERATIVE",
+   "match_score": 15,
+   "reason": "FEDERACION ARGENTINA vs FEDERACION ARGENTINA DE COOPERATIVE - master is generic name; variant adds descriptor (DE COOPERATIVE); likely different entities"
+  },
+  {
+   "master_ta_code": "ar80060299",
+   "variant_ta_code": "ar80101045",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "PUMA SPORTS ARGENTINA S.A.",
+   "variant_name": "PUMA SPORTS LA SA",
+   "match_score": 17,
+   "reason": "PUMA SPORTS ARGENTINA S.A. vs PUMA SPORTS LA SA - PUMA SPORTS core identical, but LA (Latin America?) suffix unclear; risky overmerge"
+  },
+  {
+   "master_ta_code": "ar80061122",
+   "variant_ta_code": "ar00061827",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "RENO ARGENTINA S.A.",
+   "variant_name": "RENO ARGENTINA S.R.L.",
+   "match_score": 17,
+   "reason": "RENO ARGENTINA S.A. vs RENO ARGENTINA S.R.L. - RENO ARGENTINA core identical, but S.A. vs S.R.L. are distinct legal forms; caution needed"
+  },
+  {
+   "master_ta_code": "ar80061832",
+   "variant_ta_code": "ar00078006",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ROOTS S.A.",
+   "variant_name": "ROOTS S.R.L.",
+   "match_score": 15,
+   "reason": "ROOTS S.A. vs ROOTS S.R.L. - ROOTS core identical, S.A. vs S.R.L. distinct legal forms; different entities possible"
+  },
+  {
+   "master_ta_code": "ar80063017",
+   "variant_ta_code": "ar00017651",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "AEROVIAS DE MEXICO S.A. DE C.V.",
+   "variant_name": "AEROVIAS DE MEXICO S.A.",
+   "match_score": 12,
+   "reason": "AEROVIAS DE MEXICO S.A. DE C.V. vs AEROVIAS DE MEXICO S.A. - DE C.V. is Mexican legal form (SOCIEDAD EN COMANDITA POR ACCIONES); Argentina vs Mexico structure unclear"
+  },
+  {
+   "master_ta_code": "ar80063298",
+   "variant_ta_code": "ar80024754",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "BYMAR TRANSFORWARDING",
+   "variant_name": "BYMAR TRANSFORWARDING S.L.",
+   "match_score": 26,
+   "reason": "BYMAR TRANSFORWARDING vs BYMAR TRANSFORWARDING S.L. — SL is Spanish but different entity structure suspected"
+  },
+  {
+   "master_ta_code": "ar80064911",
+   "variant_ta_code": "ar00046085",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "SANMINA-SCI CORP. ARGENTINA S.A.",
+   "variant_name": "SANMINA-SCI CORPORATION. ARGENTINA S.A.",
+   "match_score": 25,
+   "reason": "SANMINA-SCI CORP. vs SANMINA-SCI CORPORATION — CORP vs CORPORATION naming variant, likely different legal entities"
+  },
+  {
+   "master_ta_code": "ar80064930",
+   "variant_ta_code": "ar80018738",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "SC JOHNSON E SON DE ARGENTINA SA",
+   "variant_name": "JOHNSON & JOHNSON DE ARGENTINA S.A.",
+   "match_score": 17,
+   "reason": "SC JOHNSON E SON DE ARGENTINA vs JOHNSON & JOHNSON DE ARGENTINA — completely different core brands (S.C. Johnson vs J&J)"
+  },
+  {
+   "master_ta_code": "ar80065130",
+   "variant_ta_code": "ar80090351",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "TETRA PAK LTDA SUCURSAL PARAGUAY",
+   "variant_name": "TETRA PAK PARAGUAY S.R.L.",
+   "match_score": 26,
+   "reason": "TETRA PAK LTDA SUCURSAL PARAGUAY vs TETRA PAK PARAGUAY S.R.L. — branch notation vs different legal entity"
+  },
+  {
+   "master_ta_code": "ar80065870",
+   "variant_ta_code": "ar80065869",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "FLOWERSERVE SRL",
+   "variant_name": "FLOWERSERVE CORP.",
+   "match_score": 15,
+   "reason": "FLOWERSERVE SRL vs FLOWERSERVE CORP. — different legal structure (SRL vs CORP)"
+  },
+  {
+   "master_ta_code": "ar80067437",
+   "variant_ta_code": "ar80021326",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "COPPEL CORP.",
+   "variant_name": "COPPEL S.A.",
+   "match_score": 13,
+   "reason": "COPPEL CORP. vs COPPEL S.A. — different legal structure"
+  },
+  {
+   "master_ta_code": "ar80068591",
+   "variant_ta_code": "ar80003180",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "F.C. S.R.L.",
+   "variant_name": "F.C. S.A.",
+   "match_score": 13,
+   "reason": "F.C. S.R.L. vs F.C. S.A. — different legal structure (SRL vs SA)"
+  },
+  {
+   "master_ta_code": "ar80069231",
+   "variant_ta_code": "ar80070765",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "A&S LOGISTICS S.A.",
+   "variant_name": "E.C",
+   "match_score": 9,
+   "reason": "A&S LOGISTICS S.A. vs E.C — completely different brands, no overlap except initials"
+  },
+  {
+   "master_ta_code": "ar80070677",
+   "variant_ta_code": "ar80103914",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CONARCO ALAMBRES",
+   "variant_name": "CONARCO ALAMBRES Y",
+   "match_score": 24,
+   "reason": "Variant ends with Y - different product line or incomplete name"
+  },
+  {
+   "master_ta_code": "ar80071487",
+   "variant_ta_code": "ar80090287",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "SIEMENS INDUSTRIAL S.A.",
+   "variant_name": "SIEMENS INDUSTRY, INC.",
+   "match_score": 24,
+   "reason": "Industrial vs Industry - distinct meaning in company name"
+  },
+  {
+   "master_ta_code": "ar80071585",
+   "variant_ta_code": "ar00029334",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "THE PACKING COMPANY S.R.L.",
+   "variant_name": "PACKING S.A.",
+   "match_score": 12,
+   "reason": "The Packing Company vs Packing - different core names"
+  },
+  {
+   "master_ta_code": "ar80071827",
+   "variant_ta_code": "ar80067311",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "BATFER INVESTMENTS S.A.",
+   "variant_name": "BATFER INVESTMENT S.A.",
+   "match_score": 27,
+   "reason": "Investments vs Investment - distinct singular/plural forms"
+  },
+  {
+   "master_ta_code": "ar80072069",
+   "variant_ta_code": "ar80069551",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "DOS SANTOS PEREIR CIA SA",
+   "variant_name": "DOS SANTOS, SA",
+   "match_score": 16,
+   "reason": "Dos Santos Pereir Cia vs Dos Santos - distinct core names"
+  },
+  {
+   "master_ta_code": "ar80074248",
+   "variant_ta_code": "ar80071325",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PIEDRA GRANDE S.A.M.I.C.A",
+   "variant_name": "PIEDRA GRANDE SAMICA Y F",
+   "match_score": 29,
+   "reason": "Piedra Grande vs Piedra Grande Y F - extra F marker in variant"
+  },
+  {
+   "master_ta_code": "ar80074438",
+   "variant_ta_code": "ar00012069",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "AIKNIT INTERNATIONAL LTD/DISTRINANDO S.A.",
+   "variant_name": "DISTRINANDO SA",
+   "match_score": 12,
+   "reason": "Joint entity Aiknit/Distrinando vs single entity Distrinando"
+  },
+  {
+   "master_ta_code": "ar80074531",
+   "variant_ta_code": "ar80015604",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "Biotenk S.A. Zuviria Capital",
+   "variant_name": "BIOTENK SA",
+   "match_score": 12,
+   "reason": "Biotenk with capital suffix vs Biotenk without - Zuviria Capital in master"
+  },
+  {
+   "master_ta_code": "ar80075132",
+   "variant_ta_code": "ar80089141",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "SPORTS GEAR CO. LTD. TAIWAN BRANCH",
+   "variant_name": "SPORTS CO",
+   "match_score": 10,
+   "reason": "Sports Gear Co Ltd Taiwan Branch vs Sports Co - core brand stripped"
+  },
+  {
+   "master_ta_code": "ar80075605",
+   "variant_ta_code": "ar80070242",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SNF SA",
+   "variant_name": "SNF ARGENTINA S.R.L.",
+   "match_score": 18,
+   "reason": "SNF SA vs SNF Argentina - Argentina missing from master"
+  },
+  {
+   "master_ta_code": "ar80076362",
+   "variant_ta_code": "ar80120653",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "BASF CORP.",
+   "variant_name": "BASF SA",
+   "match_score": 11,
+   "reason": "Basf Corp vs Basf SA - different legal forms for distinct entities"
+  },
+  {
+   "master_ta_code": "ar80076567",
+   "variant_ta_code": "ar00011475",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "CNH AMERICA LLC. CO",
+   "variant_name": "CNH ARGENTINA SA",
+   "match_score": 18,
+   "reason": "AMERICA LLC vs ARGENTINA are different geographic qualifiers; different core brand"
+  },
+  {
+   "master_ta_code": "ar80076702",
+   "variant_ta_code": "ar00012044",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "DISAL DISTRIBUIDORES ASSOCIADOS DE LIVROS SA",
+   "variant_name": "DISAL SA",
+   "match_score": 11,
+   "reason": "DISAL DISTRIBUIDORES ASSOCIADOS vs DISAL SA: descriptor suppression is significant; different information content"
+  },
+  {
+   "master_ta_code": "ar80077509",
+   "variant_ta_code": "ar80077510",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "PLASTICOS ISLA GRANDE Y",
+   "variant_name": "PLASTICOS LA ISLA GRANDE",
+   "match_score": 17,
+   "reason": "PLASTICOS ISLA GRANDE Y vs PLASTICOS LA ISLA GRANDE: descriptor content differs; Y (and) missing; different positioning"
+  },
+  {
+   "master_ta_code": "ar80077552",
+   "variant_ta_code": "ar80028230",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PROCTER A GAMBLE ARGENTINA",
+   "variant_name": "PROCTER & GAMBLE",
+   "match_score": 20,
+   "reason": "PROCTER A GAMBLE ARGENTINA vs PROCTER & GAMBLE: A vs & is not suffix variant; descriptor qualifier (ARGENTINA) removed entirely"
+  },
+  {
+   "master_ta_code": "ar80077737",
+   "variant_ta_code": "ar80077736",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SHELL C P",
+   "variant_name": "SHELL C A P",
+   "match_score": 11,
+   "reason": "SHELL C P vs SHELL C A P: core brand SHELL same but P vs A P suffix differs; A token missing is significant"
+  },
+  {
+   "master_ta_code": "ar80077856",
+   "variant_ta_code": "ar80028230",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "THE PROCTER & GAMBLE CO",
+   "variant_name": "PROCTER & GAMBLE",
+   "match_score": 20,
+   "reason": "THE PROCTER & GAMBLE CO vs PROCTER & GAMBLE: THE and CO qualifiers removed; descriptor modifier differs"
+  },
+  {
+   "master_ta_code": "ar80077993",
+   "variant_ta_code": "ar80101903",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "WALMART STORES, INC.",
+   "variant_name": "WALMART, INC.",
+   "match_score": 15,
+   "reason": "WALMART STORES INC vs WALMART INC: STORES descriptor removed; significant qualifier suppression"
+  },
+  {
+   "master_ta_code": "ar80078799",
+   "variant_ta_code": "ar80024024",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "RMV OVERSEAS LTD TAX ID NO 1514286",
+   "variant_name": "RMV OVERSEAS LTD.",
+   "match_score": 18,
+   "reason": "RMV OVERSEAS LTD TAX ID NO 1514286 vs RMV OVERSEAS LTD: tax number descriptor removed; significant identifier suppression"
+  },
+  {
+   "master_ta_code": "ar80079241",
+   "variant_ta_code": "ar80077931",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "EASTER UNLIMITED, INC FUN WORLD",
+   "variant_name": "UNLIMITED WORLD",
+   "match_score": 13,
+   "reason": "EASTER UNLIMITED INC FUN WORLD vs UNLIMITED WORLD: EASTER removed; descriptor suppression is significant; core brand ambiguous"
+  },
+  {
+   "master_ta_code": "ar80082138",
+   "variant_ta_code": "ar80077675",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "TECHINT CTI S.A.C.I. - SACDE S.A. - UTE",
+   "variant_name": "SACDE SA",
+   "match_score": 10,
+   "reason": "Master contains TECHINT, variant only SACDE"
+  },
+  {
+   "master_ta_code": "ar80086315",
+   "variant_ta_code": "ar80113612",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "ADVANCED AUTOMOTIVE LTD.",
+   "variant_name": "SA AUTOMOTIVE LTD",
+   "match_score": 10,
+   "reason": "ADVANCED vs SA, different core brands"
+  },
+  {
+   "master_ta_code": "ar80087270",
+   "variant_ta_code": "ar00100586",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "TECNICA DE FLUIDOS SA",
+   "variant_name": "FLUIDOS SA",
+   "match_score": 10,
+   "reason": "TECNICA missing in variant, different core"
+  },
+  {
+   "master_ta_code": "ar80090405",
+   "variant_ta_code": "ar80018016",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "WEIR VULCO ARGETINA, S.A.",
+   "variant_name": "VULCO SA",
+   "match_score": 12,
+   "reason": "Master WEIR+VULCO vs variant VULCO only"
+  },
+  {
+   "master_ta_code": "ar80092265",
+   "variant_ta_code": "ar00100762",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "INDUSTRIAL AND",
+   "variant_name": "INDUSTRIAL D SA",
+   "match_score": 6,
+   "reason": "INDUSTRIAL AND vs INDUSTRIAL D SA — truncated/partial names, diff core"
+  },
+  {
+   "master_ta_code": "ar80095285",
+   "variant_ta_code": "ar00086498",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "INTERSTUHL S.L.",
+   "variant_name": "INTERSTUHL S.R.L.",
+   "match_score": 13,
+   "reason": "INTERSTUHL S.L. vs INTERSTUHL S.R.L. — different legal entity type (Spanish S.L. vs Argentine S.R.L.)"
+  },
+  {
+   "master_ta_code": "ar80098271",
+   "variant_ta_code": "ar80106383",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SIEMENS ENERGY S. DE R.L. DE C.V.",
+   "variant_name": "SIEMENS ENERGY S.A.",
+   "match_score": 12,
+   "reason": "SIEMENS ENERGY S. DE R.L. DE C.V. vs SIEMENS ENERGY S.A. — diff legal structures (Mexican S. de R.L. de C.V. vs Argentine S.A.)"
+  },
+  {
+   "master_ta_code": "ar80098455",
+   "variant_ta_code": "ar80103183",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "AGL GLOBAL LOGISTICS SC",
+   "variant_name": "AGL GLOBAL LOGISTICS SA",
+   "match_score": 20,
+   "reason": "AGL GLOBAL LOGISTICS SC vs AGL GLOBAL LOGISTICS SA — diff legal form (SC vs SA)"
+  },
+  {
+   "master_ta_code": "ar80099667",
+   "variant_ta_code": "ar00012807",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "FORTALEIN S.A.",
+   "variant_name": "FORTALEIN S.L.",
+   "match_score": 16,
+   "reason": "FORTALEIN S.A. vs FORTALEIN S.L. — diff legal form (Argentine S.A. vs Spanish S.L.)"
+  },
+  {
+   "master_ta_code": "ar80099812",
+   "variant_ta_code": "ar80049706",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "GLOBE METALES SA",
+   "variant_name": "GLOBE METALES SRL",
+   "match_score": 19,
+   "reason": "GLOBE METALES SA vs GLOBE METALES SRL — diff legal form (S.A. vs S.R.L.)"
+  },
+  {
+   "master_ta_code": "ar80101325",
+   "variant_ta_code": "ar80074302",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SEA WORLD, INC.",
+   "variant_name": "SEA WORLD LLC.",
+   "match_score": 16,
+   "reason": "Sea World INC. vs Sea World LLC. - farklı tüzel statü (INC vs LLC) korporatif tür tamamen farklı"
+  },
+  {
+   "master_ta_code": "ar80101494",
+   "variant_ta_code": "ar80028448",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SOUTHCROSS LOGISTICS SRL",
+   "variant_name": "SOUTHCROSS LOGISTICS S.A.",
+   "match_score": 17,
+   "reason": "Southcross Logistics SRL vs Southcross Logistics S.A. - S.R.L vs S.A. korporatif tür farklı"
+  },
+  {
+   "master_ta_code": "ar80101862",
+   "variant_ta_code": "ar80106881",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "VESTA FORWARDING ARGENTINA SRL",
+   "variant_name": "VESTA FORWARDING (AR)",
+   "match_score": 22,
+   "reason": "Vesta Forwarding Argentina SRL vs Vesta Forwarding (AR) - 'Argentina SRL' vs '(AR)' noktalaması/format farklı, çekirdek aynı AMA variant çok kısaltılmış ve farklı"
+  },
+  {
+   "master_ta_code": "ar80102852",
+   "variant_ta_code": "ar80119851",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "LEC IPSEP FI UNRC LABORATORIO",
+   "variant_name": "LEC IPSEP FI UNRC LABORATORIO DE",
+   "match_score": 42,
+   "reason": "LEC IPSEP FI UNRC LABORATORIO vs LEC IPSEP FI UNRC LABORATORIO DE - 'DE' kelimesi eklenmiş, eğer incomplete ise variant eksik/farklı"
+  },
+  {
+   "master_ta_code": "ar80102885",
+   "variant_ta_code": "ar00014761",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "MONTERO S.A. PRODUCTOS ELECTRICOS",
+   "variant_name": "MONTERO SA",
+   "match_score": 10,
+   "reason": "Montero S.A. Productos Electricos vs Montero SA - 'PRODUCTOS ELECTRICOS' tamamen eksik, ayırt edici kelime silinmiş"
+  },
+  {
+   "master_ta_code": "ar80103285",
+   "variant_ta_code": "ar00086848",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "ALUFLEX S.A. PUBLICA S NR E 25 DE",
+   "variant_name": "NR SA",
+   "match_score": 8,
+   "reason": "Aluflex S.A. Publica S NR E 25 DE vs NR SA - master çok daha uzun, variant çok kısaltılmış, farklı firma"
+  },
+  {
+   "master_ta_code": "ar80103834",
+   "variant_ta_code": "ar80062794",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "CLARIANT CORP.",
+   "variant_name": "BRA",
+   "match_score": 8,
+   "reason": "Clariant Corp. vs BRA - tamamen farklı firmalar, 'BRA' placeholder gibi görünüyor"
+  },
+  {
+   "master_ta_code": "ar80104101",
+   "variant_ta_code": "ar80099273",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "DELFIN GROUP CO S.A.C (PE)",
+   "variant_name": "DELFIN GROUP CO LTD.",
+   "match_score": 18,
+   "reason": "Delfin Group Co S.A.C (PE) vs Delfin Group Co Ltd - S.A.C. vs Ltd. farklı tüzel statü ülke kodu bağlı olabilir"
+  },
+  {
+   "master_ta_code": "ar80104338",
+   "variant_ta_code": "ar80108831",
+   "match_type": "TOKEN_COVERAGE",
+   "master_name": "EVERGREEN LOGISTICS (INDIA) PVT. LTD. (TW)",
+   "variant_name": "EVERGREEN _ LOGISTICS - TAIWAN (TW)",
+   "match_score": 29,
+   "reason": "Evergreen Logistics (India) PVT. Ltd. (TW) vs Evergreen - Logistics - Taiwan (TW) - Uzun vs kısa, ülke/şubeler farklı"
+  },
+  {
+   "master_ta_code": "ar80105027",
+   "variant_ta_code": "ar80120982",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "JOHN DEERE (TIANJIN) CO LTD.",
+   "variant_name": "DEERE & CO",
+   "match_score": 11,
+   "reason": "John Deere Tianjin Co Ltd. vs Deere & Co - John Deere vs sadece 'Deere & Co' - çekirdek marka aynı AMA variant çok farklı, legal entity structure farklı"
+  },
+  {
+   "master_ta_code": "ar80106198",
+   "variant_ta_code": "ar00043043",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "S.A. IMPORTADORA",
+   "variant_name": "IMPORTADORA LP. SRL",
+   "match_score": 7,
+   "reason": "S.A. Importadora vs Importadora LP. SRL - 'LP. SRL' tamamen farklı suffix, çekirdek aynı olsa da çok kısaltılmış/farklı"
+  },
+  {
+   "master_ta_code": "ar80108800",
+   "variant_ta_code": "ar00012372",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "ENERGIA ARGENTINA S.A. YPF SA",
+   "variant_name": "ENERGIA ARGENTINA SA",
+   "match_score": 11,
+   "reason": "Energia Argentina S.A. YPF SA vs Energia Argentina SA - 'YPF SA' partner/parent silinmiş, ayırt edici element eksik"
+  },
+  {
+   "master_ta_code": "ar80109835",
+   "variant_ta_code": "ar80121452",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "QINGDAO SUNSTAR INTL LOGISTICS CO LTD.",
+   "variant_name": "H&H INTL LOGISTICS CO LTD",
+   "match_score": 16,
+   "reason": "Qingdao Sunstar Intl Logistics vs H&H Intl Logistics - tamamen farklı marka (Qingdao vs H&H)"
+  },
+  {
+   "master_ta_code": "ar80110824",
+   "variant_ta_code": "ar00056368",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "SERVITEC S.A.",
+   "variant_name": "SERVITEC S.R.L.",
+   "match_score": 16,
+   "reason": "Servitec S.A. vs S.R.L. - tüzel ek tamamen farklı (S.A. vs S.R.L.), kurumsal yapı farklı"
+  },
+  {
+   "master_ta_code": "ar80111559",
+   "variant_ta_code": "ar80062794",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "CLARIANT BRASIL",
+   "variant_name": "BRA",
+   "match_score": 8,
+   "reason": "Clariant Brasil vs BRA - 'Brasil' vs placeholder 'BRA', tamamen farklı eğer BRA placeholder ise"
+  },
+  {
+   "master_ta_code": "ar80112596",
+   "variant_ta_code": "ar00017168",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "J-TECH GLOBAL IN C/O WAKEFIELD ARGENTINA S.A",
+   "variant_name": "WAKEFIELD ARGENTINA SA",
+   "match_score": 13,
+   "reason": "J-TECH Global in C/O Wakefield Argentina vs Wakefield Argentina SA - 'J-TECH GLOBAL' tamamen silinmiş, çekirdek berbeda"
+  },
+  {
+   "master_ta_code": "ar80112676",
+   "variant_ta_code": "ar80005157",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "LA PIAMONTESA DE A GIACOSA & CIA SA",
+   "variant_name": "LA PIAMONTESA SA",
+   "match_score": 12,
+   "reason": "La Piamontesa de A Giacosa & Cia SA vs La Piamontesa SA - 'A GIACOSA & CIA' ortağı/ayrıntı silinmiş, ayırt edici eleman eksik"
+  },
+  {
+   "master_ta_code": "ar80113186",
+   "variant_ta_code": "ar00015068",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "OMNILIFE USA INC",
+   "variant_name": "OMNILIFE DE ARGENTINA SA",
+   "match_score": 16,
+   "reason": "Omnilife USA Inc vs Omnilife de Argentina SA - 'USA' vs 'ARGENTINA' tamamen farklı ülke, çekirdek aynı AMA farklı subsidiaries"
+  },
+  {
+   "master_ta_code": "ar80119577",
+   "variant_ta_code": "ar80018655",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "Ford Motor Company Brasil Ltda",
+   "variant_name": "FORD MOTOR CO.BRASIL LTDA.",
+   "match_score": 28,
+   "reason": "Core: Ford Motor Company Brasil vs FORD MOTOR CO. Brasil. Company name differs (full vs abbreviated); actually same brand but same entity."
+  },
+  {
+   "master_ta_code": "ar80119650",
+   "variant_ta_code": "ar80126030",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "GRI-ALLESET INC/DUPONT SPECIALTY PRODUCTS ARGENTINA SRL",
+   "variant_name": "DUPONT SPECIALTY PRODUCTS ARGENTINA SRL",
+   "match_score": 22,
+   "reason": "Master: GRI-ALLESET INC/DUPONT SPECIALTY. Variant: DUPONT SPECIALTY only. Master has GRI-ALLESET prefix; distinct entities."
+  },
+  {
+   "master_ta_code": "ar80120526",
+   "variant_ta_code": "ar00045447",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "ALL OVER SHIPPING SRL",
+   "variant_name": "ALL IN SHIPPING SRL",
+   "match_score": 17,
+   "reason": "Core: ALL OVER SHIPPING vs ALL IN SHIPPING. OVER vs IN—distinct core brands."
+  },
+  {
+   "master_ta_code": "ar80123165",
+   "variant_ta_code": "ar80123164",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "GREAT ACCORD CO. LTD/COLUMBIA SPORTSWEAR CO",
+   "variant_name": "GREAT ACCORD CO .LTD",
+   "match_score": 23,
+   "reason": "Master: GREAT ACCORD CO. LTD/COLUMBIA SPORTSWEAR CO. Variant: GREAT ACCORD CO .LTD. Master has COLUMBIA as second entity; different."
+  },
+  {
+   "master_ta_code": "ar80123551",
+   "variant_ta_code": "ar80139544",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "SUNGJIN INC CO. LTD/COLUMBIA SPORTSWEAR CO",
+   "variant_name": "COLUMBIA SPORTSWEAR COMPANY PRIVATE LTD",
+   "match_score": 20,
+   "reason": "Master: SUNGJIN INC CO. LTD/COLUMBIA SPORTSWEAR CO. Variant: COLUMBIA SPORTSWEAR COMPANY PRIVATE LTD. Master has SUNGJIN; variant is pure COLUMBIA entity."
+  },
+  {
+   "master_ta_code": "ar80123576",
+   "variant_ta_code": "ar00015554",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "THE MANAGER PROMEDON SA",
+   "variant_name": "PROMEDON SA",
+   "match_score": 14,
+   "reason": "Master: THE MANAGER PROMEDON SA. Variant: PROMEDON SA. THE MANAGER is a distinct prefix; different entities."
+  },
+  {
+   "master_ta_code": "ar80127063",
+   "variant_ta_code": "ar80127056",
+   "match_type": "FUZZY_PHRASE",
+   "master_name": "COMPA¿IA ARGENTINA LEVADURAS SAIC",
+   "variant_name": "COMPA?IA ARGENTINA DE LEVADURAS SAIC",
+   "match_score": 36,
+   "reason": "Master: COMPA[NIA] ARGENTINA LEVADURAS SAIC (no DE). Variant: COMPA[NIA] ARGENTINA DE LEVADURAS SAIC. DE keyword missing in master."
+  },
+  {
+   "master_ta_code": "ar80127477",
+   "variant_ta_code": "ar80029444",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "PERCAR SACIF S.A.",
+   "variant_name": "L.E. S.A.C.I.F. y A.",
+   "match_score": 9,
+   "reason": "Master: PERCAR SACIF S.A. Variant: L.E. S.A.C.I.F. y A. Different core brand (L.E. vs PERCAR)."
+  },
+  {
+   "master_ta_code": "ar80129775",
+   "variant_ta_code": "ar80140681",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "COOPERATIVA AGRICULTORES",
+   "variant_name": "COOPERATIVE AGRICULTORES",
+   "match_score": 13,
+   "reason": "COOPERATIVA vs COOPERATIVE - spelling variation but linguistic difference suggests different registration, different brand intent"
+  },
+  {
+   "master_ta_code": "ar80130075",
+   "variant_ta_code": "ar00066836",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "MONTES S.A",
+   "variant_name": "MONTES HERMANOS S.A.",
+   "match_score": 11,
+   "reason": "MONTES vs MONTES HERMANOS - second adds 'HERMANOS' making it distinct legal entity"
+  },
+  {
+   "master_ta_code": "ar80132402",
+   "variant_ta_code": "ar80033309",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "BYB CONSULTORA SA",
+   "variant_name": "B&B CONSULTORA SA",
+   "match_score": 11,
+   "reason": "BYB vs B&B - different spelling/notation (Y vs ampersand), likely distinct brands"
+  },
+  {
+   "master_ta_code": "ar80132824",
+   "variant_ta_code": "ar00047082",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "ENPOLEX S.R.L.",
+   "variant_name": "ENPOLEX S.A.",
+   "match_score": 16,
+   "reason": "ENPOLEX S.R.L. vs ENPOLEX S.A. - different legal structure (LLC vs corp) suggests separate entities"
+  },
+  {
+   "master_ta_code": "ar80133391",
+   "variant_ta_code": "ar00061562",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "KINETIC SRL",
+   "variant_name": "KINETIC S.A.",
+   "match_score": 15,
+   "reason": "KINETIC SRL vs KINETIC S.A. - different legal structures, could be separate entities"
+  },
+  {
+   "master_ta_code": "ar80133684",
+   "variant_ta_code": "ar00087038",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "MESSR RAYVIS SA",
+   "variant_name": "RAYVIS SA",
+   "match_score": 14,
+   "reason": "MESSR RAYVIS SA vs RAYVIS SA - MESSR is additional prefix, suggests different registration"
+  },
+  {
+   "master_ta_code": "ar80133712",
+   "variant_ta_code": "ar80100597",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "MIRAE TEXTIL SRL",
+   "variant_name": "MIRAE SRL",
+   "match_score": 16,
+   "reason": "MIRAE TEXTIL SRL vs MIRAE SRL - first has TEXTIL descriptor, distinct business type marker"
+  },
+  {
+   "master_ta_code": "ar80134334",
+   "variant_ta_code": "ar00025238",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "SHANDONG WEICHAI IMPORT AND EXPORT C",
+   "variant_name": "IMPORT E A C S.R.L.",
+   "match_score": 12,
+   "reason": "SHANDONG WEICHAI vs IMPORT E A C - completely different core brands despite overlap"
+  },
+  {
+   "master_ta_code": "ar80135386",
+   "variant_ta_code": "ar80021801",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "TO KIA ARGENTINA S.A.",
+   "variant_name": "KIA ARGENTINA S.A.",
+   "match_score": 18,
+   "reason": "TO KIA vs KIA ARGENTINA - TO prefix makes it distinct, not just suffix variation"
+  },
+  {
+   "master_ta_code": "ar80135449",
+   "variant_ta_code": "ar80023303",
+   "match_type": "STRIPPED_EXACT",
+   "master_name": "AA&S SRL",
+   "variant_name": "A.A. S.A.",
+   "match_score": 8,
+   "reason": "AA&S SRL vs A.A. S.A. - different structure: ampersand vs period notation, different meaning"
+  },
+  {
+   "master_ta_code": "ar80139579",
+   "variant_ta_code": "ar80012013",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "Crane Worldwide Logistics Srl (Genova)",
+   "variant_name": "WORLDWIDE LOGISTICS SRL",
+   "match_score": 12,
+   "reason": "Crane Worldwide Logistics vs WORLDWIDE LOGISTICS - Crane is key brand differentiator, missing in variant"
+  },
+  {
+   "master_ta_code": "ar80140364",
+   "variant_ta_code": "ar00010600",
+   "match_type": "SUFFIX_FUZZY",
+   "master_name": "SOUTHCROSS LOG ATRIM ARGENTINA SA",
+   "variant_name": "ATRIM ARGENTINA SA",
+   "match_score": 15,
+   "reason": "SOUTHCROSS LOG ATRIM vs ATRIM ARGENTINA - SOUTHCROSS LOG is key prefix differentiator"
+  }
+ ],
+ "leaks": 0,
+ "raw_total": {
+  "SAME": 4221,
+  "DIFFERENT": 551,
+  "UNSURE": 47,
+  "PLACEHOLDER": 7
+ }
+}

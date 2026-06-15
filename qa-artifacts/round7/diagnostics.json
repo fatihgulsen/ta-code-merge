@@ -1,0 +1,27 @@
+{
+  "completeness": {
+    "AR": {
+      "unprocessed": 111354,
+      "total": 171328,
+      "pct_done": 35.0
+    },
+    "PE": {
+      "unprocessed": 137803,
+      "total": 229277,
+      "pct_done": 39.9
+    }
+  },
+  "duplicate_new_master_groups": 830,
+  "country_leak_groups": 0,
+  "main_query_rows": 4826,
+  "distinct_groups": 3808,
+  "variant_matchtype_dist": {
+    "STRIPPED_EXACT": 3657,
+    "SUFFIX_FUZZY": 386,
+    "FUZZY_PHRASE": 514,
+    "TOKEN_COVERAGE": 269
+  },
+  "overmerge_batches": 40,
+  "rows_written": 4826,
+  "pe_undermerge_high_sim_pairs": 3017
+}

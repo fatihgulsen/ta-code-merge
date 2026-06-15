@@ -1,0 +1,96 @@
+{"master_ta_code":"ar00014646","variant_ta_code":"ar80061059","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farkı SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00014656","variant_ta_code":"ar80028042","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farkı SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00014681","variant_ta_code":"ar80006267","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"LTD suffix kaldirildi","country_leak":false}
+{"master_ta_code":"ar00014689","variant_ta_code":"ar80017117","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA suffix kaldirildi","country_leak":false}
+{"master_ta_code":"ar00014714","variant_ta_code":"ar80029626","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Format farki SRL","country_leak":false}
+{"master_ta_code":"ar00014730","variant_ta_code":"ar80064459","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Virgul eklenmesi","country_leak":false}
+{"master_ta_code":"ar00014760","variant_ta_code":"ar80022138","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"Kelime sirasi farkı ad-soyad","country_leak":false}
+{"master_ta_code":"ar00014776","variant_ta_code":"ar80006383","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farkı","country_leak":false}
+{"master_ta_code":"ar00014787","variant_ta_code":"ar80017147","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farkı","country_leak":false}
+{"master_ta_code":"ar00014796","variant_ta_code":"ar80085100","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Format farki SRL","country_leak":false}
+{"master_ta_code":"ar00014803","variant_ta_code":"ar00028500","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"HERMANOS kisaltmasi HNOS","country_leak":false}
+{"master_ta_code":"ar00014807","variant_ta_code":"ar80022070","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Format farki SRL","country_leak":false}
+{"master_ta_code":"ar00014892","variant_ta_code":"ar80077368","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA suffix kaldirildi","country_leak":false}
+{"master_ta_code":"ar00014935","variant_ta_code":"ar80018847","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00014941","variant_ta_code":"ar80066279","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SAC ifiya acilimi","country_leak":false}
+{"master_ta_code":"ar00014953","variant_ta_code":"ar80010993","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki","country_leak":false}
+{"master_ta_code":"ar00014985","variant_ta_code":"ar80018343","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Format farki SRL","country_leak":false}
+{"master_ta_code":"ar00014986","variant_ta_code":"ar80013895","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00014988","variant_ta_code":"ar80105689","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA suffix kaldirildi","country_leak":false}
+{"master_ta_code":"ar00014990","variant_ta_code":"ar00060717","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"Kelime sirasi NOVITA REPUESTOS vs REPUESTOS NOVITA","country_leak":false}
+{"master_ta_code":"ar00014995","variant_ta_code":"ar80040265","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Format farki SRL","country_leak":false}
+{"master_ta_code":"ar00015013","variant_ta_code":"ar80099440","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"Kelime sirasi ad-soyad","country_leak":false}
+{"master_ta_code":"ar00015035","variant_ta_code":"ar80085763","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Buyuk kucuk harf farki","country_leak":false}
+{"master_ta_code":"ar00015065","variant_ta_code":"ar00029109","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"Farkli legal form SA vs S.R.L.","country_leak":false}
+{"master_ta_code":"ar00015145","variant_ta_code":"ar80032698","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Format farki SRL","country_leak":false}
+{"master_ta_code":"ar00015164","variant_ta_code":"ar80040291","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix S.A.C. vs SA","country_leak":false}
+{"master_ta_code":"ar00015177","variant_ta_code":"ar80109680","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"ARGENTINA kisaltmasi ARG","country_leak":false}
+{"master_ta_code":"ar00015238","variant_ta_code":"ar80023113","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"INTERNATIONAL kisaltmasi INT","country_leak":false}
+{"master_ta_code":"ar00015239","variant_ta_code":"ar80037044","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00015250","variant_ta_code":"ar80011046","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00015260","variant_ta_code":"ar80017314","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Nokta eklenmesi CIA vs CIA.","country_leak":false}
+{"master_ta_code":"ar00015269","variant_ta_code":"ar80017333","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00015308","variant_ta_code":"ar80023968","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00015323","variant_ta_code":"ar80044303","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00015344","variant_ta_code":"ar80092443","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"SRL suffix kaldirildi","country_leak":false}
+{"master_ta_code":"ar00015377","variant_ta_code":"ar00029820","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"Farkli legal form SA vs SCA","country_leak":false}
+{"master_ta_code":"ar00015391","variant_ta_code":"ar80035206","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00015407","variant_ta_code":"ar80041584","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00015434","variant_ta_code":"ar80064707","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix SAIC vs SA","country_leak":false}
+{"master_ta_code":"ar00015464","variant_ta_code":"ar80011101","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00015466","variant_ta_code":"ar80037099","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Format farki SRL","country_leak":false}
+{"master_ta_code":"ar00015472","variant_ta_code":"ar80007305","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00015484","variant_ta_code":"ar80085849","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Buyuk kucuk harf farki","country_leak":false}
+{"master_ta_code":"ar00015531","variant_ta_code":"ar80007391","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00015537","variant_ta_code":"ar80035266","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Buyuk kucuk harf farki","country_leak":false}
+{"master_ta_code":"ar00015584","variant_ta_code":"ar80077573","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"DE kelimesi kaldirildi","country_leak":false}
+{"master_ta_code":"ar00015633","variant_ta_code":"ar80013962","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00015635","variant_ta_code":"ar80007511","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Buyuk kucuk harf farki","country_leak":false}
+{"master_ta_code":"ar00015637","variant_ta_code":"ar80011129","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Virgul eklenmesi","country_leak":false}
+{"master_ta_code":"ar00015638","variant_ta_code":"ar80077596","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL suffix kaldirildi","country_leak":false}
+{"master_ta_code":"ar00015699","variant_ta_code":"ar80075042","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00015704","variant_ta_code":"ar80051039","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Tire ve buyuk harf","country_leak":false}
+{"master_ta_code":"ar00015711","variant_ta_code":"ar80011144","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"e I vs I yazim","country_leak":false}
+{"master_ta_code":"ar00015739","variant_ta_code":"ar80018379","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Format farki SRL","country_leak":false}
+{"master_ta_code":"ar00015746","variant_ta_code":"ar80023162","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00015756","variant_ta_code":"ar80007673","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Virgul ve format farki","country_leak":false}
+{"master_ta_code":"ar00015758","variant_ta_code":"ar80018382","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"Farkli legal form SA vs S.A. DE C.V.","country_leak":false}
+{"master_ta_code":"ar00015808","variant_ta_code":"ar80101136","match_type":"STRIPPED_EXACT","verdict":"UNSURE","reason":"SAIC vs SACI sira farkliligi","country_leak":false}
+{"master_ta_code":"ar00015818","variant_ta_code":"ar80007720","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Virgul eklenmesi","country_leak":false}
+{"master_ta_code":"ar00015854","variant_ta_code":"ar80018383","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Format farki SRL","country_leak":false}
+{"master_ta_code":"ar00015866","variant_ta_code":"ar80077645","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL suffix kaldirildi","country_leak":false}
+{"master_ta_code":"ar00015867","variant_ta_code":"ar80022280","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00015875","variant_ta_code":"ar80019935","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00015919","variant_ta_code":"ar80037165","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Format farki SRL","country_leak":false}
+{"master_ta_code":"ar00015933","variant_ta_code":"ar00088733","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"ROTATIVOS ARES vs ARES farki","country_leak":false}
+{"master_ta_code":"ar00015963","variant_ta_code":"ar80035425","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00016013","variant_ta_code":"ar80008044","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Virgul ve nokta farki","country_leak":false}
+{"master_ta_code":"ar00016035","variant_ta_code":"ar80040451","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00016057","variant_ta_code":"ar80011242","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00016058","variant_ta_code":"ar80022337","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Format farki SRL","country_leak":false}
+{"master_ta_code":"ar00016079","variant_ta_code":"ar80064932","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Suffix SA vs S.A.U.","country_leak":false}
+{"master_ta_code":"ar00016171","variant_ta_code":"ar80089071","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"Buyuk kucuk harf farki","country_leak":false}
+{"master_ta_code":"ar00016182","variant_ta_code":"ar00031781","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Tire ve yazim farki","country_leak":false}
+{"master_ta_code":"ar00016191","variant_ta_code":"ar80032880","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Format farki SRL","country_leak":false}
+{"master_ta_code":"ar00016223","variant_ta_code":"ar00087183","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00016244","variant_ta_code":"ar80029910","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00016258","variant_ta_code":"ar80101430","match_type":"SUFFIX_FUZZY","verdict":"UNSURE","reason":"SIREX MEDICA vs SIREX","country_leak":false}
+{"master_ta_code":"ar00016314","variant_ta_code":"ar80011296","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Virgul ve nokta farki","country_leak":false}
+{"master_ta_code":"ar00016319","variant_ta_code":"ar80057087","match_type":"STRIPPED_EXACT","verdict":"UNSURE","reason":"S.A vs S,A CORP yazim","country_leak":false}
+{"master_ta_code":"ar00016348","variant_ta_code":"ar80014044","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA suffix kaldirildi","country_leak":false}
+{"master_ta_code":"ar00016366","variant_ta_code":"ar80011954","match_type":"FUZZY_PHRASE","verdict":"UNSURE","reason":"Kismik isim variant","country_leak":false}
+{"master_ta_code":"ar00016383","variant_ta_code":"ar80017787","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"SUCURSAL ARGENTINA kaldirildi","country_leak":false}
+{"master_ta_code":"ar00016403","variant_ta_code":"ar80046046","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00016407","variant_ta_code":"ar00032315","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"Farkli legal form SA vs S.R.L.","country_leak":false}
+{"master_ta_code":"ar00016427","variant_ta_code":"ar80008633","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00016441","variant_ta_code":"ar80064573","match_type":"SUFFIX_FUZZY","verdict":"UNSURE","reason":"SUN OCEAN WAY vs OCEAN WAY","country_leak":false}
+{"master_ta_code":"ar00016443","variant_ta_code":"ar80008658","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"SUC ARG kısaltması vs SUC. ARGENTINA","country_leak":false}
+{"master_ta_code":"ar00016467","variant_ta_code":"ar80022435","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00016479","variant_ta_code":"ar80011333","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00016497","variant_ta_code":"ar00016494","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"T P I vs T F L tamamen farki akrostis","country_leak":false}
+{"master_ta_code":"ar00016504","variant_ta_code":"ar80011963","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Format farki SRL","country_leak":false}
+{"master_ta_code":"ar00016528","variant_ta_code":"ar80077823","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA suffix kaldirildi","country_leak":false}
+{"master_ta_code":"ar00016607","variant_ta_code":"ar00083758","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"Farkli legal form S.R.L. vs S.A.","country_leak":false}
+{"master_ta_code":"ar00016631","variant_ta_code":"ar80015109","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}
+{"master_ta_code":"ar00016637","variant_ta_code":"ar80017867","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA suffix kaldirildi","country_leak":false}
+{"master_ta_code":"ar00016640","variant_ta_code":"ar80040557","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Yazim farki SA vs S.A.","country_leak":false}

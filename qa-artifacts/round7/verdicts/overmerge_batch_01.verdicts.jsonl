@@ -1,0 +1,422 @@
+{"master_ta_code": "ar00020951", "variant_ta_code": "ar00023158", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "CON vs F L: farklı marka çekirdeği", "country_leak": false}
+{"master_ta_code": "ar00020951", "variant_ta_code": "ar00019760", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "CON vs C D S I: farklı çekirdek markalar", "country_leak": false}
+{"master_ta_code": "ar00020951", "variant_ta_code": "ar00072138", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "CON vs F & L: marka çekirdeği farklı", "country_leak": false}
+{"master_ta_code": "ar00020951", "variant_ta_code": "ar00073678", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "CON vs SME: farklı firmalar", "country_leak": false}
+{"master_ta_code": "ar00020951", "variant_ta_code": "ar00035424", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "CON vs A P: ayrı markalar", "country_leak": false}
+{"master_ta_code": "ar00020951", "variant_ta_code": "ar00068181", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "CON vs DEL: marka adları tamamen farklı", "country_leak": false}
+{"master_ta_code": "ar00020951", "variant_ta_code": "ar80000837", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "CON vs B I: farklı kişisel/kurumsal markalar", "country_leak": false}
+{"master_ta_code": "ar00020951", "variant_ta_code": "ar80018473", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "CON ARGENTINA vs sadece ARGENTINA: jenerik", "country_leak": false}
+{"master_ta_code": "ar00020951", "variant_ta_code": "ar80020523", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "CON vs C.: farklı marka", "country_leak": false}
+{"master_ta_code": "ar00020951", "variant_ta_code": "ar80054171", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "CON vs LA: tamamen farklı isimler", "country_leak": false}
+{"master_ta_code": "ar80016003", "variant_ta_code": "ar80002648", "match_type": "SUFFIX_FUZZY", "verdict": "SAME", "reason": "DR LAZAR CIA: noktalama ve & vs Y farkı", "country_leak": false}
+{"master_ta_code": "ar80016003", "variant_ta_code": "ar80002651", "match_type": "SUFFIX_FUZZY", "verdict": "SAME", "reason": "DR LAZAR CIA: yazım varyasyonu", "country_leak": false}
+{"master_ta_code": "ar80016003", "variant_ta_code": "ar80016000", "match_type": "SUFFIX_FUZZY", "verdict": "SAME", "reason": "DR LAZAR CIA: & vs Y, suffix farkı", "country_leak": false}
+{"master_ta_code": "ar80016003", "variant_ta_code": "ar80002653", "match_type": "SUFFIX_FUZZY", "verdict": "SAME", "reason": "DR LAZAR CIA: noktalama varyasyonu", "country_leak": false}
+{"master_ta_code": "ar80016003", "variant_ta_code": "ar80002655", "match_type": "SUFFIX_FUZZY", "verdict": "SAME", "reason": "DR LAZAR CIA: & vs Y, spacing", "country_leak": false}
+{"master_ta_code": "ar80016003", "variant_ta_code": "ar80020194", "match_type": "SUFFIX_FUZZY", "verdict": "SAME", "reason": "DR LAZAR CIA: Y vs & equivalence", "country_leak": false}
+{"master_ta_code": "ar80016003", "variant_ta_code": "ar80016010", "match_type": "SUFFIX_FUZZY", "verdict": "SAME", "reason": "DR LAZAR CIA: noktalama ve S,A spacing", "country_leak": false}
+{"master_ta_code": "ar80016003", "variant_ta_code": "ar80015998", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "Dr Lazar CIA + QUIMICA: tam eşleşme", "country_leak": false}
+{"master_ta_code": "ar80016003", "variant_ta_code": "ar80030222", "match_type": "SUFFIX_FUZZY", "verdict": "SAME", "reason": "DR LAZAR CIA: noktalama varyasyonu", "country_leak": false}
+{"master_ta_code": "ar80016003", "variant_ta_code": "ar80002646", "match_type": "SUFFIX_FUZZY", "verdict": "SAME", "reason": "DR LAZAR CIA: büyük/küçük harf ve suffix", "country_leak": false}
+{"master_ta_code": "ar80023638", "variant_ta_code": "ar80003501", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FORD ARGENTINA SCA: noktalama only", "country_leak": false}
+{"master_ta_code": "ar80023638", "variant_ta_code": "ar80011698", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FORD ARGENTINA SCA: virgül varyasyonu", "country_leak": false}
+{"master_ta_code": "ar80023638", "variant_ta_code": "ar80003516", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FORD ARGENTINA SCA: spacing in suffix", "country_leak": false}
+{"master_ta_code": "ar80023638", "variant_ta_code": "ar80003506", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "FORD SCA vs FORD S.A.: farklı legal form", "country_leak": false}
+{"master_ta_code": "ar80023638", "variant_ta_code": "ar80036301", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FORD ARGENTINA SCA: COMPANY prefix sadece ekstra", "country_leak": false}
+{"master_ta_code": "ar80023638", "variant_ta_code": "ar80063820", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FORD ARGENTINA: SCA silinmiş ama brand aynı", "country_leak": false}
+{"master_ta_code": "ar80023638", "variant_ta_code": "ar80016298", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FORD ARGENTINA SCA: spacing varyasyonu", "country_leak": false}
+{"master_ta_code": "ar80023638", "variant_ta_code": "ar80003509", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "FORD SCA vs FORD SA: hukuki form farkı", "country_leak": false}
+{"master_ta_code": "ar80023638", "variant_ta_code": "ar80003502", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FORD ARGENTINA SCA: virgül ve noktalama", "country_leak": false}
+{"master_ta_code": "ar00058311", "variant_ta_code": "ar00067232", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "SAL vs UNLIMITED: farklı marka çekirdeği", "country_leak": false}
+{"master_ta_code": "ar00058311", "variant_ta_code": "ar80023354", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "SAL ARGENTINA vs sadece ARGENTINA: jenerik", "country_leak": false}
+{"master_ta_code": "ar00058311", "variant_ta_code": "ar00015982", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "SAL vs S P F: tamamen farklı", "country_leak": false}
+{"master_ta_code": "ar00058311", "variant_ta_code": "ar80062985", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "SAL vs AC: ayrı markalar", "country_leak": false}
+{"master_ta_code": "ar00058311", "variant_ta_code": "ar00010015", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "SAL vs A E B: farklı çekirdek", "country_leak": false}
+{"master_ta_code": "ar00058311", "variant_ta_code": "ar00088735", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "SAL vs ARGENTINA LTD: çekirdek farklı", "country_leak": false}
+{"master_ta_code": "ar00058311", "variant_ta_code": "ar80106054", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "SAL vs R B: marka isimleri ayrı", "country_leak": false}
+{"master_ta_code": "ar00058311", "variant_ta_code": "ar80015458", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "SAL vs AT: farklı firmalar", "country_leak": false}
+{"master_ta_code": "ar80022807", "variant_ta_code": "ar80104179", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DOS SANTOS PEREIRA Y CIA: LTDA suffix only", "country_leak": false}
+{"master_ta_code": "ar80022807", "variant_ta_code": "ar80010335", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DOS SANTOS PEREIRA Y CIA: S.A. vs LTDA suffix", "country_leak": false}
+{"master_ta_code": "ar80022807", "variant_ta_code": "ar80002626", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DOS SANTOS PEREIRA CIA: Y vs & interchangeable", "country_leak": false}
+{"master_ta_code": "ar80022807", "variant_ta_code": "ar80104178", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DOS SANTOS PEREIRA Y CIA: suffix removed", "country_leak": false}
+{"master_ta_code": "ar80022807", "variant_ta_code": "ar80019675", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DOS SANTOS PEREIRA Y CIA: S.A. suffix", "country_leak": false}
+{"master_ta_code": "ar80022807", "variant_ta_code": "ar80019228", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DOS SANTOS PEREIRA CIA: & vs Y, S.A.", "country_leak": false}
+{"master_ta_code": "ar80022807", "variant_ta_code": "ar80021422", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DOS SANTOS PEREIRA CIA: & vs Y, S.A. noktalama", "country_leak": false}
+{"master_ta_code": "ar80022807", "variant_ta_code": "ar80029078", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DOS SANTOS PEREIRA CIA: & vs Y, SA", "country_leak": false}
+{"master_ta_code": "ar80061204", "variant_ta_code": "ar80009620", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "WEATHERFORD INT DE ARG: noktalama ve spacing", "country_leak": false}
+{"master_ta_code": "ar80061204", "variant_ta_code": "ar80011484", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "WEATHERFORD INT DE ARGENTINA: abbreviated vs full", "country_leak": false}
+{"master_ta_code": "ar80061204", "variant_ta_code": "ar00017186", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "WEATHERFORD INTERNATIONAL: INT vs INTERNATIONAL", "country_leak": false}
+{"master_ta_code": "ar80061204", "variant_ta_code": "ar80018073", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "WEATHERFORD INTL: abbreviated vs full form", "country_leak": false}
+{"master_ta_code": "ar80061204", "variant_ta_code": "ar80011488", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "WEATHERFORD INTERNATIONAL: INT vs INTL, S.A.", "country_leak": false}
+{"master_ta_code": "ar80061204", "variant_ta_code": "ar80026830", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "WEATHERFORD INTL: abbreviated form", "country_leak": false}
+{"master_ta_code": "ar80061204", "variant_ta_code": "ar80009613", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "WEATHERFORD INT DE ARGENTINA: noktalama", "country_leak": false}
+{"master_ta_code": "ar80061204", "variant_ta_code": "ar80009627", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "WEATHERFORD INT DE ARGENTINA: spacing", "country_leak": false}
+{"master_ta_code": "ar80107381", "variant_ta_code": "ar80112076", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "FIRMENICH SAIC vs FIRMENICH INCORPORATED: farklı", "country_leak": false}
+{"master_ta_code": "ar80107381", "variant_ta_code": "ar80003418", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FIRMENICH SAIC: spacing and suffix", "country_leak": false}
+{"master_ta_code": "ar80107381", "variant_ta_code": "ar80003429", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FIRMENICH: suffix removed only", "country_leak": false}
+{"master_ta_code": "ar80107381", "variant_ta_code": "ar80012861", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FIRMENICH SAIC: noktalama ve F.", "country_leak": false}
+{"master_ta_code": "ar80107381", "variant_ta_code": "ar80018650", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FIRMENICH SAIC: virgül ve F.", "country_leak": false}
+{"master_ta_code": "ar80107381", "variant_ta_code": "ar80041095", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FIRMENICH: brand adı sadece, suffix silinmiş", "country_leak": false}
+{"master_ta_code": "ar80107381", "variant_ta_code": "ar80123113", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FIRMENICH SAIC: spacing", "country_leak": false}
+{"master_ta_code": "ar80127216", "variant_ta_code": "ar80123113", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FIRMENICH SAIC: Y F eki kaldırılmış", "country_leak": false}
+{"master_ta_code": "ar80127216", "variant_ta_code": "ar80018650", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FIRMENICH SAIC: Y F farkı sadece", "country_leak": false}
+{"master_ta_code": "ar80127216", "variant_ta_code": "ar80003418", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FIRMENICH SAIC: Y F ve spacing", "country_leak": false}
+{"master_ta_code": "ar80127216", "variant_ta_code": "ar80003429", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FIRMENICH: Y F suffix kaldırılmış", "country_leak": false}
+{"master_ta_code": "ar80127216", "variant_ta_code": "ar80012861", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FIRMENICH SAIC: Y F ve noktalama", "country_leak": false}
+{"master_ta_code": "ar80127216", "variant_ta_code": "ar80112076", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "FIRMENICH SAIC Y F vs INCORPORATED: tamamen farklı", "country_leak": false}
+{"master_ta_code": "ar80127216", "variant_ta_code": "ar80041095", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FIRMENICH: Y F suffix removed", "country_leak": false}
+{"master_ta_code": "ar00030532", "variant_ta_code": "ar80060175", "match_type": "TOKEN_COVERAGE", "verdict": "DIFFERENT", "reason": "R C INTERNATIONAL vs OVERSEAS: hiç ortak token", "country_leak": false}
+{"master_ta_code": "ar00030532", "variant_ta_code": "ar00080406", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "R C INTERNATIONAL vs B & D INTERNATIONAL: farklı", "country_leak": false}
+{"master_ta_code": "ar00030532", "variant_ta_code": "ar80016581", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "R C INTERNATIONAL vs INTERNATIONAL: jenerik", "country_leak": false}
+{"master_ta_code": "ar00030532", "variant_ta_code": "ar00018322", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "R C INTERNATIONAL vs F Y C INTERNATIONAL: prefix farklı", "country_leak": false}
+{"master_ta_code": "ar00030532", "variant_ta_code": "ar80016593", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "R C INTERNATIONAL vs INC: tamamen farklı", "country_leak": false}
+{"master_ta_code": "ar00030532", "variant_ta_code": "ar80114619", "match_type": "TOKEN_COVERAGE", "verdict": "DIFFERENT", "reason": "R C INTERNATIONAL vs INT F&F: hiç eşleşme", "country_leak": false}
+{"master_ta_code": "ar80002099", "variant_ta_code": "ar80057280", "match_type": "TOKEN_COVERAGE", "verdict": "SAME", "reason": "COSMETICOS AVON: token coverage high", "country_leak": false}
+{"master_ta_code": "ar80002099", "variant_ta_code": "ar80002109", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "COSMETICOS AVON: SAIC suffix farkı", "country_leak": false}
+{"master_ta_code": "ar80002099", "variant_ta_code": "ar80002111", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "COSMETICOS AVON: virgül ve suffix", "country_leak": false}
+{"master_ta_code": "ar80002099", "variant_ta_code": "ar80018199", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "COSMETICOS AVON: SACI suffix", "country_leak": false}
+{"master_ta_code": "ar80002099", "variant_ta_code": "ar80002110", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "COSMETICOS AVON: spacing in suffix", "country_leak": false}
+{"master_ta_code": "ar80002099", "variant_ta_code": "ar80015892", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "COSMETICOS AVON: virgül ve suffix", "country_leak": false}
+{"master_ta_code": "ar80007131", "variant_ta_code": "ar80077639", "match_type": "TOKEN_COVERAGE", "verdict": "DIFFERENT", "reason": "PERNOD RICARD vs RICARD RICARD: PERNOD eksik", "country_leak": false}
+{"master_ta_code": "ar80007131", "variant_ta_code": "ar80077478", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "PERNOD RICARD ARGENTINA: SA removed", "country_leak": false}
+{"master_ta_code": "ar80007131", "variant_ta_code": "ar80035181", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "PERNOD RICARD ARGENTINA: SRL vs SA", "country_leak": false}
+{"master_ta_code": "ar80007131", "variant_ta_code": "ar80077638", "match_type": "TOKEN_COVERAGE", "verdict": "DIFFERENT", "reason": "PERNOD RICARD vs RICARD RICARD: PERNOD eksik", "country_leak": false}
+{"master_ta_code": "ar80007131", "variant_ta_code": "ar00015310", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "PERNOD RICARD ARGENTINA: SRL vs SA", "country_leak": false}
+{"master_ta_code": "ar80007131", "variant_ta_code": "ar80064665", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "PERNOD RICARD ARGENTINA: SA with period", "country_leak": false}
+{"master_ta_code": "ar80010663", "variant_ta_code": "ar80034459", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INT FLAVORS FRAGRANCES: & vs ve spacing", "country_leak": false}
+{"master_ta_code": "ar80010663", "variant_ta_code": "ar80004627", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INTL FLAVORS FRAGRANCES: suffix removed", "country_leak": false}
+{"master_ta_code": "ar80010663", "variant_ta_code": "ar80021741", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INT FLAVORS FRAGRANCES: SACI suffix", "country_leak": false}
+{"master_ta_code": "ar80010663", "variant_ta_code": "ar80045445", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INTL FLAVORS FRAGRANCES: büyük/küçük harf", "country_leak": false}
+{"master_ta_code": "ar80010663", "variant_ta_code": "ar80011761", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "INTL FLAVORS FRAGRANCES: abbreviation", "country_leak": false}
+{"master_ta_code": "ar80010663", "variant_ta_code": "ar80045444", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INTL FLAVORS FRAGRANCES: SRL", "country_leak": false}
+{"master_ta_code": "ar80011571", "variant_ta_code": "ar00010942", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "BOLLAND Y COMPANIA: S.A. removed", "country_leak": false}
+{"master_ta_code": "ar80011571", "variant_ta_code": "ar80076410", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BOLLAND Y CIA: COMPANIA abbreviated", "country_leak": false}
+{"master_ta_code": "ar80011571", "variant_ta_code": "ar80001165", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BOLLAND & CIA: Y vs & interchangeable", "country_leak": false}
+{"master_ta_code": "ar80011571", "variant_ta_code": "ar80063247", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "BOLLAND Y COMPANIA: Ñ vs N, SA", "country_leak": false}
+{"master_ta_code": "ar80011571", "variant_ta_code": "ar80015620", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BOLLAND Y CIA: S.A.", "country_leak": false}
+{"master_ta_code": "ar80011571", "variant_ta_code": "ar80076409", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BOLLAND & CIA: SAU vs SA", "country_leak": false}
+{"master_ta_code": "ar80018259", "variant_ta_code": "ar80004070", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "HALLIBURTON ARGENTINA: SRL vs SA", "country_leak": false}
+{"master_ta_code": "ar80018259", "variant_ta_code": "ar80004063", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "HALLIBURTON ARGENTINA: suffix removed", "country_leak": false}
+{"master_ta_code": "ar80018259", "variant_ta_code": "ar80004064", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "HALLIBURTON ARGENTINA: S.A.", "country_leak": false}
+{"master_ta_code": "ar80018259", "variant_ta_code": "ar80010572", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "HALLIBURTON ARGENTINA: virgül ve S.A.", "country_leak": false}
+{"master_ta_code": "ar80018259", "variant_ta_code": "ar80011726", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "HALLIBURTON ARGENTINA: SRL vs SA", "country_leak": false}
+{"master_ta_code": "ar80018259", "variant_ta_code": "ar80004068", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "HALLIBURTON ARGENTINA: SRL spacing", "country_leak": false}
+{"master_ta_code": "ar80003471", "variant_ta_code": "ar80137700", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "FLOWSERVE vs FLOWSERVE S. DE R.L.: farklı legal form", "country_leak": false}
+{"master_ta_code": "ar80003471", "variant_ta_code": "ar80011696", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FLOWSERVE: SRL suffix", "country_leak": false}
+{"master_ta_code": "ar80003471", "variant_ta_code": "ar80003472", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FLOWSERVE: CORP vs bare", "country_leak": false}
+{"master_ta_code": "ar80003471", "variant_ta_code": "ar80141037", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FLOWSERVE: TO prefix sadece", "country_leak": false}
+{"master_ta_code": "ar80003471", "variant_ta_code": "ar80021556", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FLOWSERVE: virgül ve SRL", "country_leak": false}
+{"master_ta_code": "ar80004453", "variant_ta_code": "ar80004461", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INDUSTRIAS JOHN DEERE ARGENTINA: S.A. vs bare", "country_leak": false}
+{"master_ta_code": "ar80004453", "variant_ta_code": "ar80016536", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INDUSTRIAS JOHN DEERE: S suffix incomplete", "country_leak": false}
+{"master_ta_code": "ar80004453", "variant_ta_code": "ar00013554", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INDUSTRIAS JOHN DEERE ARGENTINA: SA", "country_leak": false}
+{"master_ta_code": "ar80004453", "variant_ta_code": "ar80004512", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INDUSTRIAS JOHN DEERE: büyük/küçük harf", "country_leak": false}
+{"master_ta_code": "ar80004453", "variant_ta_code": "ar80004460", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INDUSTRIAS JOHN DEERE ARGENTINA: virgül", "country_leak": false}
+{"master_ta_code": "ar80004457", "variant_ta_code": "ar00013554", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INDUSTRIAS JOHN DEERE ARGENTINA: SA suffix", "country_leak": false}
+{"master_ta_code": "ar80004457", "variant_ta_code": "ar80004460", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INDUSTRIAS JOHN DEERE ARGENTINA: virgül", "country_leak": false}
+{"master_ta_code": "ar80004457", "variant_ta_code": "ar80004512", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INDUSTRIAS JOHN DEERE: büyük/küçük harf", "country_leak": false}
+{"master_ta_code": "ar80004457", "variant_ta_code": "ar80016536", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INDUSTRIAS JOHN DEERE ARGENTINA: S suffix", "country_leak": false}
+{"master_ta_code": "ar80004457", "variant_ta_code": "ar80004461", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INDUSTRIAS JOHN DEERE ARGENTINA: S.A.", "country_leak": false}
+{"master_ta_code": "ar80004677", "variant_ta_code": "ar80004675", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "ISI S R.L. vs ISI R.L.: S harfi eksik", "country_leak": false}
+{"master_ta_code": "ar80004677", "variant_ta_code": "ar80011762", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "ISI S R.L. vs ISI R. R.L.: ikinci R eksik", "country_leak": false}
+{"master_ta_code": "ar80004677", "variant_ta_code": "ar80011763", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "ISI S R.L.: noktalama only", "country_leak": false}
+{"master_ta_code": "ar80004677", "variant_ta_code": "ar80012955", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "ISI S R.L.: büyük/küçük harf", "country_leak": false}
+{"master_ta_code": "ar80004677", "variant_ta_code": "ar80016477", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "ISI S.R.L.: noktalama", "country_leak": false}
+{"master_ta_code": "ar80004957", "variant_ta_code": "ar80010720", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "JUMBO RETAIL ARGENTINA: S.A. suffix", "country_leak": false}
+{"master_ta_code": "ar80004957", "variant_ta_code": "ar80016682", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "JUMBO RETAIL ARGENTINA: virgül ve S.A.", "country_leak": false}
+{"master_ta_code": "ar80004957", "variant_ta_code": "ar80004960", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "JUMBO RETAIL ARGENTINA: virgül ve S.A.", "country_leak": false}
+{"master_ta_code": "ar80004957", "variant_ta_code": "ar80055562", "match_type": "SUFFIX_FUZZY", "verdict": "SAME", "reason": "JUMBO RETAIL: ARGENTINA removed", "country_leak": false}
+{"master_ta_code": "ar80004957", "variant_ta_code": "ar00013857", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "JUMBO RETAIL ARGENTINA: SA spacing", "country_leak": false}
+{"master_ta_code": "ar80012350", "variant_ta_code": "ar80005025", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "KIMBERLY CLARK ARGENTINA: S.A. removed", "country_leak": false}
+{"master_ta_code": "ar80012350", "variant_ta_code": "ar80005029", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "KIMBERLY CLARK ARGENTINA: S/A vs S.A.", "country_leak": false}
+{"master_ta_code": "ar80012350", "variant_ta_code": "ar80005055", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "KIMBERLY-CLARK: virgül ve SA", "country_leak": false}
+{"master_ta_code": "ar80012350", "variant_ta_code": "ar80018293", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "KIMBERLY CLARK ARGENTINA: SA", "country_leak": false}
+{"master_ta_code": "ar80012350", "variant_ta_code": "ar80010730", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "KIMBERLY CLARK ARGENTINA: virgül ve S.A.", "country_leak": false}
+{"master_ta_code": "ar80016733", "variant_ta_code": "ar80005188", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "LAB RICHET: noktalama ve SA", "country_leak": false}
+{"master_ta_code": "ar80016733", "variant_ta_code": "ar80014670", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "LAB RICHET: noktalama ve SA", "country_leak": false}
+{"master_ta_code": "ar80016733", "variant_ta_code": "ar80010752", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "LAB RICHET: noktalama ve S.A.", "country_leak": false}
+{"master_ta_code": "ar80016733", "variant_ta_code": "ar80016734", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "LAB RICHET: S.A. suffix", "country_leak": false}
+{"master_ta_code": "ar80016733", "variant_ta_code": "ar80005183", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "LAB RICHET: noktalama ve S.A.", "country_leak": false}
+{"master_ta_code": "ar80034305", "variant_ta_code": "ar80039936", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "HELLMANN WORLDWIDE LOGISTICS: SAC vs SA DE", "country_leak": false}
+{"master_ta_code": "ar80034305", "variant_ta_code": "ar80027685", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "HELLMANN LOGISTICS SAC vs INC: farklı legal form", "country_leak": false}
+{"master_ta_code": "ar80034305", "variant_ta_code": "ar80136169", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "HELLMANN LOGISTICS SAC vs LTD: farklı legal form", "country_leak": false}
+{"master_ta_code": "ar80034305", "variant_ta_code": "ar80011731", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "HELLMANN WORLDWIDE LOGISTICS: SA vs SAC", "country_leak": false}
+{"master_ta_code": "ar80034305", "variant_ta_code": "ar80063990", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "HELLMANN LOGISTICS SAC vs LLC: farklı legal form", "country_leak": false}
+{"master_ta_code": "ar80035301", "variant_ta_code": "ar80047988", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "QUIMICA D & D vs QUIMICA: D&D eksik", "country_leak": false}
+{"master_ta_code": "ar80035301", "variant_ta_code": "ar80029772", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "QUIMICA D & D vs QUIMICA: jenerik", "country_leak": false}
+{"master_ta_code": "ar80035301", "variant_ta_code": "ar80134682", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "QUIMICA D & D vs UP QUIMICA: farklı", "country_leak": false}
+{"master_ta_code": "ar80035301", "variant_ta_code": "ar80135295", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "QUIMICA D&D: & ve spacing", "country_leak": false}
+{"master_ta_code": "ar80035301", "variant_ta_code": "ar00051614", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "QUIMICA D & D vs QUIMICA R&F: farklı çekirdek", "country_leak": false}
+{"master_ta_code": "ar80047557", "variant_ta_code": "ar80004575", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INST SEROTERAPICO ARGENTINO: S vs SA", "country_leak": false}
+{"master_ta_code": "ar80047557", "variant_ta_code": "ar80023730", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INST SEROTERAPICO ARGENTINO: büyük/küçük harf", "country_leak": false}
+{"master_ta_code": "ar80047557", "variant_ta_code": "ar80030294", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INST SEROTERAPICO ARGENTINO: suffix removed", "country_leak": false}
+{"master_ta_code": "ar80047557", "variant_ta_code": "ar00013648", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INST SEROTERAPICO ARGENTINO: SAIC suffix", "country_leak": false}
+{"master_ta_code": "ar80047557", "variant_ta_code": "ar80031427", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INST SEROTERAPICO ARGENTINO: büyük/küçük harf", "country_leak": false}
+{"master_ta_code": "ar80069816", "variant_ta_code": "ar80018748", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "KUEHNE NAGEL: ^ vs & vs +, INC", "country_leak": false}
+{"master_ta_code": "ar80069816", "variant_ta_code": "ar80064232", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "KUEHNE NAGEL: operators removed", "country_leak": false}
+{"master_ta_code": "ar80069816", "variant_ta_code": "ar80057475", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "KUEHNE NAGEL: + vs ^ vs &, SAS", "country_leak": false}
+{"master_ta_code": "ar80069816", "variant_ta_code": "ar80019351", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "KUEHNE NAGEL: + vs ^, INC", "country_leak": false}
+{"master_ta_code": "ar80069816", "variant_ta_code": "ar80139935", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "KUEHNE NAGEL: + vs ^, A/S", "country_leak": false}
+{"master_ta_code": "ar80105246", "variant_ta_code": "ar80065236", "match_type": "SUFFIX_FUZZY", "verdict": "DIFFERENT", "reason": "LIFT-VAN INTERNATIONAL vs VAN INTERNATIONAL: LIFT eksik", "country_leak": false}
+{"master_ta_code": "ar80105246", "variant_ta_code": "ar80005539", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "LIFT VAN INTERNATIONAL: CO vs COMPANY", "country_leak": false}
+{"master_ta_code": "ar80105246", "variant_ta_code": "ar80011801", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "LIFT-VAN INTERNATIONAL: SAC", "country_leak": false}
+{"master_ta_code": "ar80105246", "variant_ta_code": "ar80025876", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "LIFT VAN INTERNATIONAL: CO removed", "country_leak": false}
+{"master_ta_code": "ar80105246", "variant_ta_code": "ar80005541", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "LIFT-VAN INTERNATIONAL: - vs space, SAC", "country_leak": false}
+{"master_ta_code": "ar80132176", "variant_ta_code": "ar80011543", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "ARCHROMA ARGENTINA: parentheses ve S.A.", "country_leak": false}
+{"master_ta_code": "ar80132176", "variant_ta_code": "ar00037530", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "ARCHROMA ARGENTINA: SA", "country_leak": false}
+{"master_ta_code": "ar80132176", "variant_ta_code": "ar80000602", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "ARCHROMA ARGENTINA: spacing ve S.A.", "country_leak": false}
+{"master_ta_code": "ar80132176", "variant_ta_code": "ar80000607", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "ARCHROMA ARGENTINA: S.A.", "country_leak": false}
+{"master_ta_code": "ar80132176", "variant_ta_code": "ar80015424", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "ARCHROMA ARGENTINA: spacing ve SA", "country_leak": false}
+{"master_ta_code": "ar00010682", "variant_ta_code": "ar80015489", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BAKER HUGHES ARGENTINA: SRL vs SA", "country_leak": false}
+{"master_ta_code": "ar00010682", "variant_ta_code": "ar80012661", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BAKER HUGHES ARGENTINA: SRL", "country_leak": false}
+{"master_ta_code": "ar00010682", "variant_ta_code": "ar80019602", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BAKER HUGHES ARGENTINA: SRL.", "country_leak": false}
+{"master_ta_code": "ar00010682", "variant_ta_code": "ar80000870", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BAKER HUGHES ARGENTINA: suffix removed", "country_leak": false}
+{"master_ta_code": "ar00014497", "variant_ta_code": "ar80013038", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "MASSALIN PARTICULARES: SA vs S.A.", "country_leak": false}
+{"master_ta_code": "ar00014497", "variant_ta_code": "ar80017032", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "MASSALIN PARTICULARES: virgül ve S.A.", "country_leak": false}
+{"master_ta_code": "ar00014497", "variant_ta_code": "ar80022015", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "MASSALIN PARTICULARES: SRL vs SA", "country_leak": false}
+{"master_ta_code": "ar00014497", "variant_ta_code": "ar80006006", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "MASSALIN PARTICULARES: suffix removed", "country_leak": false}
+{"master_ta_code": "ar00016050", "variant_ta_code": "ar80008106", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "SANOFI AVENTIS ARGENTINA: SA removed", "country_leak": false}
+{"master_ta_code": "ar00016050", "variant_ta_code": "ar80008107", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "SANOFI AVENTIS ARGENTINA: virgül ve S.A.", "country_leak": false}
+{"master_ta_code": "ar00016050", "variant_ta_code": "ar80008108", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "SANOFI-AVENTIS: - vs space, S.A.", "country_leak": false}
+{"master_ta_code": "ar00016050", "variant_ta_code": "ar80017633", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "SANOFI AVENTIS ARGENTINA: S.A.", "country_leak": false}
+{"master_ta_code": "ar00020904", "variant_ta_code": "ar80006435", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "COMPANIA MSA DE ARGENTINA vs MSA ARGENTINA: COMPANIA eksik", "country_leak": false}
+{"master_ta_code": "ar00020904", "variant_ta_code": "ar00011577", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "COMPANIA MSA DE ARGENTINA: SA", "country_leak": false}
+{"master_ta_code": "ar00020904", "variant_ta_code": "ar80063447", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "COMPANIA MSA DE ARGENTINA: Ñ vs N, S.A.", "country_leak": false}
+{"master_ta_code": "ar00020904", "variant_ta_code": "ar80063448", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "COMPANIA MSA DE ARGENTINA: Ñ vs N, SA", "country_leak": false}
+{"master_ta_code": "ar00021251", "variant_ta_code": "ar80085268", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "CORVEN MOTORS ARGENTINA: TO prefix sadece", "country_leak": false}
+{"master_ta_code": "ar00021251", "variant_ta_code": "ar80085267", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "CORVEN MOTORS ARGENTINA: TO prefix sadece", "country_leak": false}
+{"master_ta_code": "ar00021251", "variant_ta_code": "ar80018198", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "CORVEN MOTORS ARGENTINA: SA", "country_leak": false}
+{"master_ta_code": "ar00021251", "variant_ta_code": "ar80002096", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "CORVEN MOTORS ARGENTINA: suffix removed", "country_leak": false}
+{"master_ta_code": "ar00031001", "variant_ta_code": "ar80003170", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "RODAMIENTOS BROTHERS vs F A RODAMIENTOS: BROTHERS eksik", "country_leak": false}
+{"master_ta_code": "ar00031001", "variant_ta_code": "ar80045916", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "RODAMIENTOS BROTHERS vs RODAMIENTOS: BROTHERS eksik", "country_leak": false}
+{"master_ta_code": "ar00031001", "variant_ta_code": "ar80034045", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "RODAMIENTOS BROTHERS vs F A RODAMIENTOS: farklı", "country_leak": false}
+{"master_ta_code": "ar00031001", "variant_ta_code": "ar00070235", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "RODAMIENTOS BROTHERS vs RODAMIENTOS: BROTHERS eksik", "country_leak": false}
+{"master_ta_code": "ar00037773", "variant_ta_code": "ar00076413", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "CABA: S.A. suffix", "country_leak": false}
+{"master_ta_code": "ar00037773", "variant_ta_code": "ar00076257", "match_type": "FUZZY_PHRASE", "verdict": "DIFFERENT", "reason": "CABA vs BA: CABA'nın CA harfi eksik", "country_leak": false}
+{"master_ta_code": "ar00037773", "variant_ta_code": "ar80063178", "match_type": "FUZZY_PHRASE", "verdict": "DIFFERENT", "reason": "CABA vs BA: CA harfleri eksik", "country_leak": false}
+{"master_ta_code": "ar00037773", "variant_ta_code": "ar80031983", "match_type": "FUZZY_PHRASE", "verdict": "DIFFERENT", "reason": "CABA vs BUENOS: tamamen farklı", "country_leak": false}
+{"master_ta_code": "ar00038177", "variant_ta_code": "ar00059137", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DISE: identical", "country_leak": false}
+{"master_ta_code": "ar00038177", "variant_ta_code": "ar00041219", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DISE: identical", "country_leak": false}
+{"master_ta_code": "ar00038177", "variant_ta_code": "ar00045644", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DISE: identical", "country_leak": false}
+{"master_ta_code": "ar00038177", "variant_ta_code": "ar00038176", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DISE: identical", "country_leak": false}
+{"master_ta_code": "ar00061306", "variant_ta_code": "ar80099323", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "DISTRIBUIDORA BSB vs DISTRIBUIDORA DE: BSB eksik", "country_leak": false}
+{"master_ta_code": "ar00061306", "variant_ta_code": "ar00078078", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "DISTRIBUIDORA BSB vs SAS DISTRIBUIDORA: farklı", "country_leak": false}
+{"master_ta_code": "ar00061306", "variant_ta_code": "ar80011654", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "DISTRIBUIDORA BSB vs DISTRIBUIDORA: BSB eksik", "country_leak": false}
+{"master_ta_code": "ar00061306", "variant_ta_code": "ar80076706", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "DISTRIBUIDORA BSB vs DISTRIBUIDORA: jenerik", "country_leak": false}
+{"master_ta_code": "ar00068105", "variant_ta_code": "ar00030533", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "C & C GROUP vs R C R GROUP: farklı", "country_leak": false}
+{"master_ta_code": "ar00068105", "variant_ta_code": "ar80067626", "match_type": "TOKEN_COVERAGE", "verdict": "DIFFERENT", "reason": "C & C GROUP vs GRUPO: C&C eksik", "country_leak": false}
+{"master_ta_code": "ar00068105", "variant_ta_code": "ar00052610", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "C & C GROUP vs I H GROUP: farklı", "country_leak": false}
+{"master_ta_code": "ar00068105", "variant_ta_code": "ar00061264", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "C & C GROUP vs D&L GROUP: farklı", "country_leak": false}
+{"master_ta_code": "ar80000578", "variant_ta_code": "ar80018148", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "APSA INTERNACIONAL: SA vs S.A.", "country_leak": false}
+{"master_ta_code": "ar80000578", "variant_ta_code": "ar80082286", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "APSA INTERNACIONAL: büyük/küçük harf", "country_leak": false}
+{"master_ta_code": "ar80000578", "variant_ta_code": "ar80076297", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "APSA INTERNACIONAL: suffix removed", "country_leak": false}
+{"master_ta_code": "ar80000578", "variant_ta_code": "ar80000579", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "APSA INTERNACIONAL: virgül ve S.A.", "country_leak": false}
+{"master_ta_code": "ar80000766", "variant_ta_code": "ar80015461", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "ATANOR SCA: spacing", "country_leak": false}
+{"master_ta_code": "ar80000766", "variant_ta_code": "ar80076328", "variant_name": "ATANOR S C", "country_leak": false, "verdict": "DIFFERENT", "reason": "ATANOR SCA vs ATANOR SC: A eksik"}
+{"master_ta_code": "ar80000766", "variant_ta_code": "ar80014196", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "ATANOR: SCA suffix removed", "country_leak": false}
+{"master_ta_code": "ar80000766", "variant_ta_code": "ar00010592", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "ATANOR: SCA vs S.C.A.", "country_leak": false}
+{"master_ta_code": "ar80001466", "variant_ta_code": "ar80015707", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "CARRARO ARGENTINA: S.A. suffix", "country_leak": false}
+{"master_ta_code": "ar80001466", "variant_ta_code": "ar00011201", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "CARRARO ARGENTINA: SA", "country_leak": false}
+{"master_ta_code": "ar80001466", "variant_ta_code": "ar80018531", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "CARRARO ARGENTINA: virgül ve S.A.", "country_leak": false}
+{"master_ta_code": "ar80001466", "variant_ta_code": "ar80010097", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "CARRARO ARGENTINA: S.A.", "country_leak": false}
+{"master_ta_code": "ar80001822", "variant_ta_code": "ar80001821", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "COCA COLA FEMSA: S.A. removed", "country_leak": false}
+{"master_ta_code": "ar80001822", "variant_ta_code": "ar00011482", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "COCA COLA FEMSA: SA", "country_leak": false}
+{"master_ta_code": "ar80001822", "variant_ta_code": "ar80010174", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "COCA COLA FEMSA: virgül ve SA", "country_leak": false}
+{"master_ta_code": "ar80001822", "variant_ta_code": "ar80018560", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "COCA COLA FEMSA: virgül only", "country_leak": false}
+{"master_ta_code": "ar80002703", "variant_ta_code": "ar80108734", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DSV AIR SEA: S.A. vs GMBH", "country_leak": false}
+{"master_ta_code": "ar80002703", "variant_ta_code": "ar80135926", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DSV AIR SEA: S.A. vs Ltd", "country_leak": false}
+{"master_ta_code": "ar80002703", "variant_ta_code": "ar80069559", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DSV AIR&SEA: & vs spacing, A/S", "country_leak": false}
+{"master_ta_code": "ar80002703", "variant_ta_code": "ar80099372", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DSV AIR SEA: S.A. vs INC", "country_leak": false}
+{"master_ta_code": "ar80003281", "variant_ta_code": "ar80039803", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FAURECIA ARGENTINA: S suffix", "country_leak": false}
+{"master_ta_code": "ar80003281", "variant_ta_code": "ar80016206", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FAURECIA ARGENTINA: virgül ve S.A.", "country_leak": false}
+{"master_ta_code": "ar80003281", "variant_ta_code": "ar80012845", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FAURECIA ARGENTINA: SA", "country_leak": false}
+{"master_ta_code": "ar80003281", "variant_ta_code": "ar80011688", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FAURECIA ARGENTINA: S.A.", "country_leak": false}
+{"master_ta_code": "ar80003529", "variant_ta_code": "ar80014489", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "FORTBENTON CO LABORATORIES: noktalama", "country_leak": false}
+{"master_ta_code": "ar80003529", "variant_ta_code": "ar00012808", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "FORTBENTON CO LABORATORIES: SA", "country_leak": false}
+{"master_ta_code": "ar80003529", "variant_ta_code": "ar80012287", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "FORTBENTON CO LABORATORIES: noktalama", "country_leak": false}
+{"master_ta_code": "ar80003529", "variant_ta_code": "ar80041104", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "FORTBENTON CO LABORATORIES: S.A. removed", "country_leak": false}
+{"master_ta_code": "ar80006553", "variant_ta_code": "ar80011852", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "NATURA COSMETICOS: virgül ve SA", "country_leak": false}
+{"master_ta_code": "ar80006553", "variant_ta_code": "ar80006551", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "NATURA COSMETICOS: S/A vs S.A.", "country_leak": false}
+{"master_ta_code": "ar80006553", "variant_ta_code": "ar80038736", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "NATURA COSMETICOS: LTDA vs S.A.", "country_leak": false}
+{"master_ta_code": "ar80006553", "variant_ta_code": "ar80010963", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "NATURA COSMETICOS: S.A.", "country_leak": false}
+{"master_ta_code": "ar80006670", "variant_ta_code": "ar00014940", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "NIKE ARGENTINA: SA vs S.R.L.", "country_leak": false}
+{"master_ta_code": "ar80006670", "variant_ta_code": "ar80022101", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "NIKE ARGENTINA: suffix removed", "country_leak": false}
+{"master_ta_code": "ar80006670", "variant_ta_code": "ar80006671", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "NIKE ARGENTINA: S. R.L vs S.A.", "country_leak": false}
+{"master_ta_code": "ar80006670", "variant_ta_code": "ar80092414", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "NIKE ARGENTINA: S.R.L. SUC vs S.A.", "country_leak": false}
+{"master_ta_code": "ar80007450", "variant_ta_code": "ar80070106", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "PUTRUELE HERMANOS: HNOS vs HERMANOS", "country_leak": false}
+{"master_ta_code": "ar80007450", "variant_ta_code": "ar80077586", "match_type": "SUFFIX_FUZZY", "verdict": "SAME", "reason": "PUTRUELE HNOS: SAIC suffix removed", "country_leak": false}
+{"master_ta_code": "ar80007450", "variant_ta_code": "ar00030433", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "PUTRUELE HERMANOS: HNOS vs HERMANOS, SAIC", "country_leak": false}
+{"master_ta_code": "ar80007450", "variant_ta_code": "ar80077587", "match_type": "SUFFIX_FUZZY", "verdict": "SAME", "reason": "PUTRUELE HNOS: SA vs SAIC", "country_leak": false}
+{"master_ta_code": "ar80009271", "variant_ta_code": "ar80011992", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "UNILEVER DE ARGENTINA: virgül ve S.A.", "country_leak": false}
+{"master_ta_code": "ar80009271", "variant_ta_code": "ar80057187", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "UNILEVER ARGENTINA: DE removed", "country_leak": false}
+{"master_ta_code": "ar80009271", "variant_ta_code": "ar80009262", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "UNILEVER ARGENTINA: S.A.", "country_leak": false}
+{"master_ta_code": "ar80009271", "variant_ta_code": "ar80009266", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "UNILEVER DE ARGENTINA: suffix removed", "country_leak": false}
+{"master_ta_code": "ar80009589", "variant_ta_code": "ar80019044", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "WAL MART ARGENTINA: S.R.L. suffix", "country_leak": false}
+{"master_ta_code": "ar80009589", "variant_ta_code": "ar80019865", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "WAL MART ARGENTINA: SRL virgül", "country_leak": false}
+{"master_ta_code": "ar80009589", "variant_ta_code": "ar80026815", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "WAL-MART ARGENTINA: - vs space, S.R.L.", "country_leak": false}
+{"master_ta_code": "ar80009589", "variant_ta_code": "ar80026810", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "WAL MART ARGENTINA: S.A. vs S.R.L.", "country_leak": false}
+{"master_ta_code": "ar80010013", "variant_ta_code": "ar80061301", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BAYER: S.A. vs S.A. DE C.V.", "country_leak": false}
+{"master_ta_code": "ar80010013", "variant_ta_code": "ar80015538", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BAYER: S.A. vs SA", "country_leak": false}
+{"master_ta_code": "ar80010013", "variant_ta_code": "ar80061300", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BAYER: S.A. virgül", "country_leak": false}
+{"master_ta_code": "ar80010013", "variant_ta_code": "ar00010743", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BAYER: S.A. vs SA", "country_leak": false}
+{"master_ta_code": "ar80011523", "variant_ta_code": "ar80009864", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "ACERPLAST ACEROS PLASTICOS: - vs space", "country_leak": false}
+{"master_ta_code": "ar80011523", "variant_ta_code": "ar80000113", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "ACERPLAST ACEROS PLASTICOS: - vs space", "country_leak": false}
+{"master_ta_code": "ar80011523", "variant_ta_code": "ar80000110", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "ACERPLAST ACEROS PLASTICOS: - vs space", "country_leak": false}
+{"master_ta_code": "ar80011523", "variant_ta_code": "ar00035055", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "ACERPLAST ACEROS PLASTICOS: - vs space", "country_leak": false}
+{"master_ta_code": "ar80011630", "variant_ta_code": "ar80002123", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "COTA: SA vs S.A.", "country_leak": false}
+{"master_ta_code": "ar80011630", "variant_ta_code": "ar00021274", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "COTA: SA vs SACI Y A", "country_leak": false}
+{"master_ta_code": "ar80011630", "variant_ta_code": "ar80015897", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "COTA: SA vs S.A. virgül", "country_leak": false}
+{"master_ta_code": "ar80011630", "variant_ta_code": "ar80076631", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "COTA: suffix removed", "country_leak": false}
+{"master_ta_code": "ar80012229", "variant_ta_code": "ar80019652", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DIA ARGENTINA: - ve S.A.", "country_leak": false}
+{"master_ta_code": "ar80012229", "variant_ta_code": "ar80015984", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DIA ARGENTINA: S.A.", "country_leak": false}
+{"master_ta_code": "ar80012229", "variant_ta_code": "ar80019658", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DIA-ARGENTINA: - ve S.A.", "country_leak": false}
+{"master_ta_code": "ar80012229", "variant_ta_code": "ar80019655", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DIA- ARGENTINA: spacing ve S.A.", "country_leak": false}
+{"master_ta_code": "ar80016973", "variant_ta_code": "ar00015979", "match_type": "SUFFIX_FUZZY", "verdict": "DIFFERENT", "reason": "M CASSAB ARGENTINA vs S M C ARGENTINA: çekirdek farklı", "country_leak": false}
+{"master_ta_code": "ar80016973", "variant_ta_code": "ar80005701", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "M CASSAB ARGENTINA: SA", "country_leak": false}
+{"master_ta_code": "ar80016973", "variant_ta_code": "ar80010830", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "M CASSAB ARGENTINA: büyük/küçük harf", "country_leak": false}
+{"master_ta_code": "ar80016973", "variant_ta_code": "ar80077243", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "M CASSAB ARGENTINA: suffix removed", "country_leak": false}
+{"master_ta_code": "ar80018462", "variant_ta_code": "ar80024528", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "ALVAREZ HNOS: e I vs e L, SACI", "country_leak": false}
+{"master_ta_code": "ar80018462", "variant_ta_code": "ar80013335", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "ALVAREZ HERMANOS: spacing", "country_leak": false}
+{"master_ta_code": "ar80018462", "variant_ta_code": "ar00010331", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "ALVAREZ HNOS: e I, SACI", "country_leak": false}
+{"master_ta_code": "ar80018462", "variant_ta_code": "ar80018146", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "ALVAREZ HERMANOS: e I, SACI", "country_leak": false}
+{"master_ta_code": "ar80018891", "variant_ta_code": "ar00015442", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "POLIRESINAS SAN LUIS: S.A. vs SA", "country_leak": false}
+{"master_ta_code": "ar80018891", "variant_ta_code": "ar80011895", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "POLIRESINAS SAN LUIS: suffix removed", "country_leak": false}
+{"master_ta_code": "ar80018891", "variant_ta_code": "ar80011096", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "POLIRESINAS SAN LUIS: virgül ve S.A.", "country_leak": false}
+{"master_ta_code": "ar80018891", "variant_ta_code": "ar80013946", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "POLIRESINAS SAN LUIS: S.A. DE C.V.", "country_leak": false}
+{"master_ta_code": "ar80019765", "variant_ta_code": "ar80010808", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "LODISER: virgül vs nokta", "country_leak": false}
+{"master_ta_code": "ar80019765", "variant_ta_code": "ar80072474", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "LODISER: S.A. suffix removed", "country_leak": false}
+{"master_ta_code": "ar80019765", "variant_ta_code": "ar00014246", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "LODISER: S.A. vs SA", "country_leak": false}
+{"master_ta_code": "ar80019765", "variant_ta_code": "ar80019519", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "LODISER: TO prefix sadece", "country_leak": false}
+{"master_ta_code": "ar80020138", "variant_ta_code": "ar00011456", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "CLARIANT ARGENTINA: parentheses ve SA", "country_leak": false}
+{"master_ta_code": "ar80020138", "variant_ta_code": "ar80018551", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "CLARIANT ARGENTINA: parentheses ve S.A.", "country_leak": false}
+{"master_ta_code": "ar80020138", "variant_ta_code": "ar80001772", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "CLARIANT ARGENTINA: parentheses removed", "country_leak": false}
+{"master_ta_code": "ar80020138", "variant_ta_code": "ar80010163", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "CLARIANT ARGENTINA: parentheses ve S.A.", "country_leak": false}
+{"master_ta_code": "ar80021195", "variant_ta_code": "ar80011576", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BRIDGESTONE ARGENTINA: DE removed, SAIC", "country_leak": false}
+{"master_ta_code": "ar80021195", "variant_ta_code": "ar80010057", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BRIDGESTONE ARGENTINA: DE removed, virgül", "country_leak": false}
+{"master_ta_code": "ar80021195", "variant_ta_code": "ar80011575", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BRIDGESTONE ARGENTINA: DE removed, suffix", "country_leak": false}
+{"master_ta_code": "ar80021195", "variant_ta_code": "ar80040832", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BRIDGESTONE ARGENTINA: DE removed", "country_leak": false}
+{"master_ta_code": "ar80022335", "variant_ta_code": "ar80008108", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "SANOFI AVENTIS: DE removed, - ve S.A.", "country_leak": false}
+{"master_ta_code": "ar80022335", "variant_ta_code": "ar80008106", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "SANOFI AVENTIS: DE removed", "country_leak": false}
+{"master_ta_code": "ar80022335", "variant_ta_code": "ar80008107", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "SANOFI AVENTIS: DE removed, virgül", "country_leak": false}
+{"master_ta_code": "ar80022335", "variant_ta_code": "ar80017633", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "SANOFI AVENTIS: DE removed, S.A.", "country_leak": false}
+{"master_ta_code": "ar80027406", "variant_ta_code": "ar80108734", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DSV AIR SEA: SAS vs GMBH", "country_leak": false}
+{"master_ta_code": "ar80027406", "variant_ta_code": "ar80135926", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DSV AIR SEA: SAS vs Ltd", "country_leak": false}
+{"master_ta_code": "ar80027406", "variant_ta_code": "ar80069559", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DSV AIR SEA: SAS vs A/S", "country_leak": false}
+{"master_ta_code": "ar80027406", "variant_ta_code": "ar80099372", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DSV AIR SEA: SAS vs INC", "country_leak": false}
+{"master_ta_code": "ar80031227", "variant_ta_code": "ar80024911", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "COMPANIA MINERA AGUILAR: Ñ vs N, SA removed", "country_leak": false}
+{"master_ta_code": "ar80031227", "variant_ta_code": "ar80001706", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "CIA MINERA AGUILAR: COMPANIA vs CIA", "country_leak": false}
+{"master_ta_code": "ar80031227", "variant_ta_code": "ar00020899", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "COMPANIA MINERA AGUILAR: Ñ vs N", "country_leak": false}
+{"master_ta_code": "ar80031227", "variant_ta_code": "ar80018186", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "CIA MINERA AGUILAR: COMPANIA vs CIA", "country_leak": false}
+{"master_ta_code": "ar80040310", "variant_ta_code": "ar80012686", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "PEARSON EDUCATION: LTD vs SA", "country_leak": false}
+{"master_ta_code": "ar80040310", "variant_ta_code": "ar80105823", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "PEARSON EDUCATION: LTD vs INC", "country_leak": false}
+{"master_ta_code": "ar80040310", "variant_ta_code": "ar80011051", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "PEARSON EDUCATION: LTD vs S.A.", "country_leak": false}
+{"master_ta_code": "ar80040310", "variant_ta_code": "ar80011881", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "PEARSON EDUCATION: LTD vs S.A.", "country_leak": false}
+{"master_ta_code": "ar80045272", "variant_ta_code": "ar80016260", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FMC TECHNOLOGIES ARGENTINA: INC vs SRL", "country_leak": false}
+{"master_ta_code": "ar80045272", "variant_ta_code": "ar80072175", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FMC TECHNOLOGIES ARGENTINA: INC removed", "country_leak": false}
+{"master_ta_code": "ar80045272", "variant_ta_code": "ar80016259", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FMC TECHNOLOGIES ARGENTINA: INC vs SRL", "country_leak": false}
+{"master_ta_code": "ar80045272", "variant_ta_code": "ar80034124", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "FMC TECHNOLOGIES ARGENTINA: INC vs SRL (C)", "country_leak": false}
+{"master_ta_code": "ar80049727", "variant_ta_code": "ar80004132", "match_type": "SUFFIX_FUZZY", "verdict": "SAME", "reason": "HENRY HIRSCHEN CIA: address removed", "country_leak": false}
+{"master_ta_code": "ar80049727", "variant_ta_code": "ar80076987", "match_type": "SUFFIX_FUZZY", "verdict": "SAME", "reason": "HENRY HIRSCHEN CIA: address removed, spacing", "country_leak": false}
+{"master_ta_code": "ar80049727", "variant_ta_code": "ar80076986", "match_type": "SUFFIX_FUZZY", "verdict": "SAME", "reason": "HENRY HIRSCHEN CIA: address removed, A vs &", "country_leak": false}
+{"master_ta_code": "ar80049727", "variant_ta_code": "ar80076988", "match_type": "SUFFIX_FUZZY", "verdict": "SAME", "reason": "HENRY HIRSCHEN CIA: address removed, Y vs &", "country_leak": false}
+{"master_ta_code": "ar80054455", "variant_ta_code": "ar80026106", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "NCR ARGENTINA: S.R.L. suffix", "country_leak": false}
+{"master_ta_code": "ar80054455", "variant_ta_code": "ar80020593", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "NCR ARGENTINA: SRL", "country_leak": false}
+{"master_ta_code": "ar80054455", "variant_ta_code": "ar80038741", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "NCR ARGENTINA: S suffix", "country_leak": false}
+{"master_ta_code": "ar80054455", "variant_ta_code": "ar80062903", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "NCR ARGENTINA: S.A. suffix", "country_leak": false}
+{"master_ta_code": "ar80067162", "variant_ta_code": "ar80106864", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "VANGUARD LOGISTICS SERVICES: SVC abbreviation", "country_leak": false}
+{"master_ta_code": "ar80067162", "variant_ta_code": "ar80106863", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "VANGUARD LOGISTICS SERVICES: ARGENTINA removed", "country_leak": false}
+{"master_ta_code": "ar80067162", "variant_ta_code": "ar80018426", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "VANGUARD LOGISTICS SERVICES: SA", "country_leak": false}
+{"master_ta_code": "ar80067162", "variant_ta_code": "ar80077941", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "VANGUARD LOGISTICS SERVICES: ARGENTINA suffix", "country_leak": false}
+{"master_ta_code": "ar80069194", "variant_ta_code": "ar80077941", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "VANGUARD LOGISTICS SERVICES: ARGENTINA added", "country_leak": false}
+{"master_ta_code": "ar80069194", "variant_ta_code": "ar80106864", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "VANGUARD LOGISTICS SERVICES: SVC ARGENTINA", "country_leak": false}
+{"master_ta_code": "ar80069194", "variant_ta_code": "ar80018426", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "VANGUARD LOGISTICS SERVICES: SA", "country_leak": false}
+{"master_ta_code": "ar80069194", "variant_ta_code": "ar80106863", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "VANGUARD LOGISTICS SERVICES: SVC", "country_leak": false}
+{"master_ta_code": "ar80076432", "variant_ta_code": "ar80040832", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BRIDGESTONE ARGENTINA: I C vs SAIC", "country_leak": false}
+{"master_ta_code": "ar80076432", "variant_ta_code": "ar80010057", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BRIDGESTONE ARGENTINA: I C vs SAIC", "country_leak": false}
+{"master_ta_code": "ar80076432", "variant_ta_code": "ar80011576", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BRIDGESTONE ARGENTINA: I C vs SAIC", "country_leak": false}
+{"master_ta_code": "ar80076432", "variant_ta_code": "ar80011575", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "BRIDGESTONE ARGENTINA: I C, suffix removed", "country_leak": false}
+{"master_ta_code": "ar80080600", "variant_ta_code": "ar80017533", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "COMPANY RODACO ARGENTINA: COMPANY prefix", "country_leak": false}
+{"master_ta_code": "ar80080600", "variant_ta_code": "ar80081151", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "COMPANY RODACO ARGENTINA: COMPANY prefix, SAU", "country_leak": false}
+{"master_ta_code": "ar80080600", "variant_ta_code": "ar80024403", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "COMPANY RODACO ARGENTINA: COMPANY prefix, SA", "country_leak": false}
+{"master_ta_code": "ar80080600", "variant_ta_code": "ar80097857", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "COMPANY RODACO ARGENTINA: S.A. vs SAU", "country_leak": false}
+{"master_ta_code": "ar80104200", "variant_ta_code": "ar80099372", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DSV AIR SEA: A vs spacing, INC", "country_leak": false}
+{"master_ta_code": "ar80104200", "variant_ta_code": "ar80108734", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DSV AIR SEA: A vs spacing, GMBH", "country_leak": false}
+{"master_ta_code": "ar80104200", "variant_ta_code": "ar80069559", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DSV AIR SEA: A vs spacing, A/S", "country_leak": false}
+{"master_ta_code": "ar80104200", "variant_ta_code": "ar80135926", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "DSV AIR SEA: A vs spacing, Ltd", "country_leak": false}
+{"master_ta_code": "ar80106857", "variant_ta_code": "ar80106863", "match_type": "FUZZY_PHRASE", "verdict": "DIFFERENT", "reason": "VANGUARD LOGISTICS (NZ) vs SVC: NZ eksik", "country_leak": false}
+{"master_ta_code": "ar80106857", "variant_ta_code": "ar80106864", "match_type": "FUZZY_PHRASE", "verdict": "DIFFERENT", "reason": "VANGUARD LOGISTICS (NZ) vs SVC ARGENTINA: NZ eksik", "country_leak": false}
+{"master_ta_code": "ar80106857", "variant_ta_code": "ar80018426", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "VANGUARD LOGISTICS (NZ) vs SA: NZ vs ARGENTINA", "country_leak": false}
+{"master_ta_code": "ar80106857", "variant_ta_code": "ar80077941", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "VANGUARD LOGISTICS (NZ) vs ARGENTINA: NZ vs ARGENTINA", "country_leak": false}
+{"master_ta_code": "ar80113964", "variant_ta_code": "ar80065128", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "TETRA PAK: S.A. vs CIA LTDA", "country_leak": false}
+{"master_ta_code": "ar80113964", "variant_ta_code": "ar80087287", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "TETRA PAK: S.A. vs INC", "country_leak": false}
+{"master_ta_code": "ar80113964", "variant_ta_code": "ar00016690", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "TETRA PAK: S.A. vs S.R.L.", "country_leak": false}
+{"master_ta_code": "ar80113964", "variant_ta_code": "ar80077846", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "TETRA PAK: suffix removed", "country_leak": false}
+{"master_ta_code": "ar80133447", "variant_ta_code": "ar80021843", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "LABORATORIOS BERNABO: SAS vs S.A.", "country_leak": false}
+{"master_ta_code": "ar80133447", "variant_ta_code": "ar80075956", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "LABORATORIOS BERNABO: SAS vs S suffix", "country_leak": false}
+{"master_ta_code": "ar80133447", "variant_ta_code": "ar80005289", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "LABORATORIOS BERNABO: suffix removed", "country_leak": false}
+{"master_ta_code": "ar80133447", "variant_ta_code": "ar80010758", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "LABORATORIOS BERNABO: SAS vs S.A.", "country_leak": false}
+{"master_ta_code": "ar00010192", "variant_ta_code": "ar80009886", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "AGUAS DANONE DE ARGENTINA: SA vs S.A.", "country_leak": false}
+{"master_ta_code": "ar00010192", "variant_ta_code": "ar80033143", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "AGUAS DANONE DE ARGENTINA: SA removed", "country_leak": false}
+{"master_ta_code": "ar00010192", "variant_ta_code": "ar80076240", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "AGUAS DANONE ARGENTINA: DE removed", "country_leak": false}
+{"master_ta_code": "ar00011056", "variant_ta_code": "ar80018172", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "C DIA: S.R.L. vs SRL", "country_leak": false}
+{"master_ta_code": "ar00011056", "variant_ta_code": "ar80001533", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "C DIA: - vs space, SRL", "country_leak": false}
+{"master_ta_code": "ar00011056", "variant_ta_code": "ar80015735", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "C DIA: - vs space, S.R.L.", "country_leak": false}
+{"master_ta_code": "ar00011238", "variant_ta_code": "ar80020118", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "CASAL DE REY CIA: Y vs &", "country_leak": false}
+{"master_ta_code": "ar00011238", "variant_ta_code": "ar80076510", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "CASAL REY CIA: DE removed, Y", "country_leak": false}
+{"master_ta_code": "ar00011238", "variant_ta_code": "ar80070620", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "CASAL DE REY CIA: Y vs &, SRL", "country_leak": false}
+{"master_ta_code": "ar00011271", "variant_ta_code": "ar80001519", "match_type": "SUFFIX_FUZZY", "verdict": "SAME", "reason": "CATTORINI HNOS: complex suffix variations", "country_leak": false}
+{"master_ta_code": "ar00011271", "variant_ta_code": "ar80010111", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "CATTORINI HNOS SAICF e I: noktalama", "country_leak": false}
+{"master_ta_code": "ar00011271", "variant_ta_code": "ar00020209", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "CATTORINI HERMANOS: HNOS vs HERMANOS", "country_leak": false}
+{"master_ta_code": "ar00012076", "variant_ta_code": "ar80068547", "match_type": "SUFFIX_FUZZY", "verdict": "SAME", "reason": "DLS ARGENTINA LTD: SUCURSAL ARGENTINA removed", "country_leak": false}
+{"master_ta_code": "ar00012076", "variant_ta_code": "ar80049627", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "DLS ARGENTINA LTD: SUCURSAL vs SUC, ARG", "country_leak": false}
+{"master_ta_code": "ar00012076", "variant_ta_code": "ar80021417", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "DLS ARGENTINA LTD: SUCURSAL vs SUC, ARGENTINA", "country_leak": false}
+{"master_ta_code": "ar00012785", "variant_ta_code": "ar80012865", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "FONDO CULTURA ECONOMICA: DE removed", "country_leak": false}
+{"master_ta_code": "ar00012785", "variant_ta_code": "ar80010480", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "FONDO CULTURA ECONOMICA: DE retained", "country_leak": false}
+{"master_ta_code": "ar00012785", "variant_ta_code": "ar80016293", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "FONDO CULTURA ECONOMICA: DE retained, SA", "country_leak": false}
+{"master_ta_code": "ar00013420", "variant_ta_code": "ar80004281", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "IBM ARGENTINA: SA vs S.R.L.", "country_leak": false}
+{"master_ta_code": "ar00013420", "variant_ta_code": "ar80019305", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "IBM ARGENTINA: SA vs S.R.L.", "country_leak": false}
+{"master_ta_code": "ar00013420", "variant_ta_code": "ar80025510", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "IBM ARGENTINA: suffix removed", "country_leak": false}
+{"master_ta_code": "ar00013541", "variant_ta_code": "ar80034412", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INDUSTRIAS BAHIA: SA vs S.A.", "country_leak": false}
+{"master_ta_code": "ar00013541", "variant_ta_code": "ar80021725", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INDUSTRIAS BAHIA: büyük/küçük harf", "country_leak": false}
+{"master_ta_code": "ar00013541", "variant_ta_code": "ar80074070", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INDUSTRIAS BAHIA: S. A.C suffix", "country_leak": false}
+{"master_ta_code": "ar00014597", "variant_ta_code": "ar80049884", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "MERCEDES BENZ ARGENTINA: - vs space", "country_leak": false}
+{"master_ta_code": "ar00014597", "variant_ta_code": "ar80077303", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "MERCEDES BENZ ARGENTINA: - vs space, S.A.U.", "country_leak": false}
+{"master_ta_code": "ar00014597", "variant_ta_code": "ar80034909", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "MERCEDES BENZ ARGENTINA: - vs space, S.A.", "country_leak": false}
+{"master_ta_code": "ar00015080", "variant_ta_code": "ar00070265", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "OP TRADING vs S&L TRADING: OP vs S&L", "country_leak": false}
+{"master_ta_code": "ar00015080", "variant_ta_code": "ar00088886", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "OP TRADING vs C B TRADING: farklı prefix", "country_leak": false}
+{"master_ta_code": "ar00015080", "variant_ta_code": "ar00078342", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "OP TRADING vs TRADING HNOS: OP eksik", "country_leak": false}
+{"master_ta_code": "ar00016288", "variant_ta_code": "ar80014039", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "SMURFIT KAPPA DE ARGENTINA: SA vs S.A.", "country_leak": false}
+{"master_ta_code": "ar00016288", "variant_ta_code": "ar80008465", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "SMURFIT KAPPA DE ARGENTINA: SA vs S.A.", "country_leak": false}
+{"master_ta_code": "ar00016288", "variant_ta_code": "ar80013228", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "SMURFIT KAPPA DE ARGENTINA: virgül ve S.A.", "country_leak": false}
+{"master_ta_code": "ar00017201", "variant_ta_code": "ar80138471", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "WEST PHARMACEUTICAL SERVICES: SERV vs SVC", "country_leak": false}
+{"master_ta_code": "ar00017201", "variant_ta_code": "ar80009657", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "WEST PHARMACEUTICAL SERVICES: virgül ve S.A.", "country_leak": false}
+{"master_ta_code": "ar00017201", "variant_ta_code": "ar80078001", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "WEST PHARMACEUTICAL SERVICES: SVC abbreviation", "country_leak": false}
+{"master_ta_code": "ar00025781", "variant_ta_code": "ar80004620", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INTERNATIONAL FIRST SERVICE: S.A. removed", "country_leak": false}
+{"master_ta_code": "ar00025781", "variant_ta_code": "ar80018728", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "INTERNATIONAL FIRST SERVICE: S.A. vs SA", "country_leak": false}
+{"master_ta_code": "ar00025781", "variant_ta_code": "ar80064128", "match_type": "FUZZY_PHRASE", "verdict": "SAME", "reason": "INTERNATIONAL FIRST SERVICE: INTL vs INTERNATIONAL", "country_leak": false}
+{"master_ta_code": "ar00030154", "variant_ta_code": "ar00030155", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "PROAGRO: S.A. vs S.R.L.", "country_leak": false}
+{"master_ta_code": "ar00030154", "variant_ta_code": "ar80029750", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "PROAGRO: suffix removed", "country_leak": false}
+{"master_ta_code": "ar00030154", "variant_ta_code": "ar80014946", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "PROAGRO: S.A. vs SA", "country_leak": false}
+{"master_ta_code": "ar00037349", "variant_ta_code": "ar00031006", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "A RODAR vs RODAR: A eksik", "country_leak": false}
+{"master_ta_code": "ar00037349", "variant_ta_code": "ar80023302", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "A RODAR: S.R.L. vs SRL", "country_leak": false}
+{"master_ta_code": "ar00037349", "variant_ta_code": "ar00101216", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "A RODAR vs RODAR: A eksik", "country_leak": false}
+{"master_ta_code": "ar00037770", "variant_ta_code": "ar00023159", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "C Y E INGENIERIA vs F P INGENIERIA: farklı", "country_leak": false}
+{"master_ta_code": "ar00037770", "variant_ta_code": "ar00074961", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "C Y E INGENIERIA vs UP INGENIERIA: farklı", "country_leak": false}
+{"master_ta_code": "ar00037770", "variant_ta_code": "ar00046254", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "C Y E INGENIERIA vs B Y H INGENIERIA: farklı", "country_leak": false}
+{"master_ta_code": "ar00041869", "variant_ta_code": "ar80001322", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "CIA LUARCA: noktalama ve special char", "country_leak": false}
+{"master_ta_code": "ar00041869", "variant_ta_code": "ar80001712", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "CIA LUARCA: noktalama ve SRL", "country_leak": false}
+{"master_ta_code": "ar00041869", "variant_ta_code": "ar80011604", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "CIA LUARCA: noktalama ve SRL", "country_leak": false}
+{"master_ta_code": "ar00061262", "variant_ta_code": "ar80040437", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "D C LOGISTICA DE ARG vs SAB LOGISTICA: farklı", "country_leak": false}
+{"master_ta_code": "ar00061262", "variant_ta_code": "ar80077227", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "D C LOGISTICA DE ARG vs LOGISTICA ARGENTINA: DC eksik", "country_leak": false}
+{"master_ta_code": "ar00061262", "variant_ta_code": "ar00082409", "match_type": "FUZZY_PHRASE", "verdict": "DIFFERENT", "reason": "D C LOGISTICA DE ARG vs LOGISTICA DE ARG: DC eksik", "country_leak": false}
+{"master_ta_code": "ar00066463", "variant_ta_code": "ar80003164", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "EXTERRAN ARGENTINA: S.A. vs SRL", "country_leak": false}
+{"master_ta_code": "ar00066463", "variant_ta_code": "ar80003163", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "EXTERRAN ARGENTINA: S.A. vs S.R.L.", "country_leak": false}
+{"master_ta_code": "ar00066463", "variant_ta_code": "ar80088060", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "EXTERRAN ARGENTINA: suffix removed", "country_leak": false}
+{"master_ta_code": "ar00073643", "variant_ta_code": "ar00079170", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "S.H. SERVICIOS vs L Y B SERVICIOS: farklı", "country_leak": false}
+{"master_ta_code": "ar00073643", "variant_ta_code": "ar00011811", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "S.H. SERVICIOS vs D & R SERVICIOS: farklı", "country_leak": false}
+{"master_ta_code": "ar00073643", "variant_ta_code": "ar00055229", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "S.H. SERVICIOS vs E L A SERVICIOS: farklı", "country_leak": false}
+{"master_ta_code": "ar00080664", "variant_ta_code": "ar00085807", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "C&D ELECTRONICA: S.R.L. vs SRL", "country_leak": false}
+{"master_ta_code": "ar00080664", "variant_ta_code": "ar00074831", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "C&D ELECTRONICA vs S E ELECTRONICA: farklı", "country_leak": false}
+{"master_ta_code": "ar00080664", "variant_ta_code": "ar00045104", "match_type": "STRIPPED_EXACT", "verdict": "DIFFERENT", "reason": "C&D ELECTRONICA vs F B A ELECTRONICA: farklı", "country_leak": false}
+{"master_ta_code": "ar00086599", "variant_ta_code": "ar80077199", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "LEAD-WAYTRADING: - vs space, SRL", "country_leak": false}
+{"master_ta_code": "ar00086599", "variant_ta_code": "ar80133486", "match_type": "STRIPPED_EXACT", "verdict": "SAME", "reason": "LEAD-WAYTRADING: - vs space, SAS", "country_leak": false}
+{"master_ta_code": "ar00086599", "variant_ta_code": "ar80121705", "match_type": "SUFFIX_FUZZY", "verdict": "DIFFERENT", "reason": "LEAD-WAYTRADING vs LEAD: WAYTRADING eksik", "country_leak": false}

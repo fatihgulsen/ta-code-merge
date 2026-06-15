@@ -1,0 +1,286 @@
+{"master_ta_code":"ar80000211","variant_ta_code":"ar80000212","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same firm, missing suffix letter S/A variants","country_leak":false}
+{"master_ta_code":"ar80000211","variant_ta_code":"ar80073776","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same firm, suffix variant S.C.L vs base name","country_leak":false}
+{"master_ta_code":"ar80000211","variant_ta_code":"ar00017692","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same firm, punctuation+suffix variant S.C.L.","country_leak":false}
+{"master_ta_code":"ar80000714","variant_ta_code":"ar80050269","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ARUBRAS core name identical, suffix S.A. standard variance","country_leak":false}
+{"master_ta_code":"ar80000714","variant_ta_code":"ar80018477","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ARUBRAS S.A. with/without period punctuation","country_leak":false}
+{"master_ta_code":"ar80000714","variant_ta_code":"ar00010542","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ARUBRAS SA standard corporate suffix variance","country_leak":false}
+{"master_ta_code":"ar80001353","variant_ta_code":"ar80011584","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"CALFRAC WELL SERVICES ARGENTINA, suffix/parenthesis differences only","country_leak":false}
+{"master_ta_code":"ar80001353","variant_ta_code":"ar80037714","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same core + country, S.A. suffix variance","country_leak":false}
+{"master_ta_code":"ar80001353","variant_ta_code":"ar80015650","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Same core + country, punctuation in suffix variance","country_leak":false}
+{"master_ta_code":"ar80002582","variant_ta_code":"ar80002581","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"DIVERSEY ARGENTINA, DE preposition and S.A./SA variance","country_leak":false}
+{"master_ta_code":"ar80002582","variant_ta_code":"ar80132736","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"DIVERSEY DE ARGENTINA, identical core no suffix difference","country_leak":false}
+{"master_ta_code":"ar80002582","variant_ta_code":"ar80021415","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"DIVERSEY ARGENTINA S.A., DE preposition and punctuation only","country_leak":false}
+{"master_ta_code":"ar80002986","variant_ta_code":"ar00022284","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ENOD core identical, suffix S.A./S.R.L./E.N.O.D. spelling variance","country_leak":false}
+{"master_ta_code":"ar80002986","variant_ta_code":"ar80023578","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ENOD S.R.L. variant of S.A., same core company","country_leak":false}
+{"master_ta_code":"ar80002986","variant_ta_code":"ar00012383","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ENOD SA, standard suffix variance of same core","country_leak":false}
+{"master_ta_code":"ar80003766","variant_ta_code":"ar80003769","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"GENOMMA LABORATORIES ARG/ARGENTINA, Arg abbreviation of country name","country_leak":false}
+{"master_ta_code":"ar80003766","variant_ta_code":"ar80010514","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"GENOMMA LABORATORIES ARGENTINA S.A., core+country identical","country_leak":false}
+{"master_ta_code":"ar80003766","variant_ta_code":"ar80011709","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"GENOMMA LABORATORIES ARGENTINA with SA/comma punctuation","country_leak":false}
+{"master_ta_code":"ar80004385","variant_ta_code":"ar80038324","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"INDECAR core identical, S.A.I.C. y F. to S.A. abbreviation","country_leak":false}
+{"master_ta_code":"ar80004385","variant_ta_code":"ar80077023","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"INDECAR core, all suffixes stripped to base name","country_leak":false}
+{"master_ta_code":"ar80004385","variant_ta_code":"ar80011746","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"INDECAR S.A.I.C. y F., period punctuation only","country_leak":false}
+{"master_ta_code":"ar80004436","variant_ta_code":"ar80013722","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"INDUSTRIAL PROBASA SA, missing letter S variant","country_leak":false}
+{"master_ta_code":"ar80004436","variant_ta_code":"ar80127288","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"INDUSTRIAL PROBASA S.A., special char ¿ vs punctuation","country_leak":false}
+{"master_ta_code":"ar80004436","variant_ta_code":"ar80016564","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"INDUSTRIAL PROBASA S.A., standard suffix variance","country_leak":false}
+{"master_ta_code":"ar80004625","variant_ta_code":"ar80112498","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"INTERNATIONAL FLAVORS & FRAGANCES, INC vs S suffix","country_leak":false}
+{"master_ta_code":"ar80004625","variant_ta_code":"ar80016599","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"INTERNATIONAL FLAVORS & FRAGANCES SRL vs S variant","country_leak":false}
+{"master_ta_code":"ar80004625","variant_ta_code":"ar80038365","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"INTERNATIONAL FLAVORS & FRAGANCES S.A.I.C. suffix variance","country_leak":false}
+{"master_ta_code":"ar80005559","variant_ta_code":"ar80019369","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"LIPO CHEMICALS ARGENTINA, comma vs punctuation suffix","country_leak":false}
+{"master_ta_code":"ar80005559","variant_ta_code":"ar80005556","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"LIPO CHEMICALS ARGENTINA, SA vs bare name","country_leak":false}
+{"master_ta_code":"ar80005559","variant_ta_code":"ar80011802","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"LIPO CHEMICALS ARGENTINA SA, standard suffix variance","country_leak":false}
+{"master_ta_code":"ar80005711","variant_ta_code":"ar80044119","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"M. NAHMIAS S.A.C./I., suffix abbreviation variance","country_leak":false}
+{"master_ta_code":"ar80005711","variant_ta_code":"ar80005712","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"M. NAHMIAS S.A.I.C., suffix e I vs I.C. punctuation","country_leak":false}
+{"master_ta_code":"ar80005711","variant_ta_code":"ar80101662","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"M. NAHMIAS S.A.C.I., prefix TO indicates same core","country_leak":false}
+{"master_ta_code":"ar80006297","variant_ta_code":"ar80034949","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"MIRGOR core identical, SA/bare name variance","country_leak":false}
+{"master_ta_code":"ar80006297","variant_ta_code":"ar00014703","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"MIRGOR S.A. C I F I A suffix abbreviation variance","country_leak":false}
+{"master_ta_code":"ar80006297","variant_ta_code":"ar80018823","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"MIRGOR S.A. punctuation variance only","country_leak":false}
+{"master_ta_code":"ar80006637","variant_ta_code":"ar80101664","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"NEWSAN S.A., TO prefix indicates same firm","country_leak":false}
+{"master_ta_code":"ar80006637","variant_ta_code":"ar80100691","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"NEWSAN core identical, suffix stripped","country_leak":false}
+{"master_ta_code":"ar80006637","variant_ta_code":"ar00014920","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"NEWSAN SA standard suffix variance","country_leak":false}
+{"master_ta_code":"ar80007148","variant_ta_code":"ar80011885","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PETROKEN PETROQUIMICA ENSENADA S.A./SA punctuation","country_leak":false}
+{"master_ta_code":"ar80007148","variant_ta_code":"ar80035186","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PETROKEN PETROQUIMICA ENSENADA S.A.U. core identical","country_leak":false}
+{"master_ta_code":"ar80007148","variant_ta_code":"ar80017345","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PETROKEN PETROQUIMICA ENSENADA stripped suffix only","country_leak":false}
+{"master_ta_code":"ar80007453","variant_ta_code":"ar00015153","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"P V C TECNOCOM vs PVC spacing variance, same core","country_leak":false}
+{"master_ta_code":"ar80007453","variant_ta_code":"ar80011125","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PVC TECNOCOM S.A. punctuation variance","country_leak":false}
+{"master_ta_code":"ar80007453","variant_ta_code":"ar80007456","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PVC TECNOCOM SA standard suffix variance","country_leak":false}
+{"master_ta_code":"ar80007625","variant_ta_code":"ar80007624","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"RED SURCOS S.A./bare name, suffix only","country_leak":false}
+{"master_ta_code":"ar80007625","variant_ta_code":"ar80018378","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"RED SURCOS SA punctuation variance","country_leak":false}
+{"master_ta_code":"ar80007625","variant_ta_code":"ar80007627","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"RED SURCOS S.A. punctuation (comma) variance","country_leak":false}
+{"master_ta_code":"ar80008028","variant_ta_code":"ar80008027","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SABIC INNOVATIVE PLASTICS ARGENTINA, S DE RL vs bare","country_leak":false}
+{"master_ta_code":"ar80008028","variant_ta_code":"ar80022324","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SABIC INNOVATIVE PLASTICS ARGENTINA S.R.L. suffix","country_leak":false}
+{"master_ta_code":"ar80008028","variant_ta_code":"ar80101246","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SABIC INNOVATIVE PLASTICS ARGENTINA SRL punctuation","country_leak":false}
+{"master_ta_code":"ar80009027","variant_ta_code":"ar00012598","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"FALABELLA S.A., TO prefix, standard suffix removal","country_leak":false}
+{"master_ta_code":"ar80009027","variant_ta_code":"ar80016171","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"FALABELLA S.A. punctuation (comma) variance","country_leak":false}
+{"master_ta_code":"ar80009027","variant_ta_code":"ar80020542","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"FALABELLA S.A. standard suffix","country_leak":false}
+{"master_ta_code":"ar80009122","variant_ta_code":"ar80011982","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"TRANSPACK ARGENTINA SA/S.A. punctuation","country_leak":false}
+{"master_ta_code":"ar80009122","variant_ta_code":"ar80009119","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"TRANSPACK ARGENTINA suffix stripped","country_leak":false}
+{"master_ta_code":"ar80009122","variant_ta_code":"ar80018422","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"TRANSPACK ARGENTINA SRL suffix variance","country_leak":false}
+{"master_ta_code":"ar80009969","variant_ta_code":"ar80043353","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ARYSTA LIFESCIENCE ARGENTINA S.A./bare name","country_leak":false}
+{"master_ta_code":"ar80009969","variant_ta_code":"ar80018479","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ARYSTA LIFESCIENCE ARGENTINA S.A. punctuation (comma)","country_leak":false}
+{"master_ta_code":"ar80009969","variant_ta_code":"ar80015445","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ARYSTA LIFESCIENCE ARGENTINA SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80010050","variant_ta_code":"ar80076412","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"BOSTIK ARGENTINA S.A./bare name","country_leak":false}
+{"master_ta_code":"ar80010050","variant_ta_code":"ar80018507","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"BOSTIK ARGENTINA S.A. punctuation","country_leak":false}
+{"master_ta_code":"ar80010050","variant_ta_code":"ar00010977","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"BOSTIK ARGENTINA SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80010522","variant_ta_code":"ar80021616","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"GIVAUDAN ARGENTINA Sa/S.A. case and punctuation","country_leak":false}
+{"master_ta_code":"ar80010522","variant_ta_code":"ar80011711","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"GIVAUDAN ARGENTINA SA case variance","country_leak":false}
+{"master_ta_code":"ar80010522","variant_ta_code":"ar80039882","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"GIVAUDAN ARGENTINA S.A. punctuation","country_leak":false}
+{"master_ta_code":"ar80011224","variant_ta_code":"ar80017611","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SAINT-GOBAIN vs SAINT GOBAIN hyphen variance","country_leak":false}
+{"master_ta_code":"ar80011224","variant_ta_code":"ar80008047","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SAINT-GOBAIN ARGENTINA SA hyphen and suffix","country_leak":false}
+{"master_ta_code":"ar80011224","variant_ta_code":"ar80008045","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SAINT GOBAIN ARGENTINA S.A. hyphen vs space","country_leak":false}
+{"master_ta_code":"ar80011293","variant_ta_code":"ar80017757","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SKF ARGENTINA S.A. case and punctuation","country_leak":false}
+{"master_ta_code":"ar80011293","variant_ta_code":"ar80008446","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SKF ARGENTINA S.A./bare name suffix","country_leak":false}
+{"master_ta_code":"ar80011293","variant_ta_code":"ar80011953","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SKF ARGENTINA SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80011596","variant_ta_code":"ar00011294","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"CELOMAT S.A./SA standard suffix variance","country_leak":false}
+{"master_ta_code":"ar80011596","variant_ta_code":"ar80010116","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"CELOMAT core identical, suffix stripped","country_leak":false}
+{"master_ta_code":"ar80011596","variant_ta_code":"ar80010117","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"CELOMAT S.A. punctuation (comma)","country_leak":false}
+{"master_ta_code":"ar80011785","variant_ta_code":"ar80018746","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"KRONEN INTERNACIONAL vs INTERNATIONAL Spanish/English variance","country_leak":false}
+{"master_ta_code":"ar80011785","variant_ta_code":"ar80011786","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"KRONEN INTERNATIONAL SA language variance","country_leak":false}
+{"master_ta_code":"ar80011785","variant_ta_code":"ar80016723","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"KRONEN INTERNACIONAL SA Spanish form","country_leak":false}
+{"master_ta_code":"ar80011847","variant_ta_code":"ar80006338","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"MOLINOS RIO DE LA PLATA SA case variance only","country_leak":false}
+{"master_ta_code":"ar80011847","variant_ta_code":"ar80077335","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"MOLINOS RIO LA PLATA missing DE preposition - different product line or abbreviation significant","country_leak":false}
+{"master_ta_code":"ar80011847","variant_ta_code":"ar80017126","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"MOLINOS RIO DE LA PLATA S.A. punctuation only","country_leak":false}
+{"master_ta_code":"ar80011955","variant_ta_code":"ar80020843","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"SP & P S.R.L. vs S.P. S.A. - different letter count, & vs period, unclear if same","country_leak":false}
+{"master_ta_code":"ar80011955","variant_ta_code":"ar80020889","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"SP & P S.R.L. vs SP SA - too many letters different, & missing","country_leak":false}
+{"master_ta_code":"ar80011955","variant_ta_code":"ar80011302","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SP&P S.R.L. ampersand punctuation variance only","country_leak":false}
+{"master_ta_code":"ar80011957","variant_ta_code":"ar80060544","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SPICER EJES PESADOS SA/S.R.L. suffix variance","country_leak":false}
+{"master_ta_code":"ar80011957","variant_ta_code":"ar80011956","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SPICER EJES PESADOS core identical, suffix stripped","country_leak":false}
+{"master_ta_code":"ar80011957","variant_ta_code":"ar00016376","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SPICER EJES PESADOS SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80012663","variant_ta_code":"ar80077180","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"LABORATORIOS ARGENTINOS FARMESA S.A.I.C. vs I C abbreviation","country_leak":false}
+{"master_ta_code":"ar80012663","variant_ta_code":"ar80014721","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"LABORATORIOS ARGENTINOS FARMESA suffix stripped","country_leak":false}
+{"master_ta_code":"ar80012663","variant_ta_code":"ar80005270","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"LABORATORIOS ARGENTINOS FARMESA S.A. vs S.A.I.C.","country_leak":false}
+{"master_ta_code":"ar80012928","variant_ta_code":"ar80019305","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"IBM DE ARGENTINA vs IBM ARGENTINA S.R.L., DE preposition","country_leak":false}
+{"master_ta_code":"ar80012928","variant_ta_code":"ar80025510","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"IBM DE ARGENTINA vs IBM ARGENTINA same core","country_leak":false}
+{"master_ta_code":"ar80012928","variant_ta_code":"ar80004281","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"IBM DE ARGENTINA vs IBM ARGENTINA S.R.L. DE variant","country_leak":false}
+{"master_ta_code":"ar80013549","variant_ta_code":"ar80049627","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"DLS ARGENTINA LTD, SUC.ARGENTINA vs SUC. ARG abbreviation","country_leak":false}
+{"master_ta_code":"ar80013549","variant_ta_code":"ar80021417","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"DLS ARGENTINA LTD SUC.ARGENTINA vs SUC ARGENTINA punctuation","country_leak":false}
+{"master_ta_code":"ar80013549","variant_ta_code":"ar80068547","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"DLS ARGENTINA LTD SUC.ARGENTINA vs LTD. - significant abbreviation but same core","country_leak":false}
+{"master_ta_code":"ar80015272","variant_ta_code":"ar80015279","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ABB S.A. - PLANTA PRODUCTIVA vs hyphen spacing variant","country_leak":false}
+{"master_ta_code":"ar80015272","variant_ta_code":"ar80015275","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ABB S.A. PLANTA vs comma punctuation","country_leak":false}
+{"master_ta_code":"ar80015272","variant_ta_code":"ar80015280","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ABB S.A. - PLANTA vs -PLANTA hyphen spacing","country_leak":false}
+{"master_ta_code":"ar80015276","variant_ta_code":"ar80015280","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ABB S.A.-PLANTA vs with space hyphen","country_leak":false}
+{"master_ta_code":"ar80015276","variant_ta_code":"ar80015275","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ABB S.A.-PLANTA vs comma punctuation","country_leak":false}
+{"master_ta_code":"ar80015276","variant_ta_code":"ar80015279","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ABB S.A.-PLANTA vs space hyphen variant","country_leak":false}
+{"master_ta_code":"ar80015876","variant_ta_code":"ar80002170","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"CREDICOOP COOP LTDA vs COOP. punctuation","country_leak":false}
+{"master_ta_code":"ar80015876","variant_ta_code":"ar80015877","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"CREDICOOP COOP LTDA vs COOP.LTDA punctuation","country_leak":false}
+{"master_ta_code":"ar80015876","variant_ta_code":"ar80061410","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"CREDICOOP COOP LTDA vs CREDICOOP LTDA missing COOP but core same","country_leak":false}
+{"master_ta_code":"ar80016109","variant_ta_code":"ar80016108","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ERICNET S.A.-ARGENTINA vs space-hyphen punctuation","country_leak":false}
+{"master_ta_code":"ar80016109","variant_ta_code":"ar80016140","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ERICNET S.A.-ARGENTINA vs hyphen-space punctuation","country_leak":false}
+{"master_ta_code":"ar80016109","variant_ta_code":"ar80020225","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ERICNET S.A.-ARGENTINA vs full space-hyphen-space","country_leak":false}
+{"master_ta_code":"ar80016696","variant_ta_code":"ar00013898","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"KEMIN ARGENTINA S.R.L./SRL punctuation","country_leak":false}
+{"master_ta_code":"ar80016696","variant_ta_code":"ar00026287","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"KEMIN ARGENTINA S.R.L./S.A. suffix variance","country_leak":false}
+{"master_ta_code":"ar80016696","variant_ta_code":"ar80077140","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"KEMIN ARGENTINA S.R.L./bare name suffix","country_leak":false}
+{"master_ta_code":"ar80017158","variant_ta_code":"ar80017159","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"MRS ARACELI CAMPOS vs MRS. punctuation only","country_leak":false}
+{"master_ta_code":"ar80017158","variant_ta_code":"ar80006426","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"MRS ARACELI CAMPOS vs MRS.ARACELI spacing/punctuation","country_leak":false}
+{"master_ta_code":"ar80017158","variant_ta_code":"ar80033240","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"MRS ARACELI CAMPOS vs ARACELI CAMPOS - missing MRS prefix may indicate different legal entity","country_leak":false}
+{"master_ta_code":"ar80017674","variant_ta_code":"ar80008191","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SCHNEIDER ELECTRIC ARGENTINA S.A./SA punctuation","country_leak":false}
+{"master_ta_code":"ar80017674","variant_ta_code":"ar80008190","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SCHNEIDER ELECTRIC ARGENTINA S.A./bare name","country_leak":false}
+{"master_ta_code":"ar80017674","variant_ta_code":"ar80048093","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SCHNEIDER ELECTRIC ARGENTINA S.A./LTDA suffix","country_leak":false}
+{"master_ta_code":"ar80017678","variant_ta_code":"ar80018953","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SEALED AIR ARGENTINA S.A. comma vs period-space","country_leak":false}
+{"master_ta_code":"ar80017678","variant_ta_code":"ar80011937","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SEALED AIR ARGENTINA S.A./bare name","country_leak":false}
+{"master_ta_code":"ar80017678","variant_ta_code":"ar80017677","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SEALED AIR ARGENTINA S.A./SA punctuation","country_leak":false}
+{"master_ta_code":"ar80017813","variant_ta_code":"ar80023239","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SUPERMERCADOS MAYORISTAS MAKRO S.A./S missing period","country_leak":false}
+{"master_ta_code":"ar80017813","variant_ta_code":"ar80014054","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SUPERMERCADOS MAYORISTAS MAKRO S.A./bare name","country_leak":false}
+{"master_ta_code":"ar80017813","variant_ta_code":"ar00016451","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SUPERMERCADOS MAYORISTAS MAKRO SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80017978","variant_ta_code":"ar80130273","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"UNIFARMA S.A./bare name suffix","country_leak":false}
+{"master_ta_code":"ar80017978","variant_ta_code":"ar00016932","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"UNIFARMA S.A./SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80017978","variant_ta_code":"ar80009258","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"UNIFARMA S.A./UNIFARMA. S.A. period spacing","country_leak":false}
+{"master_ta_code":"ar80018368","variant_ta_code":"ar80018894","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PROCTER & GAMBLE ARGENTINA SC/S.R.L. suffix","country_leak":false}
+{"master_ta_code":"ar80018368","variant_ta_code":"ar80017412","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PROCTER & GAMBLE ARGENTINA SC/S.R.L. period spacing","country_leak":false}
+{"master_ta_code":"ar80018368","variant_ta_code":"ar80077553","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PROCTER & GAMBLE ARGENTINA SC/bare name","country_leak":false}
+{"master_ta_code":"ar80018429","variant_ta_code":"ar80009440","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"VF JEANSWEAR ARGENTINA SA/S.A. punctuation","country_leak":false}
+{"master_ta_code":"ar80018429","variant_ta_code":"ar80009441","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"VF JEANSWEAR ARGENTINA SA/S.R.L. suffix","country_leak":false}
+{"master_ta_code":"ar80018429","variant_ta_code":"ar80009442","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"VF JEANSWEAR ARGENTINA SA/SRL punctuation","country_leak":false}
+{"master_ta_code":"ar80018678","variant_ta_code":"ar80019286","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"GRIMOLDI S.A. comma vs period-space","country_leak":false}
+{"master_ta_code":"ar80018678","variant_ta_code":"ar80016394","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"GRIMOLDI S.A. case variance only","country_leak":false}
+{"master_ta_code":"ar80018678","variant_ta_code":"ar80003924","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"GRIMOLDI S.A./SA punctuation","country_leak":false}
+{"master_ta_code":"ar80018859","variant_ta_code":"ar80011871","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"OVERSEAS ARGENTINA S.A./SA punctuation","country_leak":false}
+{"master_ta_code":"ar80018859","variant_ta_code":"ar80035124","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"OVERSEAS ARGENTINA S.A./S.A. DE C.V. suffix","country_leak":false}
+{"master_ta_code":"ar80018859","variant_ta_code":"ar80077441","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"OVERSEAS ARGENTINA S.A./bare name","country_leak":false}
+{"master_ta_code":"ar80018882","variant_ta_code":"ar80011073","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PEUGEOT CITROEN ARGENTINA S.A. case variance only","country_leak":false}
+{"master_ta_code":"ar80018882","variant_ta_code":"ar80011886","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PEUGEOT CITROEN ARGENTINA S.A./bare name","country_leak":false}
+{"master_ta_code":"ar80018882","variant_ta_code":"ar00015341","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PEUGEOT CITROEN ARGENTINA SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80018925","variant_ta_code":"ar80011189","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ROHM & HAAS ARGENTINA S.R.L. comma vs period-space","country_leak":false}
+{"master_ta_code":"ar80018925","variant_ta_code":"ar80077659","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ROHM & HAAS ARGENTINA S.R.L./ROHM HAAS ampersand spacing","country_leak":false}
+{"master_ta_code":"ar80018925","variant_ta_code":"ar80077658","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ROHM & HAAS ARGENTINA S.R.L./bare name","country_leak":false}
+{"master_ta_code":"ar80019022","variant_ta_code":"ar80009289","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"UNITS SUDAMERICANA S.A./bare name","country_leak":false}
+{"master_ta_code":"ar80019022","variant_ta_code":"ar80011424","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"UNITS SUDAMERICANA S.A. comma punctuation","country_leak":false}
+{"master_ta_code":"ar80019022","variant_ta_code":"ar00016957","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"UNITS SUDAMERICANA SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80019970","variant_ta_code":"ar80000175","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ADVANCED ORGANIC MATERIALS S.A. case variance only","country_leak":false}
+{"master_ta_code":"ar80019970","variant_ta_code":"ar80108093","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ADVANCED ORGANIC MATERIALS S.A./bare name","country_leak":false}
+{"master_ta_code":"ar80019970","variant_ta_code":"ar00010124","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ADVANCED ORGANIC MATERIALS SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80026598","variant_ta_code":"ar80008719","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SYMRISE LTD./S.R.L. suffix variant","country_leak":false}
+{"master_ta_code":"ar80026598","variant_ta_code":"ar80040541","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SYMRISE LTD./S.A. suffix variant","country_leak":false}
+{"master_ta_code":"ar80026598","variant_ta_code":"ar80087258","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SYMRISE LTD./INC. suffix variant","country_leak":false}
+{"master_ta_code":"ar80028322","variant_ta_code":"ar80017567","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"RUHRPUMPEN ARGENTINA bare/S.A. suffix","country_leak":false}
+{"master_ta_code":"ar80028322","variant_ta_code":"ar80045933","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"RUHRPUMPEN ARGENTINA vs S.A. LE abbreviation suffix","country_leak":false}
+{"master_ta_code":"ar80028322","variant_ta_code":"ar80011927","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"RUHRPUMPEN ARGENTINA SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80028394","variant_ta_code":"ar80087204","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SENSIENT COLORS bare/LLC. suffix","country_leak":false}
+{"master_ta_code":"ar80028394","variant_ta_code":"ar80008268","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SENSIENT COLORS SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80028394","variant_ta_code":"ar80011263","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SENSIENT COLORS S.A. punctuation","country_leak":false}
+{"master_ta_code":"ar80029477","variant_ta_code":"ar80021845","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"LABORATORIOS CASASCO bare/S.A. suffix","country_leak":false}
+{"master_ta_code":"ar80029477","variant_ta_code":"ar00014066","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"LABORATORIOS CASASCO vs S.A.I.C. suffix","country_leak":false}
+{"master_ta_code":"ar80029477","variant_ta_code":"ar80016885","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"LABORATORIOS CASASCO case and suffix variance","country_leak":false}
+{"master_ta_code":"ar80031096","variant_ta_code":"ar80014153","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"AGUAS Y PROCESOS S.A. vs & ampersand","country_leak":false}
+{"master_ta_code":"ar80031096","variant_ta_code":"ar00010194","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"AGUAS Y PROCESOS S.A. vs SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80031096","variant_ta_code":"ar00017797","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"AGUAS Y PROCESOS S.A. vs & S.R.L.","country_leak":false}
+{"master_ta_code":"ar80034436","variant_ta_code":"ar80040011","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"INGREDION ARGENTINA SRL/bare name","country_leak":false}
+{"master_ta_code":"ar80034436","variant_ta_code":"ar80011755","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"INGREDION ARGENTINA SRL/SA suffix","country_leak":false}
+{"master_ta_code":"ar80034436","variant_ta_code":"ar00066632","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"INGREDION ARGENTINA SRL/S.A. punctuation","country_leak":false}
+{"master_ta_code":"ar80034494","variant_ta_code":"ar80100121","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"JAB COMERCIO EXTERIOR Y ADUANA SRL vs S.R.L. case","country_leak":false}
+{"master_ta_code":"ar80034494","variant_ta_code":"ar80027799","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"JAB COMERCIO EXTERIOR Y ADUANA SRL case only","country_leak":false}
+{"master_ta_code":"ar80034494","variant_ta_code":"ar80064152","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"JAB COMERCIO EXTERIOR Y ADUANA Y vs & ampersand","country_leak":false}
+{"master_ta_code":"ar80038086","variant_ta_code":"ar80101660","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"FAMIQ bare/S.R.L. suffix with TO prefix","country_leak":false}
+{"master_ta_code":"ar80038086","variant_ta_code":"ar80003254","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"FAMIQ bare/SRL suffix","country_leak":false}
+{"master_ta_code":"ar80038086","variant_ta_code":"ar00012612","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"FAMIQ bare/SA suffix","country_leak":false}
+{"master_ta_code":"ar80040424","variant_ta_code":"ar80017560","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ROTOPLAS ARGENTINA bare/S.A. suffix","country_leak":false}
+{"master_ta_code":"ar80040424","variant_ta_code":"ar80011926","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ROTOPLAS ARGENTINA S.A. punctuation","country_leak":false}
+{"master_ta_code":"ar80040424","variant_ta_code":"ar80013179","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ROTOPLAS ARGENTINA SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80040769","variant_ta_code":"ar80069338","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"BANCO CREDICOOP bare/LTD. suffix","country_leak":false}
+{"master_ta_code":"ar80040769","variant_ta_code":"ar80000909","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"BANCO CREDICOOP vs CREDICOOP COOP LTD. core identical","country_leak":false}
+{"master_ta_code":"ar80040769","variant_ta_code":"ar80015510","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"BANCO CREDICOOP vs CREDICOOP COOP.LTD. punctuation","country_leak":false}
+{"master_ta_code":"ar80045912","variant_ta_code":"ar80077652","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ROBERT BOSCH ARGENTINA INDUSTRIAL vs missing S suffix","country_leak":false}
+{"master_ta_code":"ar80045912","variant_ta_code":"ar80120156","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"ROBERT BOSCH ARGENTINA INDUSTRIAL vs IND. S.A. abbreviation","country_leak":false}
+{"master_ta_code":"ar80045912","variant_ta_code":"ar00015873","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ROBERT BOSCH ARGENTINA INDUSTRIAL SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80051119","variant_ta_code":"ar80017709","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SHERWIN WILLIAMS ARGENTINA ICSA S,A vs I. Y C. S.A.","country_leak":false}
+{"master_ta_code":"ar80051119","variant_ta_code":"ar80028412","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SHERWIN WILLIAMS ARGENTINA ICSA vs bare ICSA","country_leak":false}
+{"master_ta_code":"ar80051119","variant_ta_code":"ar00016188","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SHERWIN WILLIAMS ARGENTINA ICSA vs I C SA spacing","country_leak":false}
+{"master_ta_code":"ar80053790","variant_ta_code":"ar80053791","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"FABRIQUIMICA S.R.L./SRL punctuation","country_leak":false}
+{"master_ta_code":"ar80053790","variant_ta_code":"ar80076817","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"FABRIQUIMICA S.R.L./SA suffix","country_leak":false}
+{"master_ta_code":"ar80053790","variant_ta_code":"ar80069611","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"FABRIQUIMICA S.R.L./S.A.U. suffix","country_leak":false}
+{"master_ta_code":"ar80057468","variant_ta_code":"ar80100124","match_type":"TOKEN_COVERAGE","verdict":"DIFFERENT","reason":"JAS FORWARDING DE ARGENTINA SA vs JAS ARGENTINA (AR) - missing FORWARDING, DE keyword","country_leak":false}
+{"master_ta_code":"ar80057468","variant_ta_code":"ar80063825","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"JAS FORWARDING DE ARGENTINA SA vs FORWARDING SA - missing JAS and DE, only fragment match","country_leak":false}
+{"master_ta_code":"ar80057468","variant_ta_code":"ar80077098","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"JAS FORWARDING DE ARGENTINA vs SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80058252","variant_ta_code":"ar80017125","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"MOLINO CANUELAS vs CAÑUELAS accent diacritical","country_leak":false}
+{"master_ta_code":"ar80058252","variant_ta_code":"ar80018332","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"MOLINO CANUELAS vs S.A.C. suffix","country_leak":false}
+{"master_ta_code":"ar80058252","variant_ta_code":"ar80018827","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"MOLINO CANUELAS vs CA UELAS spacing error likely same","country_leak":false}
+{"master_ta_code":"ar80060283","variant_ta_code":"ar00030188","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PRODICOS S.A.U./S.A. suffix","country_leak":false}
+{"master_ta_code":"ar80060283","variant_ta_code":"ar80007376","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PRODICOS S.A.U./SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80060283","variant_ta_code":"ar80011904","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PRODICOS S.A.U. vs S.A. DE C.V. suffix","country_leak":false}
+{"master_ta_code":"ar80060302","variant_ta_code":"ar80070104","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PURATOS S.A. ARGENTINA C I I E vs bare ARGENTINA","country_leak":false}
+{"master_ta_code":"ar80060302","variant_ta_code":"ar80007446","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"PURATOS S.A. ARGENTINA C I I E vs S.A. ARGENTINA suffix","country_leak":false}
+{"master_ta_code":"ar80060302","variant_ta_code":"ar80101047","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PURATOS S.A. ARGENTINA C I I E vs S.A.I.C. suffix","country_leak":false}
+{"master_ta_code":"ar80060760","variant_ta_code":"ar00017146","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"VOLKSWAGEN ARG. vs ARGENTINA abbreviation, same core","country_leak":false}
+{"master_ta_code":"ar80060760","variant_ta_code":"ar80019039","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"VOLKSWAGEN ARG. vs ARGENTINA punctuation","country_leak":false}
+{"master_ta_code":"ar80060760","variant_ta_code":"ar80018046","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"VOLKSWAGEN ARG. vs ARGENTINA S.A. suffix","country_leak":false}
+{"master_ta_code":"ar80063607","variant_ta_code":"ar80076721","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"DROGUERIA SAPORITI SA vs C I F I abbreviation","country_leak":false}
+{"master_ta_code":"ar80063607","variant_ta_code":"ar80002682","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"DROGUERIA SAPORITI SA vs S.A.C.I. suffix","country_leak":false}
+{"master_ta_code":"ar80063607","variant_ta_code":"ar80002678","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"DROGUERIA SAPORITI SA vs bare name","country_leak":false}
+{"master_ta_code":"ar80063848","variant_ta_code":"ar80010498","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"FV SRL/S.A. suffix","country_leak":false}
+{"master_ta_code":"ar80063848","variant_ta_code":"ar80003632","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"FV SRL/SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80063848","variant_ta_code":"ar80003185","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"FV SRL vs F.V. S.A. punctuation","country_leak":false}
+{"master_ta_code":"ar80064892","variant_ta_code":"ar80077227","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"SAB LOGISTICA vs LOGISTICA ARGENTINA - missing SAB core identifier","country_leak":false}
+{"master_ta_code":"ar80064892","variant_ta_code":"ar80040437","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SAB LOGISTICA vs S.A. suffix variance","country_leak":false}
+{"master_ta_code":"ar80064892","variant_ta_code":"ar00082409","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"SAB LOGISTICA vs LOGISTICA DE ARGENTINA - swapped word order, missing SAB","country_leak":false}
+{"master_ta_code":"ar80074153","variant_ta_code":"ar80100549","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"MENDEZ & COMPANY INC vs MENDEZ & CO abbreviation","country_leak":false}
+{"master_ta_code":"ar80074153","variant_ta_code":"ar80028027","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"MENDEZ & COMPANY INC vs MENDEZ & CIA abbreviation","country_leak":false}
+{"master_ta_code":"ar80074153","variant_ta_code":"ar80067512","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"MENDEZ & COMPANY INC vs E MENDEZ - missing COMPANY, different letter E prefix","country_leak":false}
+{"master_ta_code":"ar80074161","variant_ta_code":"ar80019923","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"MICHELIN ARGENTINA vs S.A. suffix","country_leak":false}
+{"master_ta_code":"ar80074161","variant_ta_code":"ar80077318","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"MICHELIN ARGENTINA vs I C Y F abbreviation","country_leak":false}
+{"master_ta_code":"ar80074161","variant_ta_code":"ar00014652","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"MICHELIN ARGENTINA vs S.A.I.C. y F. suffix","country_leak":false}
+{"master_ta_code":"ar80076275","variant_ta_code":"ar80000442","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ALUAR ALUMINIO ARGENTINO vs S.A.IC suffix","country_leak":false}
+{"master_ta_code":"ar80076275","variant_ta_code":"ar80076277","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ALUAR ALUMINIO ARGENTINO SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80076275","variant_ta_code":"ar80063069","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ALUAR ALUMINIO ARGENTINO vs S.A.I.C. suffix","country_leak":false}
+{"master_ta_code":"ar80076585","variant_ta_code":"ar00080927","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"COLORANTS SOLUTIONS ARGENTINA S.A.U./S.A. suffix","country_leak":false}
+{"master_ta_code":"ar80076585","variant_ta_code":"ar80071945","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"COLORANTS SOLUTIONS ARGENTINA S.A.U./bare name","country_leak":false}
+{"master_ta_code":"ar80076585","variant_ta_code":"ar80067420","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"COLORANTS SOLUTIONS ARGENTINA S.A.U. vs AR abbreviation","country_leak":false}
+{"master_ta_code":"ar80076658","variant_ta_code":"ar80011639","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"DAK AMERICAS ARGENTINA vs S.A. suffix","country_leak":false}
+{"master_ta_code":"ar80076658","variant_ta_code":"ar80015910","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"DAK AMERICAS ARGENTINA SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80076658","variant_ta_code":"ar80106704","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"DAK AMERICAS ARGENTINA vs S.A. suffix with TO prefix","country_leak":false}
+{"master_ta_code":"ar80076838","variant_ta_code":"ar80022857","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"FCA AUTOMOBILES ARGENTINA vs S.A. suffix","country_leak":false}
+{"master_ta_code":"ar80076838","variant_ta_code":"ar80018639","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"FCA AUTOMOBILES ARGENTINA SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80076838","variant_ta_code":"ar80023612","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"FCA AUTOMOBILES vs AUTOMOBILE singular - may be different legal entity or OCR error","country_leak":false}
+{"master_ta_code":"ar80077754","variant_ta_code":"ar80052018","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SINTEPLAST vs S.A. suffix","country_leak":false}
+{"master_ta_code":"ar80077754","variant_ta_code":"ar00016246","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SINTEPLAST SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80077754","variant_ta_code":"ar80113764","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SINTEPLAST vs S A DE C V suffix","country_leak":false}
+{"master_ta_code":"ar80077988","variant_ta_code":"ar00017146","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"VOLKSWAGEN OF AMERICA vs VOLKSWAGEN ARGENTINA - different location (America vs Argentina)","country_leak":false}
+{"master_ta_code":"ar80077988","variant_ta_code":"ar80019039","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"VOLKSWAGEN OF AMERICA vs ARGENTINA location difference","country_leak":false}
+{"master_ta_code":"ar80077988","variant_ta_code":"ar80018046","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"VOLKSWAGEN OF AMERICA vs ARGENTINA location, different entity","country_leak":false}
+{"master_ta_code":"ar80078114","variant_ta_code":"ar80014171","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ALPARGATAS S.A.I.C with corrupted suffix vs normal punctuation","country_leak":false}
+{"master_ta_code":"ar80078114","variant_ta_code":"ar80055165","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ALPARGATAS S.A.I.C vs bare name, corrupted suffix","country_leak":false}
+{"master_ta_code":"ar80078114","variant_ta_code":"ar80043309","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ALPARGATAS S.A.I.C vs S.A. suffix corrupted","country_leak":false}
+{"master_ta_code":"ar80079712","variant_ta_code":"ar80086296","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ABB S.A.U. vs INC. suffix","country_leak":false}
+{"master_ta_code":"ar80079712","variant_ta_code":"ar00010047","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ABB S.A.U. vs SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80079712","variant_ta_code":"ar80000077","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ABB S.A.U. vs S.A. suffix","country_leak":false}
+{"master_ta_code":"ar80084871","variant_ta_code":"ar80010017","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"BEIERSDORF INC vs S.A. suffix","country_leak":false}
+{"master_ta_code":"ar80084871","variant_ta_code":"ar00010759","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"BEIERSDORF INC vs SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80084871","variant_ta_code":"ar80021159","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"BEIERSDORF INC vs S.A. punctuation","country_leak":false}
+{"master_ta_code":"ar80087005","variant_ta_code":"ar80026134","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"NOVA CORP. vs NOVA bare name - CORP. is significant suffix, unclear if same entity","country_leak":false}
+{"master_ta_code":"ar80087005","variant_ta_code":"ar80017223","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"NOVA CORP. vs NOVA SA - different suffixes, may be different entities","country_leak":false}
+{"master_ta_code":"ar80087005","variant_ta_code":"ar80121964","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"NOVA CORP. vs NOVA SAU - different suffixes, may indicate different entities","country_leak":false}
+{"master_ta_code":"ar80087244","variant_ta_code":"ar80039110","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SPIRAX SARCO S.R.L. vs INC. suffix","country_leak":false}
+{"master_ta_code":"ar80087244","variant_ta_code":"ar80017721","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SPIRAX SARCO S.R.L. vs S.A. period spacing","country_leak":false}
+{"master_ta_code":"ar80087244","variant_ta_code":"ar00016377","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SPIRAX SARCO S.R.L. vs SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80091019","variant_ta_code":"ar80085289","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"FRUTO DE LA CONFIANZA SA case variance only","country_leak":false}
+{"master_ta_code":"ar80091019","variant_ta_code":"ar00081607","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"FRUTO DE LA CONFIANZA SA vs S.A. punctuation","country_leak":false}
+{"master_ta_code":"ar80091019","variant_ta_code":"ar00086270","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"FRUTO DE LA CONFIANZA SA vs bare name","country_leak":false}
+{"master_ta_code":"ar80092260","variant_ta_code":"ar80107912","match_type":"STRIPPED_EXACT","verdict":"PLACEHOLDER","reason":"IN ORDER TO / TO OF ORDER THE - generic/placeholder text, not a real firm","country_leak":false}
+{"master_ta_code":"ar80092260","variant_ta_code":"ar80020631","match_type":"STRIPPED_EXACT","verdict":"PLACEHOLDER","reason":"IN ORDER TO / TO ORDER OF - generic placeholder text","country_leak":false}
+{"master_ta_code":"ar80092260","variant_ta_code":"ar80085280","match_type":"STRIPPED_EXACT","verdict":"PLACEHOLDER","reason":"IN ORDER TO / TO THE ORDER OF -*/ - placeholder/junk text","country_leak":false}
+{"master_ta_code":"ar80103723","variant_ta_code":"ar80015677","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"CARRIER S.R.L./S.A. suffix","country_leak":false}
+{"master_ta_code":"ar80103723","variant_ta_code":"ar80001472","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"CARRIER S.R.L. comma punctuation","country_leak":false}
+{"master_ta_code":"ar80103723","variant_ta_code":"ar00011202","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"CARRIER S.R.L. vs SA standard suffix","country_leak":false}
+{"master_ta_code":"ar80104249","variant_ta_code":"ar80038016","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"EFCO ARGENTINA SA vs LTD. suffix","country_leak":false}
+{"master_ta_code":"ar80104249","variant_ta_code":"ar00089065","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"EFCO ARGENTINA SA vs S.A. suffix","country_leak":false}
+{"master_ta_code":"ar80104249","variant_ta_code":"ar00022414","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"EFCO ARGENTINA SA vs LTD. suffix","country_leak":false}
+{"master_ta_code":"ar80111136","variant_ta_code":"ar80076304","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Arcor case vs ARCOR I C abbreviation","country_leak":false}
+{"master_ta_code":"ar80111136","variant_ta_code":"ar80076305","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Arcor case vs ARCOR SA","country_leak":false}
+{"master_ta_code":"ar80111136","variant_ta_code":"ar80018150","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Arcor case vs ARCOR S.A.I.C.","country_leak":false}
+{"master_ta_code":"ar80117847","variant_ta_code":"ar80005504","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"LESTAR QUIMICA SACI vs S.A. suffix","country_leak":false}
+{"master_ta_code":"ar80117847","variant_ta_code":"ar80018306","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"LESTAR QUIMICA SACI vs SA suffix","country_leak":false}
+{"master_ta_code":"ar80117847","variant_ta_code":"ar80085581","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"LESTAR QUIMICA SACI vs bare name","country_leak":false}
+{"master_ta_code":"ar80126568","variant_ta_code":"ar80028176","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PELIKAN ARGENTINA vs SA suffix","country_leak":false}
+{"master_ta_code":"ar80126568","variant_ta_code":"ar80011054","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PELIKAN ARGENTINA vs S.A. punctuation","country_leak":false}
+{"master_ta_code":"ar80126568","variant_ta_code":"ar80017317","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PELIKAN ARGENTINA vs S.A. suffix","country_leak":false}
+{"master_ta_code":"ar80130214","variant_ta_code":"ar80035574","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SKYFIL TRADESOURCE LLP vs LLC. suffix","country_leak":false}
+{"master_ta_code":"ar80130214","variant_ta_code":"ar80017760","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SKYFIL TRADESOURCE LLP vs LLC. punctuation","country_leak":false}
+{"master_ta_code":"ar80130214","variant_ta_code":"ar80026542","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SKYFIL TRADESOURCE LLP vs bare name","country_leak":false}
+{"master_ta_code":"ar80132751","variant_ta_code":"ar80121026","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"DREAN S vs SA suffix","country_leak":false}
+{"master_ta_code":"ar80132751","variant_ta_code":"ar80121025","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"DREAN S vs S.A. punctuation","country_leak":false}
+{"master_ta_code":"ar80132751","variant_ta_code":"ar80138802","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"DREAN S vs bare name","country_leak":false}
+{"master_ta_code":"ar80135282","variant_ta_code":"ar00015522","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PRODUCTORA QUIMICA LLANA Y CO vs CIA SA","country_leak":false}
+{"master_ta_code":"ar80135282","variant_ta_code":"ar80139163","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PRODUCTORA QUIMICA LLANA Y CO vs SA","country_leak":false}
+{"master_ta_code":"ar80135282","variant_ta_code":"ar80007382","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PRODUCTORA QUIMICA LLANA Y CO vs CIA. S.A.","country_leak":false}
+{"master_ta_code":"ar00010204","variant_ta_code":"ar80039391","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"AIR COMPUTERS S.R.L. vs AIR SRL S.R.L. - COMPUTERS keyword missing, redundant SRL SRL","country_leak":false}
+{"master_ta_code":"ar00010204","variant_ta_code":"ar80026935","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"AIR COMPUTERS S.R.L. vs AIR SRL - COMPUTERS keyword missing","country_leak":false}
+{"master_ta_code":"ar00010277","variant_ta_code":"ar80015355","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ALINAT S.R.L./SRL punctuation","country_leak":false}
+{"master_ta_code":"ar00010277","variant_ta_code":"ar80000375","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ALINAT S.R.L./bare name suffix","country_leak":false}

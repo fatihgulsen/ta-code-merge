@@ -1,0 +1,500 @@
+{"ta_code_a": "pe80077646", "ta_code_b": "pe80134726", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00115905", "ta_code_b": "pe80143747", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80015748", "ta_code_b": "pe00068464", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80045799", "ta_code_b": "pe00011342", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80059133", "ta_code_b": "pe80050766", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80002512", "ta_code_b": "pe80014771", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80061380", "ta_code_b": "pe80025417", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80120411", "ta_code_b": "pe00060618", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80115414", "ta_code_b": "pe00079102", "verdict": "CORRECTLY_SEPARATE", "reason": "Different regional variant"}
+{"ta_code_a": "pe80001918", "ta_code_b": "pe80018298", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80033502", "ta_code_b": "pe80033488", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80027374", "ta_code_b": "pe80039028", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80033502", "ta_code_b": "pe80033484", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80029192", "ta_code_b": "pe80120466", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80163060", "ta_code_b": "pe80045969", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80111378", "ta_code_b": "pe80143747", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80054864", "ta_code_b": "pe80065944", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80031165", "ta_code_b": "pe80031163", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80214633", "ta_code_b": "pe80212437", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80068393", "ta_code_b": "pe80030552", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80068393", "ta_code_b": "pe80030548", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80189030", "ta_code_b": "pe80203632", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80022085", "ta_code_b": "pe80094240", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80163575", "ta_code_b": "pe80032051", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80034279", "ta_code_b": "pe80049915", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80012966", "ta_code_b": "pe80172378", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80170902", "ta_code_b": "pe80206226", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80163575", "ta_code_b": "pe80111466", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80181968", "ta_code_b": "pe80160304", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80088480", "ta_code_b": "pe80102265", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80105111", "ta_code_b": "pe00022704", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80143827", "ta_code_b": "pe80192393", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80010694", "ta_code_b": "pe80032989", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80030555", "ta_code_b": "pe80030551", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80043187", "ta_code_b": "pe80043191", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00045802", "ta_code_b": "pe80056912", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80001243", "ta_code_b": "pe80001242", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80064124", "ta_code_b": "pe00018008", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe00014422", "ta_code_b": "pe80034291", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80011678", "ta_code_b": "pe80033270", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80047350", "ta_code_b": "pe80145265", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80027374", "ta_code_b": "pe80049509", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00123445", "ta_code_b": "pe80209289", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80020746", "ta_code_b": "pe80037279", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80051608", "ta_code_b": "pe80192229", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80006952", "ta_code_b": "pe80057355", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe00010499", "ta_code_b": "pe80054799", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80163060", "ta_code_b": "pe80095969", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80166815", "ta_code_b": "pe80002969", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80002969", "ta_code_b": "pe80173565", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80001239", "ta_code_b": "pe80001242", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80113539", "ta_code_b": "pe80202810", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80041071", "ta_code_b": "pe00026463", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe00062309", "ta_code_b": "pe80155244", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80209494", "ta_code_b": "pe80051827", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80002962", "ta_code_b": "pe80002963", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80109222", "ta_code_b": "pe00078040", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80017307", "ta_code_b": "pe80010915", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80026423", "ta_code_b": "pe80016406", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80013225", "ta_code_b": "pe80021765", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80111474", "ta_code_b": "pe80099513", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80041688", "ta_code_b": "pe00064732", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80024662", "ta_code_b": "pe80074656", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe00062785", "ta_code_b": "pe80167119", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80054144", "ta_code_b": "pe80068295", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80029571", "ta_code_b": "pe80029569", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80029571", "ta_code_b": "pe80029570", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80048255", "ta_code_b": "pe80033049", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80029568", "ta_code_b": "pe80029565", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80032931", "ta_code_b": "pe80032930", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80207831", "ta_code_b": "pe80210096", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe00042285", "ta_code_b": "pe80052513", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80038572", "ta_code_b": "pe80010672", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe00010787", "ta_code_b": "pe80038825", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80119990", "ta_code_b": "pe80010705", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80013447", "ta_code_b": "pe80034241", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80045691", "ta_code_b": "pe80051804", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80216145", "ta_code_b": "pe80216144", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe00132705", "ta_code_b": "pe00050066", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80073591", "ta_code_b": "pe80199136", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80015084", "ta_code_b": "pe80197159", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80132827", "ta_code_b": "pe80129872", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80120854", "ta_code_b": "pe80209497", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80010705", "ta_code_b": "pe80095306", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80010705", "ta_code_b": "pe00011896", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80035038", "ta_code_b": "pe80011918", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80028580", "ta_code_b": "pe00082022", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe00079992", "ta_code_b": "pe80165077", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80208799", "ta_code_b": "pe80189018", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80033518", "ta_code_b": "pe80071144", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80033518", "ta_code_b": "pe80033478", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe00112504", "ta_code_b": "pe80121756", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80029772", "ta_code_b": "pe80029770", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80031986", "ta_code_b": "pe80031998", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80031985", "ta_code_b": "pe80031998", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80048780", "ta_code_b": "pe80033336", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80046719", "ta_code_b": "pe80046724", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80033221", "ta_code_b": "pe80033212", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80012955", "ta_code_b": "pe80049509", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80132988", "ta_code_b": "pe80175626", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80190723", "ta_code_b": "pe80010436", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80217011", "ta_code_b": "pe80198372", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80216860", "ta_code_b": "pe80216859", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80212677", "ta_code_b": "pe00012084", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80062792", "ta_code_b": "pe80069697", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80212677", "ta_code_b": "pe80031949", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00011597", "ta_code_b": "pe80072427", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80083488", "ta_code_b": "pe80095969", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80054042", "ta_code_b": "pe80188764", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00098147", "ta_code_b": "pe80102541", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80152832", "ta_code_b": "pe00094019", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80025480", "ta_code_b": "pe80035704", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80192183", "ta_code_b": "pe80005142", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80216239", "ta_code_b": "pe80216241", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80035770", "ta_code_b": "pe80065341", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80216249", "ta_code_b": "pe80216247", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80216240", "ta_code_b": "pe80216241", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80013596", "ta_code_b": "pe80124762", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80111365", "ta_code_b": "pe00119315", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80056270", "ta_code_b": "pe80034434", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80023810", "ta_code_b": "pe80049509", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80026423", "ta_code_b": "pe80008093", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00094621", "ta_code_b": "pe80189926", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80106172", "ta_code_b": "pe80197736", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80033220", "ta_code_b": "pe80033212", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80033212", "ta_code_b": "pe80033218", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80033217", "ta_code_b": "pe80033212", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80033212", "ta_code_b": "pe80033216", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80060499", "ta_code_b": "pe80185153", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80022253", "ta_code_b": "pe00011398", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80025280", "ta_code_b": "pe80056809", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80005142", "ta_code_b": "pe80087401", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80045221", "ta_code_b": "pe80045223", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80029561", "ta_code_b": "pe80029566", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80055463", "ta_code_b": "pe80070423", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80089194", "ta_code_b": "pe80083236", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80013333", "ta_code_b": "pe80034197", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80034095", "ta_code_b": "pe80034093", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80030642", "ta_code_b": "pe80030630", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80030640", "ta_code_b": "pe80030643", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80030644", "ta_code_b": "pe80030643", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80030639", "ta_code_b": "pe80030643", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80030641", "ta_code_b": "pe80030643", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80080220", "ta_code_b": "pe00076993", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80216201", "ta_code_b": "pe80216198", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80153764", "ta_code_b": "pe80160823", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80012341", "ta_code_b": "pe80027189", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80137981", "ta_code_b": "pe80040754", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80009818", "ta_code_b": "pe80009817", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80012337", "ta_code_b": "pe80027189", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80005314", "ta_code_b": "pe00022949", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80113498", "ta_code_b": "pe80186696", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80034197", "ta_code_b": "pe80028958", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80129924", "ta_code_b": "pe80099524", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80048579", "ta_code_b": "pe80070901", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80034096", "ta_code_b": "pe80034093", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80024917", "ta_code_b": "pe80013245", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80092885", "ta_code_b": "pe80088303", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80010675", "ta_code_b": "pe80010674", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80111441", "ta_code_b": "pe80091929", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80034264", "ta_code_b": "pe80034248", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80158087", "ta_code_b": "pe80086593", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80052850", "ta_code_b": "pe00084464", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80052740", "ta_code_b": "pe80010683", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80216203", "ta_code_b": "pe80216204", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80216190", "ta_code_b": "pe80100801", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80215795", "ta_code_b": "pe80215796", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00123383", "ta_code_b": "pe80137189", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80212677", "ta_code_b": "pe80114350", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80163445", "ta_code_b": "pe80216465", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80189947", "ta_code_b": "pe80163184", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80006638", "ta_code_b": "pe80006639", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80137330", "ta_code_b": "pe80105960", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80060961", "ta_code_b": "pe80093195", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80064592", "ta_code_b": "pe80064591", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80129215", "ta_code_b": "pe80050758", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80025474", "ta_code_b": "pe80025465", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00071267", "ta_code_b": "pe80001981", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80029574", "ta_code_b": "pe80064592", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe00135728", "ta_code_b": "pe80159267", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe00043743", "ta_code_b": "pe00027067", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80073724", "ta_code_b": "pe00021218", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80140702", "ta_code_b": "pe00113921", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80156419", "ta_code_b": "pe80114469", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80166225", "ta_code_b": "pe80112137", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80210265", "ta_code_b": "pe80190724", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00012094", "ta_code_b": "pe80007240", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80068136", "ta_code_b": "pe80025465", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80001105", "ta_code_b": "pe80001104", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80014859", "ta_code_b": "pe80056374", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80069254", "ta_code_b": "pe80083393", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe00087648", "ta_code_b": "pe80105960", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80030470", "ta_code_b": "pe80030469", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80035516", "ta_code_b": "pe80035517", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80034250", "ta_code_b": "pe80034258", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80042012", "ta_code_b": "pe80141246", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80141246", "ta_code_b": "pe80141245", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80081316", "ta_code_b": "pe80079901", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00011081", "ta_code_b": "pe80043235", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80001275", "ta_code_b": "pe80025225", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80129437", "ta_code_b": "pe80030741", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80037513", "ta_code_b": "pe80037515", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80208025", "ta_code_b": "pe80013390", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80157473", "ta_code_b": "pe80210471", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80028900", "ta_code_b": "pe00048103", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80157465", "ta_code_b": "pe80070898", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80028146", "ta_code_b": "pe80028144", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80166114", "ta_code_b": "pe80017980", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80028872", "ta_code_b": "pe00043619", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80078199", "ta_code_b": "pe00106106", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80015321", "ta_code_b": "pe80004349", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80081742", "ta_code_b": "pe80073577", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80037514", "ta_code_b": "pe80037515", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80169185", "ta_code_b": "pe80154812", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80205326", "ta_code_b": "pe80190238", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00020339", "ta_code_b": "pe80121100", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80026997", "ta_code_b": "pe80011195", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80013390", "ta_code_b": "pe80027461", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80010803", "ta_code_b": "pe80028144", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80033048", "ta_code_b": "pe80048255", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80030613", "ta_code_b": "pe80068435", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80030612", "ta_code_b": "pe80068435", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80084957", "ta_code_b": "pe80084956", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80056269", "ta_code_b": "pe80034432", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80012624", "ta_code_b": "pe80027241", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00048946", "ta_code_b": "pe80008019", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80084958", "ta_code_b": "pe80084959", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80063387", "ta_code_b": "pe80144163", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80046130", "ta_code_b": "pe80046132", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80046131", "ta_code_b": "pe80046132", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe00030532", "ta_code_b": "pe80014806", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80113563", "ta_code_b": "pe80001554", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80030254", "ta_code_b": "pe80043401", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80004772", "ta_code_b": "pe80025865", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80129656", "ta_code_b": "pe80129658", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe00010036", "ta_code_b": "pe80189723", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80109859", "ta_code_b": "pe80181764", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe00077540", "ta_code_b": "pe80099356", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80216141", "ta_code_b": "pe80100793", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80037280", "ta_code_b": "pe80072176", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80098739", "ta_code_b": "pe80125349", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80044039", "ta_code_b": "pe80030601", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80004510", "ta_code_b": "pe80019225", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80076614", "ta_code_b": "pe80041305", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80216146", "ta_code_b": "pe80100793", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe00045792", "ta_code_b": "pe80210752", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80216934", "ta_code_b": "pe80216935", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe00073122", "ta_code_b": "pe00084121", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80033506", "ta_code_b": "pe80033519", "verdict": "CORRECTLY_SEPARATE", "reason": "Different regional variant"}
+{"ta_code_a": "pe80033506", "ta_code_b": "pe80033479", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80033215", "ta_code_b": "pe80033233", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80068425", "ta_code_b": "pe80030609", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80030624", "ta_code_b": "pe80030610", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe00132383", "ta_code_b": "pe80168818", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80162471", "ta_code_b": "pe00134429", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00023010", "ta_code_b": "pe80016851", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80033787", "ta_code_b": "pe80033772", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80033807", "ta_code_b": "pe80033772", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80120636", "ta_code_b": "pe80113872", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80034085", "ta_code_b": "pe80034095", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80030568", "ta_code_b": "pe80061668", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80003214", "ta_code_b": "pe80154049", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80056467", "ta_code_b": "pe00015067", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80002884", "ta_code_b": "pe80002883", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80119547", "ta_code_b": "pe00096433", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80155150", "ta_code_b": "pe80216244", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80135396", "ta_code_b": "pe80119578", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80004383", "ta_code_b": "pe00027357", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80085793", "ta_code_b": "pe80119578", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80027993", "ta_code_b": "pe80213157", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80013327", "ta_code_b": "pe80013328", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe00048085", "ta_code_b": "pe80026309", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80158229", "ta_code_b": "pe80035095", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80033504", "ta_code_b": "pe80033484", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80033504", "ta_code_b": "pe80033488", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80033503", "ta_code_b": "pe80033484", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80033503", "ta_code_b": "pe80033488", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80034095", "ta_code_b": "pe80034096", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80047484", "ta_code_b": "pe80026751", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80032518", "ta_code_b": "pe80164278", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80002770", "ta_code_b": "pe00041955", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80002639", "ta_code_b": "pe80025495", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80123212", "ta_code_b": "pe00117128", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe00015524", "ta_code_b": "pe80031033", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80062324", "ta_code_b": "pe80069153", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80051418", "ta_code_b": "pe80031033", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80155261", "ta_code_b": "pe80120829", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80091682", "ta_code_b": "pe00089348", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80044064", "ta_code_b": "pe80030625", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80035355", "ta_code_b": "pe80035356", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80066511", "ta_code_b": "pe80070452", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80030017", "ta_code_b": "pe80030015", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80084322", "ta_code_b": "pe80084321", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80043422", "ta_code_b": "pe80014736", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80017643", "ta_code_b": "pe80011925", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80010603", "ta_code_b": "pe80176279", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80070910", "ta_code_b": "pe80066769", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00010149", "ta_code_b": "pe80023185", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80047822", "ta_code_b": "pe80066526", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80072278", "ta_code_b": "pe80044956", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe00034476", "ta_code_b": "pe80036832", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80070089", "ta_code_b": "pe80070088", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80068393", "ta_code_b": "pe80030551", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80069502", "ta_code_b": "pe80069501", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80143046", "ta_code_b": "pe80153857", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00067133", "ta_code_b": "pe80056699", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80084312", "ta_code_b": "pe00047598", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80148424", "ta_code_b": "pe80162106", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80216158", "ta_code_b": "pe80216157", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80216158", "ta_code_b": "pe80216156", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80216156", "ta_code_b": "pe80216157", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80114305", "ta_code_b": "pe80114306", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80040216", "ta_code_b": "pe80016416", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80041305", "ta_code_b": "pe80129630", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80209460", "ta_code_b": "pe80006541", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80172704", "ta_code_b": "pe00121240", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00030062", "ta_code_b": "pe80045655", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80064591", "ta_code_b": "pe80029560", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80029574", "ta_code_b": "pe80029560", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80032397", "ta_code_b": "pe80032396", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80033810", "ta_code_b": "pe80049528", "verdict": "SHOULD_MERGE", "reason": "Same core brand (RIPLEY)"}
+{"ta_code_a": "pe80033810", "ta_code_b": "pe80033805", "verdict": "SHOULD_MERGE", "reason": "Same core brand (RIPLEY)"}
+{"ta_code_a": "pe80033807", "ta_code_b": "pe80033816", "verdict": "SHOULD_MERGE", "reason": "Same core brand (RIPLEY)"}
+{"ta_code_a": "pe80033787", "ta_code_b": "pe80033816", "verdict": "SHOULD_MERGE", "reason": "Same core brand (RIPLEY)"}
+{"ta_code_a": "pe80010445", "ta_code_b": "pe80019873", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80066938", "ta_code_b": "pe80033586", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80081392", "ta_code_b": "pe80002466", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80081392", "ta_code_b": "pe80094351", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00102231", "ta_code_b": "pe80074731", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80034054", "ta_code_b": "pe80056117", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80043186", "ta_code_b": "pe80043189", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80064786", "ta_code_b": "pe80067653", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80153138", "ta_code_b": "pe00012501", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80026034", "ta_code_b": "pe80216175", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80030659", "ta_code_b": "pe80044113", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80114010", "ta_code_b": "pe80120738", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80216175", "ta_code_b": "pe80054649", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80217157", "ta_code_b": "pe80017969", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80033811", "ta_code_b": "pe80033815", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80026876", "ta_code_b": "pe80010574", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80032160", "ta_code_b": "pe80046723", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80026978", "ta_code_b": "pe00019769", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80039065", "ta_code_b": "pe80191504", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80165157", "ta_code_b": "pe80165155", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80165471", "ta_code_b": "pe80210575", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80033811", "ta_code_b": "pe80049512", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80033811", "ta_code_b": "pe80033814", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80026980", "ta_code_b": "pe00019769", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80057097", "ta_code_b": "pe00012703", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80197239", "ta_code_b": "pe80096616", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80031410", "ta_code_b": "pe80031411", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80155150", "ta_code_b": "pe80015853", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80040419", "ta_code_b": "pe80009926", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80071196", "ta_code_b": "pe80033564", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80121180", "ta_code_b": "pe80152697", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80011696", "ta_code_b": "pe80151123", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80012984", "ta_code_b": "pe80056080", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80032552", "ta_code_b": "pe80032550", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80048252", "ta_code_b": "pe80048258", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80011199", "ta_code_b": "pe80063741", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00107880", "ta_code_b": "pe80087853", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80046052", "ta_code_b": "pe80031815", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80163152", "ta_code_b": "pe00011803", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80137714", "ta_code_b": "pe00069778", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80207158", "ta_code_b": "pe80191698", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80031355", "ta_code_b": "pe80120781", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80031978", "ta_code_b": "pe80031998", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80064082", "ta_code_b": "pe80071274", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80031202", "ta_code_b": "pe80062194", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80030807", "ta_code_b": "pe80044361", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80049931", "ta_code_b": "pe80049905", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80213620", "ta_code_b": "pe80136316", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80198765", "ta_code_b": "pe80213488", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80048679", "ta_code_b": "pe80111920", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80063740", "ta_code_b": "pe80157350", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80165519", "ta_code_b": "pe80157695", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80038779", "ta_code_b": "pe80011722", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80156311", "ta_code_b": "pe80016562", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80165234", "ta_code_b": "pe80140642", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe00121014", "ta_code_b": "pe80104201", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00122055", "ta_code_b": "pe80152031", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80042621", "ta_code_b": "pe80042615", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80030624", "ta_code_b": "pe80030609", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80058313", "ta_code_b": "pe80057102", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80030936", "ta_code_b": "pe80030939", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80155154", "ta_code_b": "pe00134543", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80030941", "ta_code_b": "pe80030939", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe00017933", "ta_code_b": "pe80026229", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80204810", "ta_code_b": "pe80163060", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80123803", "ta_code_b": "pe00068821", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00052630", "ta_code_b": "pe00017933", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80041938", "ta_code_b": "pe80005135", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80078566", "ta_code_b": "pe80015578", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80058435", "ta_code_b": "pe80155316", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80037339", "ta_code_b": "pe80015342", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80035484", "ta_code_b": "pe80005928", "verdict": "CORRECTLY_SEPARATE", "reason": "Different regional variant"}
+{"ta_code_a": "pe80035484", "ta_code_b": "pe80005926", "verdict": "CORRECTLY_SEPARATE", "reason": "Different regional variant"}
+{"ta_code_a": "pe00099908", "ta_code_b": "pe80189557", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80078566", "ta_code_b": "pe80005135", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80108298", "ta_code_b": "pe80044176", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80025621", "ta_code_b": "pe00015959", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80098362", "ta_code_b": "pe80002448", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80037005", "ta_code_b": "pe80002512", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80098362", "ta_code_b": "pe80088881", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe00010636", "ta_code_b": "pe80157350", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80052812", "ta_code_b": "pe80017315", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80066072", "ta_code_b": "pe80069682", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80054864", "ta_code_b": "pe80069496", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80030644", "ta_code_b": "pe80030630", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80030641", "ta_code_b": "pe80030630", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80030640", "ta_code_b": "pe80030630", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80030639", "ta_code_b": "pe80030630", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80033795", "ta_code_b": "pe80033772", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80033822", "ta_code_b": "pe80033813", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80033262", "ta_code_b": "pe80033261", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80018198", "ta_code_b": "pe00017405", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80033807", "ta_code_b": "pe80033810", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80033787", "ta_code_b": "pe80033810", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80012141", "ta_code_b": "pe80017718", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80121070", "ta_code_b": "pe80063227", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80096434", "ta_code_b": "pe80153712", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80029606", "ta_code_b": "pe80056661", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe00118694", "ta_code_b": "pe80189018", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00081422", "ta_code_b": "pe80051543", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80137182", "ta_code_b": "pe80045235", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80137182", "ta_code_b": "pe00011510", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80010947", "ta_code_b": "pe80017319", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80020157", "ta_code_b": "pe80027374", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80010947", "ta_code_b": "pe80010950", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80020157", "ta_code_b": "pe80028819", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80074741", "ta_code_b": "pe80171381", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80166815", "ta_code_b": "pe80104976", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80025572", "ta_code_b": "pe00025909", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80031986", "ta_code_b": "pe80032009", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80030625", "ta_code_b": "pe80030626", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80031985", "ta_code_b": "pe80032009", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80031998", "ta_code_b": "pe80032009", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80084959", "ta_code_b": "pe80084956", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80033772", "ta_code_b": "pe80033815", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80033772", "ta_code_b": "pe80033814", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80070473", "ta_code_b": "pe80070474", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80013333", "ta_code_b": "pe80028958", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00026428", "ta_code_b": "pe00125829", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80198360", "ta_code_b": "pe80130329", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80027982", "ta_code_b": "pe80026825", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80027983", "ta_code_b": "pe80026825", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80033575", "ta_code_b": "pe80012243", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80164975", "ta_code_b": "pe80157228", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80036222", "ta_code_b": "pe80026825", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80119630", "ta_code_b": "pe80216177", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80119630", "ta_code_b": "pe80216182", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80119630", "ta_code_b": "pe80216192", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80041936", "ta_code_b": "pe80015576", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00062394", "ta_code_b": "pe00034330", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80037002", "ta_code_b": "pe80002476", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80018821", "ta_code_b": "pe80061073", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80094213", "ta_code_b": "pe00048295", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80120871", "ta_code_b": "pe80099259", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80152336", "ta_code_b": "pe80041364", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80216182", "ta_code_b": "pe80216192", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80026034", "ta_code_b": "pe80005821", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80005821", "ta_code_b": "pe80054649", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80216185", "ta_code_b": "pe80005821", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe00020396", "ta_code_b": "pe80152198", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80148504", "ta_code_b": "pe80116017", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80216177", "ta_code_b": "pe80216182", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80216177", "ta_code_b": "pe80216192", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00135717", "ta_code_b": "pe00062643", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80027351", "ta_code_b": "pe80027353", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80165880", "ta_code_b": "pe80038977", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00068982", "ta_code_b": "pe00062643", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00087591", "ta_code_b": "pe00034330", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80069317", "ta_code_b": "pe80031546", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80049683", "ta_code_b": "pe80049690", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80045077", "ta_code_b": "pe80045075", "verdict": "CORRECTLY_SEPARATE", "reason": "Very low token overlap"}
+{"ta_code_a": "pe80045077", "ta_code_b": "pe80045074", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80033807", "ta_code_b": "pe80033795", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80033787", "ta_code_b": "pe80033795", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80033525", "ta_code_b": "pe80033511", "verdict": "SHOULD_MERGE", "reason": "Same core brand (SODIMAC)"}
+{"ta_code_a": "pe80032779", "ta_code_b": "pe80032780", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80047774", "ta_code_b": "pe80032780", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80056270", "ta_code_b": "pe80034435", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80013594", "ta_code_b": "pe80124762", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00016458", "ta_code_b": "pe80021765", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80018152", "ta_code_b": "pe80124762", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80129049", "ta_code_b": "pe80096173", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe00020905", "ta_code_b": "pe80151945", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80209496", "ta_code_b": "pe80031638", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00017219", "ta_code_b": "pe80045882", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00014906", "ta_code_b": "pe80022767", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80005153", "ta_code_b": "pe80005155", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80005153", "ta_code_b": "pe00011137", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe80005153", "ta_code_b": "pe80020899", "verdict": "SHOULD_MERGE", "reason": "Moderate token overlap - likely same firm"}
+{"ta_code_a": "pe00014906", "ta_code_b": "pe80039990", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80146793", "ta_code_b": "pe80121890", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80109179", "ta_code_b": "pe80057622", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80217306", "ta_code_b": "pe80217305", "verdict": "UNSURE", "reason": "Low coverage - needs review"}
+{"ta_code_a": "pe80027377", "ta_code_b": "pe80100475", "verdict": "SHOULD_MERGE", "reason": "Same core brand (RIPLEY)"}
+{"ta_code_a": "pe80021206", "ta_code_b": "pe00075159", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}
+{"ta_code_a": "pe80100478", "ta_code_b": "pe80158102", "verdict": "SHOULD_MERGE", "reason": "Suffix variation or high token coverage"}

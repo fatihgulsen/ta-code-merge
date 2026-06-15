@@ -1,0 +1,85 @@
+{"master_ta_code":"ar80088850","variant_ta_code":"ar00086945","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"PHILIPS DOMESTIC APPLIANCES with suffix variation (ARGENTINA S.A. vs AR)","country_leak":false}
+{"master_ta_code":"ar80088949","variant_ta_code":"ar00015755","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"REGIONAL TRADE suffix variation (S.A.U. vs SA)","country_leak":false}
+{"master_ta_code":"ar80089218","variant_ta_code":"ar80074313","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"THE SHIPPER vs SHIPPER - adds descriptor article THE","country_leak":false}
+{"master_ta_code":"ar80089288","variant_ta_code":"ar80019844","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"TROPICAL ARGENTINA same core name, suffix variation (SRL) and location truncation","country_leak":false}
+{"master_ta_code":"ar80089290","variant_ta_code":"ar80011401","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"TROPICAL ARGENTINA SRL same firm, punctuation variation","country_leak":false}
+{"master_ta_code":"ar80089337","variant_ta_code":"ar80130292","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"VARTIA PHARMA PTE, LTD variation","country_leak":false}
+{"master_ta_code":"ar80089420","variant_ta_code":"ar80019563","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"YERSIPLAST SA, case and punctuation variation","country_leak":false}
+{"master_ta_code":"ar80089437","variant_ta_code":"ar80011198","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"ROSENARG SRL, numeric prefix removal but same firm","country_leak":false}
+{"master_ta_code":"ar80089900","variant_ta_code":"ar80025537","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"INDUSTRIES LEAR DE ARGENTINA vs IND LEAR DE ARGENTINA, abbreviation","country_leak":false}
+{"master_ta_code":"ar80089955","variant_ta_code":"ar00081651","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"JUAN BLAS GAONA, name word order reversal (surname first in variant)","country_leak":false}
+{"master_ta_code":"ar80090098","variant_ta_code":"ar00086831","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"NEW STAR INTERNACIONAL SRL, punctuation variation","country_leak":false}
+{"master_ta_code":"ar80090245","variant_ta_code":"ar80113597","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"RUHRPUMPEN INC vs RUHRPUMPEN GMBH - different legal entities (INC vs GMBH)","country_leak":false}
+{"master_ta_code":"ar80090361","variant_ta_code":"ar80090362","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"TINACOS Y TANQUES DE CENTRO AMERICA SA, punctuation variation","country_leak":false}
+{"master_ta_code":"ar80090484","variant_ta_code":"ar00085544","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ALMABUDHA SRL, punctuation variation","country_leak":false}
+{"master_ta_code":"ar80092259","variant_ta_code":"ar80004349","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"IMPSA SA vs IMPSA, same company suffix variation","country_leak":false}
+{"master_ta_code":"ar80092260","variant_ta_code":"ar80020631","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"IN ORDER TO vs TO ORDER OF - different word order and meaning","country_leak":false}
+{"master_ta_code":"ar80092265","variant_ta_code":"ar00100762","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"INDUSTRIAL AND vs INDUSTRIAL D SA - truncated and different core","country_leak":false}
+{"master_ta_code":"ar80092357","variant_ta_code":"ar80018390","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"SAMSUNG ELECTRONICS ARGENTINA SA, removes person name prefix","country_leak":false}
+{"master_ta_code":"ar80092396","variant_ta_code":"ar80077345","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"MORIXE HNOS vs MORIXE HERMANOS - abbreviation, same company","country_leak":false}
+{"master_ta_code":"ar80092455","variant_ta_code":"ar00019206","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"PRECOR S.A. vs PRECOR S.A.I.C. - different legal form","country_leak":false}
+{"master_ta_code":"ar80093712","variant_ta_code":"ar00066249","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"CFS ARGENTINA SA, case variation","country_leak":false}
+{"master_ta_code":"ar80094001","variant_ta_code":"ar80104611","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"GFT UNIQUE TOYS LTD/CAFFARO HNOS, slash notation variation","country_leak":false}
+{"master_ta_code":"ar80094380","variant_ta_code":"ar80138139","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"PAN AMERICAN ENERGY SL SUCURSAL AR/ARG - branch variation","country_leak":false}
+{"master_ta_code":"ar80095761","variant_ta_code":"ar80018416","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"TECNONUCLEAR vs TECNONUCLEAR SA, suffix addition","country_leak":false}
+{"master_ta_code":"ar80095907","variant_ta_code":"ar80018142","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"ALICORP ARGENTINA SCA, location suffix truncation","country_leak":false}
+{"master_ta_code":"ar80096118","variant_ta_code":"ar80085008","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"CODERCO SA vs CODERCO, suffix variation","country_leak":false}
+{"master_ta_code":"ar80096603","variant_ta_code":"ar80044097","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"LEDEVIT SRL, address suffix truncation","country_leak":false}
+{"master_ta_code":"ar80096823","variant_ta_code":"ar00015571","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PROTEC ASOCIADOS, suffix addition","country_leak":false}
+{"master_ta_code":"ar80096899","variant_ta_code":"ar80140283","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"SAINT GOBAIN ABRASIVOS Y ADHESIVOS, suffix removal","country_leak":false}
+{"master_ta_code":"ar80097137","variant_ta_code":"ar00017198","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"WENLEN SA, punctuation variation","country_leak":false}
+{"master_ta_code":"ar80097279","variant_ta_code":"ar00021142","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"COOPERATIVA DE TRABAJO CRISTAL AVELLANEDA LTDA, case variation","country_leak":false}
+{"master_ta_code":"ar80097612","variant_ta_code":"ar80039007","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"IMPORTADORA Y EXPORTADORA DE LA PATAGONIA, minor word variation (& vs Y)","country_leak":false}
+{"master_ta_code":"ar80097736","variant_ta_code":"ar80011527","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"AGROFIN AGROCOMMODITIES, suffix addition","country_leak":false}
+{"master_ta_code":"ar80098400","variant_ta_code":"ar80116703","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"ACCORD PILOT LOGISTICS (THAILAND) COMPANY LTD, parenthetical suffix","country_leak":false}
+{"master_ta_code":"ar80098455","variant_ta_code":"ar80103183","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"AGL GLOBAL LOGISTICS SC vs SA - different legal form code","country_leak":false}
+{"master_ta_code":"ar80098725","variant_ta_code":"ar80098724","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"BASF AGROCHEMICAL, minimal address truncation","country_leak":false}
+{"master_ta_code":"ar80098754","variant_ta_code":"ar80098755","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"BESSIA CENTER, suffix variation","country_leak":false}
+{"master_ta_code":"ar80098795","variant_ta_code":"ar80120695","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"BLU LOGISTICS BRASIL TRANSPORTES, partial suffix truncation","country_leak":false}
+{"master_ta_code":"ar80098803","variant_ta_code":"ar80069361","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"BODEGAS CHANDON, suffix addition","country_leak":false}
+{"master_ta_code":"ar80098835","variant_ta_code":"ar80076437","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"BRIDGESTONE FIRESTONE, suffix truncation","country_leak":false}
+{"master_ta_code":"ar80098890","variant_ta_code":"ar80098891","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"CALCOMEX SRL CUIT, spacing/punctuation in CUIT","country_leak":false}
+{"master_ta_code":"ar80098930","variant_ta_code":"ar80098927","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"CARIBBEAN LUMBER & HARDWARE, INC removal","country_leak":false}
+{"master_ta_code":"ar80099041","variant_ta_code":"ar00085915","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"CITIC-CONSTRUCTION (ARGENTINA), space variation","country_leak":false}
+{"master_ta_code":"ar80099195","variant_ta_code":"ar80099194","match_type":"FUZZY_PHRASE","verdict":"PLACEHOLDER","reason":"CUIT N. vs CUIT - bare identification number, not firm name","country_leak":false}
+{"master_ta_code":"ar80099231","variant_ta_code":"ar80099230","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"DAIKIN AMERICA INC, c/o address removal","country_leak":false}
+{"master_ta_code":"ar80099249","variant_ta_code":"ar80108669","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"DARWIN LOGISTICS SRL, person name suffix removal","country_leak":false}
+{"master_ta_code":"ar80099311","variant_ta_code":"ar80011649","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"DIMAC, suffix addition","country_leak":false}
+{"master_ta_code":"ar80099436","variant_ta_code":"ar80099437","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"ELECTROLUX PR CORP, location suffix truncation","country_leak":false}
+{"master_ta_code":"ar80099566","variant_ta_code":"ar80099567","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"FAM CARGO BR LOGISTICA, abbreviation variation INT vs INTERNACIONAL","country_leak":false}
+{"master_ta_code":"ar80099605","variant_ta_code":"ar00057037","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"FERNANDO JAVIER BELLUSCIO, name word order reversal","country_leak":false}
+{"master_ta_code":"ar80099740","variant_ta_code":"ar80099741","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"GASTAB SA, punctuation variation","country_leak":false}
+{"master_ta_code":"ar80099752","variant_ta_code":"ar00012999","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"GEMETEC SA, punctuation variation","country_leak":false}
+{"master_ta_code":"ar80099758","variant_ta_code":"ar80086700","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"GENERAL MOTORS CHILE, suffix removal","country_leak":false}
+{"master_ta_code":"ar80099781","variant_ta_code":"ar80099780","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"GIBAUT HNOS vs HERMANOS, abbreviation and truncation","country_leak":false}
+{"master_ta_code":"ar80099812","variant_ta_code":"ar80049706","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"GLOBE METALES SA vs GLOBE METALES SRL - different legal form","country_leak":false}
+{"master_ta_code":"ar80099949","variant_ta_code":"ar80104806","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"HYOSUNG CORPORATION vs CORP, abbreviation","country_leak":false}
+{"master_ta_code":"ar80099989","variant_ta_code":"ar80139598","match_type":"STRIPPED_EXACT","verdict":"UNSURE","reason":"INC SA CUYO address vs partial address - too fragmented to confirm","country_leak":false}
+{"master_ta_code":"ar80100177","variant_ta_code":"ar00013863","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"JUPLAST SA, punctuation variation","country_leak":false}
+{"master_ta_code":"ar80100185","variant_ta_code":"ar80136303","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"KALCIYAN TECNOLOGIA DEL VIDRIO, suffix removal","country_leak":false}
+{"master_ta_code":"ar80100444","variant_ta_code":"ar80100445","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"MADERAS 3C, INC suffix addition","country_leak":false}
+{"master_ta_code":"ar80100482","variant_ta_code":"ar80069898","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"MARFREEZE TRADING GROUP SL, spacing in SL","country_leak":false}
+{"master_ta_code":"ar80100510","variant_ta_code":"ar80100511","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"MASCARO PORTER vs MASCARO-PORTER, hyphenation variation","country_leak":false}
+{"master_ta_code":"ar80100552","variant_ta_code":"ar80026870","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"MERANOL SAIC vs MERANOL SACI - different legal form abbreviation","country_leak":false}
+{"master_ta_code":"ar80100637","variant_ta_code":"ar80136523","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"MULTIBRAX AGENCIAMENTO, truncation","country_leak":false}
+{"master_ta_code":"ar80100756","variant_ta_code":"ar80074214","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"OB GROUP SRL, c/o removal","country_leak":false}
+{"master_ta_code":"ar80100783","variant_ta_code":"ar80100781","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"OMNISPORT, SA DE CV, comma variation","country_leak":false}
+{"master_ta_code":"ar80100848","variant_ta_code":"ar80100847","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PANTOS LOGISTICS AR SA, punctuation variation","country_leak":false}
+{"master_ta_code":"ar80100933","variant_ta_code":"ar80100932","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PLASTEX CORP, suffix truncation","country_leak":false}
+{"master_ta_code":"ar80100940","variant_ta_code":"ar00029908","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PLASTIMI SRL, punctuation variation","country_leak":false}
+{"master_ta_code":"ar80100969","variant_ta_code":"ar80122108","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"POLIMEROS DEL SUR DE SUCESION, minor truncation","country_leak":false}
+{"master_ta_code":"ar80101220","variant_ta_code":"ar00101242","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"RUSSO GUSTAVO ANDRES, exact match","country_leak":false}
+{"master_ta_code":"ar80101325","variant_ta_code":"ar80074302","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"SEA WORLD INC vs SEA WORLD LLC - different legal form","country_leak":false}
+{"master_ta_code":"ar80101456","variant_ta_code":"ar80039007","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"IMPORTADORA Y EXPORTADORA DE LA PATAGONIA, duplicate article","country_leak":false}
+{"master_ta_code":"ar80101469","variant_ta_code":"ar80120249","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"SOLUCIONES EN COMERCIO EXTERIOR, suffix removal","country_leak":false}
+{"master_ta_code":"ar80101513","variant_ta_code":"ar80101512","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"STRYKER (PUERTO RICO OPERATIONS), parenthetical variation","country_leak":false}
+{"master_ta_code":"ar80101581","variant_ta_code":"ar80106598","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"TARGUS SA CUIT, formatting variation","country_leak":false}
+{"master_ta_code":"ar80101593","variant_ta_code":"ar00016569","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"TECNECO FILTERS INT vs INTERNATIONAL, abbreviation","country_leak":false}
+{"master_ta_code":"ar80101689","variant_ta_code":"ar80070316","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"TOP GLOBAL ASSESSORIA ADUANEIRA, suffix addition LTDA","country_leak":false}
+{"master_ta_code":"ar80101711","variant_ta_code":"ar80140443","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"TOYOTA MATERIAL HANDLING MERCOSUR, period/LTDA addition","country_leak":false}
+{"master_ta_code":"ar80101789","variant_ta_code":"ar80101787","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"UNION COMERCIAL DE HONDURAS, suffix removal","country_leak":false}
+{"master_ta_code":"ar80102789","variant_ta_code":"ar00100779","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"INTERGAS ARGENTINA SRL, spacing variation","country_leak":false}
+{"master_ta_code":"ar80102852","variant_ta_code":"ar80119851","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"LEC IPSEP FI UNRC LABORATORIO, partial suffix truncation","country_leak":false}
+{"master_ta_code":"ar80103264","variant_ta_code":"ar80063057","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"ALMAR INTERNACIONAL DE vs ALMAR INTERNATIONAL - different language","country_leak":false}
+{"master_ta_code":"ar80103285","variant_ta_code":"ar00086848","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"ALUFLEX SA vs NR SA - truncated variant unidentifiable","country_leak":false}
+{"master_ta_code":"ar80103834","variant_ta_code":"ar80062794","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"CLARIANT CORP vs BRA - completely different names","country_leak":false}

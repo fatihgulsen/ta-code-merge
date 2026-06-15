@@ -1,0 +1,35 @@
+{
+ "STRIPPED_EXACT": {
+  "SAME": 3477,
+  "UNSURE": 35,
+  "PLACEHOLDER": 6,
+  "DIFF_CONF": 138,
+  "OVERTURN": 188
+ },
+ "SUFFIX_FUZZY": {
+  "SAME": 255,
+  "UNSURE": 10,
+  "PLACEHOLDER": 1,
+  "DIFF_CONF": 120,
+  "OVERTURN": 10
+ },
+ "FUZZY_PHRASE": {
+  "SAME": 465,
+  "UNSURE": 7,
+  "PLACEHOLDER": 4,
+  "DIFF_CONF": 38,
+  "OVERTURN": 24
+ },
+ "TOKEN_COVERAGE": {
+  "SAME": 250,
+  "UNSURE": 2,
+  "PLACEHOLDER": 0,
+  "DIFF_CONF": 17,
+  "OVERTURN": 5
+ },
+ "?": {
+  "SAME": 1,
+  "UNSURE": 0,
+  "PLACEHOLDER": 0
+ }
+}

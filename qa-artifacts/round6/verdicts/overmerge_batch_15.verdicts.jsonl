@@ -1,0 +1,85 @@
+{"master_ta_code":"ar00086969","variant_ta_code":"ar00083125","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL vs S.R.L. - suffix variation","country_leak":false}
+{"master_ta_code":"ar00087046","variant_ta_code":"ar80095613","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA vs Sa - case variation","country_leak":false}
+{"master_ta_code":"ar00087101","variant_ta_code":"ar00083393","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA vs S.A. - suffix variation","country_leak":false}
+{"master_ta_code":"ar00087114","variant_ta_code":"ar00083414","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SAIL WORLD vs SAIL WORLD S.A.S. - suffix addition","country_leak":false}
+{"master_ta_code":"ar00087115","variant_ta_code":"ar80106236","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SAINT-GOBAIN vs SAINT GOBAIN - hyphen vs space","country_leak":false}
+{"master_ta_code":"ar00087141","variant_ta_code":"ar00083485","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SB TECNOLOGIA vs SB TECNOLOGIA S.A.S. - suffix addition","country_leak":false}
+{"master_ta_code":"ar00087216","variant_ta_code":"ar00083622","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SOLARTECH vs SOLARTECH S.A.S. - suffix addition","country_leak":false}
+{"master_ta_code":"ar00087223","variant_ta_code":"ar00041700","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"S.H suffix removed - same persons","country_leak":false}
+{"master_ta_code":"ar00087249","variant_ta_code":"ar00067213","match_type":"TOKEN_COVERAGE","verdict":"DIFFERENT","reason":"SUR TRADE vs TRADING SUR - word order reversed, different entity names","country_leak":false}
+{"master_ta_code":"ar00087268","variant_ta_code":"ar00083736","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"TAVROX vs TAVROX S.A.S. - suffix addition","country_leak":false}
+{"master_ta_code":"ar00087295","variant_ta_code":"ar80122664","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"identical names","country_leak":false}
+{"master_ta_code":"ar00087327","variant_ta_code":"ar00083854","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA vs S.A. - suffix variation","country_leak":false}
+{"master_ta_code":"ar00087380","variant_ta_code":"ar80101866","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"S.R.L. vs SRL - suffix variation","country_leak":false}
+{"master_ta_code":"ar00087391","variant_ta_code":"ar00017126","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL vs S.R.L. - suffix variation","country_leak":false}
+{"master_ta_code":"ar00088703","variant_ta_code":"ar00010236","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"S.A. vs SA - suffix variation","country_leak":false}
+{"master_ta_code":"ar00088740","variant_ta_code":"ar80087527","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ARTES GRAFICAS S.A. vs ARTES GRAFICAS - suffix removed","country_leak":false}
+{"master_ta_code":"ar00088807","variant_ta_code":"ar80002378","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"B & F DECO vs DECO - completely different names (B & F vs DECO only)","country_leak":false}
+{"master_ta_code":"ar00088882","variant_ta_code":"ar00019719","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL vs S.R.L. - suffix variation","country_leak":false}
+{"master_ta_code":"ar00088921","variant_ta_code":"ar00066232","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"CATESUR S.A. vs CATESUR S.R.L. - different legal forms (SA vs SRL)","country_leak":false}
+{"master_ta_code":"ar00088964","variant_ta_code":"ar00059105","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"LA vs EN difference - minor variation in same entity name","country_leak":false}
+{"master_ta_code":"ar00089019","variant_ta_code":"ar00045630","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"DEPAOLI & TROSCE vs DEPAOLI TROSCE S.R.L. - ampersand vs word, suffix added","country_leak":false}
+{"master_ta_code":"ar00089114","variant_ta_code":"ar80121277","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"S.A.I.C. vs SAIC - suffix variation","country_leak":false}
+{"master_ta_code":"ar00089157","variant_ta_code":"ar80093952","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"S.R.L. vs SRL - suffix variation","country_leak":false}
+{"master_ta_code":"ar00089187","variant_ta_code":"ar00048120","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"SA vs S.A. - suffix variation","country_leak":false}
+{"master_ta_code":"ar00089188","variant_ta_code":"ar00100627","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"identical names","country_leak":false}
+{"master_ta_code":"ar00089246","variant_ta_code":"ar80136872","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"GUEVARA SEBASTIAN ALEJANDRO vs SEBASTIAN ALEJANDRO GUEVARA - word order reordered, same person","country_leak":false}
+{"master_ta_code":"ar00089394","variant_ta_code":"ar00071224","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"LARRANAGA vs LARRAÑAGA S.A. - accent difference, suffix added","country_leak":false}
+{"master_ta_code":"ar00089480","variant_ta_code":"ar00014510","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"S.A. vs SA - suffix variation","country_leak":false}
+{"master_ta_code":"ar00089497","variant_ta_code":"ar00027901","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL vs S.R.L. - suffix variation","country_leak":false}
+{"master_ta_code":"ar00089539","variant_ta_code":"ar00028446","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA vs S.A. - suffix variation","country_leak":false}
+{"master_ta_code":"ar00089558","variant_ta_code":"ar00060613","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"NAVALIA S.A. vs NAVALIA S.R.L. - different legal forms (SA vs SRL)","country_leak":false}
+{"master_ta_code":"ar00089584","variant_ta_code":"ar00072309","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"SA vs S.A. - suffix variation","country_leak":false}
+{"master_ta_code":"ar00089609","variant_ta_code":"ar00029335","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"PACKING - WORLD vs PACKING WORLD S.R.L. - hyphen vs space, suffix added","country_leak":false}
+{"master_ta_code":"ar00089622","variant_ta_code":"ar00029558","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL vs S.R.L. - suffix variation","country_leak":false}
+{"master_ta_code":"ar00089710","variant_ta_code":"ar00083254","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL vs S.R.L. - suffix variation","country_leak":false}
+{"master_ta_code":"ar00089713","variant_ta_code":"ar00083267","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"REFRIGERATION QUALITY SERVICE vs REFRIGERATION QUALITY SERVICE S.A. - suffix added","country_leak":false}
+{"master_ta_code":"ar00089721","variant_ta_code":"ar00030823","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL vs S.R.L. - suffix variation","country_leak":false}
+{"master_ta_code":"ar00089727","variant_ta_code":"ar00030935","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL vs S.R.L. - suffix variation","country_leak":false}
+{"master_ta_code":"ar00089887","variant_ta_code":"ar00083803","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA vs S.A. - suffix variation","country_leak":false}
+{"master_ta_code":"ar00089922","variant_ta_code":"ar00083898","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"TUBESTEEL vs TUBESTEEL S.A.S. - suffix addition","country_leak":false}
+{"master_ta_code":"ar00089943","variant_ta_code":"ar00083990","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA vs S.A. - suffix variation","country_leak":false}
+{"master_ta_code":"ar00089990","variant_ta_code":"ar80013033","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"ZASZCZYNSKI MARIO vs MARIO ZASZCZYNSKI - word order reordered, same person","country_leak":false}
+{"master_ta_code":"ar00100181","variant_ta_code":"ar80119206","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"identical names","country_leak":false}
+{"master_ta_code":"ar00100188","variant_ta_code":"ar80127605","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"BARROS SANTIAGO SEBASTIAN vs SANTIAGO SEBASTIAN BARROS - word order variation, same person","country_leak":false}
+{"master_ta_code":"ar00100283","variant_ta_code":"ar80120779","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"identical names","country_leak":false}
+{"master_ta_code":"ar00100343","variant_ta_code":"ar80135790","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"S.R.L. vs SRL - suffix variation","country_leak":false}
+{"master_ta_code":"ar00100518","variant_ta_code":"ar80121104","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"S.A. suffix removed - same entity","country_leak":false}
+{"master_ta_code":"ar00100792","variant_ta_code":"ar00025074","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"ITG S.A. vs I.T.G. S.R.L. - different legal forms + different suffix format","country_leak":false}
+{"master_ta_code":"ar00100819","variant_ta_code":"ar80127410","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"KASEB MILAGROS vs MILAGROS KASEB - word order reordered, same person","country_leak":false}
+{"master_ta_code":"ar00103419","variant_ta_code":"ar80011668","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"S.A. vs S.A. with comma - punctuation variation","country_leak":false}
+{"master_ta_code":"ar80000049","variant_ta_code":"ar00088666","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"A.G.M vs A.G.M. S.A. - suffix addition","country_leak":false}
+{"master_ta_code":"ar80000063","variant_ta_code":"ar80018156","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"A.W. FABER-CASTELL vs AW FABER CASTELL - hyphens and dots removed","country_leak":false}
+{"master_ta_code":"ar80000143","variant_ta_code":"ar80039370","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"S.A. vs no suffix - suffix removed","country_leak":false}
+{"master_ta_code":"ar80000274","variant_ta_code":"ar80013325","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"S.A. vs SA - suffix variation","country_leak":false}
+{"master_ta_code":"ar80000434","variant_ta_code":"ar80026963","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ALTECH PROCESS & CONTROLS DE vs ALTECH PROCESS&CONTROLS - ampersand variation, suffix removed","country_leak":false}
+{"master_ta_code":"ar80000440","variant_ta_code":"ar00010322","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"S.A. vs SA - suffix variation","country_leak":false}
+{"master_ta_code":"ar80000471","variant_ta_code":"ar80135535","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"AMERICANA SHIPPING GROUP S.A. vs AMERICANA SHIPPING GROUP SRL - different legal forms (SA vs SRL)","country_leak":false}
+{"master_ta_code":"ar80000510","variant_ta_code":"ar80093550","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"S.R.L. vs Srl - suffix variation, case variation","country_leak":false}
+{"master_ta_code":"ar80000550","variant_ta_code":"ar00037390","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"ANTONIO CEFERINO AGALIOTIS vs AGALIOTIS ANTONIO CEFERINO - word order reordered, same person","country_leak":false}
+{"master_ta_code":"ar80000567","variant_ta_code":"ar80103334","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"APERAM STAINLESS SERVICES vs APERAM STAINLESS SERVICES AND - incomplete truncation","country_leak":false}
+{"master_ta_code":"ar80000624","variant_ta_code":"ar80000625","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ARGENFLOR vs ARGENFLOR S.A. - suffix addition","country_leak":false}
+{"master_ta_code":"ar80000714","variant_ta_code":"ar80018477","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ARUBRAS, S.A. vs ARUBRAS S.A. - comma removed","country_leak":false}
+{"master_ta_code":"ar80000741","variant_ta_code":"ar80098652","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"ASOCIACION CASA EDITORA SUDAMERICAN vs ASOCIACION CASA EDITORA - SUDAMERICAN suffix removed, possibly different entity","country_leak":false}
+{"master_ta_code":"ar80000776","variant_ta_code":"ar00010596","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ATLAS FARMACEUTICA vs ATLAS FARMACEUTICA SA - suffix addition","country_leak":false}
+{"master_ta_code":"ar80000796","variant_ta_code":"ar80015472","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"S.A. vs SA - suffix variation","country_leak":false}
+{"master_ta_code":"ar80000910","variant_ta_code":"ar80014224","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"COOP.LTDO vs COOP. LTDO - punctuation variation","country_leak":false}
+{"master_ta_code":"ar80000946","variant_ta_code":"ar80000943","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"BANCO SANTANDER RIO S.A. vs BANCO SANTANDER RIO - suffix removed","country_leak":false}
+{"master_ta_code":"ar80000990","variant_ta_code":"ar80011561","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"BAVOSI, S,A vs BAVOSI S.A. - punctuation variation","country_leak":false}
+{"master_ta_code":"ar80001076","variant_ta_code":"ar80012678","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"BGH S.A. vs BGH, S.A. - comma variation","country_leak":false}
+{"master_ta_code":"ar80001122","variant_ta_code":"ar80129702","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"BIOSIDUS S.A. vs BIOSIDUS SAU - different legal forms (SA vs SAU)","country_leak":false}
+{"master_ta_code":"ar80001179","variant_ta_code":"ar80001180","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"BONAFIDE S.A.I.C CUIT vs BONAFIDE S.A.I.C. CUIT - punctuation variation","country_leak":false}
+{"master_ta_code":"ar80001256","variant_ta_code":"ar80001259","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"BROMETAN S. R. L vs BROMETAN, S.R.L. - spacing and punctuation variation","country_leak":false}
+{"master_ta_code":"ar80001274","variant_ta_code":"ar80010064","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA vs S.A. - suffix variation","country_leak":false}
+{"master_ta_code":"ar80001313","variant_ta_code":"ar00102694","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"C.H. ROBINSON WORLDWIDE ARGENTINA S vs C.H. ROBINSON WORLDWIDE ARGENTINA S.A. - suffix completed","country_leak":false}
+{"master_ta_code":"ar80001333","variant_ta_code":"ar80001334","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"CABRA SRL vs CABRA, S.R.L. - punctuation and suffix variation","country_leak":false}
+{"master_ta_code":"ar80001564","variant_ta_code":"ar80013439","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"S.A. vs SA - suffix variation","country_leak":false}
+{"master_ta_code":"ar80001566","variant_ta_code":"ar80023456","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA vs S/A - suffix variation","country_leak":false}
+{"master_ta_code":"ar80001608","variant_ta_code":"ar00011352","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"CERVECERIA Y MALTERIA QUILMES S.A.I.C.A. y G. - punctuation variation in suffix","country_leak":false}
+{"master_ta_code":"ar80001640","variant_ta_code":"ar00102694","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"CH ROBINSON vs C.H. ROBINSON - dots removed, same entity","country_leak":false}
+{"master_ta_code":"ar80001667","variant_ta_code":"ar80056218","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"CHEMO ROMIKIN S.A. vs Chemo ROMIKIN S.A.U. - different legal forms (SA vs SAU)","country_leak":false}
+{"master_ta_code":"ar80001685","variant_ta_code":"ar80019155","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL vs S.R.L. - suffix variation","country_leak":false}
+{"master_ta_code":"ar80001696","variant_ta_code":"ar00033183","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"CHRISTIAN MARCELO TOMAIAN vs TOMAIAN CHRISTIAN MARCELO - word order reordered, same person","country_leak":false}
+{"master_ta_code":"ar80001803","variant_ta_code":"ar80099061","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"CMA CGM ARGENTINA vs CMA CGM ARGENTINA SA - suffix addition","country_leak":false}
+{"master_ta_code":"ar80001805","variant_ta_code":"ar00011475","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"S.A. vs SA - suffix variation","country_leak":false}
+{"master_ta_code":"ar80001835","variant_ta_code":"ar00020697","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA vs S.A. - suffix variation","country_leak":false}

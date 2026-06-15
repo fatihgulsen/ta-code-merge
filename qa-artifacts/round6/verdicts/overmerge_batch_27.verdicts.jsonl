@@ -1,0 +1,85 @@
+{"master_ta_code":"ar80104101","variant_ta_code":"ar80099273","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"LTD vs S.A.C different entity types","country_leak":false}
+{"master_ta_code":"ar80104249","variant_ta_code":"ar00022414","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA/LTD suffix variation same company","country_leak":false}
+{"master_ta_code":"ar80104338","variant_ta_code":"ar80108831","match_type":"TOKEN_COVERAGE","verdict":"DIFFERENT","reason":"INDIA vs TAIWAN origin different","country_leak":false}
+{"master_ta_code":"ar80104591","variant_ta_code":"ar80104593","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"SRL/S.R.L. suffix only","country_leak":false}
+{"master_ta_code":"ar80104655","variant_ta_code":"ar80139786","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Ltda vs exact core same","country_leak":false}
+{"master_ta_code":"ar80104842","variant_ta_code":"ar80004365","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"MARTINEZ suffix removed significant","country_leak":false}
+{"master_ta_code":"ar80105027","variant_ta_code":"ar80120982","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"JOHN DEERE vs DEERE different","country_leak":false}
+{"master_ta_code":"ar80106094","variant_ta_code":"ar00083265","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL/S.R.L. suffix only","country_leak":false}
+{"master_ta_code":"ar80106235","variant_ta_code":"ar80140283","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"LTDA removed, core identical","country_leak":false}
+{"master_ta_code":"ar80106311","variant_ta_code":"ar80112177","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"Name word reorder identical tokens","country_leak":false}
+{"master_ta_code":"ar80106322","variant_ta_code":"ar80081699","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"INTL/INT. SA same","country_leak":false}
+{"master_ta_code":"ar80106331","variant_ta_code":"ar80101365","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"Incomplete name truncation different","country_leak":false}
+{"master_ta_code":"ar80106503","variant_ta_code":"ar80106505","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"NINGBO BRANCH removed branch suffix","country_leak":false}
+{"master_ta_code":"ar80106579","variant_ta_code":"ar80122629","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"DE country removed same","country_leak":false}
+{"master_ta_code":"ar80106580","variant_ta_code":"ar80122629","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"EC country removed same","country_leak":false}
+{"master_ta_code":"ar80106581","variant_ta_code":"ar80122629","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"MX country removed same","country_leak":false}
+{"master_ta_code":"ar80106727","variant_ta_code":"ar00078339","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL/S.R.L. suffix only","country_leak":false}
+{"master_ta_code":"ar80106933","variant_ta_code":"ar00101493","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Exact match same","country_leak":false}
+{"master_ta_code":"ar80106934","variant_ta_code":"ar80012009","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA added to base name","country_leak":false}
+{"master_ta_code":"ar80107180","variant_ta_code":"ar80042615","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"S.A.U./SA punctuation variation","country_leak":false}
+{"master_ta_code":"ar80107592","variant_ta_code":"ar00014132","match_type":"STRIPPED_EXACT","verdict":"DIFFERENT","reason":"SA vs SRL different entity types","country_leak":false}
+{"master_ta_code":"ar80107705","variant_ta_code":"ar00101038","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SAS spacing variation only","country_leak":false}
+{"master_ta_code":"ar80107755","variant_ta_code":"ar00030418","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"S.A.U./S.A. suffix variation","country_leak":false}
+{"master_ta_code":"ar80107833","variant_ta_code":"ar80022381","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"DUMONT SANTOS person name suffix","country_leak":false}
+{"master_ta_code":"ar80108163","variant_ta_code":"ar80108162","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA/S.A. punctuation variation","country_leak":false}
+{"master_ta_code":"ar80108795","variant_ta_code":"ar00012347","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA added to base","country_leak":false}
+{"master_ta_code":"ar80109576","variant_ta_code":"ar80006638","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"ARGENTINA parenthetical removed","country_leak":false}
+{"master_ta_code":"ar80109835","variant_ta_code":"ar80121452","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"QINGDAO SUNSTAR vs H&H different","country_leak":false}
+{"master_ta_code":"ar80110225","variant_ta_code":"ar80009043","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"INC punctuation removed","country_leak":false}
+{"master_ta_code":"ar80110283","variant_ta_code":"ar00101426","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA/S.A. punctuation variation","country_leak":false}
+{"master_ta_code":"ar80110913","variant_ta_code":"ar80111835","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Exact match BV","country_leak":false}
+{"master_ta_code":"ar80111136","variant_ta_code":"ar80018150","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Arcor/ARCOR SAIC same","country_leak":false}
+{"master_ta_code":"ar80111147","variant_ta_code":"ar80009957","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA added to base","country_leak":false}
+{"master_ta_code":"ar80111282","variant_ta_code":"ar80089532","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SAS/SA variation same","country_leak":false}
+{"master_ta_code":"ar80111559","variant_ta_code":"ar80062794","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"BRA not Clariant Brasil","country_leak":false}
+{"master_ta_code":"ar80111752","variant_ta_code":"ar80010276","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA added to base","country_leak":false}
+{"master_ta_code":"ar80111770","variant_ta_code":"ar80099225","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"Name word reorder identical","country_leak":false}
+{"master_ta_code":"ar80111814","variant_ta_code":"ar80076699","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA/SRL variation same core","country_leak":false}
+{"master_ta_code":"ar80112009","variant_ta_code":"ar00012571","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL added person name same","country_leak":false}
+{"master_ta_code":"ar80112676","variant_ta_code":"ar80005157","match_type":"SUFFIX_FUZZY","verdict":"UNSURE","reason":"partner detail removed ambiguous","country_leak":false}
+{"master_ta_code":"ar80112891","variant_ta_code":"ar80121817","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL removed same","country_leak":false}
+{"master_ta_code":"ar80113186","variant_ta_code":"ar00015068","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"OMNILIFE USA vs DE ARGENTINA different","country_leak":false}
+{"master_ta_code":"ar80113830","variant_ta_code":"ar00053293","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"SPECTRE/A.S. prefix removed","country_leak":false}
+{"master_ta_code":"ar80114012","variant_ta_code":"ar00033143","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL added to base","country_leak":false}
+{"master_ta_code":"ar80114269","variant_ta_code":"ar80009797","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA punctuation variation","country_leak":false}
+{"master_ta_code":"ar80114396","variant_ta_code":"ar00036115","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SACIFA/SACIFA same","country_leak":false}
+{"master_ta_code":"ar80114864","variant_ta_code":"ar00067071","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"LTD/SA suffix variation","country_leak":false}
+{"master_ta_code":"ar80115276","variant_ta_code":"ar80016767","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA punctuation variation","country_leak":false}
+{"master_ta_code":"ar80116386","variant_ta_code":"ar80124674","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA spacing variation","country_leak":false}
+{"master_ta_code":"ar80116446","variant_ta_code":"ar80059209","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SAU/SA variation","country_leak":false}
+{"master_ta_code":"ar80116847","variant_ta_code":"ar00080299","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SAS added to base","country_leak":false}
+{"master_ta_code":"ar80117244","variant_ta_code":"ar00100416","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Exact match same","country_leak":false}
+{"master_ta_code":"ar80117860","variant_ta_code":"ar00082394","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA added to base","country_leak":false}
+{"master_ta_code":"ar80119249","variant_ta_code":"ar80001160","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"CUIT identifier removed","country_leak":false}
+{"master_ta_code":"ar80119496","variant_ta_code":"ar00100509","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Exact match same","country_leak":false}
+{"master_ta_code":"ar80119577","variant_ta_code":"ar80018655","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"Ford Motor Company Brasil same","country_leak":false}
+{"master_ta_code":"ar80119650","variant_ta_code":"ar80126030","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"GRI-ALLESET prefix removed","country_leak":false}
+{"master_ta_code":"ar80120023","variant_ta_code":"ar00101071","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Exact match same","country_leak":false}
+{"master_ta_code":"ar80120103","variant_ta_code":"ar00101145","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA punctuation variation","country_leak":false}
+{"master_ta_code":"ar80120241","variant_ta_code":"ar00101306","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Exact match same","country_leak":false}
+{"master_ta_code":"ar80121040","variant_ta_code":"ar00100480","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL added to base","country_leak":false}
+{"master_ta_code":"ar80121154","variant_ta_code":"ar80121155","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"IMPEX punctuation variation","country_leak":false}
+{"master_ta_code":"ar80121240","variant_ta_code":"ar80121239","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Period removed trailing","country_leak":false}
+{"master_ta_code":"ar80121685","variant_ta_code":"ar80121684","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SR/S.R suffix variation","country_leak":false}
+{"master_ta_code":"ar80122452","variant_ta_code":"ar80020860","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SPA/SPA punctuation variation","country_leak":false}
+{"master_ta_code":"ar80122582","variant_ta_code":"ar80122545","match_type":"TOKEN_COVERAGE","verdict":"SAME","reason":"SPA/SNB word reorder same","country_leak":false}
+{"master_ta_code":"ar80122594","variant_ta_code":"ar00101342","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA punctuation variation","country_leak":false}
+{"master_ta_code":"ar80122751","variant_ta_code":"ar80122752","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"SHANGHAI BRANCH removed","country_leak":false}
+{"master_ta_code":"ar80123165","variant_ta_code":"ar80123164","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"COLUMBIA SPORTSWEAR CO removed","country_leak":false}
+{"master_ta_code":"ar80123288","variant_ta_code":"ar00051423","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"JUAN BAUTISTA ALBER removed","country_leak":false}
+{"master_ta_code":"ar80123551","variant_ta_code":"ar80139544","match_type":"SUFFIX_FUZZY","verdict":"DIFFERENT","reason":"SUNGJIN vs COLUMBIA different","country_leak":false}
+{"master_ta_code":"ar80124673","variant_ta_code":"ar80087594","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"Exact match same","country_leak":false}
+{"master_ta_code":"ar80125759","variant_ta_code":"ar00060035","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL added to base","country_leak":false}
+{"master_ta_code":"ar80125799","variant_ta_code":"ar80134860","match_type":"FUZZY_PHRASE","verdict":"DIFFERENT","reason":"Address variant different","country_leak":false}
+{"master_ta_code":"ar80126047","variant_ta_code":"ar00047076","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA added to base","country_leak":false}
+{"master_ta_code":"ar80126212","variant_ta_code":"ar80014542","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL added to base","country_leak":false}
+{"master_ta_code":"ar80126266","variant_ta_code":"ar00082107","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA/SAS variation same","country_leak":false}
+{"master_ta_code":"ar80126357","variant_ta_code":"ar80137934","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"S suffix variation same","country_leak":false}
+{"master_ta_code":"ar80126604","variant_ta_code":"ar80032761","match_type":"SUFFIX_FUZZY","verdict":"SAME","reason":"Address suffix removed same","country_leak":false}
+{"master_ta_code":"ar80126878","variant_ta_code":"ar80134719","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SA added to base","country_leak":false}
+{"master_ta_code":"ar80126972","variant_ta_code":"ar00080379","match_type":"STRIPPED_EXACT","verdict":"SAME","reason":"SRL/SAS variation same","country_leak":false}
+{"master_ta_code":"ar80127060","variant_ta_code":"ar80027250","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"Encoding variation same","country_leak":false}
+{"master_ta_code":"ar80127062","variant_ta_code":"ar80127056","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"DE word variation same","country_leak":false}
+{"master_ta_code":"ar80127063","variant_ta_code":"ar80127056","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"DE word variation same","country_leak":false}
+{"master_ta_code":"ar80127065","variant_ta_code":"ar80127064","match_type":"FUZZY_PHRASE","verdict":"SAME","reason":"Punctuation variation same","country_leak":false}

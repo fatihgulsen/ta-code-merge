@@ -499,7 +499,7 @@ def process_all_data() -> None:
     if glue is False:
         raise RuntimeError(
             "ES index'i ESKİ analyzer şemasında (acronym_glue yok). Distinctive-core gate "
-            "yanlış MATCH_NONE üretir → under-merge. Önce reindex: `python es_manager.py --force`."
+            "yanlış MATCH_NONE üretir → under-merge. Önce reindex: `python -m es.manager --force`."
         )
     if glue is None:
         logger.warning("acronym_glue probe belirsiz (ES erişimi?) — reindex yapıldığından emin olun.")

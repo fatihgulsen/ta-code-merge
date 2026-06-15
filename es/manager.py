@@ -447,7 +447,7 @@ def create_index(es: Elasticsearch, force_recreate: bool = False) -> None:
 
 
 # ============================================================================
-# Doğrudan çalıştırılabilir: python es_manager.py [--force]
+# Doğrudan çalıştırılabilir: python -m es.manager [--force]
 # ============================================================================
 if __name__ == "__main__":
     import sys

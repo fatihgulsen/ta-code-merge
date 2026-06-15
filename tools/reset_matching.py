@@ -1,10 +1,10 @@
 """Eşleştirme verilerini sıfırlar: PG match alanlarını NULL'a çeker ve/veya ES index'i yeniden oluşturur.
 
 Kullanım:
-  python reset_matching.py          # PG + ES sıfırla
-  python reset_matching.py --pg     # Yalnızca PG sıfırla
-  python reset_matching.py --es     # Yalnızca ES sıfırla
-  python reset_matching.py --audit  # Yalnızca audit tabloları sıfırla
+  python -m tools.reset_matching          # PG + ES sıfırla
+  python -m tools.reset_matching --pg     # Yalnızca PG sıfırla
+  python -m tools.reset_matching --es     # Yalnızca ES sıfırla
+  python -m tools.reset_matching --audit  # Yalnızca audit tabloları sıfırla
 """
 
 import logging
@@ -132,7 +132,7 @@ if __name__ == "__main__":
         reset_audit_tables()
     else:
         print("Kullanim:")
-        print("  python reset_matching.py          # PG + ES sifirla")
-        print("  python reset_matching.py --pg     # Sadece PG sifirla")
-        print("  python reset_matching.py --es     # Sadece ES sifirla")
-        print("  python reset_matching.py --audit  # Sadece audit tablolarini sifirla")
+        print("  python -m tools.reset_matching          # PG + ES sifirla")
+        print("  python -m tools.reset_matching --pg     # Sadece PG sifirla")
+        print("  python -m tools.reset_matching --es     # Sadece ES sifirla")
+        print("  python -m tools.reset_matching --audit  # Sadece audit tablolarini sifirla")

@@ -107,7 +107,7 @@ def _merge_masters(es: Elasticsearch, primary_id: str, secondary_ids: list[str])
             logger.error(f"Birlestirme hatasi ({sec_id} -> {primary_id}): {e}")
 
 
-# Kullanım: python dedup_reviewer.py [min_master_count]  (varsayılan: 2)
+# Kullanım: python -m dedup.reviewer [min_master_count]  (varsayılan: 2)
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 

@@ -43,6 +43,6 @@ def analyze_mismatches():
         print(f"Error: {e}")
 
 
-# Kullanım: python analyze_mismatches.py  → mismatch_results.txt oluşturur.
+# Kullanım: python -m tools.analyze_mismatches  → mismatch_results.txt oluşturur.
 if __name__ == "__main__":
     analyze_mismatches()

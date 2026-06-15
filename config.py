@@ -135,6 +135,15 @@ ENABLE_INPUT_FILTER = True
 # Refresh-lag penceresinde oluşan within-batch duplikasyonu sistemin kendi içinde kapanır.
 AUTO_DEDUP_PER_BATCH = True
 
+# Dedup SIKLIĞI (perf, 2026-06-15): batch-içi dedup her N batch'te bir koşar (aradaki
+# batch'lerin NEW_MASTER id'leri biriktirilir, N. batch'te topluca deduplike edilir, sonda
+# kalan flush edilir). 1 = her batch (eski davranış). Daha yüksek N → fingerprint
+# aggregation (fielddata, donma kaynağı) daha az koşar. NOT: çok yüksek N'de biriken id
+# listesi ES `terms` sınırına (varsayılan 65536) yaklaşmasın diye güvenlik-cap ile erken
+# flush edilir. Tam-rematch sırasında en pürüzsüz alternatif: AUTO_DEDUP_PER_BATCH=False +
+# rematch sonrası `python dedup_auto_merge.py --apply` (global, restrict'siz, terms-sınırı yok).
+AUTO_DEDUP_EVERY_N_BATCHES = 1
+
 # Dedup fingerprint dejenere-guard eşiği (P-R2-1). Bir fingerprint'in dedup ANAHTARI
 # olabilmesi için EN AZ BİR token'ı bu uzunlukta (karakter) olmalı; aksi halde dejenere
 # sayılıp birleştirilmez (magnet önlenir).

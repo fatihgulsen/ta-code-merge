@@ -31,7 +31,6 @@ from synonym_loader import (
     get_all_legal_suffix_fragments,
     get_article_stopwords,
     get_company_type_tokens,
-    get_country_name_tokens,
     get_geo_stopword_tokens,
     load_synonyms_for_country,
 )

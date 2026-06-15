@@ -10,7 +10,6 @@
 # ============================================================================
 
 import logging
-import re
 from elasticsearch import Elasticsearch
 from synonym_loader import get_all_country_codes
 from core_name import normalize_core

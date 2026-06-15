@@ -36,17 +36,23 @@ Her import satırı 3 biçimde olabilir; üçü de güncellenir:
 
 ---
 
-## Task 0: Baseline — testlerin şu an yeşil olduğunu doğrula
+## Task 0: Baseline — mevcut test durumunu kaydet
 
 **Files:** (yok — yalnızca ölçüm)
+
+> **ÖNEMLİ — baseline temiz DEĞİL.** Refactor'dan ÖNCE ölçülen durum: **192 passed, 1 skipped, 17 failed**. Bu 17 kırık ÖNCEDEN VAR ve bu refactor'ın KAPSAMI DIŞINDADIR — düzeltilmeyecek, ama YENİ kırık da eklenmeyecek:
+> - **12 ×** `tests/test_generate_config.py` — `generate_config` modülü repoda yok (`ModuleNotFoundError`).
+> - **5 ×** `tests/test_main_processor.py` — `test_batch_end_flush_sql_binds_all_5_columns`, `test_all_pg_updates_appends_use_float_score`, `test_pg_update_flush_sql_uses_safe_identifiers`, `test_excluded_input_isolated_not_matched_not_indexed`, `test_per_batch_dedup_invoked_with_batch_master_ids`. Hepsi `patch.object(mp, "ES_REFRESH_INTERVAL", ...)` yapıyor; ama kaynak (`main_processor.py`) `ES_REFRESH_INTERVAL`'i import/kullanmıyor (yalnızca `config.py`'de tanımlı) → `AttributeError`. Bayat testler.
+>
+> **BAŞARI KRİTERİ (tüm tasklar):** `192 passed` korunur; yeni FAIL üretilmez. Task 7'den sonra bu 5 main_processor testi yine aynı `ES_REFRESH_INTERVAL` nedeniyle FAIL kalır (yeni hedef `matching.pipeline` namespace'inde de bu sabit yok) — bu bir regresyon DEĞİLDİR, beklenen pre-existing durumdur.
 
 - [ ] **Step 1: Mevcut test sayısını ve durumunu kaydet**
 
 Run:
 ```bash
-python -m pytest -q
+python -m pytest -q 2>&1 | tail -5
 ```
-Expected: Tüm testler PASS. Geçen test sayısını not al (ör. "203 passed"). Bu sayı tüm tasklarda referans alınacak; düşmemeli.
+Expected: `192 passed, 1 skipped, 17 failed` (yukarıda listelenen pre-existing kırıklar). Referans: **192 passed** düşmemeli.
 
 - [ ] **Step 2: Çalışma ağacının temiz olduğunu doğrula**
 
@@ -623,11 +629,11 @@ Expected: Çıktı boş (hiç `main_processor` referansı kalmadı — yorum sat
 
 Run:
 ```bash
-python -m pytest -q
+python -m pytest -q 2>&1 | tail -8
 ```
-Expected: Task 0'daki sayı kadar PASS (düşme yok, yeni FAIL yok).
+Expected: **`192 passed`** korunur. Kırık sayısı yine **17** (pre-existing): 12 `test_generate_config` + 5 `test_main_processor` `ES_REFRESH_INTERVAL` testi. Bu 5 test Task 7 sonrası `matching.pipeline` hedefiyle de aynı `ES_REFRESH_INTERVAL` nedeniyle FAIL kalır — beklenen, regresyon değil.
 
-Bir test FAIL olursa: o testin hangi fonksiyonu çağırdığını ve hangi namespace'i patch'lediğini kontrol et — patch, fonksiyonun ARANDIĞI namespace'i hedeflemeli (pipeline-resident fonksiyon çağrıları için `matching.pipeline`, doğrudan es_writer/db_io çağrıları için ilgili modül).
+Beklenenden FAZLA FAIL olursa (192 passed düştüyse): o testin hangi fonksiyonu çağırdığını ve hangi namespace'i patch'lediğini kontrol et — patch, fonksiyonun ARANDIĞI namespace'i hedeflemeli (pipeline-resident fonksiyon çağrıları için `matching.pipeline`, doğrudan es_writer/db_io çağrıları için ilgili modül).
 
 - [ ] **Step 7: Commit**
 
@@ -673,9 +679,9 @@ Bulunan eski dosya-adı/komut referanslarını yeni paket yollarına güncelle. 
 Run:
 ```bash
 python -c "import core.core_name, core.input_filter, core.synonym_loader; import es.manager, es.ingest, es.queries, es.transform; import dedup.auto_merge, dedup.reviewer; import matching.db_io, matching.es_writer, matching.pipeline; import main_processor, tools.reset_matching, tools.analyze_mismatches, analysis.detectors; print('ALL IMPORTS OK')"
-python -m pytest -q
+python -m pytest -q 2>&1 | tail -8
 ```
-Expected: `ALL IMPORTS OK` + Task 0'daki test sayısı kadar PASS.
+Expected: `ALL IMPORTS OK` + **`192 passed`** korunur (17 pre-existing FAIL değişmez).
 
 - [ ] **Step 5: Çalışma ağacı temiz mi + nihai yapı**
 

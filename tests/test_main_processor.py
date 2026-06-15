@@ -1163,3 +1163,17 @@ def test_match_records_batch_empty_and_no_stages():
     assert mp.match_records_batch(MagicMock(), [], [_stage("X", 1, 1.0)]) == []
     out = mp.match_records_batch(MagicMock(), [{"raw_name": "A", "country": "MX"}], [])
     assert out == [{"winner": None, "trace": []}]
+
+
+def test_select_winner_no_size_cap_huge_cluster_still_wins():
+    """A4 kararı: boyut tabanlı hard-gate YOK — dev küme (çok variation) yine kazanır.
+    Aynı firmaysa 2M kayıt da birleşmeli; sabit tavan meşru kümeyi bölerdi (under-merge).
+    Mıknatıs ZAYIF KENAR sorunudur (A1/A2 çözer), boyut sorunu değil."""
+    import main_processor as mp
+    huge = {
+        "_id": "m1", "_score": 50.0,
+        "_source": {"master_id": "m1", "variations": [{"name": f"v{i}"} for i in range(5000)]},
+    }
+    stages = [_stage("STRIPPED_EXACT", 1, 1.0)]
+    out = mp._select_winner([{"hits": {"hits": [huge]}}], stages)
+    assert out["winner"] is not None and out["winner"]["master_id"] == "m1"

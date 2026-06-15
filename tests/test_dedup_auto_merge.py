@@ -94,7 +94,9 @@ def test_apply_merge_repoints_pg_with_country_hard_filter_and_merges_es():
     sql_str = str(cur.execute.call_args[0][0])
     params = cur.execute.call_args[0][1]
     assert "UPDATE" in sql_str and "ANY(%s)" in sql_str and "country_code" in sql_str
-    assert params == ("m1", ["m2", "m3"], "MX")
+    # A3: aynı UPDATE ikincil NEW_MASTER anchor'larını AUTO_DEDUP'a demote etmeli
+    assert "match_type" in sql_str and "CASE" in sql_str.upper()
+    assert params == ("m1", "NEW_MASTER", "AUTO_DEDUP", ["m2", "m3"], "MX")
     # ES merge+delete per secondary, with routing
     assert es.update.call_count == 2 and es.delete.call_count == 2
     for c in es.delete.call_args_list:

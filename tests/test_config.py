@@ -46,6 +46,13 @@ def test_suffix_fuzzy_match_type_exists():
     assert config.MatchType.SUFFIX_FUZZY == "SUFFIX_FUZZY"
 
 
+def test_auto_dedup_match_type_exists():
+    """A3: AUTO_DEDUP match_type — fingerprint auto-merge ile birleştirilen ikincil
+    NEW_MASTER anchor'ları bu tipe demote edilir (watch query kör noktası kapanır)."""
+    assert hasattr(config.MatchType, "AUTO_DEDUP")
+    assert config.MatchType.AUTO_DEDUP == "AUTO_DEDUP"
+
+
 def test_suffix_fuzzy_constants_exist():
     assert hasattr(config, "SUFFIX_FUZZY_MIN_SCORE")
     assert hasattr(config, "SUFFIX_FUZZY_SCORE")

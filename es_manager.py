@@ -32,6 +32,7 @@ from synonym_loader import (
     get_article_stopwords,
     get_company_type_tokens,
     get_country_name_tokens,
+    get_geo_stopword_tokens,
     load_synonyms_for_country,
 )
 
@@ -155,6 +156,23 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
         "filter": base_clean_filters + ["synonym_filter_common"],
     }
 
+    # ── Geo/ülke-adı stop filtresi (tüm ülke countries.json'larından TÜRETİLİR) ──
+    # MX: 'mexico', 'mexicana' vb. Coğrafi token'lar ayırt edici DEĞİL; fingerprint
+    # dedup'unda 'BRAND DE MEXICO' ile 'BRAND'in aynı parmak izine inmesini sağlar
+    # (docs/audit/2026-06-03 §3.3, recall kaybının %27'si geo token farkından).
+    # A1 (2026-06-15): stripped analyzer zincirlerinde de kullanılıyor → 'SAL ARGENTINA'
+    # → ['argentina'] tek-geo-token mıknatısı kırılır. Bu nedenle stripped analyzer
+    # döngüsünden ÖNCE tanımlanmalı (forward-ref). Token listesi countries.json'dan
+    # türetilir — hardcode yok.
+    # Global geo-stop = tüm ülke tam-adları (len>=4), kısa ISO kodları hariç (HIGH-2
+    # review: 'us'/'ge'/'es' marka çakışması). Index (ingest) + search aynı listeyi
+    # kullanır → simetri (HIGH-1). Kaynak countries.json — hardcode yok.
+    geo_tokens_global = sorted(get_geo_stopword_tokens())
+    filters["geo_stopwords_global"] = {
+        "type": "stop",
+        "stopwords": geo_tokens_global,
+    }
+
     # ── Per-country Stripped Search Analyzer ──
     # Her ülke için common + ülke company_types tokenlarından stopword filter.
     # variations_stripped alanının search_analyzer'ı olarak kullanılır.
@@ -170,7 +188,8 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
         analyzers[analyzer_name] = {
             "tokenizer": "standard",
             "char_filter": ["acronym_glue", "punctuation_remover"],
-            "filter": base_clean_filters + [filter_name, "legal_fragment_stop"],
+            # A1: geo_stopwords_global → coğrafi token'lar çekirdek-dışı (geo-mıknatıs fix)
+            "filter": base_clean_filters + [filter_name, "legal_fragment_stop", "geo_stopwords_global"],
         }
 
     # Global fallback stripped analyzer (tüm ülkeler birleşimi)
@@ -183,19 +202,8 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     analyzers["stripped_search_analyzer"] = {
         "tokenizer": "standard",
         "char_filter": ["acronym_glue", "punctuation_remover"],
-        "filter": base_clean_filters + ["generic_stopwords_global", "legal_fragment_stop"],
-    }
-
-    # ── Geo/ülke-adı stop filtresi (tüm ülke countries.json'larından TÜRETİLİR) ──
-    # MX: 'mexico', 'mexicana' vb. Coğrafi token'lar ayırt edici DEĞİL; fingerprint
-    # dedup'unda 'BRAND DE MEXICO' ile 'BRAND'in aynı parmak izine inmesini sağlar
-    # (docs/audit/2026-06-03 §3.3, recall kaybının %27'si geo token farkından).
-    geo_tokens_global = sorted(
-        set().union(*(set(get_country_name_tokens(cc)) for cc in get_all_country_codes()))
-    ) if get_all_country_codes() else []
-    filters["geo_stopwords_global"] = {
-        "type": "stop",
-        "stopwords": geo_tokens_global,
+        # A1: geo_stopwords_global → token_count + _has_distinctive_core geo-only'yi boş görür
+        "filter": base_clean_filters + ["generic_stopwords_global", "legal_fragment_stop", "geo_stopwords_global"],
     }
 
     # ── Fingerprint (sort + dedup) filtresi + güçlendirilmiş fingerprint_analyzer ──

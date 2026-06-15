@@ -206,6 +206,27 @@ def get_country_name_tokens(country_code: str) -> frozenset:
     return frozenset(out)
 
 
+# Geo-stopword tam-ad eşiği: bu uzunluğun ALTINDAKI geo token'lar (2-3 harfli ISO kodları:
+# ar, br, us, ge, mx, arg, bra...) marka token'larıyla çakışır (GE HEALTHCARE, US BANK) →
+# stripping'e GİRMEZ. Tam ülke adları (argentina, brasil, mexico, peru) ayırt edici değildir,
+# mıknatıs sürücüsüdür ve cross-geo marka birleşmesini (GM BRASIL=GM ARGENTINA) sağlar → sıyrılır.
+GEO_STOPWORD_MIN_LEN = 4
+
+
+@lru_cache(maxsize=None)
+def get_geo_stopword_tokens(min_len: int = GEO_STOPWORD_MIN_LEN) -> frozenset:
+    """TÜM ülke countries.json geo token'larının GLOBAL birleşimi, kısa ISO kodları
+    (len < min_len) HARİÇ. Hem ES stripped/fingerprint analyzer'ında (search-time) hem
+    ingest pipeline'ında (index-time) AYNI liste kullanılır → index/search simetrisi
+    (aksi halde isim-ortası geo token'ı match_phrase bitişikliğini bozar). Hardcode yok;
+    countries.json'dan türetilir. Global olduğundan 'GM BRASIL' (AR kaydı) da 'GM
+    ARGENTINA' ile aynı çekirdeğe (['gm']) iner — cross-geo marka politikası."""
+    union: set[str] = set()
+    for cc in get_all_country_codes():
+        union |= {t for t in get_country_name_tokens(cc) if len(t) >= min_len and " " not in t}
+    return frozenset(union)
+
+
 @lru_cache(maxsize=None)
 def get_business_sector_tokens(country_code: str) -> frozenset:
     """Ulkeye ozgu business_sector token'larini doner.

@@ -86,6 +86,25 @@ def test_build_index_settings_global_filter_includes_articles():
     assert "von" in global_filter["stopwords"]
 
 
+def test_stripped_analyzers_include_geo_stop():
+    """A1 (geo-mıknatıs fix): geo_stopwords_global hem global hem per-country
+    stripped_search_analyzer zincirine eklenmeli. Aksi halde 'SAL ARGENTINA' →
+    ['argentina'] tek-geo-token mıknatısı oluşur (es_queries _has_distinctive_core
+    geo-only çekirdeği ayırt edici sanar). Token listesi countries.json'dan türetilir
+    (hardcode yok) — burada yalnızca filtrenin zincire bağlandığını doğrularız."""
+    from es_manager import build_index_settings
+    settings = build_index_settings(es=None)
+    analyzers = settings["settings"]["analysis"]["analyzer"]
+    # Global stripped analyzer geo-stop içermeli
+    assert "geo_stopwords_global" in analyzers["stripped_search_analyzer"]["filter"], \
+        "global stripped_search_analyzer geo_stopwords_global içermeli"
+    # Per-country (AR + ilk birkaç ülke) stripped analyzer geo-stop içermeli
+    for cc in [c.lower() for c in get_all_country_codes()][:3] + ["ar"]:
+        chain = analyzers[f"stripped_search_analyzer_{cc}"]["filter"]
+        assert "geo_stopwords_global" in chain, \
+            f"stripped_search_analyzer_{cc} geo_stopwords_global içermeli"
+
+
 def test_fingerprint_analyzer_normalizes_suffix_and_geo():
     """P0-C/Option-2: variations.fingerprint için özel fingerprint_analyzer —
     yasal-ek + jenerik + geo token'ları düşürür, sonra fingerprint (sort+dedup) uygular.

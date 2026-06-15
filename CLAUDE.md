@@ -64,6 +64,5 @@ pytest tests/test_main_processor.py -v
 
 ## 4. Bilinen Kısıtlamalar & Legacy Notları
 
-*   **`debug_match.py` ve Eksik Python Helper Fonksiyonları**:
-    `debug_match.py` içerisinde `main_processor.py` dosyasından `_clean_labels`, `_tokenize` ve `_symmetric_token_coverage` fonksiyonları import edilmeye çalışılmaktadır. Ancak Sprint 2 kapsamında bu fonksiyonlar `main_processor.py` üzerinden kaldırılmış, temizleme mantığı tamamen ES Ingest Pipeline (`es_ingest.py`) ve Painless scriptlerine devredilmiştir. 
-    *   *Kural*: `debug_match.py` çalıştırılmak istenirse veya benzerlik analizi offline yapılmak istenirse, offline temizlik algoritmaları için `synonym_loader.py` fonksiyonları referans alınmalı ya da ES'deki analyzer çıktısı `analyze` API'si ile çağrılmalıdır.
+*   **Offline benzerlik/eşleşme analizi**:
+    Bir ismin hangi aşamada eşleştiğini görmek veya offline benzerlik analizi yapmak için `analysis/live_probe.py` kullanılır. Temizleme mantığı tamamen ES Ingest Pipeline (`es_ingest.py`) ve Painless scriptlerinde olduğundan, offline çıktı ES `_analyze` API'si ya da `synonym_loader.py` fonksiyonları üzerinden alınır. (Eski `debug_match.py` aracı, kaldırılmış helper'lara bağımlı kaldığı için kaldırıldı.)

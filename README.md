@@ -113,4 +113,3 @@ The engine executes queries stage-by-stage inside a single `msearch` packet. The
 | **Postgres-Only Reset** | `python reset_matching.py --pg` | Reset DB match fields but keep Elasticsearch indices intact. |
 | **ES-Only Reset** | `python reset_matching.py --es` | Reset Elasticsearch indices only. |
 | **Duplicate Reviewer** | `python dedup_reviewer.py` | Interactive console tool to review & merge potential duplicates. |
-| **Debug Mismatch** | `python debug_match.py "Co A" "Co B" -c TR` | Debug two names side-by-side. |

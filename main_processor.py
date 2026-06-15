@@ -63,6 +63,7 @@ from config import (
     ES_REFRESH_INTERVAL,
     ENABLE_INPUT_FILTER,
     AUTO_DEDUP_PER_BATCH,
+    AUTO_DEDUP_EVERY_N_BATCHES,
     MATCH_BATCH_SIZE,
 )
 from es_manager import create_index, get_es_client
@@ -1058,6 +1059,39 @@ def process_all_data() -> None:
             ),
         )
 
+        # Dedup sıklığı (perf): NEW_MASTER id'leri + ülkeleri N batch boyunca biriktirilir,
+        # AUTO_DEDUP_EVERY_N_BATCHES'te bir topluca deduplike edilir; sonda kalan flush edilir.
+        # Güvenlik-cap: biriken id listesi ES `terms` sınırına yaklaşmasın diye erken flush.
+        pending_dedup_ids: list[str] = []
+        pending_dedup_ccs: set[str] = set()
+        _dedup_batch_counter = 0
+        _DEDUP_PENDING_CAP = 20000  # ES terms varsayılan 65536 limitinin güvenli altı
+
+        def _run_pending_dedup() -> None:
+            """Biriken NEW_MASTER'ları batch'in ülke kümesiyle sınırlı deduplike eder."""
+            nonlocal total_deduped
+            if not (AUTO_DEDUP_PER_BATCH and pending_dedup_ids):
+                return
+            try:
+                d = auto_merge_duplicates(
+                    es, write_conn,
+                    restrict_master_ids=list(pending_dedup_ids),
+                    countries=sorted(pending_dedup_ccs),
+                    refresh=False,
+                )
+                if d["merged_masters"]:
+                    total_deduped += d["merged_masters"]
+                    logger.info(
+                        f"  Dedup: {d['merged_masters']} master birlestirildi, "
+                        f"{d['repointed_rows']} satir yeniden yonlendirildi "
+                        f"({len(pending_dedup_ids)} aday / {len(pending_dedup_ccs)} ulke)."
+                    )
+            except Exception:
+                logger.exception("Dedup basarisiz (atlandi, devam ediliyor)")
+            finally:
+                pending_dedup_ids.clear()
+                pending_dedup_ccs.clear()
+
         while True:
             # Server-side cursor yerine basit SELECT + LIMIT
             # Her seferinde master_code IS NULL olan sonraki BATCH_SIZE kaydi cek
@@ -1174,6 +1208,8 @@ def process_all_data() -> None:
                             details = "NEW_MASTER: No relevant matches found."
                             pg_updates.append(_make_pg_update_tuple(master_id, 100, "NEW_MASTER", details, row_id))
                             batch_new_master_ids.append(master_id)  # P0-C: batch-içi dedup kapsamı
+                            pending_dedup_ids.append(master_id)      # perf: N-batch biriktirici
+                            pending_dedup_ccs.add(country)
                             total_new += 1
                             stage_name = "NEW_MASTER"
                             es_score = 100.0
@@ -1279,25 +1315,20 @@ def process_all_data() -> None:
 
             es.indices.refresh(index=ES_INDEX)
 
-            # P0-C: batch-içi otomatik dedup — bu batch'te oluşan NEW_MASTER'lar arasında
-            # aynı kanonik fingerprint'e sahip olanları ES-tarafı birleştir (sistem-içi,
-            # ayrı script gerekmez). Kapsam batch'le sınırlı → iş yükü ölçeklenir.
-            # refresh=False: bir sonraki batch zaten refresh eder.
-            if AUTO_DEDUP_PER_BATCH and batch_new_master_ids:
-                try:
-                    d = auto_merge_duplicates(
-                        es, write_conn,
-                        restrict_master_ids=batch_new_master_ids,
-                        refresh=False,
-                    )
-                    if d["merged_masters"]:
-                        total_deduped += d["merged_masters"]
-                        logger.info(
-                            f"  Batch-ici dedup: {d['merged_masters']} master birlestirildi, "
-                            f"{d['repointed_rows']} satir yeniden yonlendirildi."
-                        )
-                except Exception:
-                    logger.exception("Batch-ici dedup basarisiz (batch atlandi, devam ediliyor)")
+            # P0-C: otomatik dedup — aynı kanonik fingerprint'li NEW_MASTER'ları ES-tarafı
+            # birleştir. PERF: her batch yerine AUTO_DEDUP_EVERY_N_BATCHES'te bir koşar
+            # (fielddata aggregation = donma kaynağı daha seyrek); güvenlik-cap'te erken flush.
+            # Ülke kümesiyle sınırlı (FIX 2) → gereksiz boş-ülke agg'ı yok. refresh=False.
+            _dedup_batch_counter += 1
+            if (
+                _dedup_batch_counter % AUTO_DEDUP_EVERY_N_BATCHES == 0
+                or len(pending_dedup_ids) >= _DEDUP_PENDING_CAP
+            ):
+                _run_pending_dedup()
+
+        # Sonda flush: AUTO_DEDUP_EVERY_N_BATCHES > 1 ise son N-altı batch'in biriken
+        # NEW_MASTER'ları henüz deduplike edilmemiş olabilir → kapanıştan önce çalıştır.
+        _run_pending_dedup()
 
         pbar.close()
 

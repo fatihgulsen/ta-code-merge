@@ -97,6 +97,7 @@ def iter_duplicate_groups(
     master_cap: int = 200,
     min_count: int = 2,
     restrict_master_ids: list[str] | None = None,
+    countries: list[str] | None = None,
 ):
     """Aynı kanonik fingerprint'i paylaşan distinct master_id'leri üretir.
 
@@ -108,9 +109,13 @@ def iter_duplicate_groups(
     restrict_master_ids verilirse aggregation YALNIZCA bu master'larla sınırlanır
     (batch-içi dedup için → tüm index'i taramaz, iş yükü batch'e ölçeklenir).
 
+    countries verilirse YALNIZCA bu ülkeler işlenir (perf: batch-içi dedup'ta tüm index'in
+    distinct ülkelerini taramak + boş-ülke için agg koşmak yerine, batch'in gerçek ülke
+    kümesi geçilir → fielddata aggregation gereksiz yere koşmaz).
+
     Yields: {"fingerprint", "country_code", "master_ids": [...]}
     """
-    for cc in _distinct_countries(es):
+    for cc in (countries if countries is not None else _distinct_countries(es)):
         after = None
         while True:
             comp = {"size": page_size, "sources": [{"fp": {"terms": {"field": _FINGERPRINT_FIELD}}}]}
@@ -237,6 +242,7 @@ def auto_merge_duplicates(
     limit: int | None = None,
     restrict_master_ids: list[str] | None = None,
     refresh: bool = True,
+    countries: list[str] | None = None,
 ) -> dict:
     """Duplicate fingerprint gruplarını otomatik birleştirir (PG repoint + ES merge).
 
@@ -248,7 +254,7 @@ def auto_merge_duplicates(
     """
     cur = pg_conn.cursor()
     stats = {"groups": 0, "merged_masters": 0, "repointed_rows": 0, "skipped": 0, "errors": 0}
-    for group in iter_duplicate_groups(es, restrict_master_ids=restrict_master_ids):
+    for group in iter_duplicate_groups(es, restrict_master_ids=restrict_master_ids, countries=countries):
         plan = plan_merge(group)
         if not plan:
             stats["skipped"] += 1

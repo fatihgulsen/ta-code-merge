@@ -250,7 +250,7 @@ def auto_merge_duplicates(
     return stats
 
 
-# Kullanım: python dedup_auto_merge.py [--apply] [--limit=N]
+# Kullanım: python -m dedup.auto_merge [--apply] [--limit=N]
 # Varsayılan dry-run; --apply ile değişiklikler uygulanır.
 if __name__ == "__main__":
     import sys

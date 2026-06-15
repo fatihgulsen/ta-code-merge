@@ -120,7 +120,7 @@ AUTO_DEDUP_PER_BATCH = True
 # güvenlik-cap'te erken + sonda flush edilir). Yüksek N → fingerprint aggregation
 # (fielddata, donma kaynağı) daha seyrek koşar. 1 = her batch.
 # Tam-rematch için en pürüzsüz seçenek: AUTO_DEDUP_PER_BATCH=False + sonradan
-# `python dedup_auto_merge.py --apply` (global, terms-sınırı yok).
+# `python -m dedup.auto_merge --apply` (global, terms-sınırı yok).
 AUTO_DEDUP_EVERY_N_BATCHES = 10
 
 # Dedup fingerprint dejenere-guard: fingerprint'in dedup anahtarı olabilmesi için

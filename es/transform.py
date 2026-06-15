@@ -141,7 +141,7 @@ def get_potential_duplicates(es: Elasticsearch, min_count: int = 2, size: int = 
     return results
 
 
-# Kullanım: python es_transform.py  → transform'u kurar ve başlatır.
+# Kullanım: python -m es.transform  → transform'u kurar ve başlatır.
 if __name__ == "__main__":
     from es.manager import get_es_client
 

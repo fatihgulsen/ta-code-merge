@@ -5,7 +5,7 @@ import logging
 from elasticsearch import Elasticsearch
 
 from config import ES_HOST, ES_INDEX
-from synonym_loader import (
+from core.synonym_loader import (
     get_all_company_type_tokens,
     get_all_country_codes,
     get_all_legal_suffix_fragments,

@@ -7,7 +7,7 @@ QA katmanı tarafından paylaşılır. Fuzzy kütüphane yok; yalnızca set/rege
 import re
 from functools import lru_cache
 
-from synonym_loader import (
+from core.synonym_loader import (
     get_country_name_tokens,
     get_legal_suffix_fragments,
     get_legal_suffix_tokens,

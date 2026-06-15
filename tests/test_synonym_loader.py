@@ -1,5 +1,5 @@
 # tests/test_synonym_loader.py
-from synonym_loader import (
+from core.synonym_loader import (
     get_all_company_type_tokens,
     get_all_legal_suffix_fragments,
     get_article_stopwords,
@@ -164,14 +164,14 @@ def test_get_article_stopwords_lru_cache():
 
 def test_get_company_type_tokens_equals_legal_suffixes():
     """Sprint 2: get_company_type_tokens is a shim over get_legal_suffix_tokens."""
-    from synonym_loader import get_company_type_tokens, get_legal_suffix_tokens
+    from core.synonym_loader import get_company_type_tokens, get_legal_suffix_tokens
     assert get_company_type_tokens("IN") == get_legal_suffix_tokens("IN")
 
 
 def test_get_legal_suffix_tokens_returns_frozenset():
     """Sprint 2: get_legal_suffix_tokens reads the 'legal_suffixes' category
     from common.json plus the per-country file."""
-    from synonym_loader import get_legal_suffix_tokens
+    from core.synonym_loader import get_legal_suffix_tokens
 
     tokens = get_legal_suffix_tokens("IN")
     assert isinstance(tokens, frozenset)
@@ -185,7 +185,7 @@ def test_get_legal_suffix_tokens_returns_frozenset():
 
 def test_get_legal_suffix_tokens_excludes_sectors():
     """Legal suffixes must NOT contain business sector words."""
-    from synonym_loader import get_legal_suffix_tokens
+    from core.synonym_loader import get_legal_suffix_tokens
 
     tokens = get_legal_suffix_tokens("IN")
     for sector in ("pharma", "chemicals", "industries", "enterprises",
@@ -196,7 +196,7 @@ def test_get_legal_suffix_tokens_excludes_sectors():
 def test_get_legal_suffix_tokens_excludes_foreign_suffixes():
     """Sprint 2 fix: 'ab' (Swedish) and 'as' (Norwegian/Latvian) must NOT
     appear in IN legal suffixes. other.json is archived."""
-    from synonym_loader import get_legal_suffix_tokens
+    from core.synonym_loader import get_legal_suffix_tokens
 
     tokens = get_legal_suffix_tokens("IN")
     # These caused the BABA WOOD PRODUCTS false positive before Sprint 2.
@@ -206,7 +206,7 @@ def test_get_legal_suffix_tokens_excludes_foreign_suffixes():
 
 def test_get_business_sector_tokens_returns_frozenset():
     """Sprint 2: business sector tokens are preserved, not stripped."""
-    from synonym_loader import get_business_sector_tokens
+    from core.synonym_loader import get_business_sector_tokens
 
     tokens = get_business_sector_tokens("IN")
     assert isinstance(tokens, frozenset)
@@ -221,7 +221,7 @@ def test_get_business_sector_tokens_returns_frozenset():
 
 def test_get_business_sector_tokens_excludes_legal_suffixes():
     """Business sectors and legal suffixes are disjoint."""
-    from synonym_loader import (
+    from core.synonym_loader import (
         get_business_sector_tokens,
         get_legal_suffix_tokens,
     )
@@ -234,7 +234,7 @@ def test_get_business_sector_tokens_excludes_legal_suffixes():
 
 def test_get_business_sector_canonical_map_maps_to_rule_target():
     """Each source token on the left of => maps to the rule's canonical target."""
-    from synonym_loader import get_business_sector_canonical_map
+    from core.synonym_loader import get_business_sector_canonical_map
 
     mapping = get_business_sector_canonical_map("IN")
     # Regular plurals
@@ -257,7 +257,7 @@ def test_geo_stopword_tokens_excludes_short_iso_codes():
     """A1/HIGH-2: global geo-stop tam ülke adlarını (argentina, brasil, mexico) içerir
     ama kısa ISO kodlarını (ar, br, us, mx, arg, bra) HARİÇ tutar — kısa kodlar marka
     token'larıyla çakışır (GE HEALTHCARE, US BANK). Kaynak countries.json (hardcode yok)."""
-    from synonym_loader import get_geo_stopword_tokens
+    from core.synonym_loader import get_geo_stopword_tokens
     geo = {t.lower() for t in get_geo_stopword_tokens()}
     # Tam adlar dahil
     assert "argentina" in geo

@@ -5,7 +5,7 @@
 # markers, and explicit "no business name" placeholders. Everything else → NEW_MASTER.
 import pytest
 
-import input_filter as inf
+import core.input_filter as inf
 
 
 @pytest.mark.parametrize("name,reason", [

@@ -14,7 +14,7 @@ import psycopg2.sql
 from psycopg2.extras import DictCursor
 
 from config import DB_CONFIG, RAW_TABLE_NAME, COLUMN_MAPPING
-from core_name import normalize_core
+from core.core_name import normalize_core
 
 
 def token_overlap(a: tuple[str, ...], b: tuple[str, ...]) -> float:

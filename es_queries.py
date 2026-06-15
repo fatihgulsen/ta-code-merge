@@ -7,8 +7,8 @@ Stage eklemek için: (1) bu dosyaya aynı imzada (name, country, **kwargs) fonks
 
 import logging
 from elasticsearch import Elasticsearch
-from synonym_loader import get_all_country_codes
-from core_name import normalize_core
+from core.synonym_loader import get_all_country_codes
+from core.core_name import normalize_core
 from config import (
     PHONETIC_MIN_CORE_TOKENS,
     NGRAM_MIN_CORE_TOKENS,

@@ -76,7 +76,7 @@ def test_stage_order():
 def test_business_descriptors_in_synonyms():
     """Sprint 2: Descriptors moved to synonyms.
     Checking common business sectors are reachable through synonym_loader."""
-    from synonym_loader import get_business_sector_tokens
+    from core.synonym_loader import get_business_sector_tokens
 
     # Common descriptors that were previously in config.py
     required = {

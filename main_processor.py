@@ -57,7 +57,7 @@ from config import (
 from es_manager import create_index, get_es_client
 from es_ingest import register_all_pipelines, pipeline_name
 import es_queries as _es_queries
-from input_filter import classify_input
+from core.input_filter import classify_input
 from dedup_auto_merge import auto_merge_duplicates
 
 logging.basicConfig(

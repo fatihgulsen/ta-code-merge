@@ -9,7 +9,7 @@ import logging
 
 from elasticsearch import Elasticsearch
 
-from synonym_loader import (
+from core.synonym_loader import (
     get_all_country_codes,
     get_article_stopwords,
     get_geo_stopword_tokens,

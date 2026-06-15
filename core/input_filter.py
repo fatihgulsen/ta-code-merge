@@ -11,7 +11,7 @@ import re
 import unicodedata
 from functools import lru_cache
 
-from synonym_loader import get_non_firm_placeholders
+from core.synonym_loader import get_non_firm_placeholders
 
 # Unicode-aware: Latin-dışı alfabeler (Kiril/CJK/Arap) içerik taşır → no_alnum sayılmaz.
 # \w py3'te Unicode harf/rakam eşler; '_' ayrıca elenir.

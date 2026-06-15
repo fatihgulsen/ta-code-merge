@@ -1,4 +1,4 @@
-from core_name import normalize_core
+from core.core_name import normalize_core
 
 
 def test_strips_mx_legal_suffix_single_token():

@@ -2,7 +2,7 @@
 # tests/test_es_manager.py - es_manager per-country analyzer testleri
 # ============================================================================
 
-from synonym_loader import get_all_country_codes
+from core.synonym_loader import get_all_country_codes
 
 
 def test_no_hardcoded_generic_tokens():

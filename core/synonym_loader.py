@@ -12,7 +12,7 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-SYNONYMS_DIR = Path(__file__).parent / "synonyms_data"
+SYNONYMS_DIR = Path(__file__).parent.parent / "synonyms_data"
 COMMON_FILES = ["common.json", "countries.json"]
 
 

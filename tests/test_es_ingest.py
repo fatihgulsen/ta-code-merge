@@ -66,7 +66,7 @@ def test_build_pipeline_body_differs_per_country():
 def test_register_all_pipelines_calls_each_country():
     """register_all_pipelines her ülke için ayrı pipeline kaydeder."""
     from es_ingest import register_all_pipelines
-    from synonym_loader import get_all_country_codes
+    from core.synonym_loader import get_all_country_codes
     mock_es = MagicMock()
     register_all_pipelines(mock_es)
     all_codes = get_all_country_codes()
@@ -108,7 +108,7 @@ def test_stripped_script_strips_geo_tokens():
     'AUDI ARGENTINA MOTORS' index'te 3 token, query'de 2). Geo token listesi
     countries.json'dan türetilir (get_country_name_tokens) — hardcode yok."""
     from es_ingest import _build_stripped_script
-    from synonym_loader import get_country_name_tokens
+    from core.synonym_loader import get_country_name_tokens
     script = _build_stripped_script("AR")
     geo_tokens = [t for t in get_country_name_tokens("AR") if " " not in t]
     assert geo_tokens, "AR için countries.json'dan geo token bekleniyordu"

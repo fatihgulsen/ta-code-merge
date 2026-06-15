@@ -109,7 +109,7 @@ The engine executes queries stage-by-stage inside a single `msearch` packet. The
 | **Start Process** | `python main_processor.py` | Run deduplication on all remaining records. |
 | **Force Re-indexing** | `python -m es.manager --force` | Re-create ES Index, mapping, and analyzers. |
 | **Ingest Register** | `python -m es.ingest` | Refresh Ingest Painless clean scripts. |
-| **Full Reset** | `python tools/reset_matching.py` | Clear PostgreSQL and Elasticsearch to start from scratch. |
-| **Postgres-Only Reset** | `python tools/reset_matching.py --pg` | Reset DB match fields but keep Elasticsearch indices intact. |
-| **ES-Only Reset** | `python tools/reset_matching.py --es` | Reset Elasticsearch indices only. |
+| **Full Reset** | `python -m tools.reset_matching` | Clear PostgreSQL and Elasticsearch to start from scratch. |
+| **Postgres-Only Reset** | `python -m tools.reset_matching --pg` | Reset DB match fields but keep Elasticsearch indices intact. |
+| **ES-Only Reset** | `python -m tools.reset_matching --es` | Reset Elasticsearch indices only. |
 | **Duplicate Reviewer** | `python -m dedup.reviewer` | Interactive console tool to review & merge potential duplicates. |

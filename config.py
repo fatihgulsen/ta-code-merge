@@ -1,11 +1,13 @@
-# ============================================================================
-# config.py - Firma Eşleştirme Sistemi Ayarları
-# ============================================================================
+"""Firma eşleştirme sistemi yapılandırması.
+
+Eşik değerleri, DB/ES bağlantıları, MatchType etiketleri ve aktif STAGES listesi.
+Eşiklerin ardındaki ayrıntılı gerekçe/karar geçmişi için `docs/audit/` raporlarına
+bakılır; buradaki yorumlar yalnızca ayarın ne işe yaradığını ve kısa nedenini verir.
+"""
 
 
-# --- Match Type Sabitleri ---
 class MatchType:
-    """Eşleştirme sonucu tip etiketleri."""
+    """Eşleştirme sonucu tip etiketleri (PG `match_type` sütununa yazılır)."""
 
     CANONICAL_EXACT = "CANONICAL_EXACT"
     STRIPPED_EXACT = "STRIPPED_EXACT"
@@ -15,18 +17,16 @@ class MatchType:
     PHONETIC_MATCH = "PHONETIC_MATCH"
     NGRAM_MATCH = "NGRAM_MATCH"
     NEW_MASTER = "NEW_MASTER"
-    # A3 (2026-06-15): fingerprint auto-merge (dedup_auto_merge) ile bir primary'e
-    # birleştirilen İKİNCİL NEW_MASTER anchor'ları bu tipe demote edilir. Böylece aynı
-    # master_code'da >1 NEW_MASTER kalmaz → over-merge watch query (match_type!=NEW_MASTER
-    # join) kör noktası kapanır. Variant'lar (zaten bir stage ile eşleşmiş) tipini korur.
+    # Fingerprint auto-merge ile bir primary'e birleştirilen ikincil NEW_MASTER
+    # anchor'ı bu tipe demote edilir → aynı master_code'da >1 NEW_MASTER kalmaz
+    # (watch-query kör noktası). Bkz. docs/audit/2026-06-15-*.
     AUTO_DEDUP = "AUTO_DEDUP"
-    # Boundary girdi-geçerliliği filtresi (P0-B / Faz 4): firma-olmayan girdiler
-    # (placeholder, salt-kod/sayı, baş-harf, aşırı uzun gümrük dizesi) eşleştirmeye
-    # SOKULMADAN izole edilir → ES'e indekslenmez (magnet olamaz). Bkz. input_filter.py.
+    # Firma-olmayan girdi (placeholder, salt-kod, n/a): eşleştirmeye sokulmadan
+    # izole edilir, ES'e indekslenmez (magnet olamaz). Bkz. input_filter.py.
     EXCLUDED = "EXCLUDED"
 
 
-# --- PostgreSQL Bağlantı ---
+# --- PostgreSQL bağlantısı ---
 DB_CONFIG = {
     "dbname": "market_calculus",
     "user": "postgres",
@@ -35,13 +35,13 @@ DB_CONFIG = {
     "port": 5432,
 }
 
-# --- Tablo ve Sütun Ayarları ---
+# --- Tablo ve sütun ayarları ---
 RAW_TABLE_NAME = "p7_firms_v2_ar_pe"
 
-# COUNTRY_CODE_FILTER = "mx"
+# Yalnızca tek ülke işlenecekse kodu (örn. "mx"); None = tüm ülkeler.
 COUNTRY_CODE_FILTER = None
 
-# Dahili degisken isimleri -> Veritabani sutun isimleri
+# Dahili değişken adı → veritabanı sütun adı eşlemesi.
 COLUMN_MAPPING = {
     "id": "id",
     "company_name": "name",
@@ -55,169 +55,114 @@ COLUMN_MAPPING = {
     "address": "address",
 }
 
-
 MANDATORY_READ_COLUMNS = ["id", "company_name", "country_code"]
 MANDATORY_UPDATE_COLUMNS = ["master_code", "match_score", "match_type", "match_details"]
 
+# Eksik update sütunları otomatik oluşturulsun mu (ALTER TABLE).
 AUTO_CREATE_UPDATE_COLUMNS = True
 
-# --- Elasticsearch Bağlantı ---
+# --- Elasticsearch bağlantısı ---
 ES_HOST = "http://localhost:9200"
 ES_INDEX = "living_companies_v1"
 
-# --- Eşleştirme Ayarları ---
-
+# --- Eşleştirme akışı ---
+# PG'den tek seferde okunan kayıt sayısı.
 BATCH_SIZE = 5000
 
-# NEW_MASTER sub-batch boyutu — within-batch duplicate minimizasyonu icin
-# Her N kayitlik alt grup ES'e index'lenir, ardindan refresh yapilir.
+# NEW_MASTER alt-grup boyutu: her N kayıt ES'e indekslenip refresh edilir
+# (within-batch duplicate penceresini daraltır).
 NEW_MASTER_SUBBATCH_SIZE = 200
 
-# ES refresh araligi — her N kayitta bir refresh yapilir (tum stage'ler)
+# Her N kayıtta bir ES refresh (tüm stage'ler).
 ES_REFRESH_INTERVAL = 50
 
-# Eşleştirme chunk boyutu (Q1 — toplu msearch): kayıtlar bu boyutta gruplanıp TEK index
-# anlık-görüntüsüne karşı toplu msearch ile eşleştirilir; chunk sonunda refresh yapılır.
-# chunk = refresh penceresi olduğundan görünürlük tekil-akışla AYNI (refresh=False yazımlar
-# pencere içinde zaten görünmez) → eşleşme sonucu DEĞİŞMEZ, yalnız round-trip azalır.
-# 1 yaparsan eski kayıt-başına davranışa döner. Büyütürsen refresh seyrekleşir (Q3: kanonik
-# dup'ları batch-içi dedup toplar, ama fuzzy varyant recall'ı düşebilir → ölçerek artır).
+# msearch chunk boyutu: kayıtlar bu boyutta gruplanıp tek index anlık-görüntüsüne
+# karşı toplu sorgulanır, chunk sonunda refresh edilir. chunk = refresh penceresi
+# olduğundan görünürlük tekil-akışla aynıdır → sonuç değişmez, round-trip azalır.
+# 1 = eski kayıt-başına davranış. Büyütmek refresh'i seyrekleştirir (fuzzy varyant
+# recall'ını etkileyebilir → ölçerek artır).
 MATCH_BATCH_SIZE = 50
 
-# --- ES Skor Eşikleri ---
-ES_MIN_SCORE = 3.0  # ES'te min_score filtresi (bu altı hiç dönmez)
-LOG_ALL_STAGES = False  # Her bir stage sonucunu (failed dahil) logla
+# --- ES skor / log ---
+ES_MIN_SCORE = 3.0       # ES min_score filtresi (bu altı hiç dönmez)
+LOG_ALL_STAGES = False   # Her stage sonucunu (başarısız dahil) logla
 
-
-# --- Eşik Değerleri ve Sabitler ---
+# --- Eşik değerleri ---
 LENGTH_RATIO_THRESHOLD = 0.4
 TOKEN_COVERAGE_THRESHOLD = 0.95  # Token'ların en az %95'i örtüşmeli
 
-SUFFIX_FUZZY_MIN_SCORE = 1.5  # ES score eşiği — prod testleriyle kalibre edilmeli
-SUFFIX_FUZZY_SCORE = 85  # match sonucu skoru (normalised tier score)
-SUFFIX_FUZZY_COVERAGE_THRESHOLD = 0.85  # name token coverage eşiği (_post_verify)
+SUFFIX_FUZZY_MIN_SCORE = 1.5            # ES skor eşiği (prod testleriyle kalibre)
+SUFFIX_FUZZY_SCORE = 85                 # Sonuç skoru (normalize tier)
+SUFFIX_FUZZY_COVERAGE_THRESHOLD = 0.85  # İsim token coverage eşiği
 
-# --- ES Rescore Score Tier Sabitleri ---
-# interpret_match_result() _score değerinden match_type belirler
-# Bu değerler es_scripts.py'deki Painless script ile uyumlu olmalı
-RESCORE_WINDOW_SIZE = 20  # Rescore sadece top N adaya uygulanır
+RESCORE_WINDOW_SIZE = 20  # Rescore yalnızca top-N adaya uygulanır
 
-# PHONETIC_MATCH guard — yalnızca AYIRT EDİCİ çekirdek token sayısı bu eşiğin
-# ALTINDA ise fonetik eşleşme bloklanır. drop_geo ile ülke-adı/coğrafi token'lar
-# çekirdek dışıdır; böylece yalnızca-suffix / yalnızca-ülke-adı / çöp isimler
-# (0 ayırt edici token) bloklanır. Gerçek tek-marka firmalar (IGSA, VIBRACOUSTIC,
-# AUDI MEXICO) ELENMEZ — fonetik alandan yasal-ek parçaları temizlendiği için
-# (es_manager legal_fragment_stop) farklı markalar zaten birbirine eşleşmez.
-# Bkz. docs/audit/2026-06-02 + analysis/live_probe.py (canlı doğrulama).
+# PHONETIC/NGRAM guard'ları: sorgu kaydının ayırt edici çekirdek token sayısı bu
+# eşiğin altındaysa (yalnızca suffix/ülke-adı/çöp → 0 token) stage bloklanır.
+# Gerçek tek-marka firmalar (IGSA, AUDI MEXICO) elenmez. Bkz. docs/audit/2026-06-02
+# + analysis/live_probe.py. (Her iki stage şu an STAGES'te kapalı.)
 PHONETIC_MIN_CORE_TOKENS = 1
-
-# NGRAM_MATCH guard — PHONETIC ile aynı mantık: yalnızca AYIRT EDİCİ çekirdek
-# token sayısı bu eşiğin ALTINDAysa (boş çekirdek: yalnızca suffix/ülke-adı/çöp)
-# trigram eşleşmesi paylaşılan suffix parçalarından farklı firmaları birleştirir
-# → bloklanır. Asıl precision coverage post-verify'dadır; bu guard çöp sızıntısı içindir.
 NGRAM_MIN_CORE_TOKENS = 1
 
-# --- Girdi Filtresi (P0-B / Faz 4) — YALNIZCA tamamen anlamsız girdileri ele ---
-# docs/audit/2026-06-03-llm-judge-rematch-comparison.md §4: 'Sin Razon Social' (1.181
-# üyeli magnet) gibi 'isim yok' placeholder'ları + '#N/A'/null işaretçileri NEW_MASTER
-# seed'i olup mıknatıs görevi görüyor.
-#
-# FELSEFE: Bir firmanın "doğru" olup olmadığına karar VEREMEYİZ — salt kod/sayı/baş-harf
-# veya çok uzun bir isim gerçek bir (yeni) firma OLABİLİR ve NEW_MASTER olmalı. Bu yüzden
-# yalnızca içerik-taşımayan / 'isim yok' girdiler elenir (boş, salt-noktalama, n/a/null,
-# placeholder). Bu bir KİMLİK kararı DEĞİL; boundary geçerlilik kontrolü.
+# --- Girdi filtresi ---
+# Yalnızca içerik taşımayan / "isim yok" girdileri eler (boş, salt-noktalama,
+# n/a/null, placeholder). KİMLİK kararı DEĞİL, boundary geçerlilik kontrolüdür:
+# salt-kod/sayı veya uzun bir isim gerçek bir yeni firma olabilir → elenmez.
+# Bkz. docs/audit/2026-06-03-llm-judge-rematch-comparison.md §4.
 ENABLE_INPUT_FILTER = True
 
-# --- Batch-içi otomatik dedup (P0-C, sistem-içi) ---
-# Her batch sonunda, o batch'te oluşturulan NEW_MASTER'lar arasında AYNI kanonik
-# fingerprint'e sahip olanları ES-tarafı birleştirir (dedup_auto_merge). Ayrı script
-# çalıştırma zorunluluğunu kaldırır; iş yükü batch'e ölçeklenir (tüm index taranmaz).
-# Refresh-lag penceresinde oluşan within-batch duplikasyonu sistemin kendi içinde kapanır.
+# --- Batch-içi otomatik dedup ---
+# Batch'te oluşan NEW_MASTER'lar arasında aynı kanonik fingerprint'e sahip
+# olanları ES-tarafı birleştirir (dedup_auto_merge); ayrı script gerektirmez.
 AUTO_DEDUP_PER_BATCH = True
 
-# Dedup SIKLIĞI (perf, 2026-06-15): batch-içi dedup her N batch'te bir koşar (aradaki
-# batch'lerin NEW_MASTER id'leri biriktirilir, N. batch'te topluca deduplike edilir, sonda
-# kalan flush edilir). 1 = her batch (eski davranış). Daha yüksek N → fingerprint
-# aggregation (fielddata, donma kaynağı) daha az koşar. NOT: çok yüksek N'de biriken id
-# listesi ES `terms` sınırına (varsayılan 65536) yaklaşmasın diye güvenlik-cap ile erken
-# flush edilir. Tam-rematch sırasında en pürüzsüz alternatif: AUTO_DEDUP_PER_BATCH=False +
-# rematch sonrası `python dedup_auto_merge.py --apply` (global, restrict'siz, terms-sınırı yok).
+# Dedup sıklığı: her N batch'te bir koşar (aradaki NEW_MASTER'lar biriktirilir,
+# güvenlik-cap'te erken + sonda flush edilir). Yüksek N → fingerprint aggregation
+# (fielddata, donma kaynağı) daha seyrek koşar. 1 = her batch.
+# Tam-rematch için en pürüzsüz seçenek: AUTO_DEDUP_PER_BATCH=False + sonradan
+# `python dedup_auto_merge.py --apply` (global, terms-sınırı yok).
 AUTO_DEDUP_EVERY_N_BATCHES = 10
 
-# Dedup fingerprint dejenere-guard eşiği (P-R2-1). Bir fingerprint'in dedup ANAHTARI
-# olabilmesi için EN AZ BİR token'ı bu uzunlukta (karakter) olmalı; aksi halde dejenere
-# sayılıp birleştirilmez (magnet önlenir).
-#   1 = guard pratikte KAPALI — yalnız boş fingerprint engellenir (mevcut davranış).
-#   2 = akronim-çökmesi magnet'lerini (C.M.S.A.D.C / U M S.A. DE C.V. → 'm') engeller,
-#       gerçek 2-harfli markaları (VF/3M/HM/GM → vf/3m/hm/gm) korur.
-# NOT (docs/audit/2026-06-03-round2-preliminary-2.9pct.md §P-R2-1, ampirik eşik testi):
-# ≥2 bile YETERLİ DEĞİL — kısa-residue false-merge'ler ('av' = HUF+P.AV.I, 'adm') geçer;
-# asıl kök neden analyzer aşırı-strip'i (tek-harf token atma + HUF yutma) → gerçek çözüm
-# analyzer-side + reindex (rematch sonrası).
-# KARAR (docs/audit/2026-06-05-round3-unicode-config-dedup.md §ADIM 4, %31 rematch + kanıt):
-# 2'ye çekildi. Simülasyon: 21 tek-harf dejenere dedup grubu (fp 'm'/'t'/'g'…) kapanır,
-# 0 GERÇEK MARKA kaybı (3m/gm/dr/mt len≥2 korunur). Bedava/baskın hijyen. UYARI: magnetlerin
-# %91'i STRIPPED_EXACT eşleşme-zamanından geliyor → bu eşik onları materyal küçültmez;
-# asıl çözüm analyzer-side akronim-glue (Öneri-1) + reindex.
+# Dedup fingerprint dejenere-guard: fingerprint'in dedup anahtarı olabilmesi için
+# en az bir token bu uzunlukta olmalı; aksi halde dejenere sayılır (magnet önlenir).
+# 2 = akronim-çökmesi magnet'lerini ('C.M.S.A.D.C'→'m') engeller, 2-harfli gerçek
+# markaları (VF/3M) korur. Bkz. docs/audit/2026-06-03-round2-preliminary-2.9pct.md.
 DEDUP_MIN_FINGERPRINT_TOKEN_LEN = 2
 
-# NOT (A4 kararı, 2026-06-15): Sabit "max-cluster-size" tavanı (örn. 100 variation)
-# DENENDİ ve GERİ ALINDI. Gerekçe (kullanıcı): boyut tek başına hata değildir — 2M kayıt
-# gerçekten aynı firmaysa hepsi birleşmeli; sabit tavan meşru dev kümeleri (büyük
-# ithalatçı, milyonlarca gümrük kaydı) zorla böler → ciddi UNDER-MERGE. Asıl sorun
-# boyut değil ZAYIF KENAR (geo/jenerik token üzerinden birleşme) → A1 (geo-stop) + A2
-# (token-dedup) + _core_coverage_filter bunu kök seviyede çözer. Büyük küme bir
-# İZLEME sinyalidir (engellenmez): C6 monitör SQL'i + dedup_reviewer (C3) ile insan
-# denetimine işaretlenir, eşleştirme yolunda hard-gate YOKTUR.
+# NOT: Sabit "max-cluster-size" tavanı denendi ve geri alındı — boyut tek başına hata
+# değil (aynı firmanın milyonlarca kaydı birleşmeli); tavan meşru dev kümeleri böler
+# (under-merge). Büyük küme yalnızca izleme/insan-denetimi sinyalidir, hard-gate yok.
 
-# Firma-OLMAYAN placeholder'lar ("ticari unvan yok" / "alıcı=gönderici") artık DATA-DRIVEN:
-# synonyms_data/{common,<cc>}.json içindeki "non_firm_placeholders" kategorisinde tanımlıdır.
-#   - __common__ karşılığı  → common.json (gümrük "same as ..." işaretçileri, tüm ülkelere)
-#   - ülkeye-özgü (MX vb.)  → <cc>.json   (örn. "sin razon social")
-# synonym_loader.get_non_firm_placeholders(cc) okur; input_filter EXCLUDED yapar (ES'e
-# indekslenmez). TAM eşleşme; gerçek firma adı bu biçimde normalize olmaz.
-# CLAUDE.md §1.4 İSTİSNASI: synonyms_data SABİT kuralı bu kategori için gevşetilmiştir
-# (kullanıcı kararı) — placeholder'ları hardcode etmemek için JSON'a eklenebilir.
-# (n/a, null, none, nan, s/n gibi yapısal işaretçiler input_filter._NA_MARKERS'ta.)
+# Firma-olmayan placeholder'lar ("ticari unvan yok", "alıcı=gönderici") data-driven:
+# synonyms_data/{common,<cc>}.json "non_firm_placeholders" kategorisinde tutulur;
+# synonym_loader.get_non_firm_placeholders(cc) okur, input_filter TAM eşleşmeyle
+# EXCLUDED yapar. (CLAUDE.md §1.4 SABİT-JSON istisnası: bu kategoriye ekleme açıktır.)
 
-
-# --- Ayırt-edici çekirdek GATE (Round-3 #3, docs/audit/2026-06-05-DURUM-RAPORU...) ---
-# Eşleşme stage'leri, sorgu kaydının AYIRT EDİCİ bir çekirdek taşımasını şart koşar.
-# "Ayırt edici çekirdek" = stripped analyzer (yasal-ek + geo temizli) çıktısında EN AZ bir
-# token >= MATCH_CORE_MIN_TOKEN_LEN. Karar %100 ES analyzer çıktısından (Python fuzzy/normalize
-# YOK); bu bir GUARD'dır (stage çalışsın mı), eşleşme DOĞRULAMASI değil — PHONETIC/NGRAM
-# guard'larıyla aynı desen. Çekirdeği olmayan girdiler (tek-harf akronim artığı 'M S.A.'→'m',
-# '#N/A 300', salt-kod/sayı) loose stage'lerde EŞLEŞMEZ → NEW_MASTER (güvenli; magnet olmaz).
-# Hata sınıfları B (#N/A sızma) + A-artığı (boşluk-ayrılmış tek-harf) bununla kapanır.
+# --- Ayırt-edici çekirdek GATE ---
+# Eşleşme stage'leri, sorgu kaydının ayırt edici bir çekirdek taşımasını şart koşar:
+# stripped analyzer (yasal-ek + geo temizli) çıktısında en az bir token uzunluğu
+# >= MATCH_CORE_MIN_TOKEN_LEN. Karar %100 ES analyzer çıktısından gelir (Python fuzzy
+# yok); stage'in çalışıp çalışmayacağını belirleyen bir GUARD'dır, doğrulama değil.
+# Çekirdeksiz girdiler ('M S.A.'→'m', '#N/A 300') loose stage'lerde eşleşmez → NEW_MASTER.
 ENABLE_CORE_GATE = True
-MATCH_CORE_MIN_TOKEN_LEN = 2  # ayırt edici sayılmak için min token uzunluğu (2-harf marka VF/3M korunur)
-# Loose stage'lerde (TOKEN_COVERAGE / FUZZY_PHRASE / SUFFIX_FUZZY) ek olarak çekirdek token
-# ALFABETİK olmalı (salt-sayı '300'/'414' loose eşleşmede güvenilmez → NEW_MASTER). STRIPPED_EXACT
-# (tam eşleşme, güvenli) sayıyı ayırt edici sayar → salt-numerik exact-dedup korunur.
-MATCH_CORE_FUZZY_REQUIRE_ALPHA = True
+MATCH_CORE_MIN_TOKEN_LEN = 2          # ayırt edici min token uzunluğu (VF/3M korunur)
+MATCH_CORE_FUZZY_REQUIRE_ALPHA = True  # loose stage'lerde çekirdek alfabetik olmalı
+                                       # (salt-sayı loose eşleşmede güvenilmez; STRIPPED_EXACT hariç)
 
-# --- Ayırt-edici-çekirdek COVERAGE gate (Round-4 #A, docs/audit/2026-06-10-round4-*) ---
-# FUZZY_PHRASE / TOKEN_COVERAGE loose stage'lerinde, eşleşen master'ın STRIPPED ayırt-edici
-# çekirdek token SAYISI, sorgu kaydının çekirdek token sayısına EŞİT olmalı (ES-side term
-# filtresi; Python doğrulaması YOK). Böylece kısa/kesik isim (SPM ⊂ SPM FLOW CONTROL,
-# WORLDWIDE LOGISTICS ⊂ MENLO WORLDWIDE LOGISTICS) farklı core-count taşıdığı için master'a
-# GİREMEZ → subset/truncation-shell over-merge (D1/D2/D3) ES tarafında elenir.
-# STRIPPED analyzer kullanılır (synonym YOK) — Round-3'te clean_analyzer token_count eşitliği
-# synonym_graph genişlemesi yüzünden recall'ı 8/10→4/10 kırıp GERİ ALINMIŞTI; STRIPPED tutarlı.
-# Yan-etki: gerçekten-kesik-ama-aynı firma (ör. 'INTER MEX MATERIALES DE') NEW_MASTER olur
-# (recall maliyeti, dedup_reviewer'a kalır). Flag ile kapatılabilir; reindex GEREKMEZ
-# (variations_stripped.name.token_count alanı zaten STRIPPED_EXACT tarafından kullanılıyor).
+# --- Ayırt-edici-çekirdek COVERAGE gate ---
+# FUZZY_PHRASE / TOKEN_COVERAGE'da eşleşen master'ın STRIPPED çekirdek token sayısı,
+# sorgunun çekirdek sayısına EŞİT olmalı (ES-side term filtresi). Böylece kısa/kesik
+# isim (SPM ⊂ SPM FLOW CONTROL) farklı sayı taşıdığından master'a giremez →
+# subset/truncation over-merge ES tarafında elenir. Yan-etki: gerçekten-kesik-ama-aynı
+# firma NEW_MASTER olabilir (recall maliyeti). Bkz. docs/audit/2026-06-10-round4-*.
 ENABLE_CORE_COVERAGE_GATE = True
 
-# --- msearch Ayarları ---
-MSEARCH_CHUNK_SIZE = 500  # Tek msearch çağrısında max sorgu sayısı
+# --- msearch ---
+MSEARCH_CHUNK_SIZE = 500  # tek msearch çağrısındaki max sorgu sayısı
 
-
-# --- Stage Konfigürasyonu ---
-# Stage eklemek:   Listeye yeni dict ekle + es_queries.py'e aynı isimde fonksiyon yaz
-# Stage çıkarmak:  "enabled": False yap veya listeden sil
-# Sıralamak:       "order" değerini veya listenin sırasını değiştir
-
+# --- Stage konfigürasyonu ---
+# Stage eklemek:  listeye dict ekle + es_queries.py'e aynı isimde fonksiyon yaz.
+# Çıkarmak:       "enabled": False yap. Sıralamak: "order" / liste sırasını değiştir.
 STAGES = [
     {
         "name": "CANONICAL_EXACT",
@@ -236,17 +181,10 @@ STAGES = [
         "index_variation": True,
     },
     {
-        # DEVRE DIŞI (2026-06-15, docs/audit/2026-06-15-round7-rescan-comparison.md):
-        # SUFFIX_FUZZY precision tüm stage'lerin en düşüğü (Round-7 doğrulanmış %68.0;
-        # diğer tüm stage'ler %92+). "Kazanımlarının" çoğu asıl amacı olan suffix-typo
-        # toleransı DEĞİL, subset/truncation over-merge'ü (SAMSUNG ELECTRONICS CO LTD ⊂
-        # SAMSUNG ... HAINAN FIBER OPTICS KOREA, BANCO MACRO ⊂ BANCO MACRO BANSUD,
-        # C/O acente + slash multi-entity). Asıl suffix-typo işini yeterince yapamıyor;
-        # gerçek suffix-stripped varyantlar zaten STRIPPED_EXACT, fuzzy varyantlar
-        # FUZZY_PHRASE tarafından yakalanıyor. PHONETIC/NGRAM ile aynı karar deseni:
-        # düşük-precision kaynağı kapatılır, recall kaybı sınırlı. Yeniden açmak için
-        # önce es_queries.SUFFIX_FUZZY'ye _core_coverage_filter eklenmeli (subset over-merge'i
-        # ES-side eler) + geo-stop reindex sonrası canlı doğrulama (live_probe).
+        # KAPALI: en düşük precision (Round-7 %68; diğerleri %92+); kazanımları asıl
+        # suffix-typo işi değil subset/truncation over-merge'üydü (STRIPPED_EXACT +
+        # FUZZY_PHRASE bunları zaten karşılıyor). Açmadan önce _core_coverage_filter
+        # eklenmeli. Bkz. docs/audit/2026-06-15-round7-rescan-comparison.md.
         "name": "SUFFIX_FUZZY",
         "order": 3,
         "query_fn": "SUFFIX_FUZZY",
@@ -255,37 +193,30 @@ STAGES = [
         "index_variation": False,
     },
     {
+        # min_score 9.0 denendi/geri alındı (recall 8/10→4/10); over-merge çekirdek-
+        # coverage gate (ENABLE_CORE_COVERAGE_GATE) ile çözüldüğünden 5.0'da bırakıldı.
         "name": "FUZZY_PHRASE",
         "order": 4,
         "query_fn": "FUZZY_PHRASE",
-        # Round-4 #D DENENDİ ve GERİ ALINDI: 5.0→9.0 raise live_probe recall'ı 8/10→4/10
-        # düşürdü (WITTE/VIBRACOUSTIC/CEVA-typo gibi gerçek varyantlar düşük skorlu 5-11 →
-        # bloklandı) — token_count'la aynı başarısızlık modu. Çekirdek-coverage gate (#A) zaten
-        # over-merge'i 0'a indirdiği için D GEREKSİZ + zararlı. min_score 5.0'da bırakıldı.
         "min_score": 5.0,
         "enabled": True,
         "index_variation": False,
     },
     {
+        # min_score 11.0 denendi/geri alındı (aynı recall kaybı); subset over-merge
+        # çekirdek-coverage gate ile recall-nötr çözüldü → 3.0'da bırakıldı.
         "name": "TOKEN_COVERAGE",
         "order": 5,
         "query_fn": "TOKEN_COVERAGE",
-        # Round-4 #D DENENDİ ve GERİ ALINDI (3.0→11.0): yukarıdaki FUZZY ile aynı recall kaybı.
-        # Subset/truncation over-merge çekirdek-coverage gate (#A, ENABLE_CORE_COVERAGE_GATE)
-        # ile ES-side ve recall-nötr şekilde çözülüyor. min_score 3.0'da bırakıldı.
         "min_score": 3.0,
         "enabled": True,
         "index_variation": False,
     },
     {
-        # DEVRE DIŞI (2026-06-03, docs/audit/2026-06-03-llm-judge-rematch-comparison.md):
-        # PHONETIC_MATCH over-merge'in birincil kaynağı (master-seviyesi %95,9 yanlış).
-        # Kök neden: double_metaphone max_code_len=4 → tek-token markaların fonetik
-        # ön-ekleri çakışıyor (INTERAGUA/INTERFIG/ENTRETEX → hepsi "ANTR"). guard
-        # (core≥1) ve token_count coverage (1==1) tek-token markada no-op kalıyor.
-        # Marjinal değer (tipo toleransı) STRIPPED_EXACT/SUFFIX_FUZZY/NGRAM ile kısmen
-        # karşılanıyor. Yeniden açılması için önce phonetic_filter'a max_code_len:8-10
-        # eklenip reindex + live_probe prefix-collision golden ile doğrulanmalı.
+        # KAPALI: over-merge'in birincil kaynağıydı (master-seviyesi %95.9 yanlış).
+        # Kök neden: double_metaphone max_code_len=4 → tek-token marka ön-ekleri
+        # çakışıyor (INTERAGUA/INTERFIG → "ANTR"). Açmak için phonetic_filter'a
+        # max_code_len:8-10 + reindex. Bkz. docs/audit/2026-06-03-llm-judge-rematch-*.
         "name": "PHONETIC_MATCH",
         "order": 6,
         "query_fn": "PHONETIC_MATCH",
@@ -294,12 +225,9 @@ STAGES = [
         "index_variation": False,
     },
     {
-        # DEVRE DIŞI (2026-06-03, docs/audit/2026-06-03-llm-judge-rematch-comparison.md):
-        # NGRAM_MATCH PHONETIC ile aynı hastalıkta — master-seviyesi %98,1 over-merge.
-        # Paylaşılan trigram'lar (ör. "… PERU S.A.C.", ortak ön-ekler) farklı markaları
-        # birleştiriyor; minimum_should_match:"75%" + min_score:10 kısa isimlerde gevşek.
-        # Yeniden açmak için: min_score 18-20'ye çıkar + kazanan adaya çekirdek-token
-        # coverage (token_count) zorunluluğu ekle, ardından reindex + live_probe ile doğrula.
+        # KAPALI: PHONETIC ile aynı hastalık (master-seviyesi %98.1 over-merge);
+        # paylaşılan trigram'lar farklı markaları birleştiriyor. Açmak için min_score
+        # 18-20 + çekirdek-token coverage + reindex. Bkz. aynı audit.
         "name": "NGRAM_MATCH",
         "order": 7,
         "query_fn": "NGRAM_MATCH",

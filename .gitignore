@@ -25,3 +25,7 @@ var/
 
 # QA analiz CSV ciktilari (gecici)
 qa_*.csv
+
+# Buyuk uretilen QA artifact'leri (GitHub 100MB sinirini asar)
+qa-artifacts/**/undermerge_candidates.jsonl
+*.jsonl.bak

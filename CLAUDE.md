@@ -29,6 +29,13 @@ This guide acts as the strict operational runbook and instruction filter for AI 
 > len≥5, ambiguity-skip) + altın-küme testi (`tests/test_synonym_phonetic.py`) ile korunur.
 > Geo + article sınıfları kapsam dışıdır.
 
+> [!NOTE]
+> **KİRLİ VERİ (DIRTY_DATA):** Eşleşmeyen bir kayıt isminde address synonym'i (street, avenue,
+> p.o. box...) içeriyor VE address çıkarılınca ayırt edici çekirdek kalmıyorsa, NEW_MASTER yerine
+> `DIRTY_DATA` işaretlenir. ES'e indekslenir (sonraki kayıtlar eşleşebilsin) ama PG'de kirli
+> işaretli; zayıf çekirdek nedeniyle distinctive-core gate onu magnet olmaktan korur. Karar ES
+> `_analyze` + Python set-membership (fuzzy değil). Dedup'a dahil edilmez. Bkz. es/queries.is_address_dirty.
+
 1.  **PostgreSQL Güvenliği**: raw string interpolation (`f"SELECT ... '{val}'"`) kullanılmamalıdır. Her zaman parametrik sorgular (`%s`) tercih edilmeli, toplu güncellemelerde `psycopg2.extras.execute_values` kullanılmalıdır.
 2.  **Index Yönetimi**: Elasticsearch index şeması, mapping'leri ve özel analyzer'lar sadece `es/manager.py` üzerinden yönetilmelidir. Ad-hoc veya geçici indeks oluşturmak yasaktır.
 3.  **Hata Yönetimi (Exception Handling)**: Toplu batch eşleştirmeleri sırasında tek bir satırda veya kayıtta hata alınırsa tüm batch işlemi durdurulmamalıdır. Hata loglanmalı, veritabanı rollback edilerek diğer kayıtlar için işlem devam etmelidir.
@@ -53,6 +60,7 @@ This guide acts as the strict operational runbook and instruction filter for AI 
 | `core/synonym_loader.py` | Python | `synonyms_data/` klasöründeki JSON dosyalarını parse eden ve kelimeleri gruplayan yükleyici. |
 | `core/core_name.py` | Python | Firma adı normalizasyonu ve `_first_meaningful_token` hesaplama. |
 | `core/input_filter.py` | Python | Girdi doğrulama ve `non_firm_placeholders` bazlı EXCLUDED filtrelemesi. |
+| `es/queries.py` (`is_address_dirty`) | Python | Address-baskın + çekirdek-zayıf isim tespiti → DIRTY_DATA (ES `_analyze` tokenizasyonu + set-membership). |
 | `core/synonym_phonetic.py` | Python | Synonym-içi fonetik typo-rescue: bozuk synonym token'larını kanonik forma çevirir (double-metaphone; markaya dokunmaz). |
 | `dedup/reviewer.py` | Python | ES Transform çıktılarını insan denetiminde birleştiren interaktif konsol aracı. |
 | `dedup/auto_merge.py` | Python | Yüksek güvenilirlikli duplicate adayları otomatik birleştiren toplu işlem aracı. |

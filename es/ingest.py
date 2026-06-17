@@ -12,7 +12,7 @@ from elasticsearch import Elasticsearch
 from core.synonym_loader import (
     get_all_country_codes,
     get_article_stopwords,
-    get_geo_stopword_tokens,
+    get_country_geo_stopwords,
     get_legal_suffix_tokens,
 )
 
@@ -103,13 +103,14 @@ def _build_clean_script(country_code: str) -> str:
 def _build_stripped_script(country_code: str) -> str:
     """Painless script: variations'tan generic token'ları kaldırarak variations_stripped'ı oluşturur.
 
-    legal_suffixes + articles + geo token'ları (global liste) çıkarılır;
-    business_sectors korunur. Geo token'ları global listeden alınır — search
-    analyzer'daki geo_stopwords_global ile simetri için (bkz. docs/audit/).
+    legal_suffixes + articles + KENDİ ülke geo token'ları çıkarılır; business_sectors
+    ve başka ülke adları korunur. Geo token'ları PER-COUNTRY listeden alınır
+    (get_country_geo_stopwords) — search analyzer'daki geo_stopwords_{cc} ile simetri için.
+    country_code HARD FILTER olduğundan kendi ülke adı gürültü, başka ülke adı sinyaldir.
     """
     suffix_tokens = [t for t in get_legal_suffix_tokens(country_code) if " " not in t]
     article_tokens = [t for t in get_article_stopwords(country_code) if " " not in t]
-    geo_tokens = [t for t in get_geo_stopword_tokens() if " " not in t]
+    geo_tokens = [t for t in get_country_geo_stopwords(country_code) if " " not in t]
     all_tokens = list(
         dict.fromkeys(suffix_tokens + article_tokens + geo_tokens)
     )  # dedup, order preserved

@@ -196,13 +196,31 @@ GEO_STOPWORD_MIN_LEN = 4
 def get_geo_stopword_tokens(min_len: int = GEO_STOPWORD_MIN_LEN) -> frozenset:
     """Tüm ülkelerin geo token'larının birleşimi; kısa ISO kodları (len < min_len) hariç.
 
-    ES stripped/fingerprint analyzer ve ingest pipeline'ı aynı listeyi kullanır →
-    index/search simetrisi. countries.json'dan türetilir, hardcode yok.
+    Yalnızca GLOBAL fallback (bilinmeyen ülke) stripped analyzer'ı için kullanılır.
+    Ülke-bilinen yollarda get_country_geo_stopwords(cc) tercih edilir (per-country strip).
+    countries.json'dan türetilir, hardcode yok.
     """
     union: set[str] = set()
     for cc in get_all_country_codes():
         union |= {t for t in get_country_name_tokens(cc) if len(t) >= min_len and " " not in t}
     return frozenset(union)
+
+
+@lru_cache(maxsize=None)
+def get_country_geo_stopwords(country_code: str, min_len: int = GEO_STOPWORD_MIN_LEN) -> frozenset:
+    """YALNIZCA verilen ülkenin kendi geo ad token'larını döner (örn. BR → {brasil, brazil}).
+
+    country_code HARD FILTER olduğundan bir shard'da herkes aynı ülkedir → firmanın KENDİ
+    ülke adı saf gürültüdür (herkes Brezilyalı) ve sıyrılır; BAŞKA ülke adları o shard
+    içinde AYIRT EDİCİ sinyaldir (BR'deki 'Mexico') ve KORUNUR. Global birleşim
+    (get_geo_stopword_tokens) yerine ülke-bilinen stripping yollarında kullanılır.
+
+    Kısa ISO kodları (len < min_len, örn. br/bra) marka çakışması riskiyle hariç tutulur.
+    """
+    cc = country_code.upper()
+    return frozenset(
+        t for t in get_country_name_tokens(cc) if len(t) >= min_len and " " not in t
+    )
 
 
 @lru_cache(maxsize=None)

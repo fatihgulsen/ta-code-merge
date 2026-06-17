@@ -101,17 +101,19 @@ def test_clean_script_collapses_consecutive_dup_tokens():
     assert "prevTok" in script, "ardışık-tekrar token dedup mantığı (prevTok) bulunamadı"
 
 
-def test_stripped_script_strips_geo_tokens():
-    """A1 (geo-mıknatıs fix, index tarafı): _build_stripped_script saklanan
-    variations_stripped string'inden geo token'larını da çıkarmalı — yoksa
-    match_phrase bitişikliği query tarafıyla tutarsız kalır (recall kaybı:
-    'AUDI ARGENTINA MOTORS' index'te 3 token, query'de 2). Geo token listesi
-    countries.json'dan türetilir (get_country_name_tokens) — hardcode yok."""
+def test_stripped_script_strips_only_own_country_geo():
+    """A1 (per-country geo, index tarafı): _build_stripped_script YALNIZCA ülkenin KENDİ
+    geo token'larını (AR → 'argentina') çıkarmalı; başka ülke adları ('mexico') o shard'da
+    ayırt edici olduğundan strip listesine GİRMEMELİ. Index tarafı, search analyzer'daki
+    geo_stopwords_{cc} ile simetriktir. Liste countries.json'dan türetilir (hardcode yok)."""
     from es.ingest import _build_stripped_script
-    from core.synonym_loader import get_country_name_tokens
+    from core.synonym_loader import get_country_geo_stopwords
     script = _build_stripped_script("AR")
-    geo_tokens = [t for t in get_country_name_tokens("AR") if " " not in t]
-    assert geo_tokens, "AR için countries.json'dan geo token bekleniyordu"
-    # En ayırt edici geo token (argentina) generic-strip listesinde olmalı
+    own_geo = [t for t in get_country_geo_stopwords("AR") if " " not in t]
+    assert own_geo, "AR için countries.json'dan kendi geo token'ı bekleniyordu"
+    # Kendi ülke adı (argentina) generic-strip listesinde olmalı
     assert "argentina" in script.lower(), \
-        "_build_stripped_script çıktısı 'argentina' geo token'ını strip listesinde içermeli"
+        "_build_stripped_script 'argentina' kendi geo token'ını strip listesinde içermeli"
+    # Başka ülke adı (mexico) strip listesine GİRMEMELİ (per-country izolasyon)
+    assert "mexico" not in script.lower(), \
+        "_build_stripped_script başka ülke adı 'mexico'yu strip ETMEMELİ (BR ≠ MX)"

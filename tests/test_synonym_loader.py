@@ -267,3 +267,20 @@ def test_geo_stopword_tokens_excludes_short_iso_codes():
         assert short not in geo, f"kısa kod {short!r} geo-stop'ta OLMAMALI (marka çakışması)"
     # Hepsi >= 4 karakter
     assert all(len(t) >= 4 for t in geo)
+
+
+def test_country_geo_stopwords_only_own_country():
+    """Per-country geo-stop YALNIZCA ülkenin kendi ad token'larını içerir; başka
+    ülkelerin adları (BR'de 'mexico') o shard'da ayırt edici sinyaldir → STRIP EDİLMEZ.
+    Kısa ISO kodları (br/bra) marka çakışması riskiyle hariç. Kaynak countries.json."""
+    from core.synonym_loader import get_country_geo_stopwords
+    br = {t.lower() for t in get_country_geo_stopwords("BR")}
+    # Kendi adı dahil
+    assert "brasil" in br or "brazil" in br
+    # Başka ülke adları HARİÇ (per-country izolasyon)
+    assert "mexico" not in br
+    assert "argentina" not in br
+    # Kısa ISO kodları hariç (len < 4)
+    for short in ["br", "bra"]:
+        assert short not in br, f"kısa kod {short!r} per-country geo-stop'ta OLMAMALI"
+    assert all(len(t) >= 4 for t in br)

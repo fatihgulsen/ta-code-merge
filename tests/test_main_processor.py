@@ -1178,3 +1178,14 @@ def test_select_winner_no_size_cap_huge_cluster_still_wins():
     stages = [_stage("STRIPPED_EXACT", 1, 1.0)]
     out = mp._select_winner([{"hits": {"hits": [huge]}}], stages)
     assert out["winner"] is not None and out["winner"]["master_id"] == "m1"
+
+
+def test_index_new_master_uses_country_alias_no_routing():
+    from unittest.mock import MagicMock
+    from matching.es_writer import _index_new_master
+    es = MagicMock()
+    rec = {"raw_name": "ACME LTD", "country": "TR", "phone": "", "address": ""}
+    _index_new_master(es, rec)
+    _, kwargs = es.index.call_args
+    assert kwargs["index"] == "living_companies_tr"
+    assert "routing" not in kwargs

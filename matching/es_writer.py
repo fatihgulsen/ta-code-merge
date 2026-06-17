@@ -2,7 +2,7 @@
 import logging
 import uuid
 
-from config import ES_INDEX
+from config import alias_for_country
 from es.ingest import pipeline_name
 
 logger = logging.getLogger(__name__)
@@ -45,9 +45,8 @@ def update_es_variations(es, matched: list[dict]) -> None:
             bulk_body.append(
                 {
                     "update": {
-                        "_index": ES_INDEX,
+                        "_index": alias_for_country(info["country"]),
                         "_id": master_id,
-                        "routing": info["country"].upper(),
                     }
                 }
             )
@@ -83,7 +82,7 @@ def _append_list_fields(bulk_body: list[dict], master_id: str, info: dict) -> No
         "phone_number": info["phone_numbers"],
         "address": info["addresses"],
     }
-    country = info["country"].upper()
+    country = info["country"]
 
     for field_name, values in field_map.items():
         for val in values:
@@ -93,9 +92,8 @@ def _append_list_fields(bulk_body: list[dict], master_id: str, info: dict) -> No
             bulk_body.append(
                 {
                     "update": {
-                        "_index": ES_INDEX,
+                        "_index": alias_for_country(country),
                         "_id": master_id,
-                        "routing": country,
                     }
                 }
             )
@@ -123,9 +121,8 @@ def build_new_master_doc(
 ) -> tuple[dict, str]:
     master_id = str(uuid.uuid4())
     doc = {
-        "_index": ES_INDEX,
+        "_index": alias_for_country(country),
         "_id": master_id,
-        "_routing": country.upper(),
         "_source": {
             "master_id": master_id,
             "variations": [{"name": name}],
@@ -158,9 +155,8 @@ def _index_new_master(es, rec: dict) -> str:
 
     try:
         es.index(
-            index=ES_INDEX,
+            index=alias_for_country(rec["country"]),
             id=master_id,
-            routing=rec["country"].upper(),
             body=doc,
             pipeline=pipeline_name(rec["country"]),
         )
@@ -170,9 +166,8 @@ def _index_new_master(es, rec: dict) -> str:
             f"Pipeline ile index hatasi ({exc!r}), pipeline olmadan deneniyor: {rec['raw_name'][:50]}"
         )
         es.index(
-            index=ES_INDEX,
+            index=alias_for_country(rec["country"]),
             id=master_id,
-            routing=rec["country"].upper(),
             body=doc,
         )
     return master_id
@@ -183,9 +178,9 @@ def _add_variation_to_master(
 ) -> None:
     """Eşleşen kaydın varyasyonunu ve meta bilgilerini master doc'a ekler."""
     v_lower = variation.lower().strip().rstrip(".,")
-    cc = country.upper()
+    cc = country
     try:
-        doc = es.get(index=ES_INDEX, id=master_doc_id, routing=cc)
+        doc = es.get(index=alias_for_country(cc), id=master_doc_id)
         source = doc["_source"]
         existing_variations = source.get("variations", [])
 
@@ -225,9 +220,8 @@ def _add_variation_to_master(
 
         pipe = pipeline_name(cc)
         es.index(
-            index=ES_INDEX,
+            index=alias_for_country(cc),
             id=master_doc_id,
-            routing=cc,
             body=body,
             pipeline=pipe,
         )

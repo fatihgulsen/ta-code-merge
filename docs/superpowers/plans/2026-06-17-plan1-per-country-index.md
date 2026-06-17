@@ -75,10 +75,12 @@ Expected: FAIL — `ImportError: cannot import name 'index_for_country'`
 
 - [ ] **Step 3: config.py'yi düzenle**
 
-`config.py` içinde `ES_INDEX = "living_companies_v2"` satırını şununla DEĞİŞTİR:
+`config.py` içinde `ES_INDEX = "living_companies_v2"` satırını **KORU** (Task 9'a kadar
+importer'lar kırılmasın diye deprecated olarak kalır) ve hemen ALTINA şunları EKLE:
 
 ```python
 # --- Elasticsearch index isimlendirme (per-country) ---
+# NOT: Yukarıdaki ES_INDEX deprecated; tüm importer'lar Task 9'da migrate edilince kaldırılır.
 INDEX_PREFIX = "living_companies"
 INDEX_VERSION = "v3"
 
@@ -913,7 +915,10 @@ git commit -m "feat: reviewer + analysis araclari per-country index/alias + anal
 Run: `\.venv\Scripts\python.exe -m pytest -v`
 Expected: `ES_INDEX` patch'li testler FAIL (AttributeError) + ES_INDEX import eden başka kırıklar.
 
-- [ ] **Step 2: Patch'leri kaldır**
+- [ ] **Step 2: config.py'den ES_INDEX'i kaldır + test patch'lerini temizle**
+
+Artık hiçbir üretim modülü `ES_INDEX` kullanmıyor (Task 2-8 migrate etti). `config.py`'deki
+deprecated `ES_INDEX = "living_companies_v2"` satırını SİL.
 
 `tests/test_main_processor.py` içindeki HER `patch.object(mp, "ES_INDEX", "test_index"),` ve `patch.object(pipeline, "ES_INDEX", "test_index"),` satırını SİL. Bu testler `es` client'ı mock'ladığından gerçek index adı önemsizdir; testte index adına dair bir assertion varsa (`"test_index"` bekleyen) onu ilgili ülkenin alias'ına (`living_companies_<cc>`) göre güncelle. Her testin kullandığı ülke koduna bak (genelde mock rec'lerde `country`), assertion'ı `alias_for_country(cc)` beklentisine çevir.
 

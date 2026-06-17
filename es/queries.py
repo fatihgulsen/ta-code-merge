@@ -7,12 +7,13 @@ Stage eklemek için: (1) bu dosyaya aynı imzada (name, country, **kwargs) fonks
 
 import logging
 from elasticsearch import Elasticsearch
-from core.synonym_loader import get_all_country_codes
+from core.synonym_loader import get_all_country_codes, get_business_sector_tokens
 from core.core_name import normalize_core
 from config import (
     PHONETIC_MIN_CORE_TOKENS,
     NGRAM_MIN_CORE_TOKENS,
     ENABLE_CORE_GATE,
+    ENABLE_GENERIC_CORE_GATE,
     MATCH_CORE_MIN_TOKEN_LEN,
     MATCH_CORE_FUZZY_REQUIRE_ALPHA,
     ENABLE_CORE_COVERAGE_GATE,
@@ -61,6 +62,12 @@ _TOKEN_COUNT_CACHE_MAX = 200_000
 _DISTINCTIVE_CORE_CACHE: dict[tuple[str, str, bool], bool] = {}
 
 
+def _analyze_index(country: str) -> str:
+    """`_analyze` çağrıları için hedef index: override varsa o, yoksa ülke alias'ı."""
+    from config import ES_ANALYZE_INDEX_OVERRIDE, alias_for_country
+    return ES_ANALYZE_INDEX_OVERRIDE or alias_for_country(country)
+
+
 def clear_token_count_cache() -> None:
     """Token-count + çekirdek-gate cache'lerini temizler (test izolasyonu / reindex sonrası)."""
     _TOKEN_COUNT_CACHE.clear()
@@ -71,10 +78,12 @@ def _has_distinctive_core(es: Elasticsearch, name: str, country: str, require_al
     """İsim, ES STRIPPED analyzer çıktısında ayırt edici bir çekirdek taşıyor mu?
 
     Ayırt edici = en az bir token uzunluğu >= MATCH_CORE_MIN_TOKEN_LEN (require_alpha ise
-    ayrıca alfabetik — salt-sayı değil). Karar %100 ES analyzer çıktısından gelir →
-    Python fuzzy/normalize yok, reindex sonrası tutarlı. Bu bir GUARD'dır (stage çalışsın mı),
-    eşleşme doğrulaması değil. es yoksa, gate kapalıysa veya _analyze hata verirse True döner
-    (mevcut davranışı bozma); hata durumu cache'lenmez.
+    ayrıca alfabetik — salt-sayı değil) VE (ENABLE_GENERIC_CORE_GATE ise) o token jenerik
+    bir iş/sektör kelimesi DEĞİL (business_sectors). Salt-jenerik çekirdek ('trading',
+    'importaciones') alakasız firmaları tek token'a çöküp magnet üretir → ayırt edici sayılmaz.
+    Karar %100 ES analyzer çıktısından + JSON business_sectors'tan gelir (hardcode yok,
+    ülke-bilinçli). Bu bir GUARD'dır (stage çalışsın mı), eşleşme doğrulaması değil. es yoksa,
+    gate kapalıysa veya _analyze hata verirse True döner (mevcut davranışı bozma).
 
     Args:
         es: Elasticsearch istemcisi (None ise guard devre dışı).
@@ -93,13 +102,16 @@ def _has_distinctive_core(es: Elasticsearch, name: str, country: str, require_al
     if cached is not None:
         return cached
     try:
-        from config import ES_INDEX
-        res = es.indices.analyze(index=ES_INDEX, body={"analyzer": analyzer, "text": name})
+        res = es.indices.analyze(index=_analyze_index(country), body={"analyzer": analyzer, "text": name})
         tokens = [t.get("token", "") for t in res.get("tokens", [])]
     except Exception:
         return True  # analyzer erişilemiyor → guard'ı atla (cache'leme)
+    # Jenerik-çekirdek gate: salt-jenerik (business_sector) token'lar ayırt edici sayılmaz.
+    generic = get_business_sector_tokens(country) if ENABLE_GENERIC_CORE_GATE else frozenset()
     result = any(
-        len(tok) >= MATCH_CORE_MIN_TOKEN_LEN and (not require_alpha or any(c.isalpha() for c in tok))
+        len(tok) >= MATCH_CORE_MIN_TOKEN_LEN
+        and (not require_alpha or any(c.isalpha() for c in tok))
+        and tok not in generic
         for tok in tokens
     )
     if len(_DISTINCTIVE_CORE_CACHE) < _TOKEN_COUNT_CACHE_MAX:
@@ -107,13 +119,14 @@ def _has_distinctive_core(es: Elasticsearch, name: str, country: str, require_al
     return result
 
 
-def _get_token_count(es: Elasticsearch, text: str, analyzer: str) -> int:
+def _get_token_count(es: Elasticsearch, text: str, analyzer: str, country: str) -> int:
     """ES _analyze API ile metnin token sayısını döner; (analyzer, text) ile memoize edilir.
 
     Args:
         es: Elasticsearch istemcisi.
         text: Analiz edilecek metin.
         analyzer: Kullanılacak ES analyzer adı.
+        country: Ülke kodu (_analyze hedef index'ini belirler).
 
     Returns:
         Token sayısı; es/text boşsa veya hata olursa 0 (cache'lenmez).
@@ -125,9 +138,7 @@ def _get_token_count(es: Elasticsearch, text: str, analyzer: str) -> int:
     if cached is not None:
         return cached
     try:
-        # Circular import önlemek için local import
-        from config import ES_INDEX
-        res = es.indices.analyze(index=ES_INDEX, body={"analyzer": analyzer, "text": text})
+        res = es.indices.analyze(index=_analyze_index(country), body={"analyzer": analyzer, "text": text})
         count = len(res.get("tokens", []))
     except Exception:
         # Index henüz oluşmamış vb. → 0 döner, cache'lenmez (sonra tekrar denenir).
@@ -156,7 +167,7 @@ def _core_coverage_filter(es: Elasticsearch, name: str, country: str) -> list:
     """
     if not ENABLE_CORE_COVERAGE_GATE or es is None:
         return []
-    count = _get_token_count(es, name, "stripped_search_analyzer")
+    count = _get_token_count(es, name, "stripped_search_analyzer", country)
     if count <= 0:
         return []
     return [{
@@ -191,7 +202,7 @@ def CANONICAL_EXACT(name: str, country: str, es: Elasticsearch = None, **kwargs)
     if not _has_distinctive_core(es, name, country, require_alpha=False):
         return MATCH_NONE
     analyzer = _get_analyzer(country)
-    expected_count = _get_token_count(es, name, analyzer)
+    expected_count = _get_token_count(es, name, analyzer, country)
 
     return {
         "query": {
@@ -245,7 +256,7 @@ def STRIPPED_EXACT(name: str, country: str, es: Elasticsearch = None, **kwargs) 
     if not _has_distinctive_core(es, name, country, require_alpha=False):
         return MATCH_NONE
     analyzer = _get_stripped_analyzer(country)
-    expected_count = _get_token_count(es, name, analyzer)
+    expected_count = _get_token_count(es, name, analyzer, country)
 
     return {
         "query": {
@@ -494,7 +505,7 @@ def PHONETIC_MATCH(name: str, country: str, es: Elasticsearch = None, **kwargs) 
     core = normalize_core(name, country, drop_geo=True)
     if len(core) < PHONETIC_MIN_CORE_TOKENS:
         return MATCH_NONE
-    expected_count = _get_token_count(es, name, _get_stripped_analyzer(country))
+    expected_count = _get_token_count(es, name, _get_stripped_analyzer(country), country)
     nested_filter = (
         [{"term": {"variations_stripped.name.token_count": expected_count}}]
         if expected_count > 0 else []

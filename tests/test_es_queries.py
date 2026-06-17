@@ -277,6 +277,31 @@ def test_core_gate_numeric_only_blocked_in_fuzzy_allowed_in_stripped():
     assert es_queries.STRIPPED_EXACT("300 S.A. DE C.V.", "MX", es=es) != es_queries.MATCH_NONE
 
 
+def test_generic_core_gate_blocks_solo_generic_word():
+    """Jenerik-kelime magnet fix: stripped çekirdek YALNIZCA jenerik iş-kelimesi ('trading',
+    'importaciones', 'inversiones', 'group') ise tüm merge stage'lerinde MATCH_NONE → NEW_MASTER.
+    Kök neden: 'L M TRADING' / 'B&B TRADING' tek token 'trading'e çöküp STRIPPED_EXACT'te
+    birleşiyordu. Jenerik küme business_sectors JSON'undan gelir (PE)."""
+    for word in ("trading", "importaciones", "inversiones", "group"):
+        es = _es_returning([word])
+        for fn in (es_queries.CANONICAL_EXACT, es_queries.STRIPPED_EXACT,
+                   es_queries.TOKEN_COVERAGE, es_queries.FUZZY_PHRASE):
+            es_queries.clear_token_count_cache()
+            assert fn(f"L M {word.upper()} S.A.", "PE", es=es) == es_queries.MATCH_NONE, \
+                f"{fn.__name__} salt-jenerik '{word}' çekirdeğini bloklamalı"
+
+
+def test_generic_core_gate_allows_brand_plus_generic():
+    """Çok-token çekirdekte ≥1 jenerik-OLMAYAN token varsa ayırt edicidir → geçer.
+    'KIMBERLY CLARK' (marka) ve 'APEX TRADING' (apex ayırt edici) korunur."""
+    es_queries.clear_token_count_cache()
+    assert es_queries.STRIPPED_EXACT("KIMBERLY CLARK S.A.", "PE",
+                                     es=_es_returning(["kimberly", "clark"])) != es_queries.MATCH_NONE
+    es_queries.clear_token_count_cache()
+    assert es_queries.TOKEN_COVERAGE("APEX TRADING", "PE",
+                                     es=_es_returning(["apex", "trading"])) != es_queries.MATCH_NONE
+
+
 def test_core_gate_inert_without_es():
     """es yoksa (birim test / eski çağrı yolu) guard devre dışı — mevcut davranış korunur."""
     assert es_queries.TOKEN_COVERAGE("M S.A.", "MX") != es_queries.MATCH_NONE
@@ -371,8 +396,8 @@ def test_get_token_count_memoizes_same_analyzer_text():
     es = MagicMock()
     es.indices.analyze.return_value = {"tokens": [{"t": 1}, {"t": 2}, {"t": 3}]}
 
-    a = es_queries._get_token_count(es, "ACME S.A. DE C.V.", "stripped_search_analyzer_mx")
-    b = es_queries._get_token_count(es, "ACME S.A. DE C.V.", "stripped_search_analyzer_mx")
+    a = es_queries._get_token_count(es, "ACME S.A. DE C.V.", "stripped_search_analyzer_mx", "MX")
+    b = es_queries._get_token_count(es, "ACME S.A. DE C.V.", "stripped_search_analyzer_mx", "MX")
     assert a == b == 3
     assert es.indices.analyze.call_count == 1  # ikinci çağrı cache'ten
 
@@ -382,9 +407,9 @@ def test_get_token_count_distinct_keys_recompute():
     es_queries.clear_token_count_cache()
     es = MagicMock()
     es.indices.analyze.return_value = {"tokens": [{"t": 1}]}
-    es_queries._get_token_count(es, "A", "an1")
-    es_queries._get_token_count(es, "B", "an1")           # farklı text
-    es_queries._get_token_count(es, "A", "an2")           # farklı analyzer
+    es_queries._get_token_count(es, "A", "an1", "MX")
+    es_queries._get_token_count(es, "B", "an1", "MX")    # farklı text
+    es_queries._get_token_count(es, "A", "an2", "MX")    # farklı analyzer
     assert es.indices.analyze.call_count == 3
 
 
@@ -394,8 +419,20 @@ def test_get_token_count_does_not_cache_errors():
     es_queries.clear_token_count_cache()
     es = MagicMock()
     es.indices.analyze.side_effect = [RuntimeError("down"), {"tokens": [{"t": 1}, {"t": 2}]}]
-    first = es_queries._get_token_count(es, "X", "an")
-    second = es_queries._get_token_count(es, "X", "an")
+    first = es_queries._get_token_count(es, "X", "an", "MX")
+    second = es_queries._get_token_count(es, "X", "an", "MX")
     assert first == 0          # hata → 0
     assert second == 2         # cache'lenmediği için yeniden denendi ve başardı
     assert es.indices.analyze.call_count == 2
+
+
+def test_analyze_index_uses_country_alias():
+    from es.queries import _analyze_index
+    assert _analyze_index("tr") == "living_companies_tr"
+
+
+def test_analyze_index_respects_override(monkeypatch):
+    import config
+    monkeypatch.setattr(config, "ES_ANALYZE_INDEX_OVERRIDE", "probe_idx")
+    from es.queries import _analyze_index
+    assert _analyze_index("tr") == "probe_idx"

@@ -1,6 +1,6 @@
 {
   "legal_suffixes": [
-    "sociedad anonima,sociedad anónima,sociedad annima,sociedad anionima,socidad anonima,soceidad anonima,Public Limited Company,Corporation,Corp,Incorporated,Inc,s.a.,sa,s a,s.a,soc anonima,soc anónima,soc. anonima,soc. anónima=>sa",
+    "sociedad anonima,sociedad anónima,sociedad annima,sociedad anionima,socidad anonima,soceidad anonima,Public Limited Company,Corporation,Corp,Incorporated,Inc,s.a.,sa,s a,s.a,sacif,s.a.c.i.f.,saci,s.a.c.i.,saic,s.a.i.c.,saicf,s.a.i.c.f.,icsa,i.c.s.a.,sacifia,s.a.c.i.f.i.a.,soc anonima,soc anónima,soc. anonima,soc. anónima=>sa",
     "sociedad anonima unipersonal,sociedad anónima unipersonal,sociedad annima unipersonal,s.a.u.,sau,s a u,s.a.u,sa unipersonal,soc anonima unipersonal=>sau",
     "sociedad de responsabilidad limitada,sociedad de responsavilidad limitada,sociedad de responsablidad limitada,Limited,Limited Company,Ltd,Limited Liability Company,LLC,s.r.l.,srl,s r l,s.r.l,soc resp ltda,soc. de resp. ltda,s de rl,s. de r.l.=>srl",
     "sociedad por acciones simplificada,sociedad por aciones simplificada,Simplified Joint Stock Company,s.a.s.,sas,s a s,s.a.s,soc por acciones simplificada=>sas",

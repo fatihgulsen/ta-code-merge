@@ -20,6 +20,15 @@ This guide acts as the strict operational runbook and instruction filter for AI 
 > **PYTHON ÜZERİNDE FUZZY/LEVENSHTEIN YASAKTIR**:
 > Python kodu içerisinde `RapidFuzz`, `Levenshtein` vb. ağır kütüphanelerle string benzerliği aramak **KATI BİR ŞEKİLDE YASAKTIR.** Fuzzy yetenekleri Elasticsearch Query DSL (`fuzziness: "AUTO"`) ve Painless script rescore adımları ile ES tarafında çözülür.
 
+> [!NOTE]
+> **İSTİSNA — synonym-içi fonetik:** `core/synonym_phonetic.py` double-metaphone (saf-Python
+> `metaphone` paketi) kullanır. Bu string-distance/Levenshtein DEĞİL, fonetik kodlamadır ve
+> YALNIZCA synonym sözlüğüne (legal/sector/address) uygulanır — markaya/çekirdeğe ASLA. Bozuk
+> yazımlı synonym token'larını (limtd→ltd.) kanonik forma çevirip çekirdek-exact recall'ını
+> artırır. Eşleşme metaphone kodunda tam/prefix/≤1-sub; marka over-rescue guard'ları (token
+> len≥5, ambiguity-skip) + altın-küme testi (`tests/test_synonym_phonetic.py`) ile korunur.
+> Geo + article sınıfları kapsam dışıdır.
+
 1.  **PostgreSQL Güvenliği**: raw string interpolation (`f"SELECT ... '{val}'"`) kullanılmamalıdır. Her zaman parametrik sorgular (`%s`) tercih edilmeli, toplu güncellemelerde `psycopg2.extras.execute_values` kullanılmalıdır.
 2.  **Index Yönetimi**: Elasticsearch index şeması, mapping'leri ve özel analyzer'lar sadece `es/manager.py` üzerinden yönetilmelidir. Ad-hoc veya geçici indeks oluşturmak yasaktır.
 3.  **Hata Yönetimi (Exception Handling)**: Toplu batch eşleştirmeleri sırasında tek bir satırda veya kayıtta hata alınırsa tüm batch işlemi durdurulmamalıdır. Hata loglanmalı, veritabanı rollback edilerek diğer kayıtlar için işlem devam etmelidir.
@@ -44,6 +53,7 @@ This guide acts as the strict operational runbook and instruction filter for AI 
 | `core/synonym_loader.py` | Python | `synonyms_data/` klasöründeki JSON dosyalarını parse eden ve kelimeleri gruplayan yükleyici. |
 | `core/core_name.py` | Python | Firma adı normalizasyonu ve `_first_meaningful_token` hesaplama. |
 | `core/input_filter.py` | Python | Girdi doğrulama ve `non_firm_placeholders` bazlı EXCLUDED filtrelemesi. |
+| `core/synonym_phonetic.py` | Python | Synonym-içi fonetik typo-rescue: bozuk synonym token'larını kanonik forma çevirir (double-metaphone; markaya dokunmaz). |
 | `dedup/reviewer.py` | Python | ES Transform çıktılarını insan denetiminde birleştiren interaktif konsol aracı. |
 | `dedup/auto_merge.py` | Python | Yüksek güvenilirlikli duplicate adayları otomatik birleştiren toplu işlem aracı. |
 

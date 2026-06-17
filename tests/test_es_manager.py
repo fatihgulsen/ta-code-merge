@@ -52,11 +52,11 @@ def test_only_target_country_analyzer_built():
     from core.synonym_loader import get_all_country_codes
     settings = build_index_settings(es=None, country_code="TR")
     analyzers = settings["settings"]["analysis"]["analyzer"]
-    assert "clean_analyzer_tr" in analyzers
+    assert "clean_analyzer_TR" in analyzers
     assert "clean_analyzer_common" in analyzers  # default + token_count
     others = [c for c in get_all_country_codes() if c != "TR"][:3]
     for cc in others:
-        assert f"clean_analyzer_{cc.lower()}" not in analyzers
+        assert f"clean_analyzer_{cc}" not in analyzers
 
 
 def test_routing_not_required_in_mapping():

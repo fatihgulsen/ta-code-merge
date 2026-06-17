@@ -201,8 +201,8 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
     if country_code and country_code not in ("__common__", "__COMMON__"):
         cc = country_code.upper()
         country_synonyms = list(load_synonyms_for_country(cc))
-        filter_name = f"synonym_filter_{cc.lower()}"
-        analyzer_name = f"clean_analyzer_{cc.lower()}"
+        filter_name = f"synonym_filter_{cc}"
+        analyzer_name = f"clean_analyzer_{cc}"
         filters[filter_name] = {"type": "synonym_graph", "synonyms": country_synonyms, "lenient": True}
         analyzers[analyzer_name] = {
             "tokenizer": "standard",

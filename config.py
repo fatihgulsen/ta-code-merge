@@ -21,6 +21,10 @@ class MatchType:
     # anchor'ı bu tipe demote edilir → aynı master_code'da >1 NEW_MASTER kalmaz
     # (watch-query kör noktası). Bkz. docs/audit/2026-06-15-*.
     AUTO_DEDUP = "AUTO_DEDUP"
+    # Firma-OLMAYAN kirli isim: address synonym'i baskın + ayırt edici çekirdek yok.
+    # ES'e indekslenir (sonraki kayıtlar eşleşebilsin) ama PG'de kirli işaretli; zayıf
+    # çekirdek nedeniyle distinctive-core gate onu magnet olmaktan korur. Bkz. Plan 3.
+    DIRTY_DATA = "DIRTY_DATA"
     # Firma-olmayan girdi (placeholder, salt-kod, n/a): eşleştirmeye sokulmadan
     # izole edilir, ES'e indekslenmez (magnet olamaz). Bkz. input_filter.py.
     EXCLUDED = "EXCLUDED"
@@ -117,6 +121,12 @@ NGRAM_MIN_CORE_TOKENS = 1
 # salt-kod/sayı veya uzun bir isim gerçek bir yeni firma olabilir → elenmez.
 # Bkz. docs/audit/2026-06-03-llm-judge-rematch-comparison.md §4.
 ENABLE_INPUT_FILTER = True
+
+# --- Kirli veri (DIRTY_DATA) işaretleme ---
+# Eşleşmeyen kayıt, isminde address synonym'i içeriyor VE address çıkarılınca ayırt edici
+# çekirdek kalmıyorsa NEW_MASTER yerine DIRTY_DATA işaretlenir (indekslenir ama PG'de işaretli).
+# Karar ES _analyze tokenizasyonu + Python set-membership ile (fuzzy değil). Bkz. es/queries.is_address_dirty.
+ENABLE_DIRTY_DATA = True
 
 # --- Batch-içi otomatik dedup ---
 # Batch'te oluşan NEW_MASTER'lar arasında aynı kanonik fingerprint'e sahip

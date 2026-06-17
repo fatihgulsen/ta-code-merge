@@ -153,3 +153,13 @@ def test_alias_for_country_versionless():
 def test_analyze_index_override_default_none():
     import config
     assert config.ES_ANALYZE_INDEX_OVERRIDE is None
+
+
+def test_dirty_data_match_type_exists():
+    from config import MatchType
+    assert MatchType.DIRTY_DATA == "DIRTY_DATA"
+
+
+def test_enable_dirty_data_flag_default_true():
+    import config
+    assert config.ENABLE_DIRTY_DATA is True

@@ -52,6 +52,7 @@ from es.manager import create_index, get_es_client
 from es.ingest import register_all_pipelines, pipeline_name
 import es.queries as _es_queries
 from core.input_filter import classify_input
+from core.synonym_phonetic import canonicalize_phonetic
 from dedup.auto_merge import auto_merge_duplicates
 
 from matching.db_io import (
@@ -111,7 +112,7 @@ def run_stage(
     queries = []
     for rec in tax_records:
         q = query_fn(
-            name=rec["raw_name"],
+            name=rec["match_name"],
             country=rec["country"],
             tax_number=rec.get("tax", ""),
         )
@@ -219,7 +220,7 @@ def _build_stage_body(es, rec: dict, active_stages: list[dict]) -> list[dict]:
     body: list[dict] = []
     for stage in active_stages:
         query_fn = getattr(_es_queries, stage["query_fn"])
-        q = query_fn(name=rec["raw_name"], country=rec["country"], es=es)
+        q = query_fn(name=rec["match_name"], country=rec["country"], es=es)
         body.append({"index": alias_for_country(rec["country"])})
         body.append(q)
     return body
@@ -295,7 +296,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
     duplicate_logs: list[tuple] = []
 
     for rec in records:
-        norm_name = rec["raw_name"].lower().strip()
+        norm_name = rec["match_name"].lower().strip()
         dedup_key = (norm_name, rec["country"])
         existing_master_id = seen.get(dedup_key)
         if existing_master_id:
@@ -343,7 +344,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
                 "pipeline": pipeline_name(rec["country"]),
                 "_source": {
                     "master_id": master_id,
-                    "variations": [{"name": rec["raw_name"]}],
+                    "variations": [{"name": rec["match_name"]}],
                     "variations_stripped": [],
                     "country_code": rec["country"].upper(),
                 },
@@ -709,6 +710,7 @@ def process_all_data() -> None:
                         rec = {
                             "row_id": row_id,
                             "raw_name": raw_name,
+                            "match_name": canonicalize_phonetic(raw_name, country),
                             "country": country,
                             "tax": row.get(col_tax) or "" if col_tax else "",
                             "phone": row.get(col_phone) or "" if col_phone else "",

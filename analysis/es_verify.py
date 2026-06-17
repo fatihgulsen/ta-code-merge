@@ -9,14 +9,14 @@ import sys
 
 import es.queries as _eq
 from es.manager import get_es_client
-from config import ES_INDEX
+from config import alias_for_country
 
 
 def verify_pair(es, name: str, country: str, stage_name: str) -> list[dict]:
     """İsmi ilgili stage query'siyle ES'e sorgular, hit'leri (master_id, score, variation) döner."""
     query_fn = getattr(_eq, stage_name)
     body = query_fn(name=name, country=country, es=es)
-    resp = es.search(index=ES_INDEX, body=body, routing=country.upper())
+    resp = es.search(index=alias_for_country(country), body=body)
     out = []
     for h in resp["hits"]["hits"]:
         src = h.get("_source", {})

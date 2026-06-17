@@ -73,7 +73,7 @@ def _build_probe_index(es) -> list[dict]:
     if es.indices.exists(index=PROBE_INDEX):
         es.indices.delete(index=PROBE_INDEX, ignore=[404])
     es.options(request_timeout=120).indices.create(
-        index=PROBE_INDEX, body=build_index_settings(es)
+        index=PROBE_INDEX, body=build_index_settings(es, country_code=COUNTRY)
     )
     # MX ingest pipeline (güncel es_ingest kodundan) — geçici isimle kaydet
     pname = pipeline_name(COUNTRY)
@@ -86,7 +86,6 @@ def _build_probe_index(es) -> list[dict]:
             es.index(
                 index=PROBE_INDEX,
                 id=doc_id,
-                routing=COUNTRY,
                 pipeline=pname,
                 document={
                     "master_id": doc_id,
@@ -117,7 +116,7 @@ def _probe(es, name: str, self_id: str) -> dict | None:
         q = body.setdefault("query", {}).setdefault("bool", {})
         q.setdefault("must_not", []).append({"ids": {"values": [self_id]}})
         body["size"] = 3
-        res = es.search(index=PROBE_INDEX, body=body, routing=COUNTRY)
+        res = es.search(index=PROBE_INDEX, body=body)
         hits = res["hits"]["hits"]
         if hits and hits[0]["_score"] >= stage["min_score"]:
             top = hits[0]
@@ -136,14 +135,14 @@ def run(keep: bool = False) -> None:
     # index'i GÜNCEL analyzer'lara sahip olduğundan token sayıları ancak ES_INDEX
     # probe index'e işaret ederse tutarlı olur (aksi halde prod'un ESKİ analyzer'ı
     # yanlış sayı verir). Çalışma boyunca yönlendir, sonra geri al.
-    original_index = config.ES_INDEX
-    config.ES_INDEX = PROBE_INDEX
+    original_override = config.ES_ANALYZE_INDEX_OVERRIDE
+    config.ES_ANALYZE_INDEX_OVERRIDE = PROBE_INDEX
     try:
         indexed = _build_probe_index(es)
         print(f"Probe index '{PROBE_INDEX}': {len(indexed)} kayıt indexlendi.\n")
         _run_probe(es, indexed)
     finally:
-        config.ES_INDEX = original_index
+        config.ES_ANALYZE_INDEX_OVERRIDE = original_override
         if not keep:
             es.indices.delete(index=PROBE_INDEX, ignore=[404])
             print(f"\nGeçici index '{PROBE_INDEX}' silindi.")

@@ -5,7 +5,7 @@ import sys
 
 from elasticsearch import Elasticsearch
 
-from config import ES_INDEX
+from config import alias_for_country
 from es.manager import get_es_client
 from es.transform import get_potential_duplicates
 
@@ -38,7 +38,7 @@ def review_duplicates(es: Elasticsearch, min_count: int = 2) -> None:
             for mid_info in master_ids:
                 mid = mid_info if isinstance(mid_info, str) else mid_info.get("key", "?")
                 try:
-                    doc = es.get(index=ES_INDEX, id=mid)
+                    doc = es.get(index=alias_for_country(dup["country_code"]), id=mid)
                     src = doc["_source"]
                     print(f"  [{mid}]")
                     print(f"    Variations: {src.get('variations', [])[:5]}")
@@ -58,7 +58,7 @@ def review_duplicates(es: Elasticsearch, min_count: int = 2) -> None:
                 secondaries = []
                 for m in master_ids[1:]:
                     secondaries.append(m if isinstance(m, str) else m.get("key"))
-                _merge_masters(es, primary, secondaries)
+                _merge_masters(es, primary, secondaries, dup["country_code"])
                 print(f"  -> {len(secondaries)} kayit {primary}'e birlestirildi.\n")
             else:
                 print("  -> Yeterli master yok, atlaniyor.\n")
@@ -66,17 +66,17 @@ def review_duplicates(es: Elasticsearch, min_count: int = 2) -> None:
             print("  -> Atlandi.\n")
 
 
-def _merge_masters(es: Elasticsearch, primary_id: str, secondary_ids: list[str]) -> None:
+def _merge_masters(es: Elasticsearch, primary_id: str, secondary_ids: list[str], country: str) -> None:
     """Secondary master'ların variation'larını primary'e taşır, secondary doc'ları siler."""
     for sec_id in secondary_ids:
         try:
-            sec_doc = es.get(index=ES_INDEX, id=sec_id)
+            sec_doc = es.get(index=alias_for_country(country), id=sec_id)
             sec_variations = sec_doc["_source"].get("variations", [])
             sec_stripped = sec_doc["_source"].get("variations_stripped", [])
 
             # Variation'ları primary'e ekle
             es.update(
-                index=ES_INDEX,
+                index=alias_for_country(country),
                 id=primary_id,
                 body={
                     "script": {
@@ -100,7 +100,7 @@ def _merge_masters(es: Elasticsearch, primary_id: str, secondary_ids: list[str])
                 },
             )
 
-            es.delete(index=ES_INDEX, id=sec_id)
+            es.delete(index=alias_for_country(country), id=sec_id)
             logger.info(f"Master {sec_id} -> {primary_id} birlestirildi.")
 
         except Exception as e:

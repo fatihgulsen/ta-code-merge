@@ -63,10 +63,8 @@ AUTO_CREATE_UPDATE_COLUMNS = True
 
 # --- Elasticsearch bağlantısı ---
 ES_HOST = "http://localhost:9200"
-ES_INDEX = "living_companies_v2"
 
 # --- Elasticsearch index isimlendirme (per-country) ---
-# NOT: Yukarıdaki ES_INDEX deprecated; tüm importer'lar sonraki task'larda migrate edilince kaldırılır.
 INDEX_PREFIX = "living_companies"
 INDEX_VERSION = "v3"
 

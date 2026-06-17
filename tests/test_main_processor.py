@@ -211,8 +211,7 @@ def test_create_new_masters_produces_5_element_tuple():
 
     with patch.object(mp, "execute_values", side_effect=fake_execute_values), \
          patch("matching.pipeline.helpers.bulk", return_value=(2, [])), \
-         patch.object(mp, "NEW_MASTER_SUBBATCH_SIZE", 10), \
-         patch.object(mp, "ES_INDEX", "test_index", create=True):
+         patch.object(mp, "NEW_MASTER_SUBBATCH_SIZE", 10):
         mp.create_new_masters(mock_es, mock_write_cursor, mock_write_conn, records)
 
     assert captured_updates, "No pg_updates were flushed — create_new_masters must call execute_values."
@@ -282,7 +281,6 @@ def test_batch_end_flush_sql_binds_all_5_columns():
          patch.object(mp, "ensure_stage_log_table"), \
          patch.object(mp, "ES_REFRESH_INTERVAL", 1000, create=True), \
          patch.object(mp, "BATCH_SIZE", 10), \
-         patch.object(mp, "ES_INDEX", "test_index", create=True), \
          patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
          patch("matching.pipeline.get_es_client", return_value=mock_es), \
          patch("matching.pipeline.create_index"), \
@@ -388,7 +386,6 @@ def test_per_row_exception_does_not_halt_batch():
          patch.object(mp, "validate_db_schema"), \
          patch.object(mp, "ensure_stage_log_table"), \
          patch.object(mp, "BATCH_SIZE", 10), \
-         patch.object(mp, "ES_INDEX", "test_index", create=True), \
          patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
          patch("matching.pipeline.get_es_client", return_value=mock_es), \
          patch("matching.pipeline.create_index"), \
@@ -678,7 +675,6 @@ def test_all_pg_updates_appends_use_float_score():
          patch.object(mp, "ensure_stage_log_table"), \
          patch.object(mp, "ES_REFRESH_INTERVAL", 1000, create=True), \
          patch.object(mp, "BATCH_SIZE", 10), \
-         patch.object(mp, "ES_INDEX", "test_index", create=True), \
          patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
          patch("matching.pipeline.get_es_client", return_value=mock_es), \
          patch("matching.pipeline.create_index"), \
@@ -773,7 +769,6 @@ def test_pg_update_flush_sql_uses_safe_identifiers():
          patch.object(mp, "ensure_stage_log_table"), \
          patch.object(mp, "ES_REFRESH_INTERVAL", 1000, create=True), \
          patch.object(mp, "BATCH_SIZE", 10), \
-         patch.object(mp, "ES_INDEX", "test_index", create=True), \
          patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
          patch("matching.pipeline.get_es_client", return_value=mock_es), \
          patch("matching.pipeline.create_index"), \
@@ -878,7 +873,6 @@ def test_create_new_masters_variation_shape_matches_add_variation():
 
     with patch("matching.pipeline.helpers.bulk", side_effect=fake_bulk), \
          patch.object(pipeline, "NEW_MASTER_SUBBATCH_SIZE", 10), \
-         patch.object(pipeline, "ES_INDEX", "test_index", create=True), \
          patch.object(pipeline, "execute_values"), \
          patch.object(pipeline, "STAGES", [{"name": "CANONICAL_EXACT", "order": 2,
                                        "query_fn": "CANONICAL_EXACT",
@@ -987,7 +981,6 @@ def test_excluded_input_isolated_not_matched_not_indexed():
          patch.object(mp, "ensure_stage_log_table"), \
          patch.object(mp, "ES_REFRESH_INTERVAL", 1000, create=True), \
          patch.object(mp, "BATCH_SIZE", 10), \
-         patch.object(mp, "ES_INDEX", "test_index", create=True), \
          patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
          patch("matching.pipeline.get_es_client", return_value=mock_es), \
          patch("matching.pipeline.create_index"), \
@@ -1029,7 +1022,6 @@ def test_input_filter_disabled_processes_normally(monkeypatch):
          patch.object(mp, "validate_db_schema"), \
          patch.object(mp, "ensure_stage_log_table"), \
          patch.object(mp, "BATCH_SIZE", 10), \
-         patch.object(mp, "ES_INDEX", "test_index", create=True), \
          patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
          patch("matching.pipeline.get_es_client", return_value=mock_es), \
          patch("matching.pipeline.create_index"), \
@@ -1079,7 +1071,6 @@ def test_per_batch_dedup_invoked_with_batch_master_ids():
          patch.object(mp, "ensure_stage_log_table"), \
          patch.object(mp, "ES_REFRESH_INTERVAL", 1000, create=True), \
          patch.object(mp, "BATCH_SIZE", 10), \
-         patch.object(mp, "ES_INDEX", "test_index", create=True), \
          patch.object(mp, "RAW_TABLE_NAME", "raw_firms"), \
          patch("matching.pipeline.get_es_client", return_value=mock_es), \
          patch("matching.pipeline.create_index"), \

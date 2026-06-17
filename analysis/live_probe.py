@@ -131,10 +131,10 @@ def _probe(es, name: str, self_id: str) -> dict | None:
 
 def run(keep: bool = False) -> None:
     es = get_es_client()
-    # _get_token_count (es_queries) config.ES_INDEX'e karşı _analyze çağırır; probe
-    # index'i GÜNCEL analyzer'lara sahip olduğundan token sayıları ancak ES_INDEX
-    # probe index'e işaret ederse tutarlı olur (aksi halde prod'un ESKİ analyzer'ı
-    # yanlış sayı verir). Çalışma boyunca yönlendir, sonra geri al.
+    # _get_token_count (es_queries) ES_ANALYZE_INDEX_OVERRIDE / ülke alias'ına karşı _analyze
+    # çağırır; probe index'i GÜNCEL analyzer'lara sahip olduğundan token sayıları ancak override
+    # probe index'e işaret ederse tutarlı olur (aksi halde prod'un ESKİ analyzer'ı yanlış sayı
+    # verir). Çalışma boyunca yönlendir, sonra geri al.
     original_override = config.ES_ANALYZE_INDEX_OVERRIDE
     config.ES_ANALYZE_INDEX_OVERRIDE = PROBE_INDEX
     try:

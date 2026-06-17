@@ -8,7 +8,7 @@ import logging
 
 from elasticsearch import Elasticsearch
 
-from config import ES_INDEX
+from config import INDEX_PREFIX
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ def create_dedup_transform(es: Elasticsearch) -> None:
 
     transform_body = {
         "source": {
-            "index": [ES_INDEX],
+            "index": [f"{INDEX_PREFIX}_*"],
         },
         "dest": {
             "index": DEST_INDEX,

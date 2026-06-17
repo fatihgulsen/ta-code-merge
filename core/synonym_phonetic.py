@@ -1,10 +1,11 @@
-"""Synonym-ici fonetik typo-rescue.
+"""Synonym-içi fonetik typo-rescue.
 
-Cekirdege sizان bozuk-yazimli synonym token'larini (suffix/sector/address) double-metaphone
-ile tespitleyip kanonik forma cevirir. MARKAYA/CEKIRDEGE ASLA dokunmaz: yalniz synonym
-sozluguyle TAM metaphone eslesen, yeterince uzun, ambiguity-icermeyen token'lar cevrilir.
-
-Geo + article siniflari KAPSAM DISI (geo ISO-kanoniك mekanigi / article cok kisa).
+Çekirdeğe sızan bozuk-yazımlı synonym token'larını (suffix/sector/address) double-metaphone
+ile tespitleyip kanonik forma çevirir. Eşleşme: metaphone kodu TAM eşit, PREFIX (truncation
+typo, uzunluk farkı <=2), ya da AYNI-UZUNLUKTA <=1 karakter fark (substitution). Markaya
+dokunma riski guard'larla sınırlanır: token len>=5, synonym kaynağı len>=4, kod len>=3, ve
+AMBIGUITY guard (token >1 FARKLI kanonike uyarsa rescue YOK). first-char bucket ile perf.
+Geo + article KAPSAM DIŞI (geo ISO-kanonik / article çok kısa).
 """
 from functools import lru_cache
 
@@ -12,78 +13,88 @@ from metaphone import doublemetaphone
 
 from core.synonym_loader import get_synonym_canonical_map
 
-# Rescue YALNIZ bu siniflarda (kanoniği normal token olanlar):
 _RESCUE_CATEGORIES = ("legal_suffixes", "business_sectors", "address_abbreviations")
 
-# Brand-guvenlik guard'lari:
-MIN_TOKEN_LEN = 5          # sorgu token'i bu uzunlukta olmali (kisa marka/akronim korunur)
-MIN_SYNONYM_SRC_LEN = 4    # synonym kaynak token'i bu uzunlukta olmali (kisa kodlar collision yapar)
+MIN_TOKEN_LEN = 5          # sorgu token'ı (kısa marka/akronim korunur)
+MIN_SYNONYM_SRC_LEN = 4    # synonym kaynak token'ı
+MIN_CODE_LEN = 3           # fuzzy için min metaphone kod uzunluğu
+_MAX_PREFIX_DIFF = 2       # prefix eşleşmede izinli uzunluk farkı
 
 
 def _primary_code(token: str) -> str:
-    """Token'in birincil double-metaphone kodu (bossa '')."""
     code, _ = doublemetaphone(token)
     return code or ""
 
 
+def _code_matches(tc: str, sc: str) -> bool:
+    """Token kodu tc, synonym kodu sc ile fonetik eşleşiyor mu? (eşit/prefix/sub-1)."""
+    if tc == sc:
+        return True
+    if len(tc) < MIN_CODE_LEN or len(sc) < MIN_CODE_LEN:
+        return False
+    shorter, longer = (tc, sc) if len(tc) <= len(sc) else (sc, tc)
+    if longer.startswith(shorter) and (len(longer) - len(shorter)) <= _MAX_PREFIX_DIFF:
+        return True
+    if len(tc) == len(sc) and sum(a != b for a, b in zip(tc, sc)) <= 1:
+        return True
+    return False
+
+
 @lru_cache(maxsize=None)
 def _exact_synonym_sources(country_code: str) -> frozenset:
-    """Rescue kategorilerindeki TUM tam synonym kaynak token'lari (dokunulmayacaklar)."""
+    """Rescue kategorilerindeki TÜM tam synonym kaynak token'ları (dokunulmayacaklar)."""
     cc = country_code.upper()
-    m = get_synonym_canonical_map(cc, _RESCUE_CATEGORIES)
-    return frozenset(m.keys())
+    return frozenset(get_synonym_canonical_map(cc, _RESCUE_CATEGORIES).keys())
 
 
 @lru_cache(maxsize=None)
 def build_synonym_phonetic_map(country_code: str) -> dict:
-    """{metaphone_code: kanonik_form} — ambiguous kodlar ve kisa kaynaklar haric.
+    """{ilk_char: ((metaphone_code, kanonik), ...)} — kod ilk-harfine göre bucket.
 
-    Ayni metaphone koduna FARKLI kanonikler duserse o kod ATILIR (yanlis-cevir onlenir).
+    len>=MIN_SYNONYM_SRC_LEN alfabetik kaynaklar; (code, canon) tekilleştirilir.
+    Ambiguity match-zamanında çözülür (canonicalize_phonetic).
     """
     cc = country_code.upper()
     canon_map = get_synonym_canonical_map(cc, _RESCUE_CATEGORIES)
-    code_to_canon: dict[str, str] = {}
-    ambiguous: set[str] = set()
+    buckets: dict[str, list] = {}
+    seen = set()
     for src, canon in canon_map.items():
         if len(src) < MIN_SYNONYM_SRC_LEN or not src.isalpha():
             continue
         code = _primary_code(src)
         if not code:
             continue
-        existing = code_to_canon.get(code)
-        if existing is not None and existing != canon:
-            ambiguous.add(code)
-        else:
-            code_to_canon[code] = canon
-    for code in ambiguous:
-        code_to_canon.pop(code, None)
-    return code_to_canon
+        key = (code, canon)
+        if key in seen:
+            continue
+        seen.add(key)
+        buckets.setdefault(code[0], []).append(key)
+    return {k: tuple(v) for k, v in buckets.items()}
 
 
 @lru_cache(maxsize=100_000)
 def canonicalize_phonetic(name: str, country_code: str) -> str:
-    """Isimdeki bozuk-yazimli synonym token'larini kanonik forma cevirir.
+    """İsimdeki bozuk-yazımlı synonym token'larını kanonik forma çevirir (marka-korumalı).
 
-    Her token icin: zaten tam-synonym ise / kisa ise / alfabetik degilse -> dokunma.
-    Aksi halde metaphone'u haritada TAM eslesmisse -> kanonik forma cevir; yoksa -> koru.
-    MARKAYA dokunmaz (markalarin metaphone'u synonym sozlugunde TAM eslesmez).
+    Token zaten tam-synonym ise / kısa ise / alfabetik değilse → dokunma. Aksi halde
+    metaphone'u synonym kodlarıyla _code_matches eden TEK kanonik varsa → çevir; 0 veya
+    >1 (ambiguous) ise → koru.
     """
     if not name:
         return name
     cc = country_code.upper()
     exact_sources = _exact_synonym_sources(cc)
-    phon_map = build_synonym_phonetic_map(cc)
+    buckets = build_synonym_phonetic_map(cc)
     out_tokens = []
     for tok in name.split():
-        low = tok.lower()
-        bare = low.replace(".", "")
-        if (
-            bare in exact_sources
-            or len(bare) < MIN_TOKEN_LEN
-            or not bare.isalpha()
-        ):
+        bare = tok.lower().replace(".", "")
+        if bare in exact_sources or len(bare) < MIN_TOKEN_LEN or not bare.isalpha():
             out_tokens.append(tok)
             continue
-        canon = phon_map.get(_primary_code(bare))
-        out_tokens.append(canon if canon is not None else tok)
+        tc = _primary_code(bare)
+        if not tc:
+            out_tokens.append(tok)
+            continue
+        cands = {canon for (code, canon) in buckets.get(tc[0], ()) if _code_matches(tc, code)}
+        out_tokens.append(cands.pop() if len(cands) == 1 else tok)
     return " ".join(out_tokens)

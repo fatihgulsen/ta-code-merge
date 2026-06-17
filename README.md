@@ -9,7 +9,7 @@ Büyük ölçekli firma verilerini (isim, vergi numarası, telefon, adres vb.) a
 Sistem aşağıdaki temel mantık ve kurallar çerçevesinde çalışır:
 
 1.  **Ülke İzolasyonu (Strict Country Filter - HARD FILTER) [CRITICAL]**:
-    Farklı ülkelerdeki firmalar asla eşleştirilemez. Ülke kodu (`country_code`) en kritik "Hard Filter" kriteridir. Arama, indeksleme ve doğrulama süreçlerinin tamamı `country_code` bazlı `_routing` yeteneğiyle izole edilir.
+    Farklı ülkelerdeki firmalar asla eşleştirilemez. Ülke kodu (`country_code`) en kritik "Hard Filter" kriteridir. Arama, indeksleme ve doğrulama süreçlerinin tamamı fiziksel per-country indeks izolasyonu ile yapılır. Her ülke kendi indeksine (`living_companies_<cc>_v3`) ve alias'ına (`living_companies_<cc>`) sahiptir; `_routing` KULLANILMAZ.
 2.  **Kendi Kendini Eğiten Sistem (Self-Learning Variations Loop)**:
     Sisteme giren her yeni geçerli eşleşme, Elasticsearch'teki ilgili master dokümanın `variations` listesine dinamik olarak eklenir. Böylece sistem zamanla daha zeki hale gelir ve gelecekteki alternatif yazımları otomatik yakalar.
 3.  **Deterministik vs. Olasılıksal Eşleşme**:
@@ -75,7 +75,7 @@ To prevent multiple identical companies within the same batch from receiving dif
 
 ## 4. Elasticsearch Index Configuration
 
-*   **Routing**: Required on index (`_routing.required: true`). Always uses uppercase `country_code` for shard isolation.
+*   **Per-Country Indices**: Each country has its own physical index (`living_companies_<cc>_v3`) with an alias (`living_companies_<cc>`). All reads/writes go through the alias. Invalid or unknown country codes (not a 2-letter code with a corresponding synonyms_data JSON file) are marked `EXCLUDED` with reason `invalid_country` and not indexed. Routing is **not used** — country isolation is achieved via physical index separation.
 *   **Ingest Pipeline (`es/ingest.py`)**: Before indexing, a Painless script automatically applies lowercase, removes zero-width characters, cleans labels (`attn:`, `c/o`), and normalizes ampersands (`&` to `and`).
 
 ### Custom Analyzers

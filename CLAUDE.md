@@ -8,7 +8,13 @@ This guide acts as the strict operational runbook and instruction filter for AI 
 
 > [!IMPORTANT]
 > **COUNTRY CODE IS A HARD FILTER**:
-> Eşleştirme, indeksleme, arama ve doğrulama süreçlerinin tamamında `country_code` baz alınır. Farklı ülkelerdeki firmalar **ASLA** eşleşemez. `_routing` parametresi her zaman büyük harfli `country_code` olmalıdır.
+> Eşleştirme, indeksleme, arama ve doğrulama süreçlerinin tamamında `country_code` baz alınır. Farklı ülkelerdeki firmalar **ASLA** eşleşemez.
+
+> [!IMPORTANT]
+> **PER-COUNTRY INDEX**: Her ülke kendi fiziksel index'ine (`living_companies_<cc>_v3`) sahiptir,
+> üstünde alias `living_companies_<cc>`. Tüm okuma/yazma alias üzerinden yapılır; `_routing`
+> KULLANILMAZ (ülke izolasyonu fizikseldir). Geçersiz/bilinmeyen ülke kodu (synonyms_data'da
+> JSON'u olmayan) EXCLUDED(invalid_country) olarak işaretlenir ve indekslenmez.
 
 > [!WARNING]
 > **PYTHON ÜZERİNDE FUZZY/LEVENSHTEIN YASAKTIR**:
@@ -32,7 +38,7 @@ This guide acts as the strict operational runbook and instruction filter for AI 
 | `matching/db_io.py` | Python | PostgreSQL I/O: bağlantı, şema doğrulama, eşleşme/stage-log yazımı. |
 | `matching/es_writer.py` | Python | ES master-doc yazımı: varyasyon/meta ekleme, yeni master indeksleme. |
 | `es/queries.py` | Python | Her stage için Elasticsearch Query DSL generator fonksiyonları. |
-| `es/manager.py` | Python | Custom analyzer'ları (fingerprint, ngram, phonetic) ve index mapping'lerini ayağa kaldıran ES yönetimi. |
+| `es/manager.py` | Python | Per-country index + alias konfigürasyonu: Her ülke için fiziksel `living_companies_<cc>_v3` indeksi ve alias `living_companies_<cc>` oluşturur. Custom analyzer'ları (fingerprint, ngram, phonetic) ve mapping'leri yönetir. |
 | `es/ingest.py` | Python | Doküman indekslenirken Painless scriptler ile veri temizliği yapan ingest pipeline'ları. |
 | `es/transform.py` | Python | Arka planda sürekli çalışan ve duplicate adayları bulan ES Transform yönetimi. |
 | `core/synonym_loader.py` | Python | `synonyms_data/` klasöründeki JSON dosyalarını parse eden ve kelimeleri gruplayan yükleyici. |
@@ -50,7 +56,7 @@ This guide acts as the strict operational runbook and instruction filter for AI 
 # Ingest pipeline kur
 python -m es.ingest
 
-# Index kur ve mapping güncelle (synonym değişirse --force kullanın)
+# Per-country indeksleri kur ve mapping'leri güncelle (synonym değişirse --force kullanın)
 python -m es.manager
 
 # Eşleştirmeyi başlat

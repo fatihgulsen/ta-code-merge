@@ -436,3 +436,32 @@ def test_analyze_index_respects_override(monkeypatch):
     monkeypatch.setattr(config, "ES_ANALYZE_INDEX_OVERRIDE", "probe_idx")
     from es.queries import _analyze_index
     assert _analyze_index("tr") == "probe_idx"
+
+
+def test_is_address_dirty_true_when_address_only_no_core():
+    from unittest.mock import MagicMock
+    import es.queries as q
+    es = MagicMock()
+    es.indices.analyze.return_value = {"tokens": [{"token": "street"}, {"token": "no"}]}
+    assert q.is_address_dirty(es, "main street no 5", "TR") is True
+
+
+def test_is_address_dirty_false_when_distinctive_core_present():
+    from unittest.mock import MagicMock
+    import es.queries as q
+    es = MagicMock()
+    es.indices.analyze.return_value = {"tokens": [{"token": "apex"}, {"token": "street"}]}
+    assert q.is_address_dirty(es, "apex street", "TR") is False
+
+
+def test_is_address_dirty_false_when_no_address():
+    from unittest.mock import MagicMock
+    import es.queries as q
+    es = MagicMock()
+    es.indices.analyze.return_value = {"tokens": [{"token": "apex"}, {"token": "pharma"}]}
+    assert q.is_address_dirty(es, "apex pharma", "TR") is False
+
+
+def test_is_address_dirty_false_when_es_none():
+    import es.queries as q
+    assert q.is_address_dirty(None, "main street", "TR") is False

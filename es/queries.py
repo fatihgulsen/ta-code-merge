@@ -7,7 +7,7 @@ Stage eklemek için: (1) bu dosyaya aynı imzada (name, country, **kwargs) fonks
 
 import logging
 from elasticsearch import Elasticsearch
-from core.synonym_loader import get_all_country_codes, get_business_sector_tokens
+from core.synonym_loader import get_all_country_codes, get_business_sector_tokens, get_address_tokens
 from core.core_name import normalize_core
 from config import (
     PHONETIC_MIN_CORE_TOKENS,
@@ -17,6 +17,7 @@ from config import (
     MATCH_CORE_MIN_TOKEN_LEN,
     MATCH_CORE_FUZZY_REQUIRE_ALPHA,
     ENABLE_CORE_COVERAGE_GATE,
+    ENABLE_DIRTY_DATA,
 )
 
 logger = logging.getLogger(__name__)
@@ -117,6 +118,44 @@ def _has_distinctive_core(es: Elasticsearch, name: str, country: str, require_al
     if len(_DISTINCTIVE_CORE_CACHE) < _TOKEN_COUNT_CACHE_MAX:
         _DISTINCTIVE_CORE_CACHE[key] = result
     return result
+
+
+def is_address_dirty(es: Elasticsearch, name: str, country: str) -> bool:
+    """İsim address synonym'i içeriyor AMA address çıkarılınca ayırt edici çekirdek YOK → kirli.
+
+    Tokenizasyon ES STRIPPED analyzer'ından gelir (legal/article/geo sıyrılmış; address +
+    sector + marka çekirdekte kalır). Address membership + distinctiveness Python set
+    kontrolüdür (fuzzy DEĞİL — input_filter ile aynı boundary sınıfı). es yoksa / gate
+    kapalıysa / _analyze hata verirse False (mevcut NEW_MASTER davranışını bozma).
+
+    Args:
+        es: Elasticsearch istemcisi (None ise False).
+        name: Sorgu firma adı (fonetik-kanonik match_name beklenir).
+        country: Ülke kodu.
+
+    Returns:
+        True → DIRTY_DATA; False → normal NEW_MASTER yolu.
+    """
+    if not ENABLE_DIRTY_DATA or es is None or not name:
+        return False
+    analyzer = _get_stripped_analyzer(country)
+    try:
+        res = es.indices.analyze(index=_analyze_index(country), body={"analyzer": analyzer, "text": name})
+        tokens = [t.get("token", "") for t in res.get("tokens", [])]
+    except Exception:
+        return False
+    address = get_address_tokens(country)
+    if not any(tok in address for tok in tokens):
+        return False
+    generic = get_business_sector_tokens(country)
+    distinctive = any(
+        len(tok) >= MATCH_CORE_MIN_TOKEN_LEN
+        and any(c.isalpha() for c in tok)
+        and tok not in address
+        and tok not in generic
+        for tok in tokens
+    )
+    return not distinctive
 
 
 def _get_token_count(es: Elasticsearch, text: str, analyzer: str, country: str) -> int:

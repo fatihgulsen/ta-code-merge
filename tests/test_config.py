@@ -8,14 +8,18 @@ def test_stages_has_required_keys():
     required = {"name", "order", "query_fn", "min_score", "enabled"}
     for stage in config.STAGES:
         missing = required - stage.keys()
-        assert not missing, f"Stage '{stage.get('name')}' için eksik anahtarlar: {missing}"
+        assert not missing, (
+            f"Stage '{stage.get('name')}' için eksik anahtarlar: {missing}"
+        )
 
 
 def test_stages_ordered_correctly():
     """Verify enabled stages are sorted by order value."""
     enabled = [s for s in config.STAGES if s["enabled"]]
     orders = [s["order"] for s in enabled]
-    assert orders == sorted(orders), "Aktif stage'ler 'order' değerine göre sıralı değil"
+    assert orders == sorted(orders), (
+        "Aktif stage'ler 'order' değerine göre sıralı değil"
+    )
 
 
 def test_stage_query_fns_exist_in_es_queries():
@@ -26,6 +30,7 @@ def test_stage_query_fns_exist_in_es_queries():
         # es_queries.py doesn't exist yet (will be created in Task 3)
         # This test is expected to fail at this stage
         import pytest
+
         pytest.skip("es_queries.py not yet created (Task 3)")
 
     for stage in config.STAGES:
@@ -54,10 +59,8 @@ def test_auto_dedup_match_type_exists():
 
 
 def test_suffix_fuzzy_constants_exist():
-    assert hasattr(config, "SUFFIX_FUZZY_MIN_SCORE")
     assert hasattr(config, "SUFFIX_FUZZY_SCORE")
     assert config.SUFFIX_FUZZY_SCORE == 85
-    assert config.SUFFIX_FUZZY_MIN_SCORE == 1.5
 
 
 def test_suffix_fuzzy_stage_in_stages():
@@ -80,20 +83,42 @@ def test_business_descriptors_in_synonyms():
 
     # Common descriptors that were previously in config.py
     required = {
-        "enterprise", "industry", "holding", "service", "solution",
-        "technology", "pharma", "clinical", "chemicals", "steel",
-        "metals", "plastics", "packaging", "food", "auto",
-        "electronics", "software", "healthcare", "finance",
-        "logistics", "shipping", "engineering", "construction",
-        "retail", "global", "trading", "group", "international"
+        "enterprise",
+        "industry",
+        "holding",
+        "service",
+        "solution",
+        "technology",
+        "pharma",
+        "clinical",
+        "chemicals",
+        "steel",
+        "metals",
+        "plastics",
+        "packaging",
+        "food",
+        "auto",
+        "electronics",
+        "software",
+        "healthcare",
+        "finance",
+        "logistics",
+        "shipping",
+        "engineering",
+        "construction",
+        "retail",
+        "global",
+        "trading",
+        "group",
+        "international",
     }
     # Note: tokens in synonyms are normalized (lowercase, punctuation removed)
     common_sectors = get_business_sector_tokens("__common__")
-    
+
     # We check if at least some of these exist in the common set
     # (exact match depends on how they were merged)
     missing = required - common_sectors
-    # Some might be missing due to different mapping targets, 
+    # Some might be missing due to different mapping targets,
     # but the core ones should be there.
     assert "enterprise" in common_sectors or "enterprises" in common_sectors
     assert "industry" in common_sectors or "industries" in common_sectors
@@ -111,3 +136,20 @@ def test_stage_index_variation_sprint2_self_learning():
     # Already-frozen stages remain False
     for always_pg in ("FUZZY_PHRASE", "NGRAM_MATCH"):
         assert by_name[always_pg]["index_variation"] is False
+
+
+def test_index_for_country_physical_name():
+    from config import index_for_country
+    assert index_for_country("tr") == "living_companies_tr_v3"
+    assert index_for_country("MX") == "living_companies_mx_v3"
+
+
+def test_alias_for_country_versionless():
+    from config import alias_for_country
+    assert alias_for_country("tr") == "living_companies_tr"
+    assert alias_for_country("MX") == "living_companies_mx"
+
+
+def test_analyze_index_override_default_none():
+    import config
+    assert config.ES_ANALYZE_INDEX_OVERRIDE is None

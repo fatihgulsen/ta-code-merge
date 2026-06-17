@@ -36,7 +36,7 @@ DB_CONFIG = {
 }
 
 # --- Tablo ve sütun ayarları ---
-RAW_TABLE_NAME = "p7_firms_v2_ar_pe"
+RAW_TABLE_NAME = "p7_firms_v2"
 
 # Yalnızca tek ülke işlenecekse kodu (örn. "mx"); None = tüm ülkeler.
 COUNTRY_CODE_FILTER = None
@@ -63,7 +63,27 @@ AUTO_CREATE_UPDATE_COLUMNS = True
 
 # --- Elasticsearch bağlantısı ---
 ES_HOST = "http://localhost:9200"
-ES_INDEX = "living_companies_v1"
+ES_INDEX = "living_companies_v2"
+
+# --- Elasticsearch index isimlendirme (per-country) ---
+# NOT: Yukarıdaki ES_INDEX deprecated; tüm importer'lar sonraki task'larda migrate edilince kaldırılır.
+INDEX_PREFIX = "living_companies"
+INDEX_VERSION = "v3"
+
+
+def index_for_country(country_code: str) -> str:
+    """Ülkenin FİZİKSEL ES index adı (oluşturma/silme için)."""
+    return f"{INDEX_PREFIX}_{country_code.lower()}_{INDEX_VERSION}"
+
+
+def alias_for_country(country_code: str) -> str:
+    """Ülkenin alias adı (sorgu/yazım bunu kullanır; alias-swap ile reindex)."""
+    return f"{INDEX_PREFIX}_{country_code.lower()}"
+
+
+# _analyze hedef override'ı — yalnızca analysis/live_probe.py diagnostiği içindir.
+# None ise normal alias_for_country(country) kullanılır.
+ES_ANALYZE_INDEX_OVERRIDE = None
 
 # --- Eşleştirme akışı ---
 # PG'den tek seferde okunan kayıt sayısı.
@@ -73,9 +93,6 @@ BATCH_SIZE = 5000
 # (within-batch duplicate penceresini daraltır).
 NEW_MASTER_SUBBATCH_SIZE = 200
 
-# Her N kayıtta bir ES refresh (tüm stage'ler).
-ES_REFRESH_INTERVAL = 50
-
 # msearch chunk boyutu: kayıtlar bu boyutta gruplanıp tek index anlık-görüntüsüne
 # karşı toplu sorgulanır, chunk sonunda refresh edilir. chunk = refresh penceresi
 # olduğundan görünürlük tekil-akışla aynıdır → sonuç değişmez, round-trip azalır.
@@ -84,18 +101,10 @@ ES_REFRESH_INTERVAL = 50
 MATCH_BATCH_SIZE = 50
 
 # --- ES skor / log ---
-ES_MIN_SCORE = 3.0       # ES min_score filtresi (bu altı hiç dönmez)
-LOG_ALL_STAGES = False   # Her stage sonucunu (başarısız dahil) logla
+LOG_ALL_STAGES = False  # Her stage sonucunu (başarısız dahil) logla
 
 # --- Eşik değerleri ---
-LENGTH_RATIO_THRESHOLD = 0.4
-TOKEN_COVERAGE_THRESHOLD = 0.95  # Token'ların en az %95'i örtüşmeli
-
-SUFFIX_FUZZY_MIN_SCORE = 1.5            # ES skor eşiği (prod testleriyle kalibre)
-SUFFIX_FUZZY_SCORE = 85                 # Sonuç skoru (normalize tier)
-SUFFIX_FUZZY_COVERAGE_THRESHOLD = 0.85  # İsim token coverage eşiği
-
-RESCORE_WINDOW_SIZE = 20  # Rescore yalnızca top-N adaya uygulanır
+SUFFIX_FUZZY_SCORE = 85  # Sonuç skoru (normalize tier)
 
 # PHONETIC/NGRAM guard'ları: sorgu kaydının ayırt edici çekirdek token sayısı bu
 # eşiğin altındaysa (yalnızca suffix/ülke-adı/çöp → 0 token) stage bloklanır.
@@ -145,9 +154,18 @@ DEDUP_MIN_FINGERPRINT_TOKEN_LEN = 2
 # yok); stage'in çalışıp çalışmayacağını belirleyen bir GUARD'dır, doğrulama değil.
 # Çekirdeksiz girdiler ('M S.A.'→'m', '#N/A 300') loose stage'lerde eşleşmez → NEW_MASTER.
 ENABLE_CORE_GATE = True
-MATCH_CORE_MIN_TOKEN_LEN = 2          # ayırt edici min token uzunluğu (VF/3M korunur)
+MATCH_CORE_MIN_TOKEN_LEN = 2  # ayırt edici min token uzunluğu (VF/3M korunur)
+
+# --- Jenerik-çekirdek gate (generic-word magnet fix) ---
+# Stripped çekirdek YALNIZCA jenerik iş/sektör kelimelerinden ibaretse ('trading',
+# 'importaciones', 'inversiones', 'group'...) ayırt edici DEĞİLDİR → tüm merge stage'leri
+# bloklanır → NEW_MASTER. Jenerik küme business_sectors JSON'undan türetilir (hardcode yok,
+# ülke-bilinçli). Kök neden: tek-harf baş harfler + ekler sıyrılınca alakasız firmalar
+# ('L M TRADING', 'B&B TRADING') aynı tek jenerik token'a ('trading') çöküp STRIPPED_EXACT'te
+# birleşiyordu. Çok-token çekirdeklerde ≥1 jenerik-OLMAYAN token varsa korunur ('Apex Pharma').
+ENABLE_GENERIC_CORE_GATE = True
 MATCH_CORE_FUZZY_REQUIRE_ALPHA = True  # loose stage'lerde çekirdek alfabetik olmalı
-                                       # (salt-sayı loose eşleşmede güvenilmez; STRIPPED_EXACT hariç)
+# (salt-sayı loose eşleşmede güvenilmez; STRIPPED_EXACT hariç)
 
 # --- Ayırt-edici-çekirdek COVERAGE gate ---
 # FUZZY_PHRASE / TOKEN_COVERAGE'da eşleşen master'ın STRIPPED çekirdek token sayısı,
@@ -176,7 +194,7 @@ STAGES = [
         "name": "STRIPPED_EXACT",
         "order": 2,
         "query_fn": "STRIPPED_EXACT",
-        "min_score": 3.0,
+        "min_score": 5.0,
         "enabled": True,
         "index_variation": True,
     },
@@ -188,7 +206,7 @@ STAGES = [
         "name": "SUFFIX_FUZZY",
         "order": 3,
         "query_fn": "SUFFIX_FUZZY",
-        "min_score": SUFFIX_FUZZY_MIN_SCORE,
+        "min_score": 1.5,
         "enabled": False,
         "index_variation": False,
     },

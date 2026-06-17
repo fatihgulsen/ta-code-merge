@@ -25,7 +25,7 @@ def test_phonetic_analyzer_wires_fragment_stop_before_metaphone():
     ile (test ortamı) üretilmez. Plugin yoksa bu davranış doğrulanamaz → skip."""
     import pytest
     from es.manager import build_index_settings
-    settings = build_index_settings(es=None)
+    settings = build_index_settings(es=None, country_code="TR")
     analyzers = settings["settings"]["analysis"]["analyzer"]
     if "phonetic_analyzer" not in analyzers:
         pytest.skip("analysis-phonetic plugin yok; phonetic_analyzer üretilmedi")
@@ -37,33 +37,39 @@ def test_phonetic_analyzer_wires_fragment_stop_before_metaphone():
 
 
 def test_stripped_search_analyzer_global_fallback_exists():
-    """build_index_settings fonksiyonu global stripped_search_analyzer üretmeli."""
+    """build_index_settings(es, cc) global stripped_search_analyzer üretmeli."""
     from es.manager import build_index_settings
-    settings = build_index_settings(es=None)
+    settings = build_index_settings(es=None, country_code="TR")
     analyzers = settings["settings"]["analysis"]["analyzer"]
     filters = settings["settings"]["analysis"]["filter"]
     assert "stripped_search_analyzer" in analyzers
     assert "generic_stopwords_global" in filters
 
 
-def test_per_country_stripped_analyzers_exist():
-    """Her ülke için ayrı stripped_search_analyzer_{cc} oluşturulmalı."""
+def test_only_target_country_analyzer_built():
+    """Tek-ülke settings YALNIZCA o ülkenin clean_analyzer'ını içermeli (65x sismez)."""
     from es.manager import build_index_settings
-    settings = build_index_settings(es=None)
+    from core.synonym_loader import get_all_country_codes
+    settings = build_index_settings(es=None, country_code="TR")
     analyzers = settings["settings"]["analysis"]["analyzer"]
-    filters = settings["settings"]["analysis"]["filter"]
-    codes = get_all_country_codes()
-    for cc in codes[:3]:  # İlk 3 ülke yeterli
-        assert f"stripped_search_analyzer_{cc.lower()}" in analyzers, \
-            f"stripped_search_analyzer_{cc.lower()} analyzer'ı bulunamadı"
-        assert f"generic_stopwords_{cc.lower()}" in filters, \
-            f"generic_stopwords_{cc.lower()} filter'ı bulunamadı"
+    assert "clean_analyzer_tr" in analyzers
+    assert "clean_analyzer_common" in analyzers  # default + token_count
+    others = [c for c in get_all_country_codes() if c != "TR"][:3]
+    for cc in others:
+        assert f"clean_analyzer_{cc.lower()}" not in analyzers
+
+
+def test_routing_not_required_in_mapping():
+    """Per-country index'te _routing required OLMAMALI."""
+    from es.manager import build_index_settings
+    settings = build_index_settings(es=None, country_code="TR")
+    assert "_routing" not in settings["mappings"]
 
 
 def test_build_index_settings_includes_articles_in_stop_filter():
     """Per-country stop filter article token'larını içermeli."""
     from es.manager import build_index_settings
-    settings = build_index_settings(es=None)
+    settings = build_index_settings(es=None, country_code="TR")
     filters = settings["settings"]["analysis"]["filter"]
 
     # TR için stop filter kontrol et
@@ -78,7 +84,7 @@ def test_build_index_settings_includes_articles_in_stop_filter():
 def test_build_index_settings_global_filter_includes_articles():
     """Global fallback stop filter da article token'larını içermeli."""
     from es.manager import build_index_settings
-    settings = build_index_settings(es=None)
+    settings = build_index_settings(es=None, country_code="TR")
     filters = settings["settings"]["analysis"]["filter"]
     global_filter = filters.get("generic_stopwords_global")
     assert global_filter is not None
@@ -87,30 +93,52 @@ def test_build_index_settings_global_filter_includes_articles():
 
 
 def test_stripped_analyzers_include_geo_stop():
-    """A1 (geo-mıknatıs fix): geo_stopwords_global hem global hem per-country
-    stripped_search_analyzer zincirine eklenmeli. Aksi halde 'SAL ARGENTINA' →
-    ['argentina'] tek-geo-token mıknatısı oluşur (es_queries _has_distinctive_core
-    geo-only çekirdeği ayırt edici sanar). Token listesi countries.json'dan türetilir
-    (hardcode yok) — burada yalnızca filtrenin zincire bağlandığını doğrularız."""
+    """A1 (geo-mıknatıs fix): geo-stop hem global hem per-country stripped_search_analyzer
+    zincirine eklenmeli. Aksi halde 'SAL ARGENTINA' → ['argentina'] tek-geo-token mıknatısı
+    oluşur. Per-country analyzer KENDİ ülke geo filtresini (geo_stopwords_{cc}) kullanır;
+    global fallback geo_stopwords_global. Token listesi countries.json'dan türetilir."""
     from es.manager import build_index_settings
-    settings = build_index_settings(es=None)
-    analyzers = settings["settings"]["analysis"]["analyzer"]
-    # Global stripped analyzer geo-stop içermeli
-    assert "geo_stopwords_global" in analyzers["stripped_search_analyzer"]["filter"], \
+    # Global stripped analyzer (fallback) global geo-stop içermeli — TR settings ile test
+    settings_tr = build_index_settings(es=None, country_code="TR")
+    analyzers_tr = settings_tr["settings"]["analysis"]["analyzer"]
+    assert "geo_stopwords_global" in analyzers_tr["stripped_search_analyzer"]["filter"], \
         "global stripped_search_analyzer geo_stopwords_global içermeli"
-    # Per-country (AR + ilk birkaç ülke) stripped analyzer geo-stop içermeli
-    for cc in [c.lower() for c in get_all_country_codes()][:3] + ["ar"]:
-        chain = analyzers[f"stripped_search_analyzer_{cc}"]["filter"]
-        assert "geo_stopwords_global" in chain, \
-            f"stripped_search_analyzer_{cc} geo_stopwords_global içermeli"
+    # Per-country stripped analyzer KENDİ geo filtresini (geo_stopwords_{cc}) içermeli
+    test_codes = [c.upper() for c in [c.lower() for c in get_all_country_codes()][:3]] + ["AR"]
+    for cc_upper in test_codes:
+        cc = cc_upper.lower()
+        cc_settings = build_index_settings(es=None, country_code=cc_upper)
+        cc_analyzers = cc_settings["settings"]["analysis"]["analyzer"]
+        chain = cc_analyzers[f"stripped_search_analyzer_{cc}"]["filter"]
+        assert f"geo_stopwords_{cc}" in chain, \
+            f"stripped_search_analyzer_{cc} per-country geo_stopwords_{cc} içermeli"
+        # GLOBAL geo filtresini KULLANMAMALI (başka ülke adları korunmalı)
+        assert "geo_stopwords_global" not in chain, \
+            f"stripped_search_analyzer_{cc} global geo kullanmamalı (per-country izolasyon)"
 
 
-def test_fingerprint_analyzer_normalizes_suffix_and_geo():
-    """P0-C/Option-2: variations.fingerprint için özel fingerprint_analyzer —
-    yasal-ek + jenerik + geo token'ları düşürür, sonra fingerprint (sort+dedup) uygular.
-    Böylece 'ACME DE MEXICO S.A. DE C.V.' ile 'ACME' aynı fingerprint'e iner."""
+def test_per_country_geo_stop_filter_isolates_own_country():
+    """Per-country geo-stop filtresi YALNIZCA ülkenin kendi ad token'larını içerir;
+    başka ülke adları (BR'de 'mexico') o shard'da ayırt edici → filtreye GİRMEZ."""
     from es.manager import build_index_settings
-    settings = build_index_settings(es=None)
+    settings = build_index_settings(es=None, country_code="BR")
+    filters = settings["settings"]["analysis"]["filter"]
+    br = filters.get("geo_stopwords_br")
+    assert br is not None and br["type"] == "stop", "geo_stopwords_br stop filtresi bulunamadı"
+    words = {w.lower() for w in br["stopwords"]}
+    assert "brasil" in words or "brazil" in words, "kendi ülke adı geo-stop'ta olmalı"
+    assert "mexico" not in words, "başka ülke adı per-country geo-stop'a girmemeli"
+    assert "argentina" not in words
+
+
+def test_fingerprint_analyzer_normalizes_suffix_not_global_geo():
+    """Option-2 (per-country): fingerprint_analyzer yasal-ek + jenerik token'ları düşürür,
+    sonra fingerprint (sort+dedup) uygular. Geo, içerik seviyesinde (variations_stripped,
+    per-country) ele alındığından fingerprint_analyzer'da GLOBAL geo stop UYGULANMAZ —
+    böylece başka ülke adları (BR'de 'mexico') fingerprint'te korunur, kendi ülke adı
+    zaten stripped içerikte yoktur."""
+    from es.manager import build_index_settings
+    settings = build_index_settings(es=None, country_code="TR")
     analyzers = settings["settings"]["analysis"]["analyzer"]
     filters = settings["settings"]["analysis"]["filter"]
 
@@ -118,13 +146,13 @@ def test_fingerprint_analyzer_normalizes_suffix_and_geo():
     chain = analyzers["fingerprint_analyzer"]["filter"]
     assert "legal_fragment_stop" in chain
     assert "generic_stopwords_global" in chain
-    assert "geo_stopwords_global" in chain
+    # Global geo stop fingerprint_analyzer'da OLMAMALI (per-country geo içerikte halledildi)
+    assert "geo_stopwords_global" not in chain, \
+        "fingerprint_analyzer global geo kullanmamalı (per-country izolasyon)"
     # fingerprint (sort+dedup) filtresi zincirin SONUNDA olmalı
     fp_filters = [f for f in chain if filters.get(f, {}).get("type") == "fingerprint"]
     assert fp_filters, "fingerprint tipli filtre zincirde yok"
     assert chain.index(fp_filters[0]) == len(chain) - 1, "fingerprint filtresi en sonda olmalı"
-    # geo stop filtresi gerçek bir stop filtresi olmalı
-    assert filters["geo_stopwords_global"]["type"] == "stop"
 
 
 def test_acronym_glue_char_filter_precedes_punctuation_remover():
@@ -133,7 +161,7 @@ def test_acronym_glue_char_filter_precedes_punctuation_remover():
     olur, tek harfe ('m') çökmez → STRIPPED_EXACT/dedup akronim magneti önlenir.
     docs/audit/2026-06-05-round3-unicode-config-dedup.md §ADIM 5."""
     from es.manager import build_index_settings
-    settings = build_index_settings(es=None)
+    settings = build_index_settings(es=None, country_code="TR")
     char_filters = settings["settings"]["analysis"]["char_filter"]
     analyzers = settings["settings"]["analysis"]["analyzer"]
 
@@ -172,10 +200,16 @@ def test_acronym_glue_active_probe():
 
 
 def test_fingerprint_field_uses_custom_analyzer():
-    """variations.name.fingerprint subfield'ı built-in yerine fingerprint_analyzer kullanmalı."""
+    """fingerprint subfield'ı variations_stripped.name altında (per-country geo izolasyonu)
+    ve built-in yerine fingerprint_analyzer kullanmalı. variations.name altında OLMAMALI."""
     from es.manager import build_index_settings
-    settings = build_index_settings(es=None)
-    fp = settings["mappings"]["properties"]["variations"]["properties"]["name"]["fields"]["fingerprint"]
+    settings = build_index_settings(es=None, country_code="TR")
+    props = settings["mappings"]["properties"]
+    # Fingerprint artık variations_stripped.name altında (girdi per-country stripped içerik)
+    fp = props["variations_stripped"]["properties"]["name"]["fields"]["fingerprint"]
     assert fp["analyzer"] == "fingerprint_analyzer", f"beklenen fingerprint_analyzer, görülen {fp.get('analyzer')}"
     # text alanda dedup aggregation için fielddata zorunlu
     assert fp.get("fielddata") is True, "fingerprint alanı aggregation için fielddata=True olmalı"
+    # variations.name altında ARTIK fingerprint OLMAMALI (taşındı)
+    assert "fingerprint" not in props["variations"]["properties"]["name"]["fields"], \
+        "fingerprint variations.name'den variations_stripped.name'e taşınmalı"

@@ -4,13 +4,14 @@ import logging
 
 from elasticsearch import Elasticsearch
 
-from config import ES_HOST, ES_INDEX
+from config import ES_HOST, alias_for_country, index_for_country
 from core.synonym_loader import (
     get_all_company_type_tokens,
     get_all_country_codes,
     get_all_legal_suffix_fragments,
     get_article_stopwords,
     get_company_type_tokens,
+    get_country_geo_stopwords,
     get_geo_stopword_tokens,
     load_synonyms_for_country,
 )
@@ -36,7 +37,7 @@ def _check_plugin_installed(es: Elasticsearch, plugin_name: str) -> bool:
         return False
 
 
-def build_index_settings(es: Elasticsearch | None = None) -> dict:
+def build_index_settings(es: Elasticsearch | None = None, country_code: str = "__common__") -> dict:
     """
     Index ayarlarını (per-country synonym filter + analyzer + mapping) oluşturur.
 
@@ -49,7 +50,9 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
 
     v3 Ek Analyzer'lar:
     icu_analyzer            : ICU tokenizer + folding (latinize)
-    fingerprint             : built-in (token sort + dedup)
+    fingerprint_analyzer    : jenerik + yasal-ek stop → sort/dedup (variations_stripped
+                                multi-field'ı; geo per-country İÇERİKTE halledilir)
+    stripped_search_analyzer_{cc} : per-country jenerik + yasal-ek + KENDİ geo stop
     ngram_analyzer          : trigram tokenization (index-time fuzzy)
     ngram_search_analyzer   : standard tokenizer (search-time for ngram field)
     phonetic_analyzer       : double_metaphone (fonetik benzerlik)
@@ -136,23 +139,27 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
         "stopwords": geo_tokens_global,
     }
 
-    # ── Per-country Stripped Search Analyzer ──
+    # ── Verilen ülkenin Stripped Search Analyzer'ı (tek ülke) ──
     # Her ülke için common + ülke company_types tokenlarından stopword filter.
     # variations_stripped alanının search_analyzer'ı olarak kullanılır.
-    for cc in get_all_country_codes():
+    if country_code and country_code not in ("__common__", "__COMMON__"):
+        cc = country_code.upper()
         cc_tokens = list(get_company_type_tokens(cc))
         article_tokens = list(get_article_stopwords(cc))
         filter_name = f"generic_stopwords_{cc.lower()}"
+        geo_filter_name = f"geo_stopwords_{cc.lower()}"
         analyzer_name = f"stripped_search_analyzer_{cc.lower()}"
-        filters[filter_name] = {
-            "type": "stop",
-            "stopwords": cc_tokens + article_tokens,
-        }
+        filters[filter_name] = {"type": "stop", "stopwords": cc_tokens + article_tokens}
+        # Per-country geo-stop: YALNIZCA ülkenin KENDİ ad token'ları (brasil/brazil)
+        # sıyrılır; başka ülke adları (BR'de 'mexico') o shard'da ayırt edicidir → korunur.
+        # country_code HARD FILTER olduğundan kendi ülke adı saf gürültüdür. Index tarafı
+        # (ingest stripped_form) aynı per-country listeyi kullanır → simetri korunur.
+        filters[geo_filter_name] = {"type": "stop", "stopwords": sorted(get_country_geo_stopwords(cc))}
         analyzers[analyzer_name] = {
             "tokenizer": "standard",
             "char_filter": ["acronym_glue", "punctuation_remover"],
-            # A1: geo_stopwords_global → coğrafi token'lar çekirdek-dışı (geo-mıknatıs fix)
-            "filter": base_clean_filters + [filter_name, "legal_fragment_stop", "geo_stopwords_global"],
+            # A1 (per-country): geo_stopwords_{cc} → KENDİ ülke adı çekirdek-dışı (geo-mıknatıs fix)
+            "filter": base_clean_filters + [filter_name, "legal_fragment_stop", geo_filter_name],
         }
 
     # Global fallback stripped analyzer (tüm ülkeler birleşimi)
@@ -170,10 +177,12 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     }
 
     # ── Fingerprint (sort + dedup) filtresi + güçlendirilmiş fingerprint_analyzer ──
-    # Built-in 'fingerprint' analyzer yasal-ek/geo normalize ETMEZ; bu özel analyzer
-    # stripped_search_analyzer ile aynı normalizasyonu (jenerik + yasal-ek + geo stop)
-    # uygular, ardından token'ları sıralayıp tekilleştirir → kanonik parmak izi.
-    # ES Transform (es_transform.py) bununla aynı-firma master'larını gruplar (Option-2).
+    # Built-in 'fingerprint' analyzer yasal-ek normalize ETMEZ; bu özel analyzer jenerik +
+    # yasal-ek stop uygular, ardından token'ları sıralayıp tekilleştirir → kanonik parmak izi.
+    # variations_stripped.name multi-field'ı olarak çalışır: girdi ZATEN per-country geo
+    # (kendi ülke adı) sıyrılmış içeriktir → geo stop burada TEKRAR uygulanmaz; başka ülke
+    # adları (BR'de 'mexico') fingerprint'te KORUNUR (per-country dedup izolasyonu).
+    # ES Transform / dedup_auto_merge bununla aynı-firma master'larını gruplar (Option-2).
     filters["fingerprint_token_filter"] = {
         "type": "fingerprint",
     }
@@ -184,22 +193,17 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
         + [
             "generic_stopwords_global",
             "legal_fragment_stop",
-            "geo_stopwords_global",
             "fingerprint_token_filter",
         ],
     }
 
-    # ── Ülkeye özgü filter ve analyzer (varsa) ──
-    for cc in get_all_country_codes():
+    # ── Verilen ülkenin synonym analyzer'ı (tek ülke) ──
+    if country_code and country_code not in ("__common__", "__COMMON__"):
+        cc = country_code.upper()
         country_synonyms = list(load_synonyms_for_country(cc))
-        filter_name = f"synonym_filter_{cc}"
-        analyzer_name = f"clean_analyzer_{cc}"
-
-        filters[filter_name] = {
-            "type": "synonym_graph",
-            "synonyms": country_synonyms,
-            "lenient": True,
-        }
+        filter_name = f"synonym_filter_{cc.lower()}"
+        analyzer_name = f"clean_analyzer_{cc.lower()}"
+        filters[filter_name] = {"type": "synonym_graph", "synonyms": country_synonyms, "lenient": True}
         analyzers[analyzer_name] = {
             "tokenizer": "standard",
             "char_filter": ["acronym_glue", "punctuation_remover"],
@@ -262,14 +266,6 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
             "analyzer": "clean_analyzer_common",
             "enable_position_increments": False,
         },
-        # Fingerprint: jenerik + yasal-ek + geo stop → token sort/dedup → kanonik parmak izi.
-        # Aynı-firma varyantları (suffix/geo/kelime-sırası farkı) tek ize iner → ES Transform / dedup_auto_merge.
-        # fielddata=True: aggregation için; analyzer tek token ürettiğinden kardinalite düşük.
-        "fingerprint": {
-            "type": "text",
-            "analyzer": "fingerprint_analyzer",
-            "fielddata": True,
-        },
         # N-gram: index-time fuzzy matching
         "ngram": {
             "type": "text",
@@ -302,6 +298,16 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
             "analyzer": "stripped_search_analyzer",
             "enable_position_increments": False,
         },
+        # Fingerprint: jenerik + yasal-ek stop → token sort/dedup → kanonik parmak izi.
+        # variations_stripped üzerinde tanımlı: girdi ZATEN per-country geo (kendi ülke adı)
+        # sıyrılmış → fingerprint per-country izole olur (başka ülke adları korunur).
+        # Aynı-firma varyantları (suffix/kelime-sırası farkı) tek ize iner → dedup_auto_merge.
+        # fielddata=True: aggregation için; analyzer tek token ürettiğinden kardinalite düşük.
+        "fingerprint": {
+            "type": "text",
+            "analyzer": "fingerprint_analyzer",
+            "fielddata": True,
+        },
         "ngram": {
             "type": "text",
             "analyzer": "ngram_analyzer",
@@ -327,8 +333,7 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
             },
         },
         "mappings": {
-            # Country routing: shard-level country isolation
-            "_routing": {"required": True},
+            # NOT: _routing kaldırıldı — per-country index'te ülke izolasyonu fiziksel.
             "properties": {
                 "master_id": {"type": "keyword"},
                 "country_code": {"type": "keyword"},
@@ -375,8 +380,11 @@ def build_index_settings(es: Elasticsearch | None = None) -> dict:
     return settings
 
 
-def acronym_glue_active(es: Elasticsearch) -> bool | None:
-    """Canlı ES index'inin analyzer zincirinde acronym_glue ETKİN mi? (reindex doğrulaması)
+def acronym_glue_active(es: Elasticsearch, country_code: str | None = None) -> bool | None:
+    """Canlı index analyzer zincirinde acronym_glue ETKİN mi? (reindex doğrulaması)
+
+    country_code verilmezse ilk bilinen ülke alias'ı kullanılır (şema tüm
+    per-country index'lerde aynıdır). Dönüş: True/False/None (bkz. eski docstring).
 
     'K.W.M' = hepsi yasal-OLMAYAN tek harf. acronym_glue varsa tek token 'kwm' üretir;
     eski (glue'suz) zincir nokta→boşluk bölüp 3 token ([k,w,m]) üretir. Distinctive-core
@@ -385,8 +393,14 @@ def acronym_glue_active(es: Elasticsearch) -> bool | None:
 
     Dönüş: True = glue etkin ('kwm'); False = KESİN eski şema (>1 token); None = belirsiz
     (boş/hata/tek-farklı token) → çağıran yalnız KESİN False'ta abort etmeli."""
+    if country_code is None:
+        codes = get_all_country_codes()
+        if not codes:
+            return None
+        country_code = codes[0]
+    target = alias_for_country(country_code)
     try:
-        res = es.indices.analyze(index=ES_INDEX, body={"analyzer": "fingerprint_analyzer", "text": "K.W.M"})
+        res = es.indices.analyze(index=target, body={"analyzer": "fingerprint_analyzer", "text": "K.W.M"})
         tokens = [t["token"] for t in res.get("tokens", [])]
     except Exception:
         return None
@@ -397,33 +411,35 @@ def acronym_glue_active(es: Elasticsearch) -> bool | None:
     return None  # boş / tek-farklı → belirsiz (bozma)
 
 
-def create_index(es: Elasticsearch, force_recreate: bool = False) -> None:
-    """
-    ES index'ini oluşturur.
-    force_recreate=True ise mevcut index silinip yeniden oluşturulur.
-    """
-    if es.indices.exists(index=ES_INDEX):
+def _create_country_index(es: Elasticsearch, cc: str, force_recreate: bool) -> None:
+    """Tek ülke için fiziksel index + alias oluşturur."""
+    physical = index_for_country(cc)
+    alias = alias_for_country(cc)
+    if es.indices.exists(index=physical):
         if force_recreate:
-            es.indices.delete(index=ES_INDEX, ignore=[404])
-            # ES'in delete'i tamamlamasini bekle
+            es.indices.delete(index=physical, ignore=[404])
             import time
-
             for _ in range(30):
-                if not es.indices.exists(index=ES_INDEX):
+                if not es.indices.exists(index=physical):
                     break
                 time.sleep(1)
-            print(f"Index '{ES_INDEX}' silindi.")
         else:
-            print(f"Index '{ES_INDEX}' zaten mevcut. Atlanıyor.")
             return
+    settings = build_index_settings(es, country_code=cc)
+    settings["aliases"] = {alias: {}}
+    es.options(request_timeout=120).indices.create(index=physical, body=settings)
 
-    settings = build_index_settings(es)
 
-    cc_count = len(get_all_country_codes())
-    print(f"{cc_count} ulke icin per-country analyzer olusturuluyor...")
-
-    es.options(request_timeout=120).indices.create(index=ES_INDEX, body=settings)
-
+def create_index(es: Elasticsearch, force_recreate: bool = False) -> None:
+    """Tüm ülkeler için per-country fiziksel index + alias oluşturur."""
+    codes = get_all_country_codes()
+    print(f"{len(codes)} ulke icin per-country index olusturuluyor...")
+    created = 0
+    for cc in codes:
+        before = es.indices.exists(index=index_for_country(cc))
+        _create_country_index(es, cc, force_recreate)
+        if force_recreate or not before:
+            created += 1
     # Analyzer tanımı değişti (örn. acronym_glue) → es_queries token_count + çekirdek-gate
     # cache'leri ESKİ analyzer sonuçlarını taşıyor olabilir (anahtar analyzer ADI, tanımı
     # değil). Reindex sonrası bayat sonuçları (özellikle gate'in yanlış MATCH_NONE'u) temizle.
@@ -431,19 +447,13 @@ def create_index(es: Elasticsearch, force_recreate: bool = False) -> None:
         from es.queries import clear_token_count_cache
         clear_token_count_cache()
     except Exception:
-        logger.warning("es_queries cache temizlenemedi (import?) — reindex sonrası süreç yeniden başlatılmalı")
-
+        logger.warning("es_queries cache temizlenemedi — surec yeniden baslatilmali")
     features = ["synonym", "fingerprint", "ngram"]
     if _check_plugin_installed(es, "analysis-icu"):
         features.append("ICU")
     if _check_plugin_installed(es, "analysis-phonetic"):
         features.append("phonetic")
-
-    print(
-        f"Index '{ES_INDEX}' olusturuldu: "
-        f"{cc_count} ulke analyzer, routing=country_code, "
-        f"ozellikler: {', '.join(features)}"
-    )
+    print(f"{created} index olusturuldu/yenilendi, ozellikler: {', '.join(features)}")
 
 
 # ============================================================================

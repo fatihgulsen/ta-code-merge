@@ -46,11 +46,13 @@ from config import (
     AUTO_DEDUP_PER_BATCH,
     AUTO_DEDUP_EVERY_N_BATCHES,
     MATCH_BATCH_SIZE,
+    ENABLE_DIRTY_DATA,
 )
 from core.synonym_loader import get_all_country_codes
 from es.manager import create_index, get_es_client
 from es.ingest import register_all_pipelines, pipeline_name
 import es.queries as _es_queries
+from es.queries import is_address_dirty
 from core.input_filter import classify_input
 from core.synonym_phonetic import canonicalize_phonetic
 from dedup.auto_merge import auto_merge_duplicates
@@ -581,6 +583,7 @@ def process_all_data() -> None:
         total_processed = 0
         total_matched = 0
         total_new = 0
+        total_dirty = 0  # address-baskın kirli kayıt (DIRTY_DATA)
         total_skipped = 0
         total_excluded = 0  # firma-olmayan girdi (EXCLUDED, indekslenmez)
         total_deduped = 0   # batch-içi fingerprint dedup ile birleştirilen master sayısı
@@ -746,13 +749,18 @@ def process_all_data() -> None:
                             stage_counts[stage_name] = stage_counts.get(stage_name, 0) + 1
                         else:
                             master_id = _index_new_master(es, rec)
-                            details = "NEW_MASTER: No relevant matches found."
-                            pg_updates.append(_make_pg_update_tuple(master_id, 100, "NEW_MASTER", details, row_id))
-                            batch_new_master_ids.append(master_id)  # P0-C: batch-içi dedup kapsamı
-                            pending_dedup_ids.append(master_id)      # perf: N-batch biriktirici
-                            pending_dedup_ccs.add(country)
-                            total_new += 1
-                            stage_name = "NEW_MASTER"
+                            if ENABLE_DIRTY_DATA and is_address_dirty(es, rec["match_name"], country):
+                                stage_name = "DIRTY_DATA"
+                                details = "DIRTY_DATA: address-baskin, ayirt edici cekirdek yok."
+                                total_dirty += 1
+                            else:
+                                stage_name = "NEW_MASTER"
+                                details = "NEW_MASTER: No relevant matches found."
+                                total_new += 1
+                                batch_new_master_ids.append(master_id)  # P0-C: batch-içi dedup kapsamı
+                                pending_dedup_ids.append(master_id)      # perf: N-batch biriktirici
+                                pending_dedup_ccs.add(country)
+                            pg_updates.append(_make_pg_update_tuple(master_id, 100, stage_name, details, row_id))
                             es_score = 100.0
 
                         # Audit & Trace Logging
@@ -882,6 +890,8 @@ def process_all_data() -> None:
         logger.info(f"TAMAMLANDI: {total_processed:,} kayit islendi")
         logger.info(f"  Eslesen:     {total_matched:,}")
         logger.info(f"  Yeni master: {total_new:,}")
+        if total_dirty:
+            logger.info(f"  Kirli veri:  {total_dirty:,} (DIRTY_DATA: address-baskin)")
         if total_excluded:
             logger.info(f"  Excluded:    {total_excluded:,} firma-olmayan girdi izole edildi")
         if total_deduped:

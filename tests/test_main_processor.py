@@ -1189,3 +1189,9 @@ def test_invalid_country_excluded_not_default():
     assert _is_indexable_country("XX") is False   # bilinmeyen (synonym dosyası yok)
     assert _is_indexable_country("DEFAULT") is False
     assert _is_indexable_country("1A") is False    # yapısal geçersiz
+
+
+def test_is_address_dirty_importable_in_pipeline():
+    import matching.pipeline as p
+    assert hasattr(p, "is_address_dirty")
+    assert hasattr(p, "ENABLE_DIRTY_DATA")

@@ -296,3 +296,12 @@ def test_get_synonym_canonical_map_maps_source_to_target():
     ma = get_synonym_canonical_map("TR", ("address_abbreviations",))
     assert ma.get("ave") == "ave."
     assert ma.get("avenue") == "ave."
+
+
+def test_get_address_tokens_includes_common_address_words():
+    from core.synonym_loader import get_address_tokens
+    toks = get_address_tokens("TR")
+    assert "street" in toks
+    assert "avenue" in toks
+    assert "st" in toks
+    assert "pharma" not in toks

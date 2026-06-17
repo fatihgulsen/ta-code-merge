@@ -240,6 +240,21 @@ def get_business_sector_tokens(country_code: str) -> frozenset:
 
 
 @lru_cache(maxsize=None)
+def get_address_tokens(country_code: str) -> frozenset:
+    """Ülkeye özgü 'address_abbreviations' token'larını döner (common.json + ülke dosyası).
+
+    Kaynak ve hedef token'lar (street, st, str, avenue, ave, blvd, po, box...) — noktasız,
+    küçük harf. DIRTY_DATA tespiti (es/queries.is_address_dirty) kullanır; stripping'e GİRMEZ.
+    """
+    country_code = country_code.upper()
+    paths = [SYNONYMS_DIR / f for f in COMMON_FILES]
+    country_file = SYNONYMS_DIR / f"{country_code.lower()}.json"
+    if country_file.exists():
+        paths.append(country_file)
+    return _parse_category_tokens(paths, "address_abbreviations")
+
+
+@lru_cache(maxsize=None)
 def get_business_sector_canonical_map(country_code: str) -> dict:
     """Ülkeye özgü business_sectors kurallarından {kaynak: hedef} eşlem döner.
 

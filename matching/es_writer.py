@@ -3,6 +3,7 @@ import logging
 import uuid
 
 from config import alias_for_country
+from core.synonym_phonetic import canonicalize_phonetic
 from es.ingest import pipeline_name
 
 logger = logging.getLogger(__name__)
@@ -29,7 +30,7 @@ def update_es_variations(es, matched: list[dict]) -> None:
                 "addresses": set(),
                 "country": r["country"],
             }
-        master_updates[mid]["variations"].add(r["raw_name"])
+        master_updates[mid]["variations"].add(canonicalize_phonetic(r["raw_name"], r["country"]))
         if r.get("tax"):
             master_updates[mid]["tax_numbers"].add(r["tax"])
         if r.get("phone"):
@@ -125,7 +126,7 @@ def build_new_master_doc(
         "_id": master_id,
         "_source": {
             "master_id": master_id,
-            "variations": [{"name": name}],
+            "variations": [{"name": canonicalize_phonetic(name, country)}],
             "variations_stripped": [],
             "country_code": country.upper(),
         },
@@ -141,12 +142,14 @@ def build_new_master_doc(
 
 def _index_new_master(es, rec: dict) -> str:
     """Yeni master olusturur, ES'e index'ler (pipeline ile), master_id doner."""
+    cc = rec["country"]
+    canon = canonicalize_phonetic(rec["raw_name"], cc)
     master_id = str(uuid.uuid4())
     doc = {
         "master_id": master_id,
-        "variations": [{"name": rec["raw_name"]}],
+        "variations": [{"name": canon}],
         "variations_stripped": [],
-        "country_code": rec["country"].upper(),
+        "country_code": cc.upper(),
     }
     if rec.get("phone"):
         doc["phone_number"] = [rec["phone"]]
@@ -177,6 +180,7 @@ def _add_variation_to_master(
     es, master_doc_id: str, variation: str, country: str, rec: dict | None = None
 ) -> None:
     """Eşleşen kaydın varyasyonunu ve meta bilgilerini master doc'a ekler."""
+    variation = canonicalize_phonetic(variation, country)
     v_lower = variation.lower().strip().rstrip(".,")
     cc = country
     try:

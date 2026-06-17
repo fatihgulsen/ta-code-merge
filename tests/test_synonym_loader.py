@@ -284,3 +284,15 @@ def test_country_geo_stopwords_only_own_country():
     for short in ["br", "bra"]:
         assert short not in br, f"kısa kod {short!r} per-country geo-stop'ta OLMAMALI"
     assert all(len(t) >= 4 for t in br)
+
+
+def test_get_synonym_canonical_map_maps_source_to_target():
+    from core.synonym_loader import get_synonym_canonical_map
+    m = get_synonym_canonical_map("TR", ("legal_suffixes",))
+    assert m.get("inc") == "corp." or m.get("inc") == "inc."
+    ms = get_synonym_canonical_map("TR", ("business_sectors",))
+    assert ms.get("traders") == "trading"
+    assert ms.get("trading") == "trading"
+    ma = get_synonym_canonical_map("TR", ("address_abbreviations",))
+    assert ma.get("ave") == "ave."
+    assert ma.get("avenue") == "ave."

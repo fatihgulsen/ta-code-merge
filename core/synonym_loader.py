@@ -278,6 +278,47 @@ def get_business_sector_canonical_map(country_code: str) -> dict:
 
 
 @lru_cache(maxsize=None)
+def get_synonym_canonical_map(country_code: str, categories: tuple) -> dict:
+    """Verilen kategorilerdeki tüm 'src,src=>target' kurallarından {kaynak: hedef} eşlem döner.
+
+    categories: ör. ("legal_suffixes", "business_sectors", "address_abbreviations").
+    Çok-kelimeli (boşluklu) kaynak token'lar atlanır (tek-token rescue için).
+    Hedef kendisiyle de eşlenir (idempotent). Tamamen JSON'dan türetilir.
+    """
+    country_code = country_code.upper()
+    paths = [SYNONYMS_DIR / f for f in COMMON_FILES]
+    country_file = SYNONYMS_DIR / f"{country_code.lower()}.json"
+    if country_file.exists():
+        paths.append(country_file)
+
+    mapping: dict[str, str] = {}
+    for path in paths:
+        if not path.exists():
+            continue
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        for category in categories:
+            rules = data.get(category, [])
+            if not isinstance(rules, list):
+                continue
+            for rule in rules:
+                rule_norm = normalize_text(rule)
+                if "=>" not in rule_norm:
+                    continue
+                left, right = rule_norm.split("=>", 1)
+                target = right.strip().lower()
+                for src in left.split(","):
+                    src_token = src.strip().lower().replace(".", "").strip()
+                    if src_token and " " not in src_token:
+                        mapping[src_token] = target
+                # hedef kendisiyle idempotent (tek kelimeyse)
+                t_bare = target.replace(".", "").strip()
+                if t_bare and " " not in t_bare:
+                    mapping[t_bare] = target
+    return mapping
+
+
+@lru_cache(maxsize=None)
 def get_company_type_tokens(country_code: str) -> frozenset:
     """DEPRECATED — doğrudan get_legal_suffix_tokens kullanın.
 

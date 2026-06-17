@@ -34,7 +34,7 @@ except ImportError:  # pragma: no cover
 from config import (
     BATCH_SIZE,
     COLUMN_MAPPING,
-    ES_INDEX,
+    alias_for_country,
     RAW_TABLE_NAME,
     COUNTRY_CODE_FILTER,
     STAGES,
@@ -47,6 +47,7 @@ from config import (
     AUTO_DEDUP_EVERY_N_BATCHES,
     MATCH_BATCH_SIZE,
 )
+from core.synonym_loader import get_all_country_codes
 from es.manager import create_index, get_es_client
 from es.ingest import register_all_pipelines, pipeline_name
 import es.queries as _es_queries
@@ -68,6 +69,17 @@ from matching.es_writer import (
 )
 
 logger = logging.getLogger(__name__)
+
+_INDEXABLE_CC: set[str] | None = None
+
+
+def _is_indexable_country(country: str) -> bool:
+    """Ülke kodu geçerli (2 harf) VE bir index'i var mı (synonyms_data'da)?"""
+    global _INDEXABLE_CC
+    if _INDEXABLE_CC is None:
+        _INDEXABLE_CC = set(get_all_country_codes())
+    cc = (country or "").strip().upper()
+    return len(cc) == 2 and cc.isalpha() and cc in _INDEXABLE_CC
 
 
 # ── Stage orkestrasyonu ──────────────────────────────────────────────
@@ -149,7 +161,7 @@ def _execute_msearch(
 
         for idx in chunk:
             query, country, _ = queries[idx]
-            body.append({"index": ES_INDEX, "routing": country.upper()})
+            body.append({"index": alias_for_country(country)})
             body.append(query)
 
         try:
@@ -208,7 +220,7 @@ def _build_stage_body(es, rec: dict, active_stages: list[dict]) -> list[dict]:
     for stage in active_stages:
         query_fn = getattr(_es_queries, stage["query_fn"])
         q = query_fn(name=rec["raw_name"], country=rec["country"], es=es)
-        body.append({"index": ES_INDEX, "routing": rec["country"].upper()})
+        body.append({"index": alias_for_country(rec["country"])})
         body.append(q)
     return body
 
@@ -326,9 +338,8 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
         for rec in chunk:
             master_id = rec["_master_id"]
             doc = {
-                "_index": ES_INDEX,
+                "_index": alias_for_country(rec["country"]),
                 "_id": master_id,
-                "_routing": rec["country"].upper(),
                 "pipeline": pipeline_name(rec["country"]),
                 "_source": {
                     "master_id": master_id,
@@ -376,7 +387,8 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
                 retry_docs = [d for d in es_docs if d["_id"] in failed_ids]
                 if retry_docs:
                     helpers.bulk(es, retry_docs, raise_on_error=False)
-            es.indices.refresh(index=ES_INDEX)
+            for _idx in {d["_index"] for d in es_docs}:
+                es.indices.refresh(index=_idx)
 
         execute_values(
             write_cursor,
@@ -585,6 +597,8 @@ def process_all_data() -> None:
             ),
         )
 
+        touched_ccs: set[str] = set()
+
         # NEW_MASTER id'leri biriktirilerek N batch'te bir dedup koşulur; ES `terms` limitini
         # aşmamak için güvenlik-cap'te erken flush yapılır (bkz. _DEDUP_PENDING_CAP).
         pending_dedup_ids: list[str] = []
@@ -659,16 +673,22 @@ def process_all_data() -> None:
                     row_id = row[col_id]
                     last_id = row_id  # Sayfalama için son id'yi takip et
                     try:
-                        country = (
-                            (row[col_country] or "").strip().upper()
-                            if col_country
-                            else "DEFAULT"
-                        )
-                        if len(country) != 2 or not country.isalpha():
-                            country = "DEFAULT"
+                        country = (row[col_country] or "").strip().upper() if col_country else ""
                         raw_name = (row[col_name] or "").strip()
                         if not raw_name:
                             total_skipped += 1
+                            pbar.update(1)
+                            continue
+                        # Geçersiz/bilinmeyen ülke → index'lenemez → EXCLUDED(invalid_country)
+                        if not _is_indexable_country(country):
+                            master_id = str(uuid.uuid4())
+                            pg_updates.append(
+                                _make_pg_update_tuple(
+                                    master_id, 0, "EXCLUDED", "EXCLUDED: invalid_country", row_id
+                                )
+                            )
+                            total_excluded += 1
+                            total_processed += 1
                             pbar.update(1)
                             continue
 
@@ -752,6 +772,7 @@ def process_all_data() -> None:
                                 )
                             )
 
+                        touched_ccs.add(alias_for_country(country))
                         total_processed += 1
                         pbar.update(1)
                         match_pct = (
@@ -766,7 +787,9 @@ def process_all_data() -> None:
                         continue
 
                 # 4) Chunk sonu: refresh (yeni master'lar sonraki chunk'a görünür) + PG flush
-                es.indices.refresh(index=ES_INDEX)
+                for _idx in touched_ccs:
+                    es.indices.refresh(index=_idx)
+                touched_ccs.clear()
                 if pg_updates:
                     execute_values(
                         write_cursor,
@@ -832,7 +855,9 @@ def process_all_data() -> None:
                 )
                 write_conn.commit()
 
-            es.indices.refresh(index=ES_INDEX)
+            for _idx in touched_ccs:
+                es.indices.refresh(index=_idx)
+            touched_ccs.clear()
 
             # Aynı fingerprint'li NEW_MASTER'ları N batch'te bir birleştir; fielddata
             # aggregation sıklığını düşürür, güvenlik-cap'te erken flush tetiklenir.

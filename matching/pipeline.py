@@ -855,9 +855,10 @@ def process_all_data() -> None:
                 )
                 write_conn.commit()
 
-            for _idx in touched_ccs:
-                es.indices.refresh(index=_idx)
-            touched_ccs.clear()
+            # NOT: Batch-sonu ES refresh'e gerek yok — her chunk sonunda (yukarıda)
+            # o chunk'ta dokunulan ülke alias'ları zaten refresh edilip touched_ccs
+            # temizleniyor; tüm yazımlar chunk içinde olduğundan batch sonunda görünürlük
+            # garantilidir (dedup öncesi).
 
             # Aynı fingerprint'li NEW_MASTER'ları N batch'te bir birleştir; fielddata
             # aggregation sıklığını düşürür, güvenlik-cap'te erken flush tetiklenir.

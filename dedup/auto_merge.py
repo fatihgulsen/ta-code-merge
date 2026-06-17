@@ -11,11 +11,15 @@ import psycopg2
 import psycopg2.sql
 from elasticsearch import Elasticsearch
 
-from config import DB_CONFIG, ES_INDEX, RAW_TABLE_NAME, COLUMN_MAPPING, DEDUP_MIN_FINGERPRINT_TOKEN_LEN, MatchType
+from config import DB_CONFIG, alias_for_country, RAW_TABLE_NAME, COLUMN_MAPPING, DEDUP_MIN_FINGERPRINT_TOKEN_LEN, MatchType
+from core.synonym_loader import get_all_country_codes
 
 logger = logging.getLogger(__name__)
 
-_FINGERPRINT_FIELD = "variations.name.fingerprint"
+# Fingerprint, variations_stripped.name multi-field'ında üretilir (per-country geo izole):
+# girdi ZATEN kendi ülke adı sıyrılmış stripped içeriktir → fingerprint per-country.
+_FINGERPRINT_FIELD = "variations_stripped.name.fingerprint"
+_FINGERPRINT_NESTED_PATH = "variations_stripped"
 
 
 # ─────────────────────────────────────────────────────────────────────
@@ -66,15 +70,6 @@ def plan_merge(group: dict) -> dict | None:
 # ES AGGREGATION — aynı fingerprint + country altında >=2 master
 # ─────────────────────────────────────────────────────────────────────
 
-def _distinct_countries(es: Elasticsearch) -> list[str]:
-    """Index'teki distinct country_code değerleri (root terms agg)."""
-    resp = es.search(
-        index=ES_INDEX,
-        body={"size": 0, "aggs": {"cc": {"terms": {"field": "country_code", "size": 1000}}}},
-    )
-    return [b["key"] for b in resp["aggregations"]["cc"]["buckets"]]
-
-
 def iter_duplicate_groups(
     es: Elasticsearch,
     page_size: int = 1000,
@@ -91,7 +86,7 @@ def iter_duplicate_groups(
 
     Yields: {"fingerprint", "country_code", "master_ids": [...]}
     """
-    for cc in (countries if countries is not None else _distinct_countries(es)):
+    for cc in (countries if countries is not None else get_all_country_codes()):
         after = None
         while True:
             comp = {"size": page_size, "sources": [{"fp": {"terms": {"field": _FINGERPRINT_FIELD}}}]}
@@ -109,7 +104,7 @@ def iter_duplicate_groups(
                 "query": query,
                 "aggs": {
                     "v": {
-                        "nested": {"path": "variations"},
+                        "nested": {"path": _FINGERPRINT_NESTED_PATH},
                         "aggs": {
                             "by_fp": {
                                 "composite": comp,
@@ -126,7 +121,7 @@ def iter_duplicate_groups(
                     }
                 },
             }
-            resp = es.search(index=ES_INDEX, body=body)
+            resp = es.search(index=alias_for_country(cc), body=body)
             agg = resp["aggregations"]["v"]["by_fp"]
             buckets = agg["buckets"]
             if not buckets:
@@ -189,9 +184,9 @@ def apply_merge(es: Elasticsearch, cur, pg_conn, plan: dict) -> dict:
                 f"fp={plan.get('fingerprint')!r} primary={primary} secondaries={secondaries}"
             )
         for sec_id in secondaries:
-            sec = es.get(index=ES_INDEX, id=sec_id, routing=cc)["_source"]
+            sec = es.get(index=alias_for_country(cc), id=sec_id)["_source"]
             es.update(
-                index=ES_INDEX, id=primary, routing=cc,
+                index=alias_for_country(cc), id=primary,
                 body={"script": {
                     "source": _MERGE_SCRIPT,
                     "params": {
@@ -200,7 +195,7 @@ def apply_merge(es: Elasticsearch, cur, pg_conn, plan: dict) -> dict:
                     },
                 }},
             )
-            es.delete(index=ES_INDEX, id=sec_id, routing=cc)
+            es.delete(index=alias_for_country(cc), id=sec_id)
         pg_conn.commit()
         return {"ok": True, "primary": primary, "merged": len(secondaries), "repointed": repointed}
     except Exception as e:
@@ -245,7 +240,11 @@ def auto_merge_duplicates(
         if limit and stats["groups"] >= limit:
             break
     if refresh and not dry_run:
-        es.indices.refresh(index=ES_INDEX)
+        for cc in (countries if countries is not None else get_all_country_codes()):
+            try:
+                es.indices.refresh(index=alias_for_country(cc))
+            except Exception:
+                pass
     cur.close()
     return stats
 

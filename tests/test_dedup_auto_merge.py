@@ -100,7 +100,8 @@ def test_apply_merge_repoints_pg_with_country_hard_filter_and_merges_es():
     # ES merge+delete per secondary, with routing
     assert es.update.call_count == 2 and es.delete.call_count == 2
     for c in es.delete.call_args_list:
-        assert c.kwargs.get("routing") == "MX"
+        assert c.kwargs.get("routing") is None
+        assert c.kwargs.get("index") == "living_companies_mx"
     conn.commit.assert_called_once()
 
 

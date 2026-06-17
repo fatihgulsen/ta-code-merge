@@ -81,9 +81,11 @@ address  → legal  → sector  → geo(kendi ülke)  → article  → core
 | `variations_core[].name` | Yalnız çekirdek token'lar | **Birincil eşleştirme** (eski `variations_stripped` yerine) |
 | `variations_core[].name.token_count` | Çekirdek kelime sayısı | 1-1 identity + coverage gate |
 | `variations_core[].name.fingerprint` | Sıralı+tekil çekirdek parmak izi | dedup/auto_merge, transform |
-| `variations_synonym[]` | Kanonikleştirilmiş synonym token'ları (tüm sınıflar) | 4. madde fonetik altyapısı |
-| `variations_synonym[].phonetic` | Synonym token'larının double_metaphone'u | (gelecekteki teşhis; eşleştirme B1'de Python tarafında) |
 | `address_token_count` | İsimdeki address-sınıfı token sayısı | 3. madde kirli tespiti |
+
+> **NOT (YAGNI):** ES'te ayrı `variations_synonym[]` / `.phonetic` alanı **kurulmaz**. Fonetik
+> typo-rescue (Madde 4) tamamen sorgu/ingest öncesi Python normalize adımında çözülür; ES
+> tarafında synonym-fonetik alanı eşleştirmede kullanılmaz.
 
 ### Eşleştirme stage'leri
 - Tüm `variations_stripped` referansları → `variations_core`.
@@ -98,6 +100,12 @@ address  → legal  → sector  → geo(kendi ülke)  → article  → core
 Bir synonym token'ı o kadar bozuk yazılmış ki synonym listesinde **yok** ve çekirdeğe sızıyor
 (`limmtd`, `internacaonal`). Bu, aynı-firma kayıtlarının çekirdeğini farklılaştırıp under-merge
 üretiyor. Fonetik bunu kurtarır; **markaya/çekirdeğe asla dokunmaz.**
+
+### Katı kural (kullanıcı talebi)
+Fonetik YALNIZCA synonym dosyasındaki girişlere uygulanır; firma/marka ismine **asla**.
+Karşılaştırma hedefi her zaman bir synonym girişidir: bir name-token fonetik olarak bir synonym
+girişine eşleşirse o synonym'in kanonik formuna çevrilir; eşleşmezse **çekirdek olarak korunur**.
+Hiçbir koşulda iki marka token'ı birbirine fonetik kıyaslanmaz.
 
 ### Tasarım
 - Yeni modül: `core/synonym_phonetic.py`.
@@ -144,13 +152,22 @@ Bir synonym token'ı o kadar bozuk yazılmış ki synonym listesinde **yok** ve 
 
 ## 6. Madde 5 — Synonym Dosya Yenileme
 
-- `address_abbreviations` sınıfı eşleştirmeye **dahil edilir** (bugün atıl). Ülke dosyalarında
+İçerik **yine sabittir** (yeni keyfi token eklenmez, Python'da hardcode yok). Yenileme =
+**yasal-ek (legal_suffix) ailelerinin birleştirilmesi**:
+
+- Biri diğerini **kapsayan** / aynı uzantının daha **uzun hali** olan ekler tek synonym grubuna
+  alınır ve aynı kanonik forma indirgenir.
+  - Örnek (AR): `sa` ile `sacif` aynı aile → `sa,sacif=>...` (SACIF, SA'nın uzun hali).
+  - Karşı-örnek: `gmbh` ile `sa` farklı tüzel form → **ayrı** gruplar, birleştirilmez.
+- Bu, JSON'daki `A,B=>C` gruplamasının **per-country küratörlüğüdür** (data, ES synonym_graph
+  ile uygulanır). Prefix/containment kararı insan-küratörlüdür; otomatik prefix-eşleme **yok**.
+- `address_abbreviations` sınıfı eşleştirmeye **dahil edilir** (bugün atıl); ülke dosyalarında
   bütünlüğü gözden geçirilir.
-- JSON yapısı sınıflandırmayı destekleyecek şekilde tutarlılaştırılır: kanonik hedef tek,
-  sınıflar çakışmasız (bir token birden çok sınıfa girmesin; girerse §3 öncelik sırası uygulanır).
-- CLAUDE.md §1.4: 65 ülke JSON içeriği **sabit**; içerik düzeltmesi gerekiyorsa kod/config
-  kuralında yapılır. **AÇIK NOKTA:** "yenileme" yalnız yapısal/format mı, yoksa içerik
-  genişletmesi mi? → Spec gözden geçirmede kullanıcı teyidi gerekir.
+- JSON tutarlılığı: kanonik hedef tek, sınıflar çakışmasız (bir token birden çok sınıfa girerse
+  §3 öncelik sırası uygulanır).
+- **CLAUDE.md etkisi:** §1.4 "JSON sabit" kuralı, legal-suffix aile gruplaması için bilinçli
+  istisna alır; eski `SUFFIX_TYPO_MAP` (config) kalkar (typo işi fonetik-rescue'ye taşınır).
+  CLAUDE.md uygulama sırasında güncellenir.
 
 ---
 
@@ -173,9 +190,11 @@ Bir synonym token'ı o kadar bozuk yazılmış ki synonym listesinde **yok** ve 
 - (R1) 65 index ⇒ shard patlaması → `number_of_shards=1` ile başla, ölç.
 - (R2) Cross-country raporlama kırılır → alias/multi-index okuma ile telafi.
 - (R3) Python metaphone yeni bağımlılık → hafif, saf-Python kütüphane tercih edilir.
-- (R4) Fonetik over-rescue (meşru çekirdeği yanlışlıkla synonym'e çevirme) → yalnız "listede
-  tam yok ama metaphone eşleşiyor" durumunda; metaphone kod uzunluğu/eşik dikkatli seçilir,
-  testle doğrulanır.
+- (R4) Fonetik over-rescue (meşru marka token'ını yanlışlıkla synonym'e çevirme) → en yüksek
+  öncelikli risk. Korumalar: (a) yalnız "listede tam yok ama metaphone TAM eşleşiyor"; prefix
+  eşleme yok; (b) çok kısa synonym token'ları (örn. tek-harf/iki-harf metaphone kodları) marka
+  fragmanlarıyla çakışabilir → minimum kod uzunluğu eşiği; (c) altın-küme testiyle (gerçek
+  markalar synonym'e çevrilmemeli) doğrulanır.
 
 ---
 

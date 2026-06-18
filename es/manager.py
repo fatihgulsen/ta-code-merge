@@ -1,4 +1,4 @@
-"""ES index/mapping/analyzer yönetimi; custom analyzer (fingerprint, ngram, phonetic, stripped) ve mapping'leri kurar."""
+"""ES index/mapping/analyzer yönetimi; custom analyzer (fingerprint, clean) ve mapping'leri kurar."""
 
 import logging
 
@@ -6,13 +6,8 @@ from elasticsearch import Elasticsearch
 
 from config import ES_HOST, alias_for_country, index_for_country
 from core.synonym_loader import (
-    get_all_company_type_tokens,
     get_all_country_codes,
     get_all_legal_suffix_fragments,
-    get_article_stopwords,
-    get_company_type_tokens,
-    get_country_geo_stopwords,
-    get_geo_stopword_tokens,
     load_synonyms_for_country,
 )
 
@@ -46,16 +41,10 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
                                 → Index-time default analyzer
                                 → Ülke dosyası olmayan ülkeler için search-time
     clean_analyzer_{CC}     : ülkeye özgü + ortak
-                                → Search-time, country_code bilindiğinde kullanılır
+                                → Search-time ve token_count, country_code bilindiğinde
 
-    v3 Ek Analyzer'lar:
-    icu_analyzer            : ICU tokenizer + folding (latinize)
-    fingerprint_analyzer    : jenerik + yasal-ek stop → sort/dedup (variations_stripped
-                                multi-field'ı; geo per-country İÇERİKTE halledilir)
-    stripped_search_analyzer_{cc} : per-country jenerik + yasal-ek + KENDİ geo stop
-    ngram_analyzer          : trigram tokenization (index-time fuzzy)
-    ngram_search_analyzer   : standard tokenizer (search-time for ngram field)
-    phonetic_analyzer       : double_metaphone (fonetik benzerlik)
+    fingerprint_analyzer    : yasal-ek stop → sort/dedup (variations.name.fingerprint
+                                multi-field'ı; dedup aggregation için)
     ───────────────────────────────────────────────────────────────────────────
     """
     filters = {}
@@ -64,17 +53,11 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
 
     # ── Plugin kontrolü ──
     has_icu = _check_plugin_installed(es, "analysis-icu") if es else False
-    has_phonetic = _check_plugin_installed(es, "analysis-phonetic") if es else False
 
     if not has_icu:
         logger.warning(
             "analysis-icu plugin kurulu degil. ICU analyzer devre disi. "
             "Kurmak icin: elasticsearch-plugin install analysis-icu"
-        )
-    if not has_phonetic:
-        logger.warning(
-            "analysis-phonetic plugin kurulu degil. Phonetic analyzer devre disi. "
-            "Kurmak icin: elasticsearch-plugin install analysis-phonetic"
         )
 
     filters["arabic_norm"] = {"type": "arabic_normalization"}
@@ -106,11 +89,8 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
 
     # ── Yasal-ek parça stop filtresi (tüm ülke legal_suffixes JSON'larından türetilir) ──
     # 'S.A. DE C.V.' gibi dotlu yasal ekler punctuation_remover ile s/a/c/v tek
-    # harflerine bölünür. Bu parçaları HEM stripped HEM phonetic analyzer'da düşürmek:
-    #   1) fonetik gürültüyü (yaygın metaphone S,A,T,K,F) keser (over-merge),
-    #   2) arama-zamanı tokenizasyonunu ingest stripped TEXT'iyle TUTARLI kılar —
-    #      böylece token_count filtreleri (STRIPPED_EXACT + PHONETIC coverage) dotlu
-    #      suffix'lerde doğru çalışır (analyzer↔ingest uyumsuzluğu giderilir).
+    # harflerine bölünür. Bu parçalar fingerprint_analyzer'da düşürülür:
+    #   → kanonik parmak izinde yasal-ek gürültüsü kesilir (over-merge önlenir).
     filters["legal_fragment_stop"] = {
         "type": "stop",
         "stopwords": sorted(get_all_legal_suffix_fragments()),
@@ -129,72 +109,18 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
         "filter": base_clean_filters + ["synonym_filter_common"],
     }
 
-    # Coğrafi token'lar ('mexico', 'argentina') ayırt edici değil; fingerprint dedup'ta
-    # 'BRAND DE MEXICO' ile 'BRAND'ı farklı parmak izine düşürüyordu (bkz. docs/audit/2026-06-03 §3.3).
-    # ISO kısa kodları (len<4) marka çakışması riski nedeniyle hariç; kaynak countries.json — hardcode yok.
-    # Stripped analyzer döngüsünden ÖNCE tanımlanmalı (forward-ref).
-    geo_tokens_global = sorted(get_geo_stopword_tokens())
-    filters["geo_stopwords_global"] = {
-        "type": "stop",
-        "stopwords": geo_tokens_global,
-    }
-
-    # ── Verilen ülkenin Stripped Search Analyzer'ı (tek ülke) ──
-    # Her ülke için common + ülke company_types tokenlarından stopword filter.
-    # variations_stripped alanının search_analyzer'ı olarak kullanılır.
-    if country_code and country_code not in ("__common__", "__COMMON__"):
-        cc = country_code.upper()
-        cc_tokens = list(get_company_type_tokens(cc))
-        article_tokens = list(get_article_stopwords(cc))
-        filter_name = f"generic_stopwords_{cc.lower()}"
-        geo_filter_name = f"geo_stopwords_{cc.lower()}"
-        analyzer_name = f"stripped_search_analyzer_{cc.lower()}"
-        filters[filter_name] = {"type": "stop", "stopwords": cc_tokens + article_tokens}
-        # Per-country geo-stop: YALNIZCA ülkenin KENDİ ad token'ları (brasil/brazil)
-        # sıyrılır; başka ülke adları (BR'de 'mexico') o shard'da ayırt edicidir → korunur.
-        # country_code HARD FILTER olduğundan kendi ülke adı saf gürültüdür. Index tarafı
-        # (ingest stripped_form) aynı per-country listeyi kullanır → simetri korunur.
-        filters[geo_filter_name] = {"type": "stop", "stopwords": sorted(get_country_geo_stopwords(cc))}
-        analyzers[analyzer_name] = {
-            "tokenizer": "standard",
-            "char_filter": ["acronym_glue", "punctuation_remover"],
-            # A1 (per-country): geo_stopwords_{cc} → KENDİ ülke adı çekirdek-dışı (geo-mıknatıs fix)
-            "filter": base_clean_filters + [filter_name, "legal_fragment_stop", geo_filter_name],
-        }
-
-    # Global fallback stripped analyzer (tüm ülkeler birleşimi)
-    global_tokens = list(get_all_company_type_tokens())
-    global_articles = list(get_article_stopwords("common"))
-    filters["generic_stopwords_global"] = {
-        "type": "stop",
-        "stopwords": global_tokens + global_articles,
-    }
-    analyzers["stripped_search_analyzer"] = {
-        "tokenizer": "standard",
-        "char_filter": ["acronym_glue", "punctuation_remover"],
-        # A1: geo_stopwords_global → token_count + _has_distinctive_core geo-only'yi boş görür
-        "filter": base_clean_filters + ["generic_stopwords_global", "legal_fragment_stop", "geo_stopwords_global"],
-    }
-
     # ── Fingerprint (sort + dedup) filtresi + güçlendirilmiş fingerprint_analyzer ──
-    # Built-in 'fingerprint' analyzer yasal-ek normalize ETMEZ; bu özel analyzer jenerik +
+    # Built-in 'fingerprint' analyzer yasal-ek normalize ETMEZ; bu özel analyzer
     # yasal-ek stop uygular, ardından token'ları sıralayıp tekilleştirir → kanonik parmak izi.
-    # variations_stripped.name multi-field'ı olarak çalışır: girdi ZATEN per-country geo
-    # (kendi ülke adı) sıyrılmış içeriktir → geo stop burada TEKRAR uygulanmaz; başka ülke
-    # adları (BR'de 'mexico') fingerprint'te KORUNUR (per-country dedup izolasyonu).
-    # ES Transform / dedup_auto_merge bununla aynı-firma master'larını gruplar (Option-2).
+    # variations.name.fingerprint multi-field'ı olarak çalışır.
+    # ES Transform / dedup_auto_merge bununla aynı-firma master'larını gruplar.
     filters["fingerprint_token_filter"] = {
         "type": "fingerprint",
     }
     analyzers["fingerprint_analyzer"] = {
         "tokenizer": "standard",
         "char_filter": ["acronym_glue", "punctuation_remover"],
-        "filter": base_clean_filters
-        + [
-            "generic_stopwords_global",
-            "legal_fragment_stop",
-            "fingerprint_token_filter",
-        ],
+        "filter": base_clean_filters + ["legal_fragment_stop", "fingerprint_token_filter"],
     }
 
     # ── Verilen ülkenin synonym analyzer'ı (tek ülke) ──
@@ -210,50 +136,13 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
             "filter": base_clean_filters + [filter_name],
         }
 
-    # ── ICU Analyzer (plugin varsa) ──
-    if has_icu:
-        analyzers["icu_analyzer"] = {
-            "tokenizer": "icu_tokenizer",
-            "char_filter": ["acronym_glue", "punctuation_remover"],
-            "filter": ["icu_normalizer", "icu_folding", "lowercase"],
-        }
-
-    # ── N-gram Analyzer (index-time fuzzy) ──
-    tokenizers["ngram_tokenizer"] = {
-        "type": "ngram",
-        "min_gram": 3,
-        "max_gram": 4,
-        "token_chars": ["letter", "digit"],
-    }
-    analyzers["ngram_analyzer"] = {
-        "tokenizer": "ngram_tokenizer",
-        "char_filter": ["acronym_glue", "punctuation_remover"],
-        "filter": base_clean_filters,
-    }
-    analyzers["ngram_search_analyzer"] = {
-        "tokenizer": "standard",
-        "char_filter": ["acronym_glue", "punctuation_remover"],
-        "filter": base_clean_filters,
-    }
-
-    # ── Phonetic Analyzer (plugin varsa) ──
-    if has_phonetic:
-        filters["phonetic_filter"] = {
-            "type": "phonetic",
-            "encoder": "double_metaphone",
-            "replace": False,
-        }
-        # phonetic_analyzer da legal_fragment_stop kullanır (yukarıda koşulsuz tanımlı):
-        # yasal-ek parçaları metaphone'a girmeden elenir → over-merge gürültüsü kesilir.
-        analyzers["phonetic_analyzer"] = {
-            "tokenizer": "standard",
-            "char_filter": ["acronym_glue", "punctuation_remover"],
-            # legal_fragment_stop, phonetic_filter'dan ÖNCE: yasal-ek parçaları
-            # metaphone'a girmeden eler (index + arama tarafında tutarlı).
-            "filter": ["lowercase", "legal_fragment_stop", "phonetic_filter"],
-        }
-
     # ── Mapping: variations subfield'ları ──
+    # token_count analyzer: per-country clean analyzer kullanılır → token_count asimetrisi giderilir.
+    tc_analyzer = (
+        f"clean_analyzer_{country_code.upper()}"
+        if country_code and country_code not in ("__common__", "__COMMON__")
+        else "clean_analyzer_common"
+    )
     variations_fields = {
         # Tam eşleşme kontrolü (synonym uygulanmaz)
         "keyword": {"type": "keyword", "ignore_above": 512},
@@ -261,46 +150,13 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
         # enable_position_increments=False: stop filtresiyle ELENEN token'ların
         # bıraktığı pozisyon boşlukları sayıma DAHİL EDİLMEZ → indeks sayımı,
         # _analyze API'sinin (gerçek token sayısı) sonucuyla TUTARLI olur.
+        # Per-country clean analyzer kullanılır → token_count asimetrisi giderilir.
         "token_count": {
             "type": "token_count",
-            "analyzer": "clean_analyzer_common",
+            "analyzer": tc_analyzer,
             "enable_position_increments": False,
         },
-        # N-gram: index-time fuzzy matching
-        "ngram": {
-            "type": "text",
-            "analyzer": "ngram_analyzer",
-            "search_analyzer": "ngram_search_analyzer",
-        },
-    }
-
-    # ICU varsa → icu_analyzer, yoksa → standard (fallback)
-    variations_fields["unidecode"] = {
-        "type": "text",
-        "analyzer": "icu_analyzer" if has_icu else "standard",
-    }
-
-    # Phonetic varsa ekle
-    if has_phonetic:
-        variations_fields["phonetic"] = {
-            "type": "text",
-            "analyzer": "phonetic_analyzer",
-        }
-
-    # Stripped fields:
-    stripped_fields = {
-        "keyword": {"type": "keyword", "ignore_above": 512},
-        # Token Count: Suffix'ler atıldıktan sonraki kelime sayısı.
-        # enable_position_increments=False: legal_fragment_stop ile elenen parçaların
-        # pozisyon boşlukları sayılmaz → _analyze ile tutarlı (dotlu S.A. DE C.V. dahil).
-        "token_count": {
-            "type": "token_count",
-            "analyzer": "stripped_search_analyzer",
-            "enable_position_increments": False,
-        },
-        # Fingerprint: jenerik + yasal-ek stop → token sort/dedup → kanonik parmak izi.
-        # variations_stripped üzerinde tanımlı: girdi ZATEN per-country geo (kendi ülke adı)
-        # sıyrılmış → fingerprint per-country izole olur (başka ülke adları korunur).
+        # Fingerprint: yasal-ek stop → token sort/dedup → kanonik parmak izi.
         # Aynı-firma varyantları (suffix/kelime-sırası farkı) tek ize iner → dedup_auto_merge.
         # fielddata=True: aggregation için; analyzer tek token ürettiğinden kardinalite düşük.
         "fingerprint": {
@@ -308,23 +164,12 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
             "analyzer": "fingerprint_analyzer",
             "fielddata": True,
         },
-        "ngram": {
-            "type": "text",
-            "analyzer": "ngram_analyzer",
-            "search_analyzer": "ngram_search_analyzer",
-        },
     }
-    if has_phonetic:
-        stripped_fields["phonetic"] = {
-            "type": "text",
-            "analyzer": "phonetic_analyzer",
-        }
 
     settings = {
         "settings": {
             "number_of_shards": 5,
             "number_of_replicas": 0,
-            "index.max_ngram_diff": 1,
             "analysis": {
                 "char_filter": char_filters,
                 "tokenizer": tokenizers,
@@ -353,25 +198,6 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
                             "fields": variations_fields,
                         }
                     }
-                },
-                "variations_stripped": {
-                    "type": "nested",
-                    "properties": {
-                        "name": {
-                            "type": "text",
-                            "analyzer": "standard",
-                            "search_analyzer": "stripped_search_analyzer",
-                            "fields": stripped_fields,
-                        }
-                    }
-                },
-                "variations_suffix": {
-                    "type": "text",
-                    "analyzer": "standard",
-                    "search_analyzer": "standard",
-                    "fields": {
-                        "keyword": {"type": "keyword", "ignore_above": 512},
-                    },
                 },
             },
         },
@@ -448,11 +274,9 @@ def create_index(es: Elasticsearch, force_recreate: bool = False) -> None:
         clear_token_count_cache()
     except Exception:
         logger.warning("es_queries cache temizlenemedi — surec yeniden baslatilmali")
-    features = ["synonym", "fingerprint", "ngram"]
+    features = ["synonym", "fingerprint"]
     if _check_plugin_installed(es, "analysis-icu"):
         features.append("ICU")
-    if _check_plugin_installed(es, "analysis-phonetic"):
-        features.append("phonetic")
     print(f"{created} index olusturuldu/yenilendi, ozellikler: {', '.join(features)}")
 
 

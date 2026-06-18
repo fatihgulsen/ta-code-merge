@@ -189,9 +189,11 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
         },
         # canonical_full: tam kanonik token kümesi (legal korunur) → sort/dedup tek token.
         # token_count ile birlikte TOKEN_COVERAGE multiset eşitliğini verir (term-eşitliği).
+        # Yalnızca term filtresi için kullanılır → fielddata gerekmez (kasıtlı, aggregation yok).
         "canonical_full": {
             "type": "text",
             "analyzer": cf_analyzer,
+            "fielddata": False,
         },
     }
 

@@ -48,6 +48,9 @@ _TOKEN_COUNT_CACHE_MAX = 200_000
 # Perf: (analyzer, name, require_alpha) → bool; token-count cache ile aynı gerekçe.
 _DISTINCTIVE_CORE_CACHE: dict[tuple[str, str, bool], bool] = {}
 
+# Perf: (analyzer, name) → tek-token analyzer çıktısı (canonical_full / fingerprint). '' geçerli sonuç.
+_SINGLE_TOKEN_CACHE: dict[tuple[str, str], str] = {}
+
 
 def _analyze_index(country: str) -> str:
     """`_analyze` çağrıları için hedef index: override varsa o, yoksa ülke alias'ı."""
@@ -56,9 +59,10 @@ def _analyze_index(country: str) -> str:
 
 
 def clear_token_count_cache() -> None:
-    """Token-count + çekirdek-gate cache'lerini temizler (test izolasyonu / reindex sonrası)."""
+    """Token-count + çekirdek-gate + tek-token cache'lerini temizler (test izolasyonu / reindex sonrası)."""
     _TOKEN_COUNT_CACHE.clear()
     _DISTINCTIVE_CORE_CACHE.clear()
+    _SINGLE_TOKEN_CACHE.clear()
 
 
 def _has_distinctive_core(es: Elasticsearch, name: str, country: str, require_alpha: bool) -> bool:
@@ -174,6 +178,43 @@ def _get_token_count(es: Elasticsearch, text: str, analyzer: str, country: str) 
     if len(_TOKEN_COUNT_CACHE) < _TOKEN_COUNT_CACHE_MAX:
         _TOKEN_COUNT_CACHE[key] = count
     return count
+
+
+def _get_canonical_full_analyzer(country: str) -> str:
+    """clean_analyzer_<cc> ↔ canonical_full_analyzer_<cc> (aynı ülke-çözümü, paralel isim)."""
+    return _get_analyzer(country).replace("clean_analyzer_", "canonical_full_analyzer_")
+
+
+def _analyze_single_token(es: Elasticsearch, name: str, analyzer: str, country: str) -> str:
+    """ES _analyze ile tek-token (fingerprint tarzı) analyzer çıktısını döner; boşsa ''.
+
+    (analyzer, name) ile memoize edilir. es/text yoksa veya hata olursa '' (cache'lenmez).
+    """
+    if not es or not name:
+        return ""
+    key = (analyzer, name)
+    cached = _SINGLE_TOKEN_CACHE.get(key)
+    if cached is not None:
+        return cached
+    try:
+        res = es.indices.analyze(index=_analyze_index(country), body={"analyzer": analyzer, "text": name})
+        tokens = [t.get("token", "") for t in res.get("tokens", [])]
+    except Exception:
+        return ""
+    value = tokens[0] if tokens else ""
+    if len(_SINGLE_TOKEN_CACHE) < _TOKEN_COUNT_CACHE_MAX:
+        _SINGLE_TOKEN_CACHE[key] = value
+    return value
+
+
+def _get_canonical_full(es: Elasticsearch, name: str, country: str) -> str:
+    """İsmin tam-kanonik token kümesinin sıralı-tekil tek-token temsili (canonical_full_analyzer)."""
+    return _analyze_single_token(es, name, _get_canonical_full_analyzer(country), country)
+
+
+def _fingerprint_token(es: Elasticsearch, name: str, country: str) -> str:
+    """İsmin legal+article-stripli kanonik parmak izi (fingerprint_analyzer); boşsa '' → çekirdek yok."""
+    return _analyze_single_token(es, name, "fingerprint_analyzer", country)
 
 
 def _core_coverage_filter(es: Elasticsearch, name: str, country: str) -> list:

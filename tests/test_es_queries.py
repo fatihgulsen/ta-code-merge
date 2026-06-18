@@ -288,3 +288,42 @@ def test_is_address_dirty_false_when_no_address():
 def test_is_address_dirty_false_when_es_none():
     import es.queries as q
     assert q.is_address_dirty(None, "main street", "TR") is False
+
+
+def _es_by_analyzer(mapping, default=None):
+    """body['analyzer'] adına göre farklı token listesi döndüren MagicMock es."""
+    from unittest.mock import MagicMock
+    es = MagicMock()
+    def _analyze(index=None, body=None):
+        analyzer = (body or {}).get("analyzer")
+        toks = mapping.get(analyzer, default if default is not None else [])
+        return {"tokens": [{"token": t} for t in toks]}
+    es.indices.analyze.side_effect = _analyze
+    return es
+
+
+def test_get_canonical_full_returns_single_token():
+    """_get_canonical_full, canonical_full_analyzer çıktısının ilk (tek) token'ını döner."""
+    es_queries.clear_token_count_cache()
+    es = _es_by_analyzer({"canonical_full_analyzer_MX": ["cv de elektrokontakt rl s"]})
+    assert es_queries._get_canonical_full(es, "ELEKTROKONTAKT SRL DE C.V.", "MX") == "cv de elektrokontakt rl s"
+
+
+def test_get_canonical_full_uses_country_analyzer_name():
+    """Bilinmeyen ülke → canonical_full_analyzer_common."""
+    es_queries.clear_token_count_cache()
+    es = _es_by_analyzer({"canonical_full_analyzer_common": ["acme"]})
+    assert es_queries._get_canonical_full(es, "ACME", "XX") == "acme"
+
+
+def test_fingerprint_token_empty_for_legal_only():
+    """fingerprint_analyzer boş token üretirse _fingerprint_token '' döner."""
+    es_queries.clear_token_count_cache()
+    es = _es_by_analyzer({"fingerprint_analyzer": []})
+    assert es_queries._fingerprint_token(es, "S. S. DE R.L. DE C.V.", "MX") == ""
+
+
+def test_analyze_single_token_inert_without_es():
+    """es None ise '' döner (graceful)."""
+    assert es_queries._get_canonical_full(None, "ACME", "MX") == ""
+    assert es_queries._fingerprint_token(None, "ACME", "MX") == ""

@@ -7,11 +7,8 @@ Stage eklemek için: (1) bu dosyaya aynı imzada (name, country, **kwargs) fonks
 
 import logging
 from elasticsearch import Elasticsearch
-from core.synonym_loader import get_all_country_codes, get_business_sector_tokens, get_address_tokens
-from core.core_name import normalize_core
+from core.synonym_loader import get_all_country_codes, get_generic_tokens, get_address_tokens
 from config import (
-    PHONETIC_MIN_CORE_TOKENS,
-    NGRAM_MIN_CORE_TOKENS,
     ENABLE_CORE_GATE,
     ENABLE_GENERIC_CORE_GATE,
     MATCH_CORE_MIN_TOKEN_LEN,
@@ -41,17 +38,6 @@ def _get_analyzer(country: str) -> str:
             cc,
         )
     return "clean_analyzer_common"
-
-
-def _get_stripped_analyzer(country: str) -> str:
-    """Ülkeye özel stripped analyzer adını döner; bilinmeyen ülkede global fallback kullanılır."""
-    global _KNOWN_COUNTRY_CODES
-    if _KNOWN_COUNTRY_CODES is None:
-        _KNOWN_COUNTRY_CODES = get_all_country_codes()
-    cc = country.upper()
-    if cc in _KNOWN_COUNTRY_CODES:
-        return f"stripped_search_analyzer_{cc.lower()}"
-    return "stripped_search_analyzer"
 
 
 # Perf: (analyzer, text) → token sayısı bir koşu boyunca değişmez; tekrarlı ES round-trip'lerini
@@ -97,7 +83,7 @@ def _has_distinctive_core(es: Elasticsearch, name: str, country: str, require_al
     """
     if not ENABLE_CORE_GATE or es is None or not name:
         return True
-    analyzer = _get_stripped_analyzer(country)
+    analyzer = _get_analyzer(country)
     key = (analyzer, name, require_alpha)
     cached = _DISTINCTIVE_CORE_CACHE.get(key)
     if cached is not None:
@@ -107,8 +93,8 @@ def _has_distinctive_core(es: Elasticsearch, name: str, country: str, require_al
         tokens = [t.get("token", "") for t in res.get("tokens", [])]
     except Exception:
         return True  # analyzer erişilemiyor → guard'ı atla (cache'leme)
-    # Jenerik-çekirdek gate: salt-jenerik (business_sector) token'lar ayırt edici sayılmaz.
-    generic = get_business_sector_tokens(country) if ENABLE_GENERIC_CORE_GATE else frozenset()
+    # Jenerik-çekirdek gate: salt-jenerik token'lar ayırt edici sayılmaz.
+    generic = get_generic_tokens(country) if ENABLE_GENERIC_CORE_GATE else frozenset()
     result = any(
         len(tok) >= MATCH_CORE_MIN_TOKEN_LEN
         and (not require_alpha or any(c.isalpha() for c in tok))
@@ -138,7 +124,7 @@ def is_address_dirty(es: Elasticsearch, name: str, country: str) -> bool:
     """
     if not ENABLE_DIRTY_DATA or es is None or not name:
         return False
-    analyzer = _get_stripped_analyzer(country)
+    analyzer = _get_analyzer(country)
     try:
         res = es.indices.analyze(index=_analyze_index(country), body={"analyzer": analyzer, "text": name})
         tokens = [t.get("token", "") for t in res.get("tokens", [])]
@@ -147,7 +133,7 @@ def is_address_dirty(es: Elasticsearch, name: str, country: str) -> bool:
     address = get_address_tokens(country)
     if not any(tok in address for tok in tokens):
         return False
-    generic = get_business_sector_tokens(country)
+    generic = get_generic_tokens(country)
     distinctive = any(
         len(tok) >= MATCH_CORE_MIN_TOKEN_LEN
         and any(c.isalpha() for c in tok)
@@ -190,11 +176,9 @@ def _get_token_count(es: Elasticsearch, text: str, analyzer: str, country: str) 
 def _core_coverage_filter(es: Elasticsearch, name: str, country: str) -> list:
     """Loose stage'ler için ES-side ayırt-edici-çekirdek coverage filtresi.
 
-    Eşleşen master, sorgunun STRIPPED çekirdek token sayısına eşit bir variations_stripped
+    Eşleşen master, sorgunun clean_analyzer token sayısına eşit bir variations.name
     varyantı taşımak zorundadır → kısa/kesik isim (subset over-merge) ES'de elenir.
-    STRIPPED analyzer kullanılır (synonym yok); clean_analyzer token_count eşitliği
-    synonym_graph genişlemesi nedeniyle indeks/sorgu sayısını tutarsız kıldığından geri alınmıştır
-    (bkz. docs/audit/). es yoksa veya count=0 ise filtre eklenmez (graceful).
+    es yoksa veya count=0 ise filtre eklenmez (graceful).
 
     Args:
         es: Elasticsearch istemcisi.
@@ -206,14 +190,14 @@ def _core_coverage_filter(es: Elasticsearch, name: str, country: str) -> list:
     """
     if not ENABLE_CORE_COVERAGE_GATE or es is None:
         return []
-    count = _get_token_count(es, name, "stripped_search_analyzer", country)
+    count = _get_token_count(es, name, _get_analyzer(country), country)
     if count <= 0:
         return []
     return [{
         "nested": {
-            "path": "variations_stripped",
+            "path": "variations",
             "query": {"bool": {"filter": [
-                {"term": {"variations_stripped.name.token_count": count}}
+                {"term": {"variations.name.token_count": count}}
             ]}},
         }
     }]
@@ -263,7 +247,7 @@ def CANONICAL_EXACT(name: str, country: str, es: Elasticsearch = None, **kwargs)
                                         }
                                     ],
                                     "filter": [
-                                        {"term": {"variations.token_count": expected_count}}
+                                        {"term": {"variations.name.token_count": expected_count}}
                                     ]
                                 }
                             }
@@ -277,123 +261,13 @@ def CANONICAL_EXACT(name: str, country: str, es: Elasticsearch = None, **kwargs)
     }
 
 
-def STRIPPED_EXACT(name: str, country: str, es: Elasticsearch = None, **kwargs) -> dict:
-    """Suffix temizlenmiş tam phrase eşleşmesi.
-
-    variations_stripped alanı ingest pipeline tarafından doldurulur. Nested yapı ve token_count
-    filtresi ile 1-1 birebir (identity) eşleşme zorlanır. GATE: ayırt edici çekirdek yoksa
-    (örn. 'M S.A.' → 'm') MATCH_NONE döner. require_alpha=False → salt-sayı exact dedup korunur.
-
-    Args:
-        name: Sorgu firma adı.
-        country: Ülke kodu.
-        es: Elasticsearch istemcisi (gate + token_count için).
-
-    Returns:
-        ES query body dict.
-    """
-    if not _has_distinctive_core(es, name, country, require_alpha=False):
-        return MATCH_NONE
-    analyzer = _get_stripped_analyzer(country)
-    expected_count = _get_token_count(es, name, analyzer, country)
-
-    return {
-        "query": {
-            "bool": {
-                "must": [
-                    {
-                        "nested": {
-                            "path": "variations_stripped",
-                            "query": {
-                                "bool": {
-                                    "must": [
-                                        {
-                                            "match_phrase": {
-                                                "variations_stripped.name": {
-                                                    "query": name,
-                                                    "analyzer": analyzer,
-                                                }
-                                            }
-                                        }
-                                    ],
-                                    "filter": (
-                                        [{"term": {"variations_stripped.name.token_count": expected_count}}]
-                                        if expected_count > 0 else []
-                                    )
-                                }
-                            }
-                        }
-                    }
-                ],
-                "filter": [{"term": {"country_code": country.upper()}}],
-            }
-        },
-        "size": 1,
-    }
-
-
-def SUFFIX_FUZZY(name: str, country: str, es: Elasticsearch = None, **kwargs) -> dict:
-    """Suffix fuzzy eşleştirme: çekirdek tam, suffix typo toleranslı.
-
-    must: variations_stripped'a match_phrase (ana isim tam eşleşmeli).
-    should: variations_suffix'e fuzziness AUTO:4,7 (suffix typo'larını yakalar).
-    GATE: ayırt edici alfabetik çekirdek yoksa MATCH_NONE döner.
-
-    Args:
-        name: Sorgu firma adı.
-        country: Ülke kodu.
-        es: Elasticsearch istemcisi (gate için).
-
-    Returns:
-        ES query body dict.
-    """
-    if not _has_distinctive_core(es, name, country, require_alpha=MATCH_CORE_FUZZY_REQUIRE_ALPHA):
-        return MATCH_NONE
-    analyzer = _get_stripped_analyzer(country)
-    return {
-        "query": {
-            "bool": {
-                "must": [
-                    {
-                        "nested": {
-                            "path": "variations_stripped",
-                            "query": {
-                                "match_phrase": {
-                                    "variations_stripped.name": {
-                                        "query": name,
-                                        "analyzer": analyzer,
-                                    }
-                                }
-                            }
-                        }
-                    }
-                ],
-                "should": [
-                    {
-                        "match": {
-                            "variations_suffix": {
-                                "query": name,
-                                "fuzziness": "AUTO:4,7",
-                                "operator": "or",
-                            }
-                        }
-                    }
-                ],
-                "filter": [{"term": {"country_code": country.upper()}}],
-                "minimum_should_match": 1,
-            }
-        },
-        "size": 1,
-    }
-
-
 def TOKEN_COVERAGE(name: str, country: str, es: Elasticsearch = None, **kwargs) -> dict:
     """Tüm anlamlı token'ların presence kontrolü (operator:and), kelime sırası önemsiz.
 
     En düşük-precision stage. GATE: ayırt edici alfabetik çekirdek yoksa ('#N/A 300' → salt-sayı;
     'I.I.Q' → tek-harf) MATCH_NONE döner. Token_count eşitliği bu stage'de synonym_graph
     genişlemesi nedeniyle recall'ı kırdığından uygulanmaz (bkz. docs/audit/); subset over-merge
-    _core_coverage_filter (STRIPPED token_count, ES-side) ile engellenir.
+    _core_coverage_filter (clean_analyzer token_count, ES-side) ile engellenir.
 
     Args:
         name: Sorgu firma adı.
@@ -424,7 +298,7 @@ def TOKEN_COVERAGE(name: str, country: str, es: Elasticsearch = None, **kwargs) 
                             }
                         }
                     },
-                    # Çözüm A: ayırt-edici-çekirdek coverage (STRIPPED token_count eşitliği, ES-side)
+                    # Çözüm A: ayırt-edici-çekirdek coverage (clean_analyzer token_count eşitliği, ES-side)
                     *_core_coverage_filter(es, name, country),
                 ],
                 "filter": [{"term": {"country_code": country.upper()}}],
@@ -470,7 +344,7 @@ def FUZZY_PHRASE(name: str, country: str, es: Elasticsearch = None, **kwargs) ->
                             }
                         }
                     },
-                    # Çözüm A: ayırt-edici-çekirdek coverage (STRIPPED token_count eşitliği, ES-side)
+                    # Çözüm A: ayırt-edici-çekirdek coverage (clean_analyzer token_count eşitliği, ES-side)
                     *_core_coverage_filter(es, name, country),
                 ],
                 "filter": [{"term": {"country_code": country.upper()}}],
@@ -480,102 +354,3 @@ def FUZZY_PHRASE(name: str, country: str, es: Elasticsearch = None, **kwargs) ->
     }
 
 
-def NGRAM_MATCH(name: str, country: str, **kwargs) -> dict:
-    """Trigram index-time fuzzy eşleşmesi — suffix temizlenmiş form üzerinden.
-
-    minimum_should_match "75%" ile hatalı kısa eşleşmeler önlenir. GATE: çekirdek token sayısı
-    NGRAM_MIN_CORE_TOKENS'in altındaysa (yalnızca yasal ek / ülke adı / çöp) trigram'lar
-    paylaşılan suffix parçaları üzerinden farklı firmaları birleştirebilir → sentinel ile bloklanır.
-
-    Args:
-        name: Sorgu firma adı.
-        country: Ülke kodu.
-
-    Returns:
-        ES query body dict.
-    """
-    if len(normalize_core(name, country, drop_geo=True)) < NGRAM_MIN_CORE_TOKENS:
-        return MATCH_NONE
-    analyzer = _get_stripped_analyzer(country)
-    return {
-        "query": {
-            "bool": {
-                "must": [
-                    {
-                        "nested": {
-                            "path": "variations_stripped",
-                            "query": {
-                                "match": {
-                                    "variations_stripped.name.ngram": {
-                                        "query": name,
-                                        "analyzer": analyzer,
-                                        "minimum_should_match": "75%",
-                                    }
-                                }
-                            }
-                        }
-                    }
-                ],
-                "filter": [{"term": {"country_code": country.upper()}}],
-            }
-        },
-        "size": 1,
-    }
-
-
-def PHONETIC_MATCH(name: str, country: str, es: Elasticsearch = None, **kwargs) -> dict:
-    """Sese dayalı (Double Metaphone) eşleşme — suffix gürültüsü olmadan.
-
-    Coverage güvencesi tamamen ES tarafındadır: nested query'ye token_count filtresi eklenir →
-    kazanan dokümanın stripped token sayısı sorgununkiyle eşit olmalı. Böylece subset over-merge
-    (ALCATEL ⊂ ALCATEL-LUCENT: 5≠6 token) ES eler; typo varyantları (aynı token sayısı) korunur.
-    GATE: çekirdek token sayısı PHONETIC_MIN_CORE_TOKENS'in altındaysa (yalnızca-suffix /
-    yalnızca-ülke-adı / çöp) MATCH_NONE döner; gerçek tek-marka firmalar elenmez çünkü fonetik
-    alandan yasal-ek parçaları es_manager'da temizlenir (bkz. docs/audit/).
-
-    Args:
-        name: Sorgu firma adı.
-        country: Ülke kodu.
-        es: Elasticsearch istemcisi (token_count için).
-
-    Returns:
-        ES query body dict.
-    """
-    core = normalize_core(name, country, drop_geo=True)
-    if len(core) < PHONETIC_MIN_CORE_TOKENS:
-        return MATCH_NONE
-    expected_count = _get_token_count(es, name, _get_stripped_analyzer(country), country)
-    nested_filter = (
-        [{"term": {"variations_stripped.name.token_count": expected_count}}]
-        if expected_count > 0 else []
-    )
-    return {
-        "query": {
-            "bool": {
-                "must": [
-                    {
-                        "nested": {
-                            "path": "variations_stripped",
-                            "query": {
-                                "bool": {
-                                    "must": [
-                                        {
-                                            "match": {
-                                                "variations_stripped.name.phonetic": {
-                                                    "query": name,
-                                                    "operator": "and",
-                                                }
-                                            }
-                                        }
-                                    ],
-                                    "filter": nested_filter,
-                                }
-                            }
-                        }
-                    }
-                ],
-                "filter": [{"term": {"country_code": country.upper()}}],
-            }
-        },
-        "size": 1,
-    }

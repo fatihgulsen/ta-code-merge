@@ -96,7 +96,7 @@ The engine executes queries stage-by-stage inside a single `msearch` packet. The
 | :---: | :--- | :--- | :---: | :--- |
 | **1** | `CANONICAL_EXACT` | `match_phrase` on canonical variations (`variations[].name`). | `3.0` | Exact full-form matching (order-sensitive). No token deletion. |
 | **2** | `FUZZY_PHRASE` | Fuzzy match on phrase tokens with typo tolerance. | `5.0` | Small word-level typos. Gated by distinctive-core check. |
-| **3** | `TOKEN_COVERAGE` | Free word-order token match. | `3.0` | Validates against `TOKEN_COVERAGE_THRESHOLD` (95%). Gated by distinctive-core check. |
+| **3** | `TOKEN_COVERAGE` | Order-independent exact match: the full canonical token **multiset** must be identical on both sides (`variations.name.canonical_full` set-equality + `token_count` equality). | `3.0` | Names with no distinctive core (empty `fingerprint_analyzer`, or non-alpha) return MATCH_NONE. Old `operator:and` + `_core_coverage_filter` token_count proxy removed. |
 
 ---
 

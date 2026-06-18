@@ -45,6 +45,15 @@ This guide acts as the strict operational runbook and instruction filter for AI 
 > (`get_generic_tokens` = legal∪article∪geo∪sector) belirler. Sonuç: ACME LTD≠ACME SA,
 > ACME LTD≠ACME (precision-öncelikli). Aktif stage'ler: CANONICAL_EXACT, FUZZY_PHRASE, TOKEN_COVERAGE.
 
+> [!IMPORTANT]
+> **TOKEN_COVERAGE = ÇİFT-YÖNLÜ TAM-KANONİK MULTISET:** TOKEN_COVERAGE iki ismi ancak tam-kanonik
+> token MULTISET'leri birebir aynıysa eşler (sıra serbest, legal/geo dahil): `variations.name.canonical_full`
+> küme-eşitliği (legal-strip'siz clean zinciri + sort/dedup) + `token_count` eşitliği. Ayırt edici
+> çekirdeği olmayan isimler (fingerprint_analyzer boş/non-alpha: `S. S. DE R.L. DE C.V.`, saf-legal
+> `S.A. DE C.V.`) MATCH_NONE — CANONICAL_EXACT birebir formu yakalar, yoksa NEW_MASTER. Eski
+> `operator:and` + `_core_coverage_filter` token_count-proxy'si (alt-küme/sayı-çakışması over-merge'ü)
+> KALDIRILDI. Bkz. docs/superpowers/specs/2026-06-18-token-coverage-cift-yonlu-kanonik-eslesme-design.md.
+
 1.  **PostgreSQL Güvenliği**: raw string interpolation (`f"SELECT ... '{val}'"`) kullanılmamalıdır. Her zaman parametrik sorgular (`%s`) tercih edilmeli, toplu güncellemelerde `psycopg2.extras.execute_values` kullanılmalıdır.
 2.  **Index Yönetimi**: Elasticsearch index şeması, mapping'leri ve özel analyzer'lar sadece `es/manager.py` üzerinden yönetilmelidir. Ad-hoc veya geçici indeks oluşturmak yasaktır.
 3.  **Hata Yönetimi (Exception Handling)**: Toplu batch eşleştirmeleri sırasında tek bir satırda veya kayıtta hata alınırsa tüm batch işlemi durdurulmamalıdır. Hata loglanmalı, veritabanı rollback edilerek diğer kayıtlar için işlem devam etmelidir.

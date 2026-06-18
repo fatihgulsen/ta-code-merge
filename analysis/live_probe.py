@@ -8,7 +8,7 @@
 # Nasıl çalışır:
 #   1. Geçici bir index açar (build_index_settings → güncel analyzer'lar).
 #   2. Golden set isimlerini GERÇEK ingest pipeline'ından geçirerek index'ler
-#      (variations_stripped/phonetic/ngram güncel mapping ile hesaplanır).
+#      (variations[].name güncel mapping ile hesaplanır).
 #   3. Her isim için config.STAGES sırasını izleyerek es_queries sorgularını
 #      çalıştırır; ilk min_score'u geçen stage = "kazanan eşleşme".
 #   4. Golden ground-truth'a göre precision (farklı firmalar eşleşmemeli) ve
@@ -91,7 +91,6 @@ def _build_probe_index(es) -> list[dict]:
                     "master_id": doc_id,
                     "firm": firm,  # ground-truth etiketi (probe dışı alan)
                     "variations": [{"name": name}],
-                    "variations_stripped": [],
                     "country_code": COUNTRY,
                 },
             )

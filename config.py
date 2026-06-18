@@ -199,30 +199,10 @@ STAGES = [
         "index_variation": True,
     },
     {
-        "name": "STRIPPED_EXACT",
-        "order": 2,
-        "query_fn": "STRIPPED_EXACT",
-        "min_score": 5.0,
-        "enabled": True,
-        "index_variation": True,
-    },
-    {
-        # KAPALI: en düşük precision (Round-7 %68; diğerleri %92+); kazanımları asıl
-        # suffix-typo işi değil subset/truncation over-merge'üydü (STRIPPED_EXACT +
-        # FUZZY_PHRASE bunları zaten karşılıyor). Açmadan önce _core_coverage_filter
-        # eklenmeli. Bkz. docs/audit/2026-06-15-round7-rescan-comparison.md.
-        "name": "SUFFIX_FUZZY",
-        "order": 3,
-        "query_fn": "SUFFIX_FUZZY",
-        "min_score": 1.5,
-        "enabled": False,
-        "index_variation": False,
-    },
-    {
         # min_score 9.0 denendi/geri alındı (recall 8/10→4/10); over-merge çekirdek-
         # coverage gate (ENABLE_CORE_COVERAGE_GATE) ile çözüldüğünden 5.0'da bırakıldı.
         "name": "FUZZY_PHRASE",
-        "order": 4,
+        "order": 2,
         "query_fn": "FUZZY_PHRASE",
         "min_score": 5.0,
         "enabled": True,
@@ -232,33 +212,10 @@ STAGES = [
         # min_score 11.0 denendi/geri alındı (aynı recall kaybı); subset over-merge
         # çekirdek-coverage gate ile recall-nötr çözüldü → 3.0'da bırakıldı.
         "name": "TOKEN_COVERAGE",
-        "order": 5,
+        "order": 3,
         "query_fn": "TOKEN_COVERAGE",
         "min_score": 3.0,
         "enabled": True,
-        "index_variation": False,
-    },
-    {
-        # KAPALI: over-merge'in birincil kaynağıydı (master-seviyesi %95.9 yanlış).
-        # Kök neden: double_metaphone max_code_len=4 → tek-token marka ön-ekleri
-        # çakışıyor (INTERAGUA/INTERFIG → "ANTR"). Açmak için phonetic_filter'a
-        # max_code_len:8-10 + reindex. Bkz. docs/audit/2026-06-03-llm-judge-rematch-*.
-        "name": "PHONETIC_MATCH",
-        "order": 6,
-        "query_fn": "PHONETIC_MATCH",
-        "min_score": 3.0,
-        "enabled": False,
-        "index_variation": False,
-    },
-    {
-        # KAPALI: PHONETIC ile aynı hastalık (master-seviyesi %98.1 over-merge);
-        # paylaşılan trigram'lar farklı markaları birleştiriyor. Açmak için min_score
-        # 18-20 + çekirdek-token coverage + reindex. Bkz. aynı audit.
-        "name": "NGRAM_MATCH",
-        "order": 7,
-        "query_fn": "NGRAM_MATCH",
-        "min_score": 10.0,
-        "enabled": False,
         "index_variation": False,
     },
 ]

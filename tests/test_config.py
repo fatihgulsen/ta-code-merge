@@ -163,3 +163,9 @@ def test_dirty_data_match_type_exists():
 def test_enable_dirty_data_flag_default_true():
     import config
     assert config.ENABLE_DIRTY_DATA is True
+
+
+def test_stages_only_canonical_fuzzy_coverage():
+    from config import STAGES
+    names = {s["name"] for s in STAGES}
+    assert names == {"CANONICAL_EXACT", "FUZZY_PHRASE", "TOKEN_COVERAGE"}

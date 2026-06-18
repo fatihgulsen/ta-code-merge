@@ -95,10 +95,12 @@ def _has_distinctive_core(es: Elasticsearch, name: str, country: str, require_al
         return True  # analyzer erişilemiyor → guard'ı atla (cache'leme)
     # Jenerik-çekirdek gate: salt-jenerik token'lar ayırt edici sayılmaz.
     generic = get_generic_tokens(country) if ENABLE_GENERIC_CORE_GATE else frozenset()
+    # clean_analyzer synonym kanonik formu noktayla üretebilir (ltd→ltd.); get_generic_tokens
+    # noktasız → üyelik öncesi noktayı sıyır (analyzer dotlu da dotsuz da üretse güvenli).
     result = any(
-        len(tok) >= MATCH_CORE_MIN_TOKEN_LEN
-        and (not require_alpha or any(c.isalpha() for c in tok))
-        and tok not in generic
+        len(bare := tok.replace(".", "")) >= MATCH_CORE_MIN_TOKEN_LEN
+        and (not require_alpha or any(c.isalpha() for c in bare))
+        and bare not in generic
         for tok in tokens
     )
     if len(_DISTINCTIVE_CORE_CACHE) < _TOKEN_COUNT_CACHE_MAX:
@@ -109,8 +111,8 @@ def _has_distinctive_core(es: Elasticsearch, name: str, country: str, require_al
 def is_address_dirty(es: Elasticsearch, name: str, country: str) -> bool:
     """İsim address synonym'i içeriyor AMA address çıkarılınca ayırt edici çekirdek YOK → kirli.
 
-    Tokenizasyon ES STRIPPED analyzer'ından gelir (legal/article/geo sıyrılmış; address +
-    sector + marka çekirdekte kalır). Address membership + distinctiveness Python set
+    Tokenizasyon ES CLEAN analyzer'ından gelir (synonym-kanonik tam form; legal/geo/sector
+    KANONİKLEŞİR, silinmez). Address membership + distinctiveness Python set
     kontrolüdür (fuzzy DEĞİL — input_filter ile aynı boundary sınıfı). es yoksa / gate
     kapalıysa / _analyze hata verirse False (mevcut NEW_MASTER davranışını bozma).
 
@@ -127,7 +129,8 @@ def is_address_dirty(es: Elasticsearch, name: str, country: str) -> bool:
     analyzer = _get_analyzer(country)
     try:
         res = es.indices.analyze(index=_analyze_index(country), body={"analyzer": analyzer, "text": name})
-        tokens = [t.get("token", "") for t in res.get("tokens", [])]
+        # Noktayı sıyır: clean_analyzer kanonik formu (st.) üretebilir, set'ler noktasız (st).
+        tokens = [t.get("token", "").replace(".", "") for t in res.get("tokens", [])]
     except Exception:
         return False
     address = get_address_tokens(country)

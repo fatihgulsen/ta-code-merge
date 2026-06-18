@@ -188,7 +188,7 @@ def _get_canonical_full_analyzer(country: str) -> str:
 def _analyze_single_token(es: Elasticsearch, name: str, analyzer: str, country: str) -> str:
     """ES _analyze ile tek-token (fingerprint tarzı) analyzer çıktısını döner; boşsa ''.
 
-    (analyzer, name) ile memoize edilir. es/text yoksa veya hata olursa '' (cache'lenmez).
+    (analyzer, name) ile memoize edilir. es/name yoksa veya hata olursa '' (cache'lenmez).
     """
     if not es or not name:
         return ""

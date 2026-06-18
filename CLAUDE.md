@@ -36,6 +36,15 @@ This guide acts as the strict operational runbook and instruction filter for AI 
 > işaretli; zayıf çekirdek nedeniyle distinctive-core gate onu magnet olmaktan korur. Karar ES
 > `_analyze` + Python set-membership (fuzzy değil). Dedup'a dahil edilmez. Bkz. es/queries.is_address_dirty.
 
+> [!IMPORTANT]
+> **TOKEN SİLİNMEZ — synonym KANONİKLEŞTİRİR:** Eşleşme synonym-kanonik tam isim
+> (`variations[].name`) üzerinden yapılır. legal/article/geo/sector token'ları SİLİNMEZ;
+> `synonym_graph` onları kanonik forma çevirir. Eski silme (variations_stripped /
+> stripped_search_analyzer / STRIPPED_EXACT) ayırt edici token'ları atıp yanlış birleştirme
+> ürettiği için KALDIRILDI (Plan 4). Gate'ler 'ayırt edici çekirdek'i synonym-sınıf üyeliğiyle
+> (`get_generic_tokens` = legal∪article∪geo∪sector) belirler. Sonuç: ACME LTD≠ACME SA,
+> ACME LTD≠ACME (precision-öncelikli). Aktif stage'ler: CANONICAL_EXACT, FUZZY_PHRASE, TOKEN_COVERAGE.
+
 1.  **PostgreSQL Güvenliği**: raw string interpolation (`f"SELECT ... '{val}'"`) kullanılmamalıdır. Her zaman parametrik sorgular (`%s`) tercih edilmeli, toplu güncellemelerde `psycopg2.extras.execute_values` kullanılmalıdır.
 2.  **Index Yönetimi**: Elasticsearch index şeması, mapping'leri ve özel analyzer'lar sadece `es/manager.py` üzerinden yönetilmelidir. Ad-hoc veya geçici indeks oluşturmak yasaktır.
 3.  **Hata Yönetimi (Exception Handling)**: Toplu batch eşleştirmeleri sırasında tek bir satırda veya kayıtta hata alınırsa tüm batch işlemi durdurulmamalıdır. Hata loglanmalı, veritabanı rollback edilerek diğer kayıtlar için işlem devam etmelidir.

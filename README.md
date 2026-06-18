@@ -86,19 +86,17 @@ To prevent multiple identical companies within the same batch from receiving dif
 
 ---
 
-## 5. The 7-Tier Matching Stage Hierarchy
+## 5. The 3-Tier Matching Stage Hierarchy (Plan 4 — Token Canonicalization)
 
 The engine executes queries stage-by-stage inside a single `msearch` packet. The first stage that yields a score >= `min_score` is short-circuited as the winner.
 
+**Note:** Token deletion (old `STRIPPED_EXACT`, `SUFFIX_FUZZY`, etc.) was removed in Plan 4 because it deleted distinctive tokens and caused over-merges. Matching is now on synonym-canonical full form `variations[].name`. Synonym-class membership (`get_generic_tokens` = legal∪article∪geo∪sector) replaces token deletion for the distinctive-core gate.
+
 | Order | Stage Name | Query Type (`es/queries.py`) | Min Score | Description |
 | :---: | :--- | :--- | :---: | :--- |
-| **1** | `TAX_EXACT` | Deterministic exact match on `tax_number` + `country_code`. | `100.0` | Exact verification. Short-circuits post-verify. |
-| **2** | `CANONICAL_EXACT` | `match_phrase` on canonical variations. | `3.0` | Order-sensitive exact canonical matching. |
-| **3** | `STRIPPED_EXACT` | `match_phrase` on stripped variations (suffix-free). | `3.0` | Suffix-independent exact matching. |
-| **4** | `ADDRESS_CLEAN_MATCH` | Matches after address leakage regex clean. | `3.0` | Cleaned name matching. |
-| **5** | `SUBSET_MATCH` | Matches subsets of tokens using ES query. | `1.5` | Suffix fuzzy match threshold. |
-| **6** | `EXACT_FUZZY` | Fuzzy match on exact names. | `3.0` | Small typo tolerance on core name. |
-| **7** | `TOKEN_COVERAGE` | Free word order token match. | `3.0` | Validates against `TOKEN_COVERAGE_THRESHOLD` (95%). |
+| **1** | `CANONICAL_EXACT` | `match_phrase` on canonical variations (`variations[].name`). | `3.0` | Exact full-form matching (order-sensitive). No token deletion. |
+| **2** | `FUZZY_PHRASE` | Fuzzy match on phrase tokens with typo tolerance. | `5.0` | Small word-level typos. Gated by distinctive-core check. |
+| **3** | `TOKEN_COVERAGE` | Free word-order token match. | `3.0` | Validates against `TOKEN_COVERAGE_THRESHOLD` (95%). Gated by distinctive-core check. |
 
 ---
 

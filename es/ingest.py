@@ -1,20 +1,15 @@
 """Elasticsearch ingest pipeline yönetimi.
 
-İndeksleme anında firma isimlerini temizler ve türev alanları hesaplar
-(variations_stripped, variations_suffix). Temizlik mantığı Painless
-script'lerine devredilmiştir — Python tarafında fuzzy/string-işlem yoktur.
+İndeksleme anında firma isimlerini light_clean ile temizler. Temizlik mantığı
+Painless script'lerine devredilmiştir — Python tarafında fuzzy/string-işlem yoktur.
+NOT: stripped/suffix SİLME processor'ları kaldırıldı (Plan 4).
 """
 
 import logging
 
 from elasticsearch import Elasticsearch
 
-from core.synonym_loader import (
-    get_all_country_codes,
-    get_article_stopwords,
-    get_country_geo_stopwords,
-    get_legal_suffix_tokens,
-)
+from core.synonym_loader import get_all_country_codes
 
 logger = logging.getLogger(__name__)
 
@@ -100,116 +95,20 @@ def _build_clean_script(country_code: str) -> str:
     return "\n".join(script_parts)
 
 
-def _build_stripped_script(country_code: str) -> str:
-    """Painless script: variations'tan generic token'ları kaldırarak variations_stripped'ı oluşturur.
-
-    legal_suffixes + articles + KENDİ ülke geo token'ları çıkarılır; business_sectors
-    ve başka ülke adları korunur. Geo token'ları PER-COUNTRY listeden alınır
-    (get_country_geo_stopwords) — search analyzer'daki geo_stopwords_{cc} ile simetri için.
-    country_code HARD FILTER olduğundan kendi ülke adı gürültü, başka ülke adı sinyaldir.
-    """
-    suffix_tokens = [t for t in get_legal_suffix_tokens(country_code) if " " not in t]
-    article_tokens = [t for t in get_article_stopwords(country_code) if " " not in t]
-    geo_tokens = [t for t in get_country_geo_stopwords(country_code) if " " not in t]
-    all_tokens = list(
-        dict.fromkeys(suffix_tokens + article_tokens + geo_tokens)
-    )  # dedup, order preserved
-    tokens_literal = ", ".join(_pl_str(t) for t in all_tokens)
-
-    script_parts = [
-        "List genericTokens = [" + tokens_literal + "];",
-        "Set genericSet = new HashSet(genericTokens);",
-        "if (ctx.variations == null) { return; }",
-        "List stripped = new ArrayList();",
-        "for (int i = 0; i < ctx.variations.size(); i++) {",
-        "  def varItem = ctx.variations[i];",
-        "  String text = varItem instanceof Map ? varItem.name : varItem;",
-        r"  def tokens = / /.split(text);",
-        "  StringBuilder sb = new StringBuilder();",
-        "  for (int t = 0; t < tokens.length; t++) {",
-        "    String token = /[.]/.matcher(tokens[t]).replaceAll('').trim();",
-        "    if (token.length() > 0 && !genericSet.contains(token)) {",
-        "      if (sb.length() > 0) { sb.append(' '); }",
-        "      sb.append(token);",
-        "    }",
-        "  }",
-        "  String result = sb.toString().trim();",
-        "  if (result.length() > 0) {",
-        "    boolean exists = false;",
-        "    for (v in stripped) { if (v.name == result) { exists = true; break; } }",
-        "    if (!exists) { stripped.add(['name': result]); }",
-        "  }",
-        "}",
-        "ctx.variations_stripped = stripped;",
-    ]
-
-    return "\n".join(script_parts)
-
-
-def _build_suffix_script(generic_tokens: list[str]) -> str:
-    """
-    Painless script: variations'tan sadece generic (suffix) token'ları toplayarak
-    variations_suffix array'ini oluşturur. _build_stripped_script() tersine —
-    generic SET'te OLAN token'ları tutar, position-independent (sorted, deduped).
-    """
-    # Boşluk içeren çok-kelimeli token'lar split sonrası eşleşmez — filtrele ve escape et
-    tokens_literal = ", ".join(_pl_str(t) for t in generic_tokens if " " not in t)
-
-    script_parts = [
-        "List genericTokens = [" + tokens_literal + "];",
-        "Set genericSet = new HashSet(genericTokens);",
-        "if (ctx.variations == null) { return; }",
-        "List suffixes = new ArrayList();",
-        "for (int i = 0; i < ctx.variations.size(); i++) {",
-        "  def varItem = ctx.variations[i];",
-        "  String text = varItem instanceof Map ? varItem.name : varItem;",
-        r"  def tokens = / /.split(text);",
-        "  List suffixTokens = new ArrayList();",
-        "  for (int t = 0; t < tokens.length; t++) {",
-        "    String token = /[.]/.matcher(tokens[t]).replaceAll('').trim();",
-        "    if (token.length() > 0 && genericSet.contains(token)) {",
-        "      suffixTokens.add(token);",
-        "    }",
-        "  }",
-        "  Collections.sort(suffixTokens);",
-        "  StringBuilder sb = new StringBuilder();",
-        "  for (int s = 0; s < suffixTokens.size(); s++) {",
-        "    if (s > 0) { sb.append(' '); }",
-        "    sb.append(suffixTokens[s]);",
-        "  }",
-        "  String result = sb.toString().trim();",
-        "  if (result.length() > 0 && !suffixes.contains(result)) {",
-        "    suffixes.add(result);",
-        "  }",
-        "}",
-        "ctx.variations_suffix = suffixes;",
-    ]
-
-    return "\n".join(script_parts)
-
 
 def build_pipeline_body(country_code: str) -> dict:
-    """Ülkeye özgü ingest pipeline tanım sözlüğünü oluşturur."""
-    legal_suffix_tokens = list(get_legal_suffix_tokens(country_code))
+    """Ülkeye özgü ingest pipeline tanım sözlüğünü oluşturur (yalnız light_clean).
+
+    NOT: stripped/suffix SİLME processor'ları kaldırıldı (Plan 4). Eşleşme artık
+    synonym-kanonik tam form (variations[].name) üzerinden; token silinmez.
+    """
     return {
-        "description": f"Firma ismi temizleme ve normalizasyon pipeline'i ({country_code.upper()})",
+        "description": f"Firma ismi temizleme pipeline'i ({country_code.upper()})",
         "processors": [
             {
                 "script": {
                     "description": f"light_clean for {country_code.upper()}",
                     "source": _build_clean_script(country_code),
-                }
-            },
-            {
-                "script": {
-                    "description": f"stripped_form for {country_code.upper()}",
-                    "source": _build_stripped_script(country_code),
-                }
-            },
-            {
-                "script": {
-                    "description": f"suffix_form for {country_code.upper()}",
-                    "source": _build_suffix_script(legal_suffix_tokens),
                 }
             },
         ],

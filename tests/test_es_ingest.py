@@ -3,32 +3,6 @@ from unittest.mock import MagicMock
 import es.ingest as es_ingest
 
 
-def test_build_suffix_script_returns_string():
-    """_build_suffix_script bir string (Painless kodu) döner."""
-    result = es_ingest._build_suffix_script(["ltd", "limited", "inc"])
-    assert isinstance(result, str)
-    assert len(result) > 0
-
-
-def test_build_suffix_script_contains_generic_tokens():
-    """Script içinde generic token listesi bulunmalı."""
-    result = es_ingest._build_suffix_script(["ltd", "limited"])
-    assert "'ltd'" in result
-    assert "'limited'" in result
-
-
-def test_build_suffix_script_sets_variations_suffix():
-    """Script ctx.variations_suffix'i set etmeli."""
-    result = es_ingest._build_suffix_script(["ltd"])
-    assert "ctx.variations_suffix" in result
-
-
-def test_build_suffix_script_uses_generic_set_contains():
-    """Script generic token'ları IÇEREN token'ları toplamalı (excluded değil)."""
-    result = es_ingest._build_suffix_script(["ltd"])
-    assert "genericSet.contains(token)" in result
-
-
 def test_pipeline_name_format():
     """Pipeline ismi country_code lowercase ile formatlanmalı."""
     from es.ingest import pipeline_name
@@ -36,31 +10,6 @@ def test_pipeline_name_format():
     assert pipeline_name("DE") == "company_name_de"
     assert pipeline_name("IN") == "company_name_in"
     assert pipeline_name("tr") == "company_name_tr"
-
-
-def test_build_pipeline_body_has_three_processors():
-    """Pipeline body 3 processor içermeli: clean, stripped, suffix."""
-    body = es_ingest.build_pipeline_body("TR")
-    assert len(body["processors"]) == 3
-
-
-def test_build_pipeline_body_suffix_processor_last():
-    """Suffix processor en son gelmeli."""
-    body = es_ingest.build_pipeline_body("TR")
-    last_proc = body["processors"][-1]
-    assert "script" in last_proc
-    assert "variations_suffix" in last_proc["script"]["source"]
-
-
-def test_build_pipeline_body_differs_per_country():
-    """Farklı ülkelerin pipeline body'si farklı olmalı (TR vs AE)."""
-    from es.ingest import build_pipeline_body
-    body_tr = build_pipeline_body("MX")
-    body_ae = build_pipeline_body("US")
-    # Sprint 2: clean script is now global, stripped script differs by country (legal_suffixes)
-    stripped_tr = body_tr["processors"][1]["script"]["source"]
-    stripped_ae = body_ae["processors"][1]["script"]["source"]
-    assert stripped_tr != stripped_ae
 
 
 def test_register_all_pipelines_calls_each_country():
@@ -101,19 +50,11 @@ def test_clean_script_collapses_consecutive_dup_tokens():
     assert "prevTok" in script, "ardışık-tekrar token dedup mantığı (prevTok) bulunamadı"
 
 
-def test_stripped_script_strips_only_own_country_geo():
-    """A1 (per-country geo, index tarafı): _build_stripped_script YALNIZCA ülkenin KENDİ
-    geo token'larını (AR → 'argentina') çıkarmalı; başka ülke adları ('mexico') o shard'da
-    ayırt edici olduğundan strip listesine GİRMEMELİ. Index tarafı, search analyzer'daki
-    geo_stopwords_{cc} ile simetriktir. Liste countries.json'dan türetilir (hardcode yok)."""
-    from es.ingest import _build_stripped_script
-    from core.synonym_loader import get_country_geo_stopwords
-    script = _build_stripped_script("AR")
-    own_geo = [t for t in get_country_geo_stopwords("AR") if " " not in t]
-    assert own_geo, "AR için countries.json'dan kendi geo token'ı bekleniyordu"
-    # Kendi ülke adı (argentina) generic-strip listesinde olmalı
-    assert "argentina" in script.lower(), \
-        "_build_stripped_script 'argentina' kendi geo token'ını strip listesinde içermeli"
-    # Başka ülke adı (mexico) strip listesine GİRMEMELİ (per-country izolasyon)
-    assert "mexico" not in script.lower(), \
-        "_build_stripped_script başka ülke adı 'mexico'yu strip ETMEMELİ (BR ≠ MX)"
+def test_pipeline_only_has_light_clean_processor():
+    from es.ingest import build_pipeline_body
+    body = build_pipeline_body("TR")
+    descs = [list(p.values())[0].get("description", "") for p in body["processors"]]
+    assert any("light_clean" in d for d in descs)
+    assert not any("stripped" in d for d in descs)
+    assert not any("suffix" in d for d in descs)
+    assert len(body["processors"]) == 1

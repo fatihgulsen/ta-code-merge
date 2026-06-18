@@ -52,14 +52,6 @@ def test_canonical_exact_fallback_analyzer_for_unknown_country():
 
 
 
-def test_token_coverage_uses_and_operator():
-    q = es_queries.TOKEN_COVERAGE("apple trading limited", "US")
-    must = q["query"]["bool"]["must"]
-    nested = next(c["nested"] for c in must if "nested" in c)
-    match_clause = nested["query"]["match"]["variations.name"]
-    assert match_clause["operator"] == "and"
-
-
 def test_fuzzy_phrase_has_slop():
     q = es_queries.FUZZY_PHRASE("apple trading", "US")
     must = q["query"]["bool"]["must"]
@@ -72,9 +64,9 @@ def test_fuzzy_phrase_has_slop():
 def test_all_queries_include_country_filter():
     name = "test company"
     country = "FR"
+    # TOKEN_COVERAGE requires es (no es → MATCH_NONE by design); test only es-independent stages.
     fns = [
         lambda: es_queries.CANONICAL_EXACT(name, country),
-        lambda: es_queries.TOKEN_COVERAGE(name, country),
         lambda: es_queries.FUZZY_PHRASE(name, country),
     ]
     for fn in fns:
@@ -92,10 +84,10 @@ def _es_returning(tokens):
 
 
 def test_core_gate_blocks_single_char_residue():
-    """Tek-harfe çöken çekirdek ('M S.A.'→'m') tüm matching stage'lerde MATCH_NONE →
-    NEW_MASTER. Akronim magnet artığı (A-sınıfı) ve magnet-seed engellenir."""
+    """Tek-harfe çöken çekirdek ('M S.A.'→'m') CANONICAL_EXACT ve FUZZY_PHRASE'de MATCH_NONE.
+    TOKEN_COVERAGE kendi fingerprint gate'ini kullanır (ayrı test); buradan çıkarıldı."""
     es = _es_returning(["m"])
-    for fn in (es_queries.CANONICAL_EXACT, es_queries.TOKEN_COVERAGE, es_queries.FUZZY_PHRASE):
+    for fn in (es_queries.CANONICAL_EXACT, es_queries.FUZZY_PHRASE):
         es_queries.clear_token_count_cache()
         assert fn("M S.A. DE C.V.", "MX", es=es) == es_queries.MATCH_NONE, fn.__name__
 
@@ -128,12 +120,12 @@ def test_core_gate_numeric_only_blocked_in_fuzzy_stages():
 
 def test_generic_core_gate_blocks_solo_generic_word():
     """Jenerik-kelime magnet fix: stripped çekirdek YALNIZCA jenerik iş-kelimesi ('trading',
-    'importaciones', 'inversiones', 'group') ise tüm merge stage'lerinde MATCH_NONE → NEW_MASTER.
-    Kök neden: 'L M TRADING' / 'B&B TRADING' tek token 'trading'e çöküp STRIPPED_EXACT'te
-    birleşiyordu. Jenerik küme business_sectors JSON'undan gelir (PE)."""
+    'importaciones', 'inversiones', 'group') ise CANONICAL_EXACT ve FUZZY_PHRASE'de MATCH_NONE.
+    TOKEN_COVERAGE kendi fingerprint gate'ini kullanır (generic-word blocking bu stage'de
+    _has_distinctive_core yerine fingerprint+canonical_full üzerinden gelir)."""
     for word in ("trading", "importaciones", "inversiones", "group"):
         es = _es_returning([word])
-        for fn in (es_queries.CANONICAL_EXACT, es_queries.TOKEN_COVERAGE, es_queries.FUZZY_PHRASE):
+        for fn in (es_queries.CANONICAL_EXACT, es_queries.FUZZY_PHRASE):
             es_queries.clear_token_count_cache()
             assert fn(f"L M {word.upper()} S.A.", "PE", es=es) == es_queries.MATCH_NONE, \
                 f"{fn.__name__} salt-jenerik '{word}' çekirdeğini bloklamalı"
@@ -151,8 +143,9 @@ def test_generic_core_gate_allows_brand_plus_generic():
 
 
 def test_core_gate_inert_without_es():
-    """es yoksa (birim test / eski çağrı yolu) guard devre dışı — mevcut davranış korunur."""
-    assert es_queries.TOKEN_COVERAGE("M S.A.", "MX") != es_queries.MATCH_NONE
+    """es yoksa FUZZY_PHRASE guard devre dışı — mevcut davranış korunur.
+    TOKEN_COVERAGE es olmadan MATCH_NONE döner (canonical_full exact-match gerektiriyor)."""
+    assert es_queries.TOKEN_COVERAGE("M S.A.", "MX") == es_queries.MATCH_NONE
     assert es_queries.FUZZY_PHRASE("M S.A.", "MX") != es_queries.MATCH_NONE
 
 
@@ -166,7 +159,7 @@ def _core_filter_terms(q):
     for c in q["query"]["bool"]["must"]:
         nested = c.get("nested")
         if nested and nested.get("path") == "variations":
-            for f in nested["query"]["bool"].get("filter", []):
+            for f in nested.get("query", {}).get("bool", {}).get("filter", []):
                 t = f.get("term", {})
                 if "variations.name.token_count" in t:
                     terms.append(t["variations.name.token_count"])
@@ -182,15 +175,6 @@ def test_fuzzy_phrase_adds_core_coverage_filter():
     assert 1 in _core_filter_terms(q)
 
 
-def test_token_coverage_adds_core_coverage_filter():
-    """es verildiğinde TOKEN_COVERAGE'e STRIPPED core-count term filtresi eklenir."""
-    es_queries.clear_token_count_cache()
-    es = _es_returning(["amcor"])
-    q = es_queries.TOKEN_COVERAGE("AMCOR", "MX", es=es)
-    assert q != es_queries.MATCH_NONE
-    assert 1 in _core_filter_terms(q)
-
-
 def test_core_coverage_count_matches_distinctive_token_count():
     """Filtre değeri STRIPPED ayırt-edici token sayısına eşit (çok-token brand)."""
     es_queries.clear_token_count_cache()
@@ -200,11 +184,9 @@ def test_core_coverage_count_matches_distinctive_token_count():
 
 
 def test_core_coverage_inert_without_es():
-    """es yoksa core-coverage filtresi eklenmez (graceful; mevcut yapı korunur)."""
+    """es yoksa FUZZY_PHRASE core-coverage filtresi eklenmez (graceful)."""
     q = es_queries.FUZZY_PHRASE("apple trading", "US")
     assert _core_filter_terms(q) == []
-    q2 = es_queries.TOKEN_COVERAGE("apple trading", "US")
-    assert _core_filter_terms(q2) == []
 
 
 
@@ -327,3 +309,62 @@ def test_analyze_single_token_inert_without_es():
     """es None ise '' döner (graceful)."""
     assert es_queries._get_canonical_full(None, "ACME", "MX") == ""
     assert es_queries._fingerprint_token(None, "ACME", "MX") == ""
+
+
+def _nested_filter_terms(q, field):
+    """Nested variations bool.filter içindeki `field` term değerlerini toplar."""
+    out = []
+    for c in q.get("query", {}).get("bool", {}).get("must", []):
+        nested = c.get("nested")
+        if nested and nested.get("path") == "variations":
+            for f in nested.get("query", {}).get("bool", {}).get("filter", []):
+                t = f.get("term", {})
+                if field in t:
+                    out.append(t[field])
+    return out
+
+
+def test_token_coverage_uses_canonical_full_and_token_count():
+    """TOKEN_COVERAGE canonical_full + token_count term-eşitliği kurar (operator:and YOK)."""
+    es_queries.clear_token_count_cache()
+    es = _es_by_analyzer({
+        "fingerprint_analyzer": ["acme gida"],
+        "canonical_full_analyzer_MX": ["acme gida sa"],
+        "clean_analyzer_MX": ["acme", "gida", "sa"],  # token_count = 3
+    })
+    q = es_queries.TOKEN_COVERAGE("ACME GIDA SA", "MX", es=es)
+    assert q != es_queries.MATCH_NONE
+    assert _nested_filter_terms(q, "variations.name.canonical_full") == ["acme gida sa"]
+    assert _nested_filter_terms(q, "variations.name.token_count") == [3]
+    assert _get_country_filter(q) == "MX"
+    import json
+    assert '"operator": "and"' not in json.dumps(q)
+
+
+def test_token_coverage_match_none_when_fingerprint_empty():
+    """Ayırt edici çekirdek yok (fingerprint boş) → MATCH_NONE (S. S. DE R.L. DE C.V.)."""
+    es_queries.clear_token_count_cache()
+    es = _es_by_analyzer({
+        "fingerprint_analyzer": [],  # boş çekirdek
+        "canonical_full_analyzer_MX": ["cv de rl s"],
+        "clean_analyzer_MX": ["s", "s", "de", "rl", "de", "cv"],
+    })
+    q = es_queries.TOKEN_COVERAGE("S. S. DE R.L. DE C.V.", "MX", es=es)
+    assert q == es_queries.MATCH_NONE
+
+
+def test_token_coverage_match_none_when_fingerprint_non_alpha():
+    """fingerprint sadece sayısalsa loose-match yapılmaz (require_alpha semantiği korunur)."""
+    es_queries.clear_token_count_cache()
+    es = _es_by_analyzer({
+        "fingerprint_analyzer": ["12345"],
+        "canonical_full_analyzer_MX": ["12345 sa"],
+        "clean_analyzer_MX": ["12345", "sa"],
+    })
+    q = es_queries.TOKEN_COVERAGE("12345 SA", "MX", es=es)
+    assert q == es_queries.MATCH_NONE
+
+
+def test_token_coverage_match_none_without_es():
+    """es yoksa exact-match kurulamaz → MATCH_NONE."""
+    assert es_queries.TOKEN_COVERAGE("apple trading", "US") == es_queries.MATCH_NONE

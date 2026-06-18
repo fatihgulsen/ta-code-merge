@@ -306,24 +306,37 @@ def CANONICAL_EXACT(name: str, country: str, es: Elasticsearch = None, **kwargs)
 
 
 def TOKEN_COVERAGE(name: str, country: str, es: Elasticsearch = None, **kwargs) -> dict:
-    """Tüm anlamlı token'ların presence kontrolü (operator:and), kelime sırası önemsiz.
+    """Tam-kanonik token multiset eşitliği (sıra serbest, legal/geo + çokluk dahil).
 
-    En düşük-precision stage. GATE: ayırt edici alfabetik çekirdek yoksa ('#N/A 300' → salt-sayı;
-    'I.I.Q' → tek-harf) MATCH_NONE döner. Token_count eşitliği bu stage'de synonym_graph
-    genişlemesi nedeniyle recall'ı kırdığından uygulanmaz (bkz. docs/audit/); subset over-merge
-    _core_coverage_filter (clean_analyzer token_count, ES-side) ile engellenir.
+    canonical_full (sıralı-tekil tam kanonik token kümesi) term-eşitliği VE token_count
+    (toplam token sayısı) eşitliği birlikte → pratikte multiset eşitliği. operator:and +
+    token_count proxy'si KALDIRILDI (alt-küme/sayı-çakışması over-merge'ü).
+
+    GATE (TOKEN_COVERAGE'a özel): fingerprint_analyzer (legal+article stripli) boş token
+    üretirse ya da yalnızca alfabetik-olmayan çekirdek kalırsa → MATCH_NONE (S. S. DE R.L.
+    DE C.V., saf-legal S.A. DE C.V., salt-sayı). Pipeline'dan dışlamaz: CANONICAL_EXACT birebir
+    formu yakalar, yoksa NEW_MASTER. es yoksa exact-match kurulamaz → MATCH_NONE.
 
     Args:
         name: Sorgu firma adı.
         country: Ülke kodu.
-        es: Elasticsearch istemcisi (gate + coverage filtresi için).
+        es: Elasticsearch istemcisi (gate + canonical_full/token_count için ZORUNLU).
 
     Returns:
-        ES query body dict.
+        ES query body dict ya da MATCH_NONE.
     """
-    if not _has_distinctive_core(es, name, country, require_alpha=MATCH_CORE_FUZZY_REQUIRE_ALPHA):
+    if es is None:
         return MATCH_NONE
-    analyzer = _get_analyzer(country)
+    # GATE: ayırt edici (legal/article dışı, alfabetik) çekirdek yoksa loose-match yapma.
+    fp = _fingerprint_token(es, name, country)
+    if not fp or not any(c.isalpha() for c in fp):
+        return MATCH_NONE
+    canonical_full = _get_canonical_full(es, name, country)
+    if not canonical_full:
+        return MATCH_NONE
+    token_count = _get_token_count(es, name, _get_analyzer(country), country)
+    if token_count <= 0:
+        return MATCH_NONE
     return {
         "query": {
             "bool": {
@@ -332,18 +345,15 @@ def TOKEN_COVERAGE(name: str, country: str, es: Elasticsearch = None, **kwargs) 
                         "nested": {
                             "path": "variations",
                             "query": {
-                                "match": {
-                                    "variations.name": {
-                                        "query": name,
-                                        "analyzer": analyzer,
-                                        "operator": "and",
-                                    }
+                                "bool": {
+                                    "filter": [
+                                        {"term": {"variations.name.canonical_full": canonical_full}},
+                                        {"term": {"variations.name.token_count": token_count}},
+                                    ]
                                 }
-                            }
+                            },
                         }
-                    },
-                    # Çözüm A: ayırt-edici-çekirdek coverage (clean_analyzer token_count eşitliği, ES-side)
-                    *_core_coverage_filter(es, name, country),
+                    }
                 ],
                 "filter": [{"term": {"country_code": country.upper()}}],
             }

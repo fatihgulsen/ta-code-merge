@@ -48,7 +48,7 @@ def create_dedup_transform(es: Elasticsearch) -> None:
             "group_by": {
                 "fingerprint": {
                     "terms": {
-                        "field": "variations_stripped.name.fingerprint",
+                        "field": "variations.name.fingerprint",
                     }
                 },
                 "country_code": {

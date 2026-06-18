@@ -16,10 +16,10 @@ from core.synonym_loader import get_all_country_codes
 
 logger = logging.getLogger(__name__)
 
-# Fingerprint, variations_stripped.name multi-field'ında üretilir (per-country geo izole):
+# Fingerprint, variations.name multi-field'ında üretilir (per-country geo izole):
 # girdi ZATEN kendi ülke adı sıyrılmış stripped içeriktir → fingerprint per-country.
-_FINGERPRINT_FIELD = "variations_stripped.name.fingerprint"
-_FINGERPRINT_NESTED_PATH = "variations_stripped"
+_FINGERPRINT_FIELD = "variations.name.fingerprint"
+_FINGERPRINT_NESTED_PATH = "variations"
 
 
 # ─────────────────────────────────────────────────────────────────────
@@ -141,8 +141,6 @@ def iter_duplicate_groups(
 
 _MERGE_SCRIPT = """
 for (v in params.new_vars) { if (!ctx._source.variations.contains(v)) { ctx._source.variations.add(v); } }
-if (ctx._source.variations_stripped == null) { ctx._source.variations_stripped = []; }
-for (s in params.new_stripped) { if (!ctx._source.variations_stripped.contains(s)) { ctx._source.variations_stripped.add(s); } }
 """
 
 
@@ -191,7 +189,6 @@ def apply_merge(es: Elasticsearch, cur, pg_conn, plan: dict) -> dict:
                     "source": _MERGE_SCRIPT,
                     "params": {
                         "new_vars": sec.get("variations", []),
-                        "new_stripped": sec.get("variations_stripped", []),
                     },
                 }},
             )

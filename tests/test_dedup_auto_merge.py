@@ -224,3 +224,9 @@ def test_auto_merge_per_batch_no_refresh(monkeypatch):
     stats = dam.auto_merge_duplicates(es, conn, restrict_master_ids=["m1", "m2"], refresh=False)
     assert stats["groups"] == 1 and stats["merged_masters"] == 1
     es.indices.refresh.assert_not_called()
+
+
+def test_fingerprint_field_is_variations_name():
+    import dedup.auto_merge as a
+    assert a._FINGERPRINT_FIELD == "variations.name.fingerprint"
+    assert a._FINGERPRINT_NESTED_PATH == "variations"

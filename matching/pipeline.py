@@ -347,7 +347,6 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
                 "_source": {
                     "master_id": master_id,
                     "variations": [{"name": rec["match_name"]}],
-                    "variations_stripped": [],
                     "country_code": rec["country"].upper(),
                 },
             }

@@ -127,7 +127,6 @@ def build_new_master_doc(
         "_source": {
             "master_id": master_id,
             "variations": [{"name": canonicalize_phonetic(name, country)}],
-            "variations_stripped": [],
             "country_code": country.upper(),
         },
     }
@@ -148,7 +147,6 @@ def _index_new_master(es, rec: dict) -> str:
     doc = {
         "master_id": master_id,
         "variations": [{"name": canon}],
-        "variations_stripped": [],
         "country_code": cc.upper(),
     }
     if rec.get("phone"):
@@ -199,9 +197,6 @@ def _add_variation_to_master(
 
         if v_lower not in existing_names:
             body["variations"] = list(existing_variations) + [{"name": variation}]
-            # Stripped/suffix listelerini sıfırlama; ingest pipeline yeni girişi işler.
-            body["variations_stripped"] = list(source.get("variations_stripped") or [])
-            body["variations_suffix"] = list(source.get("variations_suffix") or [])
             changed = True
 
         # tax/phone/address listelerine yeni değerleri ekle

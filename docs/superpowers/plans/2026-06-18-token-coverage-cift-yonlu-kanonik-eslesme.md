@@ -58,8 +58,8 @@ def test_canonical_full_analyzer_keeps_legal_and_sorts():
     assert "canonical_full_analyzer_common" in analyzers
     chain = analyzers["canonical_full_analyzer_MX"]["filter"]
     assert "legal_fragment_stop" not in chain, "legal korunmalı (strip YOK)"
+    assert "article_stop" not in chain, "article düşürülmez (her token önemli)"
     assert chain[-1] == "fingerprint_token_filter", "sort/dedup en sonda olmalı"
-    assert "article_stop" in chain
     # synonym_graph zinciri clean ile aynı kaynaktan: synonym filter + flatten_graph içermeli
     assert any(f.startswith("synonym_filter_") for f in chain)
     assert "flatten_graph" in chain
@@ -86,14 +86,14 @@ Expected: FAIL — `canonical_full_analyzer_MX` analyzer'da yok / `canonical_ful
 `es/manager.py` içinde `analyzers["clean_analyzer_common"] = {...}` bloğunun (biten satır ~130) HEMEN ALTINA ekle:
 
 ```python
-    # canonical_full (common): clean_analyzer_common ile AYNI zincir + sort/dedup.
-    # Legal KORUNUR (legal_fragment_stop YOK); tam kanonik token kümesinin tek-token temsili.
-    # TOKEN_COVERAGE'ın multiset eşitlik anahtarı (variations.name.canonical_full).
+    # canonical_full (common): clean zinciri + flatten_graph (synonym_graph'ı fingerprint
+    # öncesi düzleştirir) + fingerprint_token_filter (sort+dedup). Legal KORUNUR
+    # (legal_fragment_stop YOK). article_stop YOK — TOKEN_COVERAGE tüm token'ların
+    # (article dahil) aynı olmasını ister. Tam kanonik token kümesinin tek-token temsili.
     analyzers["canonical_full_analyzer_common"] = {
         "tokenizer": "standard",
         "char_filter": ["acronym_glue", "punctuation_remover"],
-        "filter": base_clean_filters
-        + ["synonym_filter_common", "flatten_graph", "article_stop", "fingerprint_token_filter"],
+        "filter": base_clean_filters + ["synonym_filter_common", "flatten_graph", "fingerprint_token_filter"],
     }
 ```
 
@@ -102,11 +102,11 @@ Expected: FAIL — `canonical_full_analyzer_MX` analyzer'da yok / `canonical_ful
 `es/manager.py` içinde `if country_code and country_code not in ("__common__", "__COMMON__"):` bloğunda, `analyzers[analyzer_name] = {...}` atamasının (biten satır ~161) HEMEN ALTINA (hâlâ `if` bloğu içinde, aynı girinti) ekle:
 
 ```python
+        # article_stop YOK (her token önemli); legal_fragment_stop YOK (legal korunur).
         analyzers[f"canonical_full_analyzer_{cc}"] = {
             "tokenizer": "standard",
             "char_filter": ["acronym_glue", "punctuation_remover"],
-            "filter": base_clean_filters
-            + [filter_name, "flatten_graph", "article_stop", "fingerprint_token_filter"],
+            "filter": base_clean_filters + [filter_name, "flatten_graph", "fingerprint_token_filter"],
         }
 ```
 

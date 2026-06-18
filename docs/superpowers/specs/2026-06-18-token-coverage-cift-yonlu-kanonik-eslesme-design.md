@@ -66,9 +66,10 @@ ingest pipeline** ile otomatik türetilir. **Hiçbir yazma yolu (es_writer/pipel
 
 İki ES alt-alanı birlikte multiset eşitliğini verir:
 
-1. **`variations.name.canonical_full`** (YENİ) — analyzer = kanonik pipeline (synonym_graph +
-   normalizer'lar, **legal-strip YOK**) + `fingerprint_token_filter` (sort + dedup). Sonuç: tam
-   kanonik token **kümesinin** sıralı-tekil tek-token temsili.
+1. **`variations.name.canonical_full`** (YENİ) — analyzer = clean zinciri (synonym_graph +
+   normalizer'lar, **legal-strip YOK, article-strip YOK** — her token önemli) + `flatten_graph`
+   + `fingerprint_token_filter` (sort + dedup). Sonuç: tam kanonik token **kümesinin** sıralı-tekil
+   tek-token temsili. Mevcut `clean_analyzer_*`/`fingerprint_analyzer` zincirleri DEĞİŞMEZ.
 2. **`variations.name.token_count`** (MEVCUT) — toplam token sayısı (çokluk).
 
 **Eşleşme = `canonical_full` term-eşitliği (aynı küme) VE `token_count` eşitliği (aynı toplam).**

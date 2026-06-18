@@ -48,6 +48,14 @@ GOLDEN_GROUPS: dict[str, list[str]] = {
     # ALCATEL ⊂ ALCATEL-LUCENT: fonetik subset eşleşir; coverage gate ayırmalı.
     "alcatel": ["ALCATEL S.A. DE C.V."],
     "alcatel_lucent": ["ALCATEL LUCENT S.A. DE C.V."],
+    # --- TOKEN_COVERAGE cift-yonlu kanonik eslesme kurbanlari: hepsi FARKLI firma ---
+    # (2026-06-18 spec; canonical_full+token_count + fingerprint gate ile ayrismalilar)
+    "elektrokontakt": ["ELEKTROKONTAKT SRL DE C.V."],
+    "ss_initials": ["S. S. DE R.L. DE C.V."],           # bos cekirdek → hicbir seye eslesmemeli
+    "agro_acolchados": ["AGRO Y ACOLCHADOS, S.A. DE C.V."],
+    "viotti": ["VIOTTI S.A. DE C.V."],
+    "delarub": ["DELARUB MEXICO, S.A. DE C.V."],
+    "deleites": ["DELEITES DE MEXICO S.A. DE C.V."],
     # --- SHOULD_MERGE (under-merge): her grup AYNI firma, eşleşmeli ---
     "vibracoustic": [
         "VIBRACOUSTIC DE MEXICO S.A. DE C.V.",

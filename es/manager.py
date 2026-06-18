@@ -194,7 +194,7 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
                     "properties": {
                         "name": {
                             "type": "text",
-                            "analyzer": "clean_analyzer_common",
+                            "analyzer": tc_analyzer,
                             "fields": variations_fields,
                         }
                     }

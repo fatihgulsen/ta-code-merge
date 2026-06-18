@@ -151,6 +151,11 @@ def test_canonical_full_analyzer_keeps_legal_and_sorts():
     assert chain[-1] == "fingerprint_token_filter", "sort/dedup en sonda olmalı"
     assert any(f.startswith("synonym_filter_") for f in chain)
     assert "flatten_graph" in chain
+    # Sıra: synonym_graph → flatten_graph → fingerprint_token_filter (graph düzleştirme önce)
+    syn_idx = next(i for i, f in enumerate(chain) if f.startswith("synonym_filter_"))
+    flatten_idx = chain.index("flatten_graph")
+    fp_idx = chain.index("fingerprint_token_filter")
+    assert syn_idx < flatten_idx < fp_idx, "synonym → flatten_graph → fingerprint sırası şart"
 
 
 def test_variations_name_has_canonical_full_subfield():

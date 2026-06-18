@@ -37,6 +37,37 @@ def test_phonetic_analyzer_wires_fragment_stop_before_metaphone():
 
 
 
+def test_article_stop_wired_after_synonym_in_clean_analyzers():
+    """article_stop, clean analyzer'larda synonym_filter'dan SONRA gelmeli.
+
+    Article'lar synonym kanonikleşmesinden ÖNCE düşürülürse çok-kelimeli yasal/sektör
+    synonym'leri ('sociedad DE responsabilidad limitada=>srl') bozulur. flatten_graph,
+    synonym_graph ile article_stop arasında index-time graph'ı düzleştirmek için olmalı."""
+    from es.manager import build_index_settings
+    s = build_index_settings(es=None, country_code="MX")
+    filters = s["settings"]["analysis"]["filter"]
+    analyzers = s["settings"]["analysis"]["analyzer"]
+    assert "article_stop" in filters
+    assert filters["article_stop"]["type"] == "stop"
+    # common 'de' + ülke 'articles' yüklenmeli
+    assert "de" in filters["article_stop"]["stopwords"]
+    for an_name, syn in (("clean_analyzer_common", "synonym_filter_common"),
+                         ("clean_analyzer_MX", "synonym_filter_MX")):
+        chain = analyzers[an_name]["filter"]
+        assert syn in chain and "flatten_graph" in chain and "article_stop" in chain
+        assert chain.index(syn) < chain.index("flatten_graph") < chain.index("article_stop")
+
+
+def test_article_stop_in_fingerprint_after_fragment_stop():
+    """fingerprint_analyzer article_stop içermeli (parmak izi article-bağımsız olsun);
+    fingerprint_token_filter'dan ÖNCE gelmeli. Burada synonym_graph yok → flatten gereksiz."""
+    from es.manager import build_index_settings
+    s = build_index_settings(es=None, country_code="MX")
+    chain = s["settings"]["analysis"]["analyzer"]["fingerprint_analyzer"]["filter"]
+    assert "article_stop" in chain
+    assert chain.index("article_stop") < chain.index("fingerprint_token_filter")
+
+
 def test_only_target_country_analyzer_built():
     """Tek-ülke settings YALNIZCA o ülkenin clean_analyzer'ını içermeli (65x sismez)."""
     from es.manager import build_index_settings
@@ -135,3 +166,31 @@ def test_no_stripped_search_analyzer():
     analyzers = s["settings"]["analysis"]["analyzer"]
     assert "stripped_search_analyzer" not in analyzers
     assert "stripped_search_analyzer_tr" not in analyzers
+
+
+def test_canonical_full_analyzer_keeps_legal_and_sorts():
+    """canonical_full_analyzer clean-zincirini + fingerprint_token_filter'ı kullanmalı,
+    legal_fragment_stop İÇERMEMELİ (legal korunur), fingerprint_token_filter SON olmalı."""
+    from es.manager import build_index_settings
+    s = build_index_settings(es=None, country_code="MX")
+    analyzers = s["settings"]["analysis"]["analyzer"]
+    assert "canonical_full_analyzer_MX" in analyzers
+    assert "canonical_full_analyzer_common" in analyzers
+    chain = analyzers["canonical_full_analyzer_MX"]["filter"]
+    assert "legal_fragment_stop" not in chain, "legal korunmalı (strip YOK)"
+    assert chain[-1] == "fingerprint_token_filter", "sort/dedup en sonda olmalı"
+    assert "article_stop" in chain
+    # synonym_graph zinciri clean ile aynı kaynaktan: synonym filter + flatten_graph içermeli
+    assert any(f.startswith("synonym_filter_") for f in chain)
+    assert "flatten_graph" in chain
+
+
+def test_variations_name_has_canonical_full_subfield():
+    """variations.name altında canonical_full multi-field'ı, per-country analyzer ile."""
+    from es.manager import build_index_settings
+    s = build_index_settings(es=None, country_code="MX")
+    fields = s["mappings"]["properties"]["variations"]["properties"]["name"]["fields"]
+    assert "canonical_full" in fields
+    cf = fields["canonical_full"]
+    assert cf["type"] == "text"
+    assert cf["analyzer"] == "canonical_full_analyzer_MX"

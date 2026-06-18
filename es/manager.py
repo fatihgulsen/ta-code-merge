@@ -8,6 +8,7 @@ from config import ES_HOST, alias_for_country, index_for_country
 from core.synonym_loader import (
     get_all_country_codes,
     get_all_legal_suffix_fragments,
+    get_article_stopwords,
     load_synonyms_for_country,
 )
 
@@ -96,6 +97,21 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
         "stopwords": sorted(get_all_legal_suffix_fragments()),
     }
 
+    # ── Article (de/la/y/and/of…) token stop filtresi (JSON 'articles'tan türetilir) ──
+    # Article'lar AYIRT EDİCİ DEĞİLDİR ("acme de mexico" ≡ "acme mexico"). Yalnızca
+    # synonym_graph'TAN SONRA düşürülür: çok-kelimeli yasal/sektör synonym KAYNAK ve
+    # HEDEF'leri article içerir ("sociedad DE responsabilidad limitada=>srl", "empresa
+    # productiva DEL estado") — synonym'den ÖNCE silinirse kanonikleşme bozulur. token_count
+    # (enable_position_increments=False) bunları sayıma katmaz → "acme de mexico"(2) ≡
+    # "acme mexico"(2) token-count paritesi. NOT: stop bir pozisyon boşluğu bırakır; sıfır-slop
+    # match_phrase (CANONICAL_EXACT) article-farkını köprülemez — ama TOKEN_COVERAGE
+    # (operator:and + token_count) yakalar. Kelime/TOKEN düzeyindedir (substring DEĞİL).
+    _article_cc = country_code if country_code else "__common__"
+    filters["article_stop"] = {
+        "type": "stop",
+        "stopwords": sorted(get_article_stopwords(_article_cc)),
+    }
+
     # ── Ortak (common) filter ve analyzer ──
     common_synonyms = list(load_synonyms_for_country("__common__"))
     filters["synonym_filter_common"] = {
@@ -106,7 +122,21 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
     analyzers["clean_analyzer_common"] = {
         "tokenizer": "standard",
         "char_filter": ["acronym_glue", "punctuation_remover"],
-        "filter": base_clean_filters + ["synonym_filter_common"],
+        # flatten_graph: synonym_graph'tan SONRA filtre (article_stop) gelince index-time
+        # token-graph'ı düzleştirir; article_stop article'ları synonym kanonikleşmesinin
+        # ARDINDAN düşürür (çok-kelimeli yasal/sektör synonym'leri bozmadan).
+        "filter": base_clean_filters
+        + ["synonym_filter_common", "flatten_graph", "article_stop"],
+    }
+
+    # canonical_full (common): clean_analyzer_common ile AYNI zincir + sort/dedup.
+    # Legal KORUNUR (legal_fragment_stop YOK); tam kanonik token kümesinin tek-token temsili.
+    # TOKEN_COVERAGE'ın multiset eşitlik anahtarı (variations.name.canonical_full).
+    analyzers["canonical_full_analyzer_common"] = {
+        "tokenizer": "standard",
+        "char_filter": ["acronym_glue", "punctuation_remover"],
+        "filter": base_clean_filters
+        + ["synonym_filter_common", "flatten_graph", "article_stop", "fingerprint_token_filter"],
     }
 
     # ── Fingerprint (sort + dedup) filtresi + güçlendirilmiş fingerprint_analyzer ──
@@ -120,7 +150,10 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
     analyzers["fingerprint_analyzer"] = {
         "tokenizer": "standard",
         "char_filter": ["acronym_glue", "punctuation_remover"],
-        "filter": base_clean_filters + ["legal_fragment_stop", "fingerprint_token_filter"],
+        # article_stop: parmak izinden article gürültüsünü de keser → "acme de mexico" ve
+        # "acme mexico" aynı ize iner (dedup tutarlılığı). Burada synonym_graph yok → flatten gereksiz.
+        "filter": base_clean_filters
+        + ["legal_fragment_stop", "article_stop", "fingerprint_token_filter"],
     }
 
     # ── Verilen ülkenin synonym analyzer'ı (tek ülke) ──
@@ -133,7 +166,14 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
         analyzers[analyzer_name] = {
             "tokenizer": "standard",
             "char_filter": ["acronym_glue", "punctuation_remover"],
-            "filter": base_clean_filters + [filter_name],
+            # synonym_graph → flatten_graph → article_stop (yukarıdaki gerekçeyle aynı).
+            "filter": base_clean_filters + [filter_name, "flatten_graph", "article_stop"],
+        }
+        analyzers[f"canonical_full_analyzer_{cc}"] = {
+            "tokenizer": "standard",
+            "char_filter": ["acronym_glue", "punctuation_remover"],
+            "filter": base_clean_filters
+            + [filter_name, "flatten_graph", "article_stop", "fingerprint_token_filter"],
         }
 
     # ── Mapping: variations subfield'ları ──
@@ -142,6 +182,11 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
         f"clean_analyzer_{country_code.upper()}"
         if country_code and country_code not in ("__common__", "__COMMON__")
         else "clean_analyzer_common"
+    )
+    cf_analyzer = (
+        f"canonical_full_analyzer_{country_code.upper()}"
+        if country_code and country_code not in ("__common__", "__COMMON__")
+        else "canonical_full_analyzer_common"
     )
     variations_fields = {
         # Tam eşleşme kontrolü (synonym uygulanmaz)
@@ -163,6 +208,12 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
             "type": "text",
             "analyzer": "fingerprint_analyzer",
             "fielddata": True,
+        },
+        # canonical_full: tam kanonik token kümesi (legal korunur) → sort/dedup tek token.
+        # token_count ile birlikte TOKEN_COVERAGE multiset eşitliğini verir (term-eşitliği).
+        "canonical_full": {
+            "type": "text",
+            "analyzer": cf_analyzer,
         },
     }
 

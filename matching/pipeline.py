@@ -39,7 +39,6 @@ from config import (
     COUNTRY_CODE_FILTER,
     STAGES,
     MSEARCH_CHUNK_SIZE,
-    SUFFIX_FUZZY_SCORE,
     LOG_ALL_STAGES,
     NEW_MASTER_SUBBATCH_SIZE,
     ENABLE_INPUT_FILTER,
@@ -136,9 +135,7 @@ def run_stage(
                 {
                     **rec,
                     "master_id": top_hit["_source"]["master_id"],
-                    "es_score": SUFFIX_FUZZY_SCORE
-                    if stage_name == "SUFFIX_FUZZY"
-                    else top_score,
+                    "es_score": top_score,
                     "stage_name": stage_name,
                     "stage_order": stage_order,
                     "index_variation": stage.get("index_variation", True),

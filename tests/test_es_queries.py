@@ -30,7 +30,7 @@ def test_canonical_exact_structure():
     
     # token_count filtresi kontrolü
     inner_filters = nested["query"]["bool"]["filter"]
-    assert any("term" in f and "variations.token_count" in f["term"] for f in inner_filters)
+    assert any("term" in f and "variations.name.token_count" in f["term"] for f in inner_filters)
 
 
 def test_canonical_exact_uses_country_analyzer():

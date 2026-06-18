@@ -63,17 +63,12 @@ def test_suffix_fuzzy_constants_exist():
     assert config.SUFFIX_FUZZY_SCORE == 85
 
 
-def test_suffix_fuzzy_stage_in_stages():
-    names = [s["name"] for s in config.STAGES]
-    assert "SUFFIX_FUZZY" in names
-
-
 def test_stage_order():
-    """STRIPPED_EXACT en sonda olmalı; SUFFIX_FUZZY CANONICAL_EXACT'tan sonra TOKEN_COVERAGE'dan önce gelmeli."""
+    """Plan 4: CANONICAL_EXACT (1) → FUZZY_PHRASE (2) → TOKEN_COVERAGE (3)."""
     stages_by_name = {s["name"]: s["order"] for s in config.STAGES}
-    assert stages_by_name["CANONICAL_EXACT"] < stages_by_name["STRIPPED_EXACT"]
-    assert stages_by_name["STRIPPED_EXACT"] < stages_by_name["SUFFIX_FUZZY"]
-    assert stages_by_name["SUFFIX_FUZZY"] < stages_by_name["TOKEN_COVERAGE"]
+    assert stages_by_name["CANONICAL_EXACT"] == 1
+    assert stages_by_name["FUZZY_PHRASE"] == 2
+    assert stages_by_name["TOKEN_COVERAGE"] == 3
 
 
 def test_business_descriptors_in_synonyms():
@@ -124,18 +119,17 @@ def test_business_descriptors_in_synonyms():
     assert "industry" in common_sectors or "industries" in common_sectors
 
 
-def test_stage_index_variation_sprint2_self_learning():
-    """Sprint 2: CANONICAL_EXACT variations are indexed for self-learning."""
+def test_stage_index_variation_plan4():
+    """Plan 4: CANONICAL_EXACT indexes variations; FUZZY_PHRASE and TOKEN_COVERAGE do not."""
     from config import STAGES
 
     by_name = {s["name"]: s for s in STAGES}
-    # CANONICAL_EXACT and STRIPPED_EXACT now enable variations
+    # CANONICAL_EXACT enables variations indexing
     assert by_name["CANONICAL_EXACT"]["index_variation"] is True
-    assert by_name["STRIPPED_EXACT"]["index_variation"] is True
 
-    # Already-frozen stages remain False
-    for always_pg in ("FUZZY_PHRASE", "NGRAM_MATCH"):
-        assert by_name[always_pg]["index_variation"] is False
+    # Loose stages remain False
+    for stage_name in ("FUZZY_PHRASE", "TOKEN_COVERAGE"):
+        assert by_name[stage_name]["index_variation"] is False
 
 
 def test_index_for_country_physical_name():

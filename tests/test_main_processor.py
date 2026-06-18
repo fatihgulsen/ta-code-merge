@@ -527,10 +527,13 @@ def test_add_variation_to_master_logs_es_failure_at_warning_with_exc_info():
 # HIGH-4: _add_variation_to_master must preserve existing variations_stripped/suffix
 # ---------------------------------------------------------------------------
 
-def test_add_variation_preserves_existing_variations_stripped_and_suffix():
-    """HIGH-4: When _add_variation_to_master adds a new variation to an existing master,
-    it must APPEND to variations_stripped and variations_suffix, not reset them to [].
-    Also verifies the input dict is not mutated in-place.
+def test_add_variation_appends_to_existing_variations():
+    """HIGH-4 (Plan 4): When _add_variation_to_master adds a new variation to an existing
+    master, it must APPEND to the variations list (not reset it) and produce a new body
+    dict (immutability — no in-place mutation of the fetched _source).
+
+    Plan 4 note: variations_stripped / variations_suffix are no longer written by
+    _add_variation_to_master; only `variations` is managed here.
     """
     from unittest.mock import MagicMock
     import matching.es_writer as mp
@@ -545,8 +548,6 @@ def test_add_variation_preserves_existing_variations_stripped_and_suffix():
             {"name": "Acme Ltd"},
             {"name": "Acme Global"},
         ],
-        "variations_stripped": ["acme", "global"],
-        "variations_suffix": ["ltd", "corp"],
     }
 
     mock_es.get.return_value = {
@@ -568,22 +569,16 @@ def test_add_variation_preserves_existing_variations_stripped_and_suffix():
 
     assert body is not None, "es.index() must be called with a body keyword argument"
 
-    # PRIMARY assertion: variations_stripped must PRESERVE the 2 originals (not be wiped to [])
-    vs = body.get("variations_stripped", [])
-    assert len(vs) >= 2, (
-        "variations_stripped was reset to {}; expected at least 2 original entries to be preserved, not wiped.".format(vs)
-    )
-
-    # PRIMARY assertion: variations_suffix must PRESERVE the 2 originals
-    vsuf = body.get("variations_suffix", [])
-    assert len(vsuf) >= 2, (
-        "variations_suffix was reset to {}; expected at least 2 original entries to be preserved, not wiped.".format(vsuf)
-    )
-
-    # Sanity check: variations list must have 3 entries (2 original + 1 new)
+    # PRIMARY assertion: variations list must have 3 entries (2 original + 1 new)
     vlist = body.get("variations", [])
     assert len(vlist) == 3, (
-        "variations list should have 3 entries but got {}".format(vlist)
+        "variations list should have 3 entries (2 original + 1 new) but got {}".format(vlist)
+    )
+
+    # The newly appended entry must be a dict with a "name" key
+    new_entry = vlist[-1]
+    assert isinstance(new_entry, dict) and "name" in new_entry, (
+        "New variation entry must be a dict with 'name' key, got: {}".format(new_entry)
     )
 
     # BONUS: input dict must not be mutated in-place (immutability hygiene)
@@ -591,14 +586,10 @@ def test_add_variation_preserves_existing_variations_stripped_and_suffix():
         "es.index body must be a new dict, not the same object as the fetched _source."
     )
 
-    # BONUS: Ensure deep isolation — nested lists must not be shared references
-    # Mutate the nested list in the body and verify source is unaffected
-    body_variations_stripped = body.get("variations_stripped", [])
-    body_variations_stripped.append("PROBE_MUTATION_X")
-    assert "PROBE_MUTATION_X" not in existing_source.get("variations_stripped", []), (
-        "shallow copy detected: nested list shared with source. "
-        "Mutating body's variations_stripped affected the original source."
-    )
+    # Ensure the 2 original entries are still present
+    existing_names = [v["name"] for v in vlist if isinstance(v, dict)]
+    assert "Acme Ltd" in existing_names, "Original 'Acme Ltd' variation must be preserved"
+    assert "Acme Global" in existing_names, "Original 'Acme Global' variation must be preserved"
 
 
 def test_all_pg_updates_appends_use_float_score():

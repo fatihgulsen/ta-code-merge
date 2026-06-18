@@ -305,3 +305,12 @@ def test_get_address_tokens_includes_common_address_words():
     assert "avenue" in toks
     assert "st" in toks
     assert "pharma" not in toks
+
+
+def test_get_generic_tokens_union_excludes_brand():
+    from core.synonym_loader import get_generic_tokens
+    g = get_generic_tokens("TR")
+    assert "ltd" in g
+    assert "trading" in g
+    assert "the" in g
+    assert "apex" not in g

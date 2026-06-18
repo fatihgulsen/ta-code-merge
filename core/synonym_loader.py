@@ -240,6 +240,22 @@ def get_business_sector_tokens(country_code: str) -> frozenset:
 
 
 @lru_cache(maxsize=None)
+def get_generic_tokens(country_code: str) -> frozenset:
+    """Gate 'ayırt edicilik' için jenerik token kümesi: legal ∪ article ∪ geo ∪ sector.
+
+    Bu kümeye GİRMEYEN token 'ayırt edici çekirdek' sayılır. address DAHİL DEĞİL
+    (o DIRTY_DATA için ayrı). Tamamen JSON'dan türetilir.
+    """
+    cc = country_code.upper()
+    return (
+        get_legal_suffix_tokens(cc)
+        | get_article_stopwords(cc)
+        | get_country_geo_stopwords(cc)
+        | get_business_sector_tokens(cc)
+    )
+
+
+@lru_cache(maxsize=None)
 def get_address_tokens(country_code: str) -> frozenset:
     """Ülkeye özgü 'address_abbreviations' token'larını döner (common.json + ülke dosyası).
 

@@ -583,6 +583,7 @@ def process_all_data() -> None:
         total_skipped = 0
         total_excluded = 0  # firma-olmayan girdi (EXCLUDED, indekslenmez)
         total_deduped = 0   # batch-içi fingerprint dedup ile birleştirilen master sayısı
+        total_batch_deduped = 0  # apply-pass içi kanonik (canonical_full+token_count) dedup
         stage_counts: dict[str, int] = {}
         last_id = 0  # Sayfalama icin son islenen id
 
@@ -724,6 +725,9 @@ def process_all_data() -> None:
                 results = match_records_batch(es, [it[3] for it in match_items], active_stages)
 
                 # 3) Apply-pass (sıralı; yazımlar tekil-akışla aynı semantik)
+                # Batch-içi kanonik dedup: aynı batch'te canonical_full+token_count eşit kayıtlar
+                # tek master'a iner (ES, henüz indekslenmemiş kardeşine eşleşemez).
+                seen_canon: dict[tuple, str] = {}
                 for (row_id, raw_name, country, rec), match_res in zip(match_items, results):
                     try:
                         winner = match_res["winner"]
@@ -744,18 +748,39 @@ def process_all_data() -> None:
                             total_matched += 1
                             stage_counts[stage_name] = stage_counts.get(stage_name, 0) + 1
                         else:
-                            master_id = _index_new_master(es, rec)
-                            if ENABLE_DIRTY_DATA and is_address_dirty(es, rec["match_name"], country):
-                                stage_name = "DIRTY_DATA"
-                                details = "DIRTY_DATA: address-baskin, ayirt edici cekirdek yok."
-                                total_dirty += 1
-                            else:
+                            # Batch-içi kanonik dedup anahtarı: TOKEN_COVERAGE ile tutarlı —
+                            # fingerprint boş/non-alpha (ayırt edici çekirdek yok) ise dedup YOK.
+                            mn = rec["match_name"]
+                            ckey = None
+                            fp = _es_queries._fingerprint_token(es, mn, country)
+                            if fp and any(c.isalpha() for c in fp):
+                                cf = _es_queries._get_canonical_full(es, mn, country)
+                                tcnt = _es_queries._get_token_count(es, mn, _es_queries._get_analyzer(country), country)
+                                if cf and tcnt > 0:
+                                    ckey = (cf, tcnt, country.upper())
+                            existing = seen_canon.get(ckey) if ckey else None
+                            if existing is not None:
+                                # Aynı batch'teki kanonik-eş kardeş → mevcut master'a varyant olarak ekle.
+                                master_id = existing
                                 stage_name = "NEW_MASTER"
-                                details = "NEW_MASTER: No relevant matches found."
-                                total_new += 1
-                                batch_new_master_ids.append(master_id)  # P0-C: batch-içi dedup kapsamı
-                                pending_dedup_ids.append(master_id)      # perf: N-batch biriktirici
-                                pending_dedup_ccs.add(country)
+                                details = "NEW_MASTER: batch-ici kanonik dedup."
+                                _add_variation_to_master(es, master_id, raw_name, country, rec)
+                                total_batch_deduped += 1
+                            else:
+                                master_id = _index_new_master(es, rec)
+                                if ENABLE_DIRTY_DATA and is_address_dirty(es, mn, country):
+                                    stage_name = "DIRTY_DATA"
+                                    details = "DIRTY_DATA: address-baskin, ayirt edici cekirdek yok."
+                                    total_dirty += 1
+                                else:
+                                    stage_name = "NEW_MASTER"
+                                    details = "NEW_MASTER: No relevant matches found."
+                                    total_new += 1
+                                    batch_new_master_ids.append(master_id)  # P0-C: batch-içi dedup kapsamı
+                                    pending_dedup_ids.append(master_id)      # perf: N-batch biriktirici
+                                    pending_dedup_ccs.add(country)
+                                if ckey:
+                                    seen_canon[ckey] = master_id
                             pg_updates.append(_make_pg_update_tuple(master_id, 100, stage_name, details, row_id))
                             es_score = 100.0
 

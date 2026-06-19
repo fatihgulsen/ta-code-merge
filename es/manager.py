@@ -8,6 +8,7 @@ from config import ES_HOST, alias_for_country, index_for_country
 from core.synonym_loader import (
     get_all_country_codes,
     get_all_legal_suffix_fragments,
+    get_article_stopwords,
     load_synonyms_for_country,
 )
 
@@ -96,6 +97,18 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
         "stopwords": sorted(get_all_legal_suffix_fragments()),
     }
 
+    # ── Article stop filtresi (de/del/la/y/and...) — JSON 'articles'tan türetilir ──
+    # Article'lar ayırt edici DEĞİL ("cristaleria DEL angel" ≡ "cristaleria angel").
+    # synonym_filter + flatten_graph'tan SONRA uygulanır: çok-kelimeli legal/sector
+    # synonym kaynakları article içerir ("sociedad DE responsabilidad limitada") — article
+    # önce silinirse kanonikleşme bozulur. clean (→token_count), canonical_full ve
+    # fingerprint zincirlerinde article-bağımsız sayım/küme/parmak izi sağlar.
+    _article_cc = country_code if country_code and country_code not in ("__common__", "__COMMON__") else "__common__"
+    filters["article_stop"] = {
+        "type": "stop",
+        "stopwords": sorted(get_article_stopwords(_article_cc)),
+    }
+
     # ── Ortak (common) filter ve analyzer ──
     common_synonyms = list(load_synonyms_for_country("__common__"))
     filters["synonym_filter_common"] = {
@@ -106,16 +119,15 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
     analyzers["clean_analyzer_common"] = {
         "tokenizer": "standard",
         "char_filter": ["acronym_glue", "punctuation_remover"],
-        "filter": base_clean_filters + ["synonym_filter_common"],
+        # synonym_graph → flatten_graph → article_stop (article'lar kanonikleşmeden SONRA düşer).
+        "filter": base_clean_filters + ["synonym_filter_common", "flatten_graph", "article_stop"],
     }
-    # canonical_full (common): clean zinciri + flatten_graph (synonym_graph'ı fingerprint
-    # öncesi düzleştirir) + fingerprint_token_filter (sort+dedup). Legal KORUNUR
-    # (legal_fragment_stop YOK). article_stop YOK — TOKEN_COVERAGE tüm token'ların
-    # (article dahil) aynı olmasını ister.
+    # canonical_full (common): clean zinciri + fingerprint_token_filter (sort+dedup). Legal
+    # KORUNUR (legal_fragment_stop YOK); article_stop ile article-bağımsız kanonik küme.
     analyzers["canonical_full_analyzer_common"] = {
         "tokenizer": "standard",
         "char_filter": ["acronym_glue", "punctuation_remover"],
-        "filter": base_clean_filters + ["synonym_filter_common", "flatten_graph", "fingerprint_token_filter"],
+        "filter": base_clean_filters + ["synonym_filter_common", "flatten_graph", "article_stop", "fingerprint_token_filter"],
     }
 
     # ── Fingerprint (sort + dedup) filtresi + güçlendirilmiş fingerprint_analyzer ──
@@ -129,7 +141,8 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
     analyzers["fingerprint_analyzer"] = {
         "tokenizer": "standard",
         "char_filter": ["acronym_glue", "punctuation_remover"],
-        "filter": base_clean_filters + ["legal_fragment_stop", "fingerprint_token_filter"],
+        # legal_fragment_stop + article_stop → saf legal+article isim boş parmak izi (gate doğru bloklar).
+        "filter": base_clean_filters + ["legal_fragment_stop", "article_stop", "fingerprint_token_filter"],
     }
 
     # ── Verilen ülkenin synonym analyzer'ı (tek ülke) ──
@@ -142,16 +155,15 @@ def build_index_settings(es: Elasticsearch | None = None, country_code: str = "_
         analyzers[analyzer_name] = {
             "tokenizer": "standard",
             "char_filter": ["acronym_glue", "punctuation_remover"],
-            "filter": base_clean_filters + [filter_name],
+            # synonym_graph → flatten_graph → article_stop (article'lar kanonikleşmeden SONRA düşer).
+            "filter": base_clean_filters + [filter_name, "flatten_graph", "article_stop"],
         }
-        # canonical_full: clean zinciri + flatten_graph (synonym_graph'ı fingerprint öncesi
-        # düzleştirir) + fingerprint_token_filter (sort+dedup). Legal KORUNUR
-        # (legal_fragment_stop YOK). article_stop YOK — TOKEN_COVERAGE tüm token'ların
-        # (article dahil) aynı olmasını ister.
+        # canonical_full: clean zinciri + fingerprint_token_filter (sort+dedup). Legal KORUNUR
+        # (legal_fragment_stop YOK); article_stop ile article-bağımsız kanonik küme.
         analyzers[f"canonical_full_analyzer_{cc}"] = {
             "tokenizer": "standard",
             "char_filter": ["acronym_glue", "punctuation_remover"],
-            "filter": base_clean_filters + [filter_name, "flatten_graph", "fingerprint_token_filter"],
+            "filter": base_clean_filters + [filter_name, "flatten_graph", "article_stop", "fingerprint_token_filter"],
         }
 
     # ── Mapping: variations subfield'ları ──

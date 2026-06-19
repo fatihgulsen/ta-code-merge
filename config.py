@@ -183,6 +183,13 @@ MATCH_CORE_FUZZY_REQUIRE_ALPHA = True  # loose stage'lerde çekirdek alfabetik o
 # firma NEW_MASTER olabilir (recall maliyeti). Bkz. docs/audit/2026-06-10-round4-*.
 ENABLE_CORE_COVERAGE_GATE = True
 
+# --- Synonym-içi fonetik typo-rescue (core/synonym_phonetic) ---
+# Write-time'da ham synonym typo'larını (socidad→sl gibi) kanoniğe çevirir; markaya
+# DOKUNMAZ (tam metaphone-kod eşitliği + uzunluk guard'ları). 2026-06-18 empirik denetim:
+# gevşek eşleşme markayı bozuyordu (rafael→retail), tam-kod'a sıkılaştırıldı (%15→%1, 0 marka
+# sızıntısı). False yapılırsa canonicalize_phonetic kimliği döner (rescue kapalı).
+ENABLE_SYNONYM_PHONETIC = True
+
 # --- msearch ---
 MSEARCH_CHUNK_SIZE = 500  # tek msearch çağrısındaki max sorgu sayısı
 

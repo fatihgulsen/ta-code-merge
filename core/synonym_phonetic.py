@@ -17,8 +17,7 @@ _RESCUE_CATEGORIES = ("legal_suffixes", "business_sectors", "address_abbreviatio
 
 MIN_TOKEN_LEN = 5          # sorgu token'ı (kısa marka/akronim korunur)
 MIN_SYNONYM_SRC_LEN = 4    # synonym kaynak token'ı
-MIN_CODE_LEN = 3           # fuzzy için min metaphone kod uzunluğu
-_MAX_PREFIX_DIFF = 2       # prefix eşleşmede izinli uzunluk farkı
+MIN_CODE_LEN = 4           # TAM-kod eşleşme için min metaphone kod uzunluğu (3 fazla çakışıyordu)
 
 
 def _primary_code(token: str) -> str:
@@ -27,17 +26,14 @@ def _primary_code(token: str) -> str:
 
 
 def _code_matches(tc: str, sc: str) -> bool:
-    """Token kodu tc, synonym kodu sc ile fonetik eşleşiyor mu? (eşit/prefix/sub-1)."""
-    if tc == sc:
-        return True
-    if len(tc) < MIN_CODE_LEN or len(sc) < MIN_CODE_LEN:
-        return False
-    shorter, longer = (tc, sc) if len(tc) <= len(sc) else (sc, tc)
-    if longer.startswith(shorter) and (len(longer) - len(shorter)) <= _MAX_PREFIX_DIFF:
-        return True
-    if len(tc) == len(sc) and sum(a != b for a, b in zip(tc, sc)) <= 1:
-        return True
-    return False
+    """Token kodu tc, synonym kodu sc ile fonetik eşleşiyor mu?
+
+    YALNIZCA TAM kod eşitliği (kod uzunluğu >= MIN_CODE_LEN). Eski gevşek prefix (uzunluk
+    farkı <=2) ve aynı-uzunlukta <=1-substitution kuralları KALDIRILDI: kısa metaphone
+    kodlarında (3-4 harf) markayı bozan yanlış-pozitiflere yol açıyordu (rafael=RFL~retail=RTL,
+    sonora=SNR~square=SKR → marka synonym'e çevriliyordu). Bkz. 2026-06-18 empirik denetim.
+    """
+    return tc == sc and len(tc) >= MIN_CODE_LEN
 
 
 @lru_cache(maxsize=None)
@@ -81,6 +77,9 @@ def canonicalize_phonetic(name: str, country_code: str) -> str:
     >1 (ambiguous) ise → koru.
     """
     if not name:
+        return name
+    from config import ENABLE_SYNONYM_PHONETIC
+    if not ENABLE_SYNONYM_PHONETIC:
         return name
     cc = country_code.upper()
     exact_sources = _exact_synonym_sources(cc)

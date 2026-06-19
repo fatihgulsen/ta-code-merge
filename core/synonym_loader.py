@@ -23,10 +23,18 @@ def normalize_text(text: str) -> str:
     return unicodedata.normalize("NFKC", text).casefold()
 
 
+# ES synonym_graph'a YALNIZCA isim-kanonikleştirme kategorileri girer. address/geo/article/
+# placeholder kategorileri synonym_graph'a GİRMEZ: kaynakları ("and"→andador, "c"→calle gibi
+# tek-harf/çok-yaygın token'lar) şirket adlarını bozuyordu (bkz. 2026-06-19 empirik denetim).
+# Adres → DIRTY_DATA (get_address_tokens), article → article_stop, geo → ayrı yollardan okunur.
+_SYNONYM_GRAPH_CATEGORIES = frozenset({"legal_suffixes", "company_types", "business_sectors"})
+
+
 def _extract_rules_from_file(filepath: Path) -> list[str]:
     """
-    Bir JSON dosyasındaki tüm kategorileri düz synonym listesine çevirir.
-    JSON formatı: { "kategori": ["A,B => C", ...], ... }
+    JSON'daki YALNIZCA kanonikleştirme kategorilerini (_SYNONYM_GRAPH_CATEGORIES) düz
+    synonym listesine çevirir. JSON formatı: { "kategori": ["A,B => C", ...], ... }.
+    address_terms/cities/articles/non_firm_placeholders vb. KAPSAM DIŞIDIR (synonym_graph'a girmez).
     """
     if not filepath.exists():
         return []
@@ -35,8 +43,8 @@ def _extract_rules_from_file(filepath: Path) -> list[str]:
         data = json.load(f)
 
     rules = []
-    for category_rules in data.values():
-        if isinstance(category_rules, list):
+    for category, category_rules in data.items():
+        if category in _SYNONYM_GRAPH_CATEGORIES and isinstance(category_rules, list):
             rules.extend([normalize_text(r) for r in category_rules])
 
     return rules

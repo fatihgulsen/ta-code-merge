@@ -128,10 +128,13 @@ ENABLE_INPUT_FILTER = True
 # Karar ES _analyze tokenizasyonu + Python set-membership ile (fuzzy değil). Bkz. es/queries.is_address_dirty.
 ENABLE_DIRTY_DATA = True
 
-# --- Batch-içi otomatik dedup ---
-# Batch'te oluşan NEW_MASTER'lar arasında aynı kanonik fingerprint'e sahip
-# olanları ES-tarafı birleştirir (dedup_auto_merge); ayrı script gerektirmez.
-AUTO_DEDUP_PER_BATCH = True
+# --- Batch-içi otomatik dedup (fingerprint) — KAPALI ---
+# Fingerprint legal-stripli birleştirir → 'ACME SA' + 'ACME SRL' gibi farklı-legal
+# firmaları yanlış merge eder (ilke ihlali: birleştirme YALNIZCA synonym-kanonik
+# eşitlikle olmalı). Birleştirme artık tamamen TOKEN_COVERAGE (canonical_full+token_count,
+# cross-chunk refresh) + apply-pass canonical batch-dedup ile yapılır = "tek-tek arama" denkliği.
+# Gerekirse manuel: `python -m dedup.auto_merge` (ama fingerprint over-merge riskini taşır).
+AUTO_DEDUP_PER_BATCH = False
 
 # Dedup sıklığı: her N batch'te bir koşar (aradaki NEW_MASTER'lar biriktirilir,
 # güvenlik-cap'te erken + sonda flush edilir). Yüksek N → fingerprint aggregation

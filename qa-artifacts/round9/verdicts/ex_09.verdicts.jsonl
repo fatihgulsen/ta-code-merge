@@ -1,0 +1,200 @@
+{"id":"10736611","name":"#N/A 262","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A is Excel error value, not a company name"}
+{"id":"10736688","name":"#N/A 399","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10736884","name":"#N/A 204","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737086","name":"#N/A 149","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737112","name":"#N/A 634","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737196","name":"#N/A 379","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737299","name":"#N/A 539","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737351","name":"#N/A 570","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737376","name":"#N/A 39","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737413","name":"#N/A 356","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737419","name":"#N/A 550","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737468","name":"#N/A 319","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737500","name":"#N/A 609","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737529","name":"#N/A 504","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737532","name":"#N/A 411","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737552","name":"#N/A 452","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737554","name":"#N/A 201","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737612","name":"#N/A 487","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737627","name":"#N/A 482","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737628","name":"#N/A 339","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737652","name":"#N/A 172","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737658","name":"#N/A 165","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737660","name":"#N/A 62","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737684","name":"#N/A 68","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737696","name":"#N/A 265","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737794","name":"#N/A 128","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737802","name":"#N/A 127","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737805","name":"#N/A 481","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737851","name":"#N/A 478","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737859","name":"#N/A 470","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737880","name":"#N/A 64","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737895","name":"#N/A 610","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10737957","name":"#N/A 76","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10738134","name":"#N/A 51","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10738142","name":"#N/A 542","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10738143","name":"#N/A 484","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10738161","name":"#N/A 189","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10738169","name":"#N/A 325","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10738279","name":"#N/A 568","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10738280","name":"#N/A 41","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10738284","name":"#N/A 423","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10738298","name":"#N/A 590","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10738301","name":"#N/A 207","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10738309","name":"#N/A 46","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"10738321","name":"#N/A 215","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11465038","name":"C&A DE MEXICO S. DE R.L.","cat":"DIRTY_DATA","verdict":"WRONG","reason":"real_firm_excluded","note":"C&A is a well-known European retail brand with Mexican subsidiary; real company wrongly excluded"}
+{"id":"11468173","name":"H S B C","cat":"DIRTY_DATA","verdict":"WRONG","reason":"real_firm_excluded","note":"HSBC bank globally known; spaced initials but clearly identifiable real firm"}
+{"id":"11468176","name":"PLASTICS TECHNOLOGY DE MEXICO S. DE","cat":"DIRTY_DATA","verdict":"WRONG","reason":"real_firm_excluded","note":"Truncated legal suffix but distinctive firm name PLASTICS TECHNOLOGY DE MEXICO present"}
+{"id":"11468458","name":"SH PLASTICS MANUFACTURING, S.A. DE C.V.","cat":"DIRTY_DATA","verdict":"WRONG","reason":"real_firm_excluded","note":"Distinctive name with full legal form; real Mexican manufacturing company"}
+{"id":"11659427","name":"N.","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"Single letter with period; no company identity"}
+{"id":"11659437","name":"#N/A 1082","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11664332","name":"#N/A 383","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11664364","name":"#N/A 2","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11664488","name":"#N/A 129","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11664647","name":"#N/A 336","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11664657","name":"#N/A 19","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11664665","name":"#N/A 363","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11664682","name":"#N/A 606","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11664772","name":"#N/A 289","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665040","name":"#N/A 318","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665054","name":"#N/A 438","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665083","name":"#N/A 612","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665267","name":"#N/A 56","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665334","name":"#N/A 308","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665363","name":"#N/A 417","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665416","name":"#N/A 115","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665445","name":"#N/A 38","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665464","name":"#N/A 32","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665465","name":"#N/A 592","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665498","name":"#N/A 545","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665525","name":"#N/A 181","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665560","name":"#N/A 588","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665570","name":"#N/A 241","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665623","name":"#N/A 113","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665694","name":"#N/A 151","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665703","name":"#N/A 4","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665781","name":"#N/A 420","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665799","name":"#N/A 235","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665815","name":"#N/A 177","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665824","name":"#N/A 155","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665836","name":"#N/A 28","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665882","name":"#N/A 180","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665905","name":"#N/A 156","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665921","name":"#N/A 307","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665971","name":"#N/A 327","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11665980","name":"#N/A 246","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11666015","name":"#N/A 493","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11666064","name":"#N/A 247","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11666091","name":"#N/A 618","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11666109","name":"#N/A 280","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11666180","name":"#N/A 81","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11668354","name":"A & E, INC.","cat":"DIRTY_DATA","verdict":"UNCERTAIN","reason":"code_or_number","note":"Only two initials A&E with INC; could be real but too abbreviated to confirm without additional context"}
+{"id":"11690029","name":"D M S D R L D C","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"Pure initials spelling out Mexican legal form S DE RL DE C; no firm identity"}
+{"id":"11696067","name":"S Y C S J S.A. DE C.V.","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"Pure initials with no distinctive firm core beyond legal form"}
+{"id":"11699333","name":"A R I Y E S.A. DE","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"Short initials plus truncated legal suffix; no distinctive name"}
+{"id":"11780289","name":"N. C","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"Two initials only; no company identity"}
+{"id":"11787353","name":"A R CHEMICALLS","cat":"DIRTY_DATA","verdict":"UNCERTAIN","reason":"code_or_number","note":"AR = two initials; CHEMICALLS is misspelled generic descriptor; too ambiguous to confirm as real firm"}
+{"id":"11788721","name":"M. M. W. D","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"Pure initials; no distinctive firm name"}
+{"id":"11795638","name":"A N S.A.","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"Two initials plus legal form only; no firm core"}
+{"id":"11798661","name":"#N/A 598","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11798978","name":"#N/A 9473","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11798979","name":"#N/A 6796","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11798986","name":"#N/A 67","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11799002","name":"#N/A 50","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11799003","name":"#N/A 199","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11800222","name":"#N/A 300","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11801856","name":"A E P SOLUTIONS S.A. DE C.V.","cat":"DIRTY_DATA","verdict":"WRONG","reason":"real_firm_excluded","note":"AEP SOLUTIONS is a distinctive company name with full legal form; real MX firm wrongly excluded"}
+{"id":"11803742","name":"H & S SOLUTIONS, S.A. DE C.V.","cat":"DIRTY_DATA","verdict":"WRONG","reason":"real_firm_excluded","note":"H&S SOLUTIONS has a branding element with full MX legal form; real company"}
+{"id":"11804359","name":"S. S.A. DE C.V.","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"Single initial S plus legal form; no firm core whatsoever"}
+{"id":"11806659","name":"T&N DE MEXICO","cat":"DIRTY_DATA","verdict":"WRONG","reason":"real_firm_excluded","note":"T&N is a known automotive/industrial brand (Turner & Newall heritage); real company in Mexico"}
+{"id":"11807790","name":"S-T-I","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"Three initials hyphen-separated; no distinctive firm name"}
+{"id":"11808067","name":"PLASTICOS NO. 28","cat":"DIRTY_DATA","verdict":"UNCERTAIN","reason":"code_or_number","note":"Generic descriptor plus number; could be real local firm but no distinctive brand core"}
+{"id":"11808129","name":"D. S","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"Two initials only; no firm identity"}
+{"id":"11808210","name":"#N/A 6782","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11808229","name":"#N/A 3797","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810552","name":"#N/A 292","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810578","name":"#N/A 33","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810586","name":"#N/A 323","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810592","name":"#N/A 145","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810626","name":"#N/A 340","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810646","name":"#N/A 446","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810736","name":"#N/A 569","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810806","name":"#N/A 572","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810811","name":"#N/A 296","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810816","name":"#N/A 441","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810822","name":"#N/A 611","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810848","name":"#N/A 36","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810849","name":"#N/A 591","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810871","name":"#N/A 123","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810873","name":"#N/A 267","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810885","name":"#N/A 421","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810913","name":"#N/A 302","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810914","name":"#N/A 529","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810956","name":"#N/A 479","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810971","name":"#N/A 227","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11810989","name":"#N/A 74","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11811010","name":"#N/A 533","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11811037","name":"#N/A 557","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11811102","name":"#N/A 595","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11811131","name":"#N/A 52","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11811138","name":"#N/A 5","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11811139","name":"#N/A 125","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11811147","name":"#N/A 150","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11811170","name":"#N/A 117","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11811191","name":"#N/A 454","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11811204","name":"#N/A 14","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11811248","name":"#N/A 619","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11811249","name":"#N/A 146","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11811250","name":"#N/A 369","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11811253","name":"#N/A 410","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11811254","name":"#N/A 581","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11811261","name":"#N/A 183","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11811268","name":"#N/A 249","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11812250","name":"POLTANK S.A.U.","cat":"DIRTY_DATA","verdict":"WRONG","reason":"real_firm_excluded","note":"POLTANK is a distinctive company name with legal form S.A.U.; real firm wrongly excluded"}
+{"id":"11814431","name":"F U N D A M E T Z M E X I C O, S.A. DE C. V.","cat":"DIRTY_DATA","verdict":"WRONG","reason":"real_firm_excluded","note":"Spaced letters spell FUNDAMETZ MEXICO; distinctive brand name present; real MX company"}
+{"id":"11814875","name":"A. G. S.A. D. C. V","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"Two initials A.G. plus legal form; no distinctive firm core"}
+{"id":"11818055","name":"STRATA ENERGY SERVICES, INC.","cat":"DIRTY_DATA","verdict":"WRONG","reason":"real_firm_excluded","note":"STRATA ENERGY SERVICES is a full distinctive company name with legal form; real firm wrongly excluded"}
+{"id":"11821666","name":"C S T","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"Three initials only; no firm identity"}
+{"id":"11821969","name":"D T M S D R D C","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"Initials spelling out legal form fragments; no firm core"}
+{"id":"11900278","name":"#N/A 70","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"11901916","name":"#N/A 108","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"12042991","name":"W FINANCIAL, S.A. DE C.V.","cat":"DIRTY_DATA","verdict":"UNCERTAIN","reason":"code_or_number","note":"Single letter W plus generic descriptor FINANCIAL; insufficient distinctive core to confirm as specific real firm"}
+{"id":"12433634","name":"S-7","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"Letter-number code; not a company name"}
+{"id":"12729777","name":"C,M,Q,S,D,C","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"Comma-separated initials representing legal form acronym; no firm name present"}
+{"id":"12980591","name":"GLOBAL PACKAGING GROUP S","cat":"DIRTY_DATA","verdict":"WRONG","reason":"real_firm_excluded","note":"GLOBAL PACKAGING GROUP is a distinctive company name; truncated legal suffix but real firm"}
+{"id":"12980613","name":"S&T Logistics Corporation LTD","cat":"DIRTY_DATA","verdict":"WRONG","reason":"real_firm_excluded","note":"S&T LOGISTICS CORPORATION is a real company; distinctive combined name with full legal form"}
+{"id":"12980748","name":"A&H INTERNATIONAL CORP","cat":"DIRTY_DATA","verdict":"WRONG","reason":"real_firm_excluded","note":"A&H INTERNATIONAL CORP is a real company pattern with full legal suffix"}
+{"id":"12981529","name":"SERVICIOS DE TRANSPORTE INTERNACIONAL A Y S","cat":"DIRTY_DATA","verdict":"WRONG","reason":"real_firm_excluded","note":"Full descriptive company name in Spanish; real MX transportation company"}
+{"id":"12982206","name":"SOTRADE SRL","cat":"DIRTY_DATA","verdict":"WRONG","reason":"real_firm_excluded","note":"SOTRADE is a distinctive company name with SRL legal form; real firm"}
+{"id":"13070934","name":"#N/A 1374","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13387448","name":"J&S PACKAGING, INC.","cat":"DIRTY_DATA","verdict":"WRONG","reason":"real_firm_excluded","note":"J&S PACKAGING is a recognizable company name with INC legal form; real firm"}
+{"id":"13489601","name":"S & E GLOBAL, S.A. DE C.V.","cat":"DIRTY_DATA","verdict":"UNCERTAIN","reason":"code_or_number","note":"S&E are two initials with GLOBAL; borderline - could be real but too abbreviated for certainty"}
+{"id":"13663610","name":"S. Y F. D. A","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"Initials with Spanish conjunction Y; no firm identity"}
+{"id":"13718429","name":"#N/A 196","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718430","name":"#N/A 126","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718431","name":"#N/A 233","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718432","name":"#N/A 110","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718433","name":"#N/A 193","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718434","name":"#N/A 198","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718435","name":"#N/A 100","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718436","name":"#N/A 158","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718437","name":"#N/A 244","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718438","name":"#N/A 232","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718439","name":"#N/A 240","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718451","name":"#N/A 277","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718452","name":"#N/A 243","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718453","name":"#N/A 25","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718454","name":"#N/A 160","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718455","name":"#N/A 24","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718456","name":"#N/A 179","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718457","name":"#N/A 136","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718458","name":"#N/A 185","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718462","name":"#N/A 106","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718463","name":"#N/A 258","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718465","name":"#N/A 279","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718466","name":"#N/A 171","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718467","name":"#N/A 152","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718468","name":"#N/A 510","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718469","name":"#N/A 434","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}
+{"id":"13718470","name":"#N/A 522","cat":"DIRTY_DATA","verdict":"CORRECT","reason":"code_or_number","note":"#N/A Excel error artifact"}

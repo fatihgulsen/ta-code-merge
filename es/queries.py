@@ -363,7 +363,7 @@ def TOKEN_COVERAGE(name: str, country: str, es: Elasticsearch = None, **kwargs) 
     }
 
 
-def FUZZY_PHRASE(name: str, country: str, es: Elasticsearch = None, **kwargs) -> dict:
+def PHRASE_SLOP(name: str, country: str, es: Elasticsearch = None, **kwargs) -> dict:
     """Kelime sırası toleranslı phrase eşleşmesi (slop=1).
 
     Aynı kelimeler farklı sırada veya araya bir kelime girmiş durumları yakalar.

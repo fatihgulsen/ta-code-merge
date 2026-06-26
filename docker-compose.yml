@@ -1,0 +1,60 @@
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.19.16
+    container_name: ta_elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.ml.enabled=false
+      - ES_JAVA_OPTS=-Xms1500m -Xmx1500m
+      - bootstrap.memory_lock=false
+      - cluster.name=ta-local
+      - node.name=ta-node-1
+    command: >
+      sh -c "
+        if ! elasticsearch-plugin list 2>/dev/null | grep -q analysis-icu; then
+          elasticsearch-plugin install --batch analysis-icu;
+        fi &&
+        exec /usr/local/bin/docker-entrypoint.sh eswrapper
+      "
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+      - es_plugins:/usr/share/elasticsearch/plugins
+    networks:
+      - elastic
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health | grep -v '\"status\":\"red\"'"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.19.16
+    container_name: ta_kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - xpack.security.enabled=false
+      - xpack.encryptedSavedObjects.encryptionKey=a_minimum_32_character_local_key_
+      - NODE_OPTIONS=--max-old-space-size=512
+      - LOGGING_ROOT_LEVEL=warn
+    ports:
+      - "5601:5601"
+    networks:
+      - elastic
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+volumes:
+  es_data:
+    driver: local
+  es_plugins:
+    driver: local
+
+networks:
+  elastic:
+    driver: bridge

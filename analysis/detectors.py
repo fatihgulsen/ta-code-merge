@@ -15,6 +15,7 @@ from psycopg2.extras import DictCursor
 
 from config import DB_CONFIG, RAW_TABLE_NAME, COLUMN_MAPPING
 from core.core_name import normalize_core
+from matching.db_io import table_identifier
 
 
 def token_overlap(a: tuple[str, ...], b: tuple[str, ...]) -> float:
@@ -139,7 +140,7 @@ def load_matched_rows(country: str | None = None) -> list[MatchedRow]:
         name=psycopg2.sql.Identifier(col_name),
         country=psycopg2.sql.Identifier(col_country),
         mtype=psycopg2.sql.Identifier(col_type),
-        table=psycopg2.sql.Identifier(RAW_TABLE_NAME),
+        table=table_identifier(RAW_TABLE_NAME),
     )
     params: tuple = ()
     if country:

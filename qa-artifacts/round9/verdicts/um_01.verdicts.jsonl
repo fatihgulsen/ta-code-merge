@@ -1,0 +1,120 @@
+{"cluster_core":"gamble procter","count":34,"verdict":"WRONG","reason":"truncation_split","merge_names":["PROCTER & GAMBLE MANUFACTURING MEXICO S DE RL DE CB","PROCTER & GAMBLE MANUFACTURING S. DE R.L. DE C.V.","PROCTER GAMBLE MEXICO O/B"]}
+{"cluster_core":"controls johnson","count":31,"verdict":"CORRECT","reason":"subbrand_intended"}
+{"cluster_core":"general motors","count":31,"verdict":"WRONG","reason":"truncation_split","merge_names":["GENERAL MOTORS DE MEXICO S. DE R","GENERAL MOTORS DE MEXICO S.A. DE C.V.","GENERAL MOTORS D MEXICO"]}
+{"cluster_core":"sinbiotik","count":29,"verdict":"WRONG","reason":"abbrev_split","merge_names":["SINBIOTIK INTERNACIONAL S.A. DE C","SINBIOTIK INTERNATIONAL S.A. DE C.V.","SINBIOTIK S.A. DE C.V."]}
+{"cluster_core":"flavors fragrances","count":28,"verdict":"WRONG","reason":"abbrev_split","merge_names":["INTERNATIONAL FLAVORS & FRAGRANCES MEXICO S.A. DE C. V.","INTL FLAVORS & FRAGRANCES (MEXICO). S D","INTERNATIONAL FLAVORS & FRAGRANCES (MEXICO)"]}
+{"cluster_core":"circuit jabil","count":28,"verdict":"UNCERTAIN","reason":"geo_intended"}
+{"cluster_core":"american eagle","count":27,"verdict":"WRONG","reason":"truncation_split","merge_names":["AMERICAN EAGLE MEXICO IMPORTS, S. DE R.L. DE C.V. P","AMERICAN EAGLE MEXICO IMPORTS DE","AMERICAN EAGLE IMPORTS, S DER R.L. DE C.V."]}
+{"cluster_core":"federal mogul","count":27,"verdict":"WRONG","reason":"truncation_split","merge_names":["FEDERAL MOGUL DE MEXICO","FEDERAL MOGUL S. DE R.L. DE C.V. PU","FEDERAL MOGUL S.A. DE C.V."]}
+{"cluster_core":"hennes mauritz servicios","count":26,"verdict":"WRONG","reason":"amp_spacing_split","merge_names":["H&M HENNES & MAURITZ SERVICIOS S.A. DE C.V.","H M HENNES MAURITZ SERVICIOS S.A. D","H & M HENNES & MAURITZ SERVICIOS, S.A. DE C.V."]}
+{"cluster_core":"hennes mauritz","count":24,"verdict":"UNCERTAIN","reason":"geo_intended"}
+{"cluster_core":"flavors fragances","count":24,"verdict":"WRONG","reason":"typo_split","merge_names":["INTERNATIONAL FLAVORS & FRAGANCES M","INTL FLAVORS & FRAGANCES(MEXICO) S. DE R.","INTL FLAVORS FRAGANCES ME"]}
+{"cluster_core":"baker hughes","count":23,"verdict":"WRONG","reason":"truncation_split","merge_names":["BAKER HUGHES DE MEXICO, S. DE R.L. DE C.V.","BAKER HUGHES DE MEXICO S RL DE CV","BAKER HUGHES MEXICO S. DE R.L. DE SV"]}
+{"cluster_core":"comercializadora distribuidora","count":22,"verdict":"CORRECT","reason":"diff_prefix"}
+{"cluster_core":"barry callebaut","count":21,"verdict":"UNCERTAIN","reason":"subbrand_intended"}
+{"cluster_core":"deere industrias john","count":21,"verdict":"WRONG","reason":"truncation_split","merge_names":["INDUSTRIAS JOHN DEERE MEXICO","INDUSTRIAS JOHN DEERE S.A. DE C.V. - RA","INDUSTRIAS JOHN DEERE DE R L DE C V"]}
+{"cluster_core":"haas rohm","count":21,"verdict":"WRONG","reason":"amp_spacing_split","merge_names":["ROHM & HAAS MEXICO, S. DE","ROHM AND HAAS MEXICO S.DE R.L. DE C","Rohm And Haas México, S. de R.L. de C.V."]}
+{"cluster_core":"sanmina sci","count":20,"verdict":"WRONG","reason":"truncation_split","merge_names":["SANMINA-SCI DE MEXICO, S.A. DE C.V.","SANMINA SCI SYSTEMS DE MEXICO","SANMINA-SCI SYSTEMS DE MEXICO S.A.D"]}
+{"cluster_core":"comercializadora importadora","count":20,"verdict":"CORRECT","reason":"diff_prefix"}
+{"cluster_core":"crisa libbey","count":20,"verdict":"WRONG","reason":"truncation_split","merge_names":["CRISA LIBBEY MEXICO S.DE","CRISA LIBBEY S. DE R.L. DE C.V.","CRISA LIBBEY MEXICO S. D R.L. DE C.V."]}
+{"cluster_core":"frenos mecanismos","count":20,"verdict":"UNCERTAIN","reason":"mixed"}
+{"cluster_core":"quiksilver","count":20,"verdict":"WRONG","reason":"typo_split","merge_names":["QUIKSILVER COMERCIAL S.","QUIKSILVER MEXICO COMMERCIAL","QUIKSILVER COMERCIAL S DE R.L DE"]}
+{"cluster_core":"dystar","count":19,"verdict":"WRONG","reason":"truncation_split","merge_names":["DYSTAR DE MEXICO S.A. DE C.V.","DYSTAR DE MEXICO, S. DE R. L. DE C.","DYSTAR DE MEXICO S DE RL DE CV AV I"]}
+{"cluster_core":"dhl forwarding","count":18,"verdict":"WRONG","reason":"accent_split","merge_names":["DHL GLOBAL FORWARDING (MEXICO) S.A. DE C.V.AV","DHL GLOBAL FORWARDING MEXICO S.A. DE C.V. JO","DHL GLOBAL FORWARDING (MÉXICO) S.A. D E CV"]}
+{"cluster_core":"avon cosmetics","count":18,"verdict":"UNCERTAIN","reason":"subbrand_intended"}
+{"cluster_core":"clark kimberly","count":18,"verdict":"CORRECT","reason":"subbrand_intended"}
+{"cluster_core":"benz mercedes","count":18,"verdict":"CORRECT","reason":"geo_intended"}
+{"cluster_core":"ruhrpumpen","count":18,"verdict":"UNCERTAIN","reason":"subbrand_intended"}
+{"cluster_core":"behr mahle","count":18,"verdict":"WRONG","reason":"truncation_split","merge_names":["MAHLE BEHR MEXICO S.A. DE C.V.","MAHLE BEHR MEXICO S DE","MAHLE BEHR MEXICO DE R.L."]}
+{"cluster_core":"pak tetra","count":18,"verdict":"CORRECT","reason":"subbrand_intended"}
+{"cluster_core":"chartering","count":18,"verdict":"UNCERTAIN","reason":"mixed"}
+{"cluster_core":"signode","count":18,"verdict":"WRONG","reason":"wordorder_split","merge_names":["SIGNODE INDUSTRIAL GROUP MEXICO. S. DE R.L. DE C.V.,","SIGNODE INDUSTRIAL GROUP MEXICO S. DE R.L. DE VC","GRUPO INDUSTRIAL SIGNODE MEXICO,S."]}
+{"cluster_core":"kellogg pronumex","count":18,"verdict":"WRONG","reason":"truncation_split","merge_names":["KELLOGG DE MEXICO/ PRONUMEX S. DE R.L.","PRONUMEX MEXICO/KELLOGG DE MEXICO, S. DE R.L. DE C.V.","KELLOGG MEXICO / PRONUMEX S.A."]}
+{"cluster_core":"levi strauss","count":17,"verdict":"WRONG","reason":"truncation_split","merge_names":["LEVI STRAUSS DE MEXICO S.A.DE.CV.AV","LEVI STRAUSS DE MEXICO C.V.","MEXICO LEVI STRAUSS DE MEXICO S.A. DE"]}
+{"cluster_core":"joven moda sfera","count":17,"verdict":"WRONG","reason":"truncation_split","merge_names":["MODA JOVEN SFERA MEXICO S.A. DE C.V. PR","MODA JOVEN SFERA MEXICO S.A. D EC","MODA JOVEN SFERA MEXICO"]}
+{"cluster_core":"kuehne nagel","count":17,"verdict":"WRONG","reason":"amp_spacing_split","merge_names":["KUEHNE + NAGEL S.A. DE C.V.","KUEHNE NAGEL S.A.S.","KUEHNE&NAGEL LOGISTICS"]}
+{"cluster_core":"bader","count":17,"verdict":"WRONG","reason":"truncation_split","merge_names":["BADER DE MEXICO S EN C POR A DE C.V.","BADER DE MEXICO S. EN C. POR A. D","BADER DE MEXICO S EN POR A DE C.V."]}
+{"cluster_core":"sanhua","count":17,"verdict":"CORRECT","reason":"subbrand_intended"}
+{"cluster_core":"jeans pepe","count":17,"verdict":"WRONG","reason":"truncation_split","merge_names":["PEPE JEANS MEXICO,S.DE R.L","PEPE JEANS MEXICO,S.DE,RL. DE C.V.","GRUPO PEPE JEANS MEXICO"]}
+{"cluster_core":"whirpool","count":17,"verdict":"CORRECT","reason":"geo_intended"}
+{"cluster_core":"envases universales","count":17,"verdict":"WRONG","reason":"truncation_split","merge_names":["ENVASES UNIVERSALES DE MEXICO S A P I DE CV","ENVASES UNIVERSALES DE MEXICO S.A. P.I. DE","ENVASES UNIVERSALES MEXICO S.A. P.I DE C.V."]}
+{"cluster_core":"hellmann worldwide","count":16,"verdict":"CORRECT","reason":"geo_intended"}
+{"cluster_core":"monsanto","count":16,"verdict":"WRONG","reason":"truncation_split","merge_names":["MONSANTO COMERCIAL S. DE R.L. DE C.V.","MONSANTO COMERCIAL S DE RL DE CV","MONSANTO"]}
+{"cluster_core":"dowell schlumberger","count":16,"verdict":"WRONG","reason":"truncation_split","merge_names":["DOWELL SCHLUMBERGER DE MEXICO S.A. DE C.V. c/o","DOWELL SCHLUMBERGER DE MEXICO S.A.D","DOWELL SCHLUMBERGER S.A. DE C.V."]}
+{"cluster_core":"bosch robert","count":16,"verdict":"WRONG","reason":"truncation_split","merge_names":["ROBERT BOSCH S. DE R.L. DE C.V.","ROBERT BOSCH MEXICO S.A. DE C.V.","ROBERT BOSCH S DE RL CV"]}
+{"cluster_core":"axalta coating","count":16,"verdict":"CORRECT","reason":"geo_intended"}
+{"cluster_core":"leschaco mexicana","count":16,"verdict":"WRONG","reason":"truncation_split","merge_names":["LESCHACO MEXICANA S.A. DE C.V. MA","LESCHACO MEXICANA, S.A. DE C.V. B","LESCHACO MEXICANA S.A."]}
+{"cluster_core":"watlow","count":16,"verdict":"WRONG","reason":"truncation_split","merge_names":["WATLOW DE MEXICO S DE RL DE CV","WATLOW-DE MEXICO C","WATLOW DE MEXICO AV"]}
+{"cluster_core":"distribuidora liverpool","count":16,"verdict":"WRONG","reason":"truncation_split","merge_names":["DISTRIBUIDORA LIVERPOOL S.A.DE","DISTRIBUIDORA LIVERPOOL, S. A.E C.","DISTRIBUIDORA LIVERPOOL S.A. DE C.V. C.V."]}
+{"cluster_core":"industrias unidas","count":16,"verdict":"CORRECT","reason":"geo_intended"}
+{"cluster_core":"apex tool","count":16,"verdict":"CORRECT","reason":"geo_intended"}
+{"cluster_core":"univar","count":16,"verdict":"WRONG","reason":"abbrev_split","merge_names":["UNIVAR MEXICO S.A. DE C.V.","UNIVAR SOLUTIONS MEXICO S DE RL DE C","UNIVAR DE MEXICO"]}
+{"cluster_core":"centro lenovo tecnologico","count":16,"verdict":"WRONG","reason":"truncation_split","merge_names":["Lenovo Centro Tecnologico","LENOVO CENTRO TECNOLOGICO S DE RL D","LENOVO CENTRO TECNOLOGICO S DE R L CV"]}
+{"cluster_core":"gobain saint","count":15,"verdict":"WRONG","reason":"truncation_split","merge_names":["SAINT GOBAIN MEXICO","SAINT-GOBAIN MEXICO, S.A. DE C.V. P","SAINT GOBAIN DE MEXICO, S.A. DE C.V.Q"]}
+{"cluster_core":"prolec","count":15,"verdict":"WRONG","reason":"truncation_split","merge_names":["PROLEC GE INTERNACIONAL S. DE R.L.","PROLEC-GE INTERNACIONAL, S. DE RL D","PROLEC S.A. DE C.V."]}
+{"cluster_core":"deere john","count":15,"verdict":"CORRECT","reason":"subbrand_intended"}
+{"cluster_core":"deere hispanoamerica john sales","count":15,"verdict":"WRONG","reason":"truncation_split","merge_names":["JOHN DEERE SALES HISPANOAMERICA S. DE R.L. DE C.V.","JOHN DEERE SALES HISPANOAMERICA S.D","John Deere Sales Hispanoamerica S.DE R.L. DE C.V.B"]}
+{"cluster_core":"magna powertrain","count":15,"verdict":"UNCERTAIN","reason":"subbrand_intended"}
+{"cluster_core":"exportadora importadora","count":15,"verdict":"CORRECT","reason":"diff_prefix"}
+{"cluster_core":"cone parras","count":15,"verdict":"WRONG","reason":"truncation_split","merge_names":["PARRAS CONE DE MEXICO, S.A. DE C.V.","PARRAS CONE DE MEXICO S. DE R.L. DE RL","PARRAS CONE DE MEXICO, S.DE R.L. DE"]}
+{"cluster_core":"gaffel industrias","count":15,"verdict":"WRONG","reason":"truncation_split","merge_names":["INDUSTRIAS GAFFEL MX INTL, S.A. DE C.V.","Industrias Gaffel MX INTL. S.A. De","Industrias Gaffel Mx Intl S.A.e C.V"]}
+{"cluster_core":"controladora mabe","count":15,"verdict":"WRONG","reason":"truncation_split","merge_names":["CONTROLADORA MABE S.A. DE C.V.","CONTROLADORA MABE S.A. DE C.V. JO","MABE CONTROLADORA MABE S.A. DE C.V."]}
+{"cluster_core":"automotrices faurecia sistemas","count":15,"verdict":"WRONG","reason":"truncation_split","merge_names":["FAURECIA SISTEMAS AUTOMOTRICES DE MEXICO S.A. DE C.V.","FAURECIA SISTEMAS AUTOMOTRICES MX","Faurecia Sistemas Automotrices S. de R.L"]}
+{"cluster_core":"marelli toluca","count":15,"verdict":"WRONG","reason":"truncation_split","merge_names":["MARELLI TOLUCA MEXICO","MARELLI TOLUCA MEXICO S. DE","MARELLI TOLUCA S DE RL DE CV"]}
+{"cluster_core":"ricardo vargas","count":15,"verdict":"WRONG","reason":"truncation_split","merge_names":["A.A.RICARDO A.VARGAS R","A.A. RICARDO A VARGAS R","A.A. RICARDO A.VARGAS"]}
+{"cluster_core":"forwarding jas","count":15,"verdict":"WRONG","reason":"truncation_split","merge_names":["JAS FORWARDING DE MEXICO S.A. DE C.V. A","JAS FORWARDING DE MEXICO S.A. DE C.V. AS","JAS FORWARDING S.A. DE C.V."]}
+{"cluster_core":"contitech mexicana","count":15,"verdict":"WRONG","reason":"truncation_split","merge_names":["CONTITECH MEXICANA S. DE R.L. DE","CONTITECH MEXICANA S.A. DE C.V. - D#","CONTITECH MEXICANA"]}
+{"cluster_core":"ait worldwide","count":14,"verdict":"WRONG","reason":"truncation_split","merge_names":["AIT WORLDWIDE LOGISTICS","AIT WORLDWIDE LOGISTICS S. DE R.L. D","AIT WORLDWIDE LOGISTICS S. R.L DE"]}
+{"cluster_core":"control mexicana ride","count":14,"verdict":"WRONG","reason":"truncation_split","merge_names":["RIDE CONTROL MEXICANA,S. DE E.L DE C.V.","RIDE CONTROL MEXICANA, S.DE R.L. DE","RIDE CONTROL MEXICANA S. DE R.L. DE.C"]}
+{"cluster_core":"morris philip servicios","count":14,"verdict":"WRONG","reason":"truncation_split","merge_names":["PHILIP MORRIS MEXICO PRODUCTOS Y SERVICIOS S DE R","PHILIP MORRIS MEXICO PROD, SERVICIOS, S. DE R.L. DE. C.V.","PHILIP MORRIS MEXICO PRODUCTOS Y SERVICIOS S.DE R.L DE C.V"]}
+{"cluster_core":"chihuahua circuit jabil","count":14,"verdict":"WRONG","reason":"truncation_split","merge_names":["JABIL CIRCUIT DE CHIHUAHUA S DE RL","JABIL CIRCUIT DE CHIHUAHUA","JABIL CIRCUIT DE CHIHUAHUA S.A. DE C.V."]}
+{"cluster_core":"corning owens","count":14,"verdict":"WRONG","reason":"truncation_split","merge_names":["OWENS CORNING MEXICO","OWENS CORNING MEXICO S. DE R.L. DE C.V.","OWENS CORNING MEXICO S DE R L CV"]}
+{"cluster_core":"dal tile","count":14,"verdict":"WRONG","reason":"truncation_split","merge_names":["DAL TILE MEXICO S.A. DE C.V.","DAL-TILE MEXICO","DAL TILE MEXICO S. DE R.L. DE V."]}
+{"cluster_core":"corona scardigli","count":14,"verdict":"WRONG","reason":"amp_spacing_split","merge_names":["DEL CORONA & SCARDIGLI MEXICO, S.A. D","DEL CORONA A SCARDIGLI","DEL CORONA SCARDIGLI MEXICO S.A. DE C.V."]}
+{"cluster_core":"americana comercializadora","count":14,"verdict":"WRONG","reason":"truncation_split","merge_names":["COMERCIALIZADORA MEXICO AMERICANA S. DE R.L. DE C.V.AV","COMERCIALIZADORA MEXICO AMERICANA S.De R.L. DE","COMERCIALIZADORA MEXICO AMERICANA S. DE R.L."]}
+{"cluster_core":"vitesco","count":14,"verdict":"UNCERTAIN","reason":"subbrand_intended"}
+{"cluster_core":"elevadores otis","count":14,"verdict":"WRONG","reason":"truncation_split","merge_names":["ELEVADORES OTIS, S. DE R.L. DE D.V.","ELEVADORES OTIS S DE RL DE CV","ELEVADORES OTIS DE C.V."]}
+{"cluster_core":"bombas goulds","count":14,"verdict":"WRONG","reason":"truncation_split","merge_names":["BOMBAS GOULDS DE MEXICO S. DE R.L. D","BOMBAS GOULDS DE MEXICO S DE RL DE C","BOMBAS GOULDS DE MEXICO S.DE.RL.DE"]}
+{"cluster_core":"iacna","count":14,"verdict":"CORRECT","reason":"subbrand_intended"}
+{"cluster_core":"frenado sistemas trw","count":14,"verdict":"WRONG","reason":"truncation_split","merge_names":["TRW SISTEMAS DE FRENADO, S.A. DE C.V.","TRW SISTEMAS DE FRENADO S DE R","ZF TRW SISTEMAS DE FRENADO S DE RL"]}
+{"cluster_core":"flextronics mex","count":14,"verdict":"UNCERTAIN","reason":"subbrand_intended"}
+{"cluster_core":"falcon industrias quimicas","count":14,"verdict":"WRONG","reason":"truncation_split","merge_names":["INDUSTRIAS QUIMICAS FALCON MEXICO S","INDUSTRIAS QUIMICAS FALCON DE ME","INDUSTRIAS QUIMICAS FALCON DE MX"]}
+{"cluster_core":"ingredients kerry","count":14,"verdict":"WRONG","reason":"truncation_split","merge_names":["KERRY INGREDIENTS DE MEXICO S.A. DE C","KERRY INGREDIENTS DE MEXICO S.A. DE C.V.","KERRY INGREDIENTS DE MEXICO DE C.V."]}
+{"cluster_core":"gollek kellogg pronumex","count":14,"verdict":"WRONG","reason":"wordorder_split","merge_names":["GOLLEK/PRONUMEX/KELLOGG DE MEXICO, S. DE R.L. DE C.V.","KELLOGG MEXICO / GOLLEK S.A. / PRONUMEX S.A.","PRONUMEX/ GOLLEK/ KELLOGG DE MEXICO"]}
+{"cluster_core":"bekaert","count":14,"verdict":"UNCERTAIN","reason":"subbrand_intended"}
+{"cluster_core":"truca","count":13,"verdict":"WRONG","reason":"truncation_split","merge_names":["TRUCA INTERNATIONAL LOGISTICS S.A. DE C.V.","TRUCA INTERNATIONAL LOGISTICS","TRUCA IMPORT & EXPORT DE C.V."]}
+{"cluster_core":"netafim","count":13,"verdict":"WRONG","reason":"truncation_split","merge_names":["NETAFIM MANUFACTURING MEXICO S DE","NETAFIM MANUFACTURING MEXICO","NETAFIM MANUFACTURING MEXICO S. DE R.L. DE C.V."]}
+{"cluster_core":"bayer","count":13,"verdict":"CORRECT","reason":"geo_intended"}
+{"cluster_core":"artes graficas","count":13,"verdict":"CORRECT","reason":"diff_prefix"}
+{"cluster_core":"finas moleculas","count":13,"verdict":"WRONG","reason":"typo_split","merge_names":["MOLECULAS FINAS DC MEXICO S.A.","MOLECULAS FINAS DE MEXICO S.A.DE.C","MOLECULAS FINAS DE MEXICO"]}
+{"cluster_core":"auctioneers ritchie","count":13,"verdict":"WRONG","reason":"truncation_split","merge_names":["RITCHIE BROS. AUCTIONEERS S.","RITCHIE BROS.AUCTIONEERS DE MEXICO","RITCHIE BROS AUCTIONEERS DE MEXICO S. DE R.L. DE C.B"]}
+{"cluster_core":"kromberg schubert","count":13,"verdict":"WRONG","reason":"amp_spacing_split","merge_names":["KROMBERG & SCHUBERT MEXICO LE S.de R.L. DE C.V.","KROMBERG SCHUBERT MEXICO LE S","KROMBERG & SCHUBERT MEXICO S DE RL"]}
+{"cluster_core":"graftech","count":13,"verdict":"UNCERTAIN","reason":"subbrand_intended"}
+{"cluster_core":"industri palsgaard","count":13,"verdict":"WRONG","reason":"truncation_split","merge_names":["PALSGAARD INDUSTRI DE MEXICO, S. DE R.L. DE C. V.","PALSGAARD INDUSTRI DE MEXICO S DE RL D","PALSGAARD INDUSTRI DE MEXICO, S.DE"]}
+{"cluster_core":"cytec","count":13,"verdict":"WRONG","reason":"truncation_split","merge_names":["CYTEC DE MEXICO S.A. DE C.V. C O","CYTEC DE MEXICO S.A.DE C.V.C","CYTEC DE MEXICO S.A. DE C.V., KM"]}
+{"cluster_core":"celanese operations","count":13,"verdict":"WRONG","reason":"truncation_split","merge_names":["CELANESE OPERATIONS MEXICO, DE R.L.","CELANESE OPERATIONS MEXICO S DE RL CV","CELANESE OPERATIONS MEXICO, R.L. DE C.V."]}
+{"cluster_core":"controls eaton","count":13,"verdict":"WRONG","reason":"truncation_split","merge_names":["EATON CONTROLS S DE RI DE C.V.","EATON CONTROLS S. DE R.L. DE CL","EATON CONTROLS DE RL DE CV"]}
+{"cluster_core":"coficab","count":13,"verdict":"UNCERTAIN","reason":"geo_intended"}
+{"cluster_core":"gbc hennes mauritz","count":13,"verdict":"WRONG","reason":"amp_spacing_split","merge_names":["H&M HENNES & MAURITZ GBC AB MEXICO","H & M Hennes & Mauritz GBC A","HENNES & MAURITZ GBC AB."]}
+{"cluster_core":"gelita","count":13,"verdict":"WRONG","reason":"truncation_split","merge_names":["GELITA MEXICO TRADE S DE RL DE CV","GELITA MEXICO S. DE R.D. DE C.V.","GELITA MEXICO, S.A. DE C.V."]}
+{"cluster_core":"arcosa","count":13,"verdict":"WRONG","reason":"truncation_split","merge_names":["ARCOSA INDUSTRIES DE MEXICO, S.A. DE C.V.","ARCOSA INDUSTRIES DE MEXICO S. DE R.L. C.V","Arcosa Industries De Mexico,S. De"]}
+{"cluster_core":"comercio pmi","count":13,"verdict":"WRONG","reason":"abbrev_split","merge_names":["PMI COMERCIO INTERNACIONAL S.A. DE C.","PMI COMERCIO INTL, S.A. DE C","PMI COMERCIO INTERNATIONAL, S.A. DE"]}
+{"cluster_core":"wabtec","count":13,"verdict":"WRONG","reason":"truncation_split","merge_names":["WABTEC MANUFACTURING MEXICO S.DE","WABTEC MANUFACTURING MEXICO S DE R","WABTEC MANUFACTURING DE MEXICO S DE"]}
+{"cluster_core":"networks nokia","count":13,"verdict":"WRONG","reason":"amp_spacing_split","merge_names":["NOKIA SOLUTIONS & NETWORKS OY.","NOKIA SOLUTIONS AND NETWORKS OY C/O","NOKIA SOLUTIONS & NETWORKS QY"]}
+{"cluster_core":"relocation trafimar","count":13,"verdict":"WRONG","reason":"truncation_split","merge_names":["TRAFIMAR RELOCATION SERVICES S.A. (MEXICO)","TRAFIMAR RELOCATION SERVICES, S.A.D","TRAFIMAR RELOCATION SERVICES, S."]}
+{"cluster_core":"cargo sea","count":12,"verdict":"WRONG","reason":"truncation_split","merge_names":["SEA CARGO LOGISTICS S.A. DE C.V. MEXICO","SEA CARGO MEXICO","SEA CARGO LOGISTICS S.A. DE C.V.IN"]}
+{"cluster_core":"aftermarket schaeffler","count":12,"verdict":"WRONG","reason":"truncation_split","merge_names":["SCHAEFFLER AUTOMOTIVE AFTERMARKET MEXICO S.A. DE C.V.","SCHAEFFLER AUTOMOTIVE AFTERMARKET MEXICO S DE RL D","SCHAEFFLER AUTOMOTIVE AFTERMARKET MEXICO S D"]}
+{"cluster_core":"electricos sistemas valeo","count":12,"verdict":"WRONG","reason":"truncation_split","merge_names":["VALEO SISTEMAS ELECTRICOS, S.A.DE","VALEO SISTEMAS ELECTRICOS S.A. DE DV","VALEO SISTEMAS ELECTRICOS, S DE RL"]}
+{"cluster_core":"continental tire","count":12,"verdict":"WRONG","reason":"truncation_split","merge_names":["CONTINENTAL TIRE DE MEXICO, S.A. DE C","Continental Tire de Mexico S. de R","CONTINENTAL TIRE DE MEXICO S DE RL D"]}
+{"cluster_core":"neumaticos pirelli","count":12,"verdict":"WRONG","reason":"typo_split","merge_names":["PIRELLI NEUMATICOS D MEXICO S.A. DE C.V.","PIRELLI NEUMATICOS DE MEXICO S.A. D","PIRELLI NEUMATICOS S.A. D"]}
+{"cluster_core":"air operations sealed","count":12,"verdict":"WRONG","reason":"truncation_split","merge_names":["SEALED AIR DE MEXICO OPERATIONS S. DE R.L. DE C.V.","SEALED AIR DE MEXICO OPERATIONS S DE RI DE C.V.","SEALED AIR DE MEXICO OPERATIONS DE EL DE C.V."]}
+{"cluster_core":"mueller","count":12,"verdict":"WRONG","reason":"truncation_split","merge_names":["MUELLER COMERCIAL DE MEXICO S DE RL","MUELLER COMERCIAL DE MEXICO S. DE R","MUELLER COMERCIAL DE MEXICO, S DE RL DE"]}
+{"cluster_core":"rieke","count":12,"verdict":"WRONG","reason":"truncation_split","merge_names":["RIEKE DE MEXICO MANUFACTURING, S. D","RIEKE DE MEXICO MANUFACTURING S DE RL DE CV","RIEKE DE MEXICO, S.A. DE C.V."]}
+{"cluster_core":"intel technologia","count":12,"verdict":"WRONG","reason":"truncation_split","merge_names":["INTEL TECHNOLOGIA DE MEXICO S.A. DE","INTEL TECHNOLOGIA DE MEXICO S. DE R.L. DE C.V.","INTEL TECHNOLOGIA DE MX S.A. DE C.V."]}
+{"cluster_core":"alcatel lucent","count":12,"verdict":"UNCERTAIN","reason":"subbrand_intended"}
+{"cluster_core":"cooper standard","count":12,"verdict":"WRONG","reason":"truncation_split","merge_names":["COOPER STANDARD DE MEXICO S DE RI D","COOPER-STANDARD DE MEXICO, S. DE R.","COOPER STANDARD AUTOMOTIVE"]}
+{"cluster_core":"hulera tornel","count":12,"verdict":"WRONG","reason":"truncation_split","merge_names":["COMPANIA HULERA TORNEL, S.A. DE C.","COMPANIA HULERA TORNEL S.A. DE C.V.A","TORNEL COMPAnIA HULERA TORNEL S.A. DE C.V."]}
+{"cluster_core":"ecolab","count":12,"verdict":"WRONG","reason":"truncation_split","merge_names":["ECOLAB S. DE R.L. DE C.V.","ECOLAB S A","ECOLAB S.A. DE RL DE CV"]}
+{"cluster_core":"perennials","count":12,"verdict":"WRONG","reason":"typo_split","merge_names":["PERENNIALS TEXTILES DE MEXICO S.A. DE C.V.","PERENNIALS TEXTILE DE MEXICO S DE R","PERENNIALS TEXTILES DE MEXICO S DE R DE CV"]}
+{"cluster_core":"ansell","count":12,"verdict":"WRONG","reason":"typo_split","merge_names":["ANSELL COMMERCIAL MEXICO S.A. D","ANSELL COMERCIAL S.A.I.C.V.","ANSELL COMMERCIAL DE MEXICO, S.A. DE"]}
+{"cluster_core":"kautex textron","count":12,"verdict":"WRONG","reason":"truncation_split","merge_names":["KAUTEX TEXTRON DE MEXICO, S. DE R","KAUTEX TEXTRON MEXICO, S.DE","KAUTEX TEXTRON DE MEXICO, S. DE R.L. DE C.V."]}

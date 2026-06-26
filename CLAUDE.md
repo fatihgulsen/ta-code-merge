@@ -43,7 +43,7 @@ This guide acts as the strict operational runbook and instruction filter for AI 
 > stripped_search_analyzer / STRIPPED_EXACT) ayırt edici token'ları atıp yanlış birleştirme
 > ürettiği için KALDIRILDI (Plan 4). Gate'ler 'ayırt edici çekirdek'i synonym-sınıf üyeliğiyle
 > (`get_generic_tokens` = legal∪article∪geo∪sector) belirler. Sonuç: ACME LTD≠ACME SA,
-> ACME LTD≠ACME (precision-öncelikli). Aktif stage'ler: CANONICAL_EXACT, FUZZY_PHRASE, TOKEN_COVERAGE.
+> ACME LTD≠ACME (precision-öncelikli). Aktif stage'ler: CANONICAL_EXACT, PHRASE_SLOP, TOKEN_COVERAGE.
 
 > [!IMPORTANT]
 > **TOKEN_COVERAGE = ÇİFT-YÖNLÜ TAM-KANONİK MULTISET:** TOKEN_COVERAGE iki ismi ancak tam-kanonik
@@ -94,6 +94,9 @@ python -m es.ingest
 
 # Per-country indeksleri kur ve mapping'leri güncelle (synonym değişirse --force kullanın)
 python -m es.manager
+
+# Yalnızca belirli ülkeleri yeniden kur (per-country index'ler izole, seçili reindex güvenli)
+python -m es.manager --force --country ar,br
 
 # Eşleştirmeyi başlat
 python main_processor.py

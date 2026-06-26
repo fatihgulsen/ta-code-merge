@@ -1,0 +1,200 @@
+{"id": 27096255, "name": "A. V. S.A. DE SA", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials A V with legal suffix; no distinctive firm core"}
+{"id": 27096322, "name": "G. S. D. C", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only single-letter initials; no distinctive firm core"}
+{"id": 27096471, "name": "D C A T, S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials D C A T with legal suffix; no distinctive firm core"}
+{"id": 27097065, "name": "C A S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials C A with legal suffix; no distinctive firm core"}
+{"id": 27097104, "name": "M/ S M", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials M S M with separator; no distinctive firm core"}
+{"id": 27097181, "name": "L,S,S,A", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "comma-separated single letters; garbled data not a firm name"}
+{"id": 27097187, "name": "M F A", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only three-letter initials; no distinctive firm core"}
+{"id": 27097629, "name": "P,T,A,M,S,A", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "comma-separated single letters; garbled data not a firm name"}
+{"id": 27097889, "name": "INDUSTRIA DE A", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "INDUSTRIA DE is generic; only initial A as distinctive part; no distinctive firm core"}
+{"id": 27098154, "name": "S,W,S,D,C", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "comma-separated single letters; garbled data not a firm name"}
+{"id": 27098663, "name": "E&S INTERNATIONAL ENTERPRISES, INC.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials E&S with generic INTERNATIONAL ENTERPRISES; no distinctive firm core"}
+{"id": 27098891, "name": "INTERNATIONAL PLATING SERVICE LLC.", "cat": "DIRTY_DATA", "verdict": "WRONG", "reason": "firm_core_in_dirty", "note": "INTERNATIONAL PLATING SERVICE LLC is a complete recognizable company name with distinctive activity descriptor"}
+{"id": 27101559, "name": "S,W,SA,DE,CV", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "comma-separated abbreviations/letters encoding legal suffix; garbled data"}
+{"id": 27101866, "name": "F. A MEXICO S.A. DE", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials F A with geo MEXICO + partial legal; no distinctive firm core"}
+{"id": 27103020, "name": "S. D. B. S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials S D B with legal suffix; no distinctive firm core"}
+{"id": 27103098, "name": "AV TRADE COMPANY, S.A. DE C. V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "AV is likely address prefix (Avenida); TRADE COMPANY is generic; address-contaminated"}
+{"id": 27103383, "name": "U H P", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only three-letter initials; no distinctive firm core"}
+{"id": 27104706, "name": "A & B CHEMICAL CORP.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials A B with generic CHEMICAL; no distinctive firm core"}
+{"id": 27105244, "name": "U D", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only two-letter initials; no distinctive firm core"}
+{"id": 27105331, "name": "I V L S DE", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials with partial legal fragment; no distinctive firm core"}
+{"id": 27105374, "name": "H W", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only two-letter initials; no distinctive firm core"}
+{"id": 27105439, "name": "A I", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only two-letter initials; no distinctive firm core"}
+{"id": 27477864, "name": "I V P M S DE", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials with partial legal fragment; no distinctive firm core"}
+{"id": 27482218, "name": "#N/A 6799", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27482219, "name": "#N/A 6805", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27482220, "name": "#N/A 8040", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27482718, "name": "#N/A 299", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27482728, "name": "#N/A 443", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27482858, "name": "#N/A 23", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27483934, "name": "TO M/S.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "non_firm_placeholder", "note": "TO M/S is a shipping notation meaning to the firm/addressee; not a company name"}
+{"id": 27489424, "name": "G S V", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only three-letter initials; no distinctive firm core"}
+{"id": 27499060, "name": "U G S D", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only four-letter initials; no distinctive firm core"}
+{"id": 27507852, "name": "A R Y D S D C", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials spelling out legal abbreviation tokens; no distinctive firm core"}
+{"id": 27507911, "name": "V C S D C", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials with legal abbreviation tokens; no distinctive firm core"}
+{"id": 27515061, "name": "GRUPO A&P S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "GRUPO is generic; only initials A&P as distinctive part; no distinctive firm core"}
+{"id": 27516501, "name": "A DE A MEXICO S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials A with DE A + geo MEXICO + legal; no distinctive firm core"}
+{"id": 27518014, "name": "#N/A 209", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27539607, "name": "A R I Y E S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials A R I Y E with legal suffix; no distinctive firm core"}
+{"id": 27811230, "name": "#N/A 60", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27811961, "name": "#N/A 101", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27827886, "name": "#N/A 635", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27829778, "name": "#N/A 104", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27829811, "name": "#N/A 320", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27829833, "name": "#N/A 359", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27829871, "name": "#N/A 523", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27829906, "name": "#N/A 390", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27829913, "name": "#N/A 530", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27829915, "name": "#N/A 164", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27829924, "name": "#N/A 558", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27829942, "name": "#N/A 17", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27829962, "name": "#N/A 511", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27829985, "name": "#N/A 373", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27830160, "name": "#N/A 564", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27830197, "name": "#N/A 239", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27830203, "name": "#N/A 274", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27830225, "name": "#N/A 69", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27830244, "name": "#N/A 184", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27830247, "name": "#N/A 361", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 27830301, "name": "#N/A 455", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "spreadsheet NA error value not a firm name"}
+{"id": 28689328, "name": "S & S POWER ENTERPRISES LLC.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials S&S with generic POWER ENTERPRISES; no distinctive firm core"}
+{"id": 28689686, "name": "WEST MARINE", "cat": "DIRTY_DATA", "verdict": "WRONG", "reason": "firm_core_in_dirty", "note": "WEST MARINE is a well-known real company name with distinctive brand"}
+{"id": 29452801, "name": "INDUSTRIAS PLASTICAS N Y C S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "INDUSTRIAS PLASTICAS is generic descriptor; only initials N Y C as distinctive part; insufficient core"}
+{"id": 29904936, "name": "A & I PRODUCTS", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials A&I with generic PRODUCTS; no distinctive firm core"}
+{"id": 30337980, "name": "INDUSTRIAL N P, S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "INDUSTRIAL is generic; only initials N P as distinctive part; no distinctive firm core"}
+{"id": 30338426, "name": "BOULLEVARD CO, S.A. DE C.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "BOULLEVARD (misspelling of BOULEVARD) is an address word; address-contaminated"}
+{"id": 30339209, "name": "INTL SERVICE EXPORT A", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "INTL SERVICE EXPORT are all generic; only initial A as distinctive part; no distinctive firm core"}
+{"id": 30680040, "name": "S. OF A. INC. - COMP. D., B. &  D.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "entirely initials and fragments; no distinctive firm core"}
+{"id": 30895541, "name": "J Y S INTERNATIONAL CORPORATION", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials J Y S with generic INTERNATIONAL CORPORATION; no distinctive firm core"}
+{"id": 31831587, "name": "T & N DE MEXICO, S. DE R.L. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials T&N with geo DE MEXICO + legal; no distinctive firm core"}
+{"id": 31835513, "name": "G W MEXICO S. DE R.L. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials G W with geo MEXICO + legal; no distinctive firm core"}
+{"id": 31835767, "name": "INDUSTRIAL C & S LLC.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "INDUSTRIAL is generic; only initials C S as distinctive part; no distinctive firm core"}
+{"id": 31839130, "name": "U E SYSTEMS, INC.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials U E with generic SYSTEMS; no distinctive firm core"}
+{"id": 31839835, "name": "A-SYSTEMS SOFTWARE SA DE CV", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initial A with generic SYSTEMS SOFTWARE + legal; no distinctive firm core"}
+{"id": 31840633, "name": "INDUSTRAL C&S LLC", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "INDUSTRAL (misspelled INDUSTRIAL) is generic; only initials C&S; no distinctive firm core"}
+{"id": 32198318, "name": "C&A MEXICO, S.DE.R.L", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials C&A with geo MEXICO + legal; no distinctive firm core"}
+{"id": 32198319, "name": "C & A MEXICO S.DE.R.L", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials C A with geo MEXICO + legal; no distinctive firm core"}
+{"id": 32546236, "name": "BD MEXICO.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials BD with geo MEXICO; no distinctive firm core"}
+{"id": 32548335, "name": "ENTERPRISE DRIVE", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "ENTERPRISE DRIVE reads as a street name/address; address-contaminated"}
+{"id": 32548441, "name": "E & S INTL ENTERPRISES", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials E&S with generic INTL ENTERPRISES; no distinctive firm core"}
+{"id": 32549518, "name": "G & W ELECTRIC CO", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials G W with generic ELECTRIC CO; no distinctive firm core"}
+{"id": 32549519, "name": "G & W MEXICO", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials G W with geo MEXICO; no distinctive firm core"}
+{"id": 32554280, "name": "S M INTL S.A.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials S M with generic INTL + legal; no distinctive firm core"}
+{"id": 32556632, "name": "BD CORPORATION", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials BD with generic CORPORATION; no distinctive firm core"}
+{"id": 32558419, "name": "G&W ELECTRIC", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials G&W with generic ELECTRIC; no distinctive firm core"}
+{"id": 33878725, "name": "(131-2016223)WEST PHARMACEUTICAL SERVICES MEXICO", "cat": "DIRTY_DATA", "verdict": "WRONG", "reason": "firm_core_in_dirty", "note": "WEST PHARMACEUTICAL SERVICES MEXICO is a real company with distinctive name; prefixed code is data noise"}
+{"id": 34720140, "name": "CORP BD", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "CORP is generic; only initials BD; no distinctive firm core"}
+{"id": 34720427, "name": "G & W ELECTRIC MEXICO", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials G W with generic ELECTRIC + geo MEXICO; no distinctive firm core"}
+{"id": 36043429, "name": "ELECTRICA A-B S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "ELECTRICA is generic; only initials A-B as distinctive part; no distinctive firm core"}
+{"id": 36043943, "name": "A&P INTERNATIONAL SERVICES SA DE CV", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials A&P with generic INTERNATIONAL SERVICES + legal; no distinctive firm core"}
+{"id": 36044064, "name": "ROAD INDUSTRY SOLUTION GROUP", "cat": "DIRTY_DATA", "verdict": "WRONG", "reason": "firm_core_in_dirty", "note": "ROAD INDUSTRY SOLUTION GROUP forms a distinctive company name with specific descriptor"}
+{"id": 36628399, "name": "G AND W MEXICO S DE RL DE CV", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials G W with geo MEXICO + legal; no distinctive firm core"}
+{"id": 37199598, "name": "A & AT LLC.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials A AT with legal suffix; no distinctive firm core"}
+{"id": 38340767, "name": "K & A TRADING, INC.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials K A with generic TRADING + legal; no distinctive firm core"}
+{"id": 38935852, "name": "BD ELECTRONICS LTD.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials BD with generic ELECTRONICS + legal; no distinctive firm core"}
+{"id": 38936486, "name": "S Y N Z TRADING CO. LLC.,", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials S Y N Z with generic TRADING CO + legal; no distinctive firm core"}
+{"id": 38936571, "name": "SQUARE D CO", "cat": "DIRTY_DATA", "verdict": "WRONG", "reason": "firm_core_in_dirty", "note": "SQUARE D is a well-known brand name (Schneider Electric subsidiary); real company"}
+{"id": 43862185, "name": "N MEDIA S DE RL DE CV", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initial N with generic MEDIA + legal; no distinctive firm core"}
+{"id": 52683865, "name": "B D G E A Y EL R", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials/fragments; no distinctive firm core"}
+{"id": 52683870, "name": "C. Y C. A. S.A DE C.V", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials C C A with legal suffix; no distinctive firm core"}
+{"id": 52683895, "name": "S DE B S A", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials with partial legal tokens; no distinctive firm core"}
+{"id": 52683896, "name": "S D L B S.A DE C.V", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials with legal suffix; no distinctive firm core"}
+{"id": 52684130, "name": "A. D. L. S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials A D L with legal suffix; no distinctive firm core"}
+{"id": 52684133, "name": "B D G EL A Y EL R", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials with article fragments; no distinctive firm core"}
+{"id": 52684134, "name": "B. D G. A. Y E R", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials; no distinctive firm core"}
+{"id": 52684135, "name": "B. DE G. EL A. Y EL R", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials with article fragments; no distinctive firm core"}
+{"id": 52684137, "name": "C A D B S A D C V", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials with legal abbreviation tokens; no distinctive firm core"}
+{"id": 52684140, "name": "D. DE S. Y C.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials with preposition fragments; no distinctive firm core"}
+{"id": 52684162, "name": "T. D. A. S DE RL DE CV", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials T D A with legal suffix; no distinctive firm core"}
+{"id": 52891099, "name": "E S S", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only three-letter initials; no distinctive firm core"}
+{"id": 53409076, "name": "D & S EXPORTS INC  STR", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials D&S with generic EXPORTS; STR likely street abbreviation; address-contaminated"}
+{"id": 53970651, "name": "J & A International", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials J&A with generic INTERNATIONAL; no distinctive firm core"}
+{"id": 53970837, "name": "R S E STEEL TRADING L.L.C", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials R S E with generic STEEL TRADING + legal; no distinctive firm core"}
+{"id": 53970847, "name": "S AND L ENTERPRISES", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials S L with generic ENTERPRISES; no distinctive firm core"}
+{"id": 54948057, "name": "D & S EXPORTS, INC.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials D S with generic EXPORTS + legal; no distinctive firm core"}
+{"id": 54948357, "name": "CRESCENT INTERNATIONAL TRADING", "cat": "DIRTY_DATA", "verdict": "WRONG", "reason": "firm_core_in_dirty", "note": "CRESCENT INTERNATIONAL TRADING has distinctive brand CRESCENT; real company"}
+{"id": 54948369, "name": "D  &  S EXPORTS", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials D S with generic EXPORTS; no distinctive firm core"}
+{"id": 56898140, "name": "G&W DE MEXICO S DE RL DE CV", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials G&W with geo DE MEXICO + legal; no distinctive firm core"}
+{"id": 56945839, "name": "UNIT METALS TRADING", "cat": "DIRTY_DATA", "verdict": "WRONG", "reason": "firm_core_in_dirty", "note": "UNIT METALS TRADING forms a recognizable company name with distinctive descriptor"}
+{"id": 58818588, "name": "Ne", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "single two-letter fragment; not a firm name"}
+{"id": 59181684, "name": "A & V IMPORTS S. DE R.L. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials A V with generic IMPORTS + legal; no distinctive firm core"}
+{"id": 59183565, "name": "N", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "single letter; not a firm name"}
+{"id": 59183603, "name": "NO", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "two-letter word, likely negation/code; not a firm name"}
+{"id": 59185426, "name": "Q ENGINEERING PLASTIC PRODUCTS MEXICO, S", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initial Q as distinctive part; ENGINEERING PLASTIC PRODUCTS MEXICO generic + truncated legal; no distinctive firm core"}
+{"id": 61115568, "name": "BD DE MEXICO S DE RL DE CV", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials BD with geo DE MEXICO + legal; no distinctive firm core"}
+{"id": 61116048, "name": "GRUPO S G", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "GRUPO is generic; only initials S G; no distinctive firm core"}
+{"id": 61702614, "name": "Servicios De Transporte International A&S Sa De Cv", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "SERVICIOS DE TRANSPORTE INTERNATIONAL is generic; only initials A&S as distinctive part; no distinctive firm core"}
+{"id": 62129204, "name": "D S V A I R A N D S E A I N", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "space-separated initials only; no distinctive firm core"}
+{"id": 62129897, "name": "AVE TECHNOLOGIES SRL", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "AVE is likely address prefix (Avenida); TECHNOLOGIES is generic + legal; address-contaminated"}
+{"id": 62129929, "name": "BD INTERNATIONAL", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials BD with generic INTERNATIONAL; no distinctive firm core"}
+{"id": 62129930, "name": "BD INTERNATIONAL GROUP LIMITED", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials BD with generic INTERNATIONAL GROUP + legal; no distinctive firm core"}
+{"id": 62130513, "name": "R H S LOGISTICS LLC", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials R H S with generic LOGISTICS + legal; no distinctive firm core"}
+{"id": 62298249, "name": "S H L E C L", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only single-letter initials; no distinctive firm core"}
+{"id": 62492490, "name": "BELTEK", "cat": "DIRTY_DATA", "verdict": "WRONG", "reason": "firm_core_in_dirty", "note": "BELTEK is a distinctive single-word brand name; real company"}
+{"id": 62931627, "name": "RM INTERNATIONAL S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials RM with generic INTERNATIONAL + legal; no distinctive firm core"}
+{"id": 63078679, "name": "INTERNATIONAL PRODUCTS AND SERVICES DE MEXICO S DE", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "entirely generic descriptor; no distinctive firm core"}
+{"id": 63113285, "name": "THE SOLUTION IN PACKAGING FOOD S ,", "cat": "DIRTY_DATA", "verdict": "WRONG", "reason": "firm_core_in_dirty", "note": "THE SOLUTION IN PACKAGING FOOD is a distinctive descriptive company name; truncated legal"}
+{"id": 63566433, "name": "INTERNATIONAL FL", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "INTERNATIONAL is generic + FL likely truncation; no distinctive firm core"}
+{"id": 73523416, "name": "CIRCLE FOODS LIMITED", "cat": "DIRTY_DATA", "verdict": "WRONG", "reason": "firm_core_in_dirty", "note": "CIRCLE FOODS is a distinctive company name with brand word CIRCLE"}
+{"id": 73638753, "name": "K A K A TRADING LLC", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials K A K A with generic TRADING + legal; no distinctive firm core"}
+{"id": 74784133, "name": "P&S S F S.A.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials P&S S F with legal suffix; no distinctive firm core"}
+{"id": 85408412, "name": "PLASTIC TECHNOLOGY DE MEXICO S", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "PLASTIC TECHNOLOGY is generic; DE MEXICO geo + truncated legal; no distinctive firm core"}
+{"id": 85516115, "name": "F&S MEXICO CORPORATION S DE RL DE CV", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials F&S with geo MEXICO + generic CORPORATION + legal; no distinctive firm core"}
+{"id": 85517232, "name": "RM HEALTHCARE PRODUCTS S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials RM with generic HEALTHCARE PRODUCTS + legal; no distinctive firm core"}
+{"id": 85518412, "name": "J N ENTERPRISE S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials J N with generic ENTERPRISE + legal; no distinctive firm core"}
+{"id": 85519366, "name": "1904 PLATING DE MEXICO S. DE R.L. DE C.V.", "cat": "DIRTY_DATA", "verdict": "WRONG", "reason": "firm_core_in_dirty", "note": "1904 PLATING is a distinctive company name (year-branded); real company registered in Mexico"}
+{"id": 85520467, "name": "B & W TRANSPORTATION S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials B W with generic TRANSPORTATION + legal; no distinctive firm core"}
+{"id": 85524062, "name": "W TRADING CO,S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initial W with generic TRADING CO + legal; no distinctive firm core"}
+{"id": 85676181, "name": "SQUARE PACKAGING S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "WRONG", "reason": "firm_core_in_dirty", "note": "SQUARE PACKAGING is a distinctive company name with specific brand word SQUARE"}
+{"id": 85677802, "name": "NORTH SYSTEM S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "WRONG", "reason": "firm_core_in_dirty", "note": "NORTH SYSTEM is a distinctive company name with specific descriptor"}
+{"id": 85678894, "name": "M&A PACKAGING MEXICO S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials M&A with generic PACKAGING + geo MEXICO + legal; no distinctive firm core"}
+{"id": 85840069, "name": "B I C A R S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials B I C A R with legal suffix; no distinctive firm core"}
+{"id": 85843566, "name": "LA U S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "article LA + initial U + legal suffix; no distinctive firm core"}
+{"id": 85844700, "name": "PRODUCTS INDUSTRIAL SERVICES CRISANTO S. A. DE C. V.", "cat": "DIRTY_DATA", "verdict": "WRONG", "reason": "firm_core_in_dirty", "note": "CRISANTO is a distinctive proper name/brand forming real company identity"}
+{"id": 85844720, "name": "RM GLOBAL GROUP S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials RM with generic GLOBAL GROUP + legal; no distinctive firm core"}
+{"id": 85998422, "name": "RM ENGINEERING GROUP S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials RM with generic ENGINEERING GROUP + legal; no distinctive firm core"}
+{"id": 86144324, "name": "3 PL GRUPO 4 S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "WRONG", "reason": "firm_core_in_dirty", "note": "3PL GRUPO 4 is a distinctive logistics company name; real company"}
+{"id": 86144580, "name": "B&S CHEMICALS S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials B&S with generic CHEMICALS + legal; no distinctive firm core"}
+{"id": 86484416, "name": "T A MANUFACTURING SA DE CV", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials T A with generic MANUFACTURING + legal; no distinctive firm core"}
+{"id": 86815782, "name": "CIRCLE FOODS", "cat": "DIRTY_DATA", "verdict": "WRONG", "reason": "firm_core_in_dirty", "note": "CIRCLE FOODS is a distinctive company name with brand word CIRCLE"}
+{"id": 87135528, "name": "C. A. B. S.A. DE C.V", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials C A B with legal suffix; no distinctive firm core"}
+{"id": 87441060, "name": "R M E A MANUFACTURING LLC.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials R M E A with generic MANUFACTURING + legal; no distinctive firm core"}
+{"id": 88002781, "name": "V R V S PRIVATE LIMITED", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials V R V S with legal suffix; no distinctive firm core"}
+{"id": 89001698, "name": "C&A Service Inc", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials C&A with generic SERVICE + legal; no distinctive firm core"}
+{"id": 89200797, "name": "C & A SERVICE INC.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials C A with generic SERVICE + legal; no distinctive firm core"}
+{"id": 90488990, "name": "S", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "single letter; not a firm name"}
+{"id": 94647679, "name": "TO ST", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "non_firm_placeholder", "note": "TO ST likely shipping notation; not a company name"}
+{"id": 97723959, "name": "A B C S", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only single-letter initials; no distinctive firm core"}
+{"id": 97983797, "name": "C&A MEXICO S. DE R.L", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials C&A with geo MEXICO + legal; no distinctive firm core"}
+{"id": 98519704, "name": "M O S D C", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials with legal abbreviation tokens; no distinctive firm core"}
+{"id": 98519741, "name": "S,E,L", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "comma-separated single letters; garbled data not a firm name"}
+{"id": 98519762, "name": "U A S D", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only four-letter initials; no distinctive firm core"}
+{"id": 98782872, "name": "A S D C Y M S I S", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials; no distinctive firm core"}
+{"id": 98782975, "name": "INTEL TECNOLOGIA DE MEXICO S", "cat": "DIRTY_DATA", "verdict": "WRONG", "reason": "firm_core_in_dirty", "note": "INTEL TECNOLOGIA DE MEXICO is a recognizable company name; INTEL brand is distinctive"}
+{"id": 99328139, "name": "W CIA", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initial W with legal abbreviation CIA; no distinctive firm core"}
+{"id": 99598037, "name": "A,D,C", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "code_or_number", "note": "comma-separated single letters; garbled data not a firm name"}
+{"id": 99866720, "name": "D M S D R D C", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials with legal abbreviation tokens; no distinctive firm core"}
+{"id": 99866769, "name": "K S A K S D C", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials with legal abbreviation tokens; no distinctive firm core"}
+{"id": 100142915, "name": "M. S. I. S.C", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials M S I with legal suffix S.C.; no distinctive firm core"}
+{"id": 100406923, "name": "A T P MEXICO SA DE CV", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials A T P with geo MEXICO + legal; no distinctive firm core"}
+{"id": 100406942, "name": "AV INDUSTRIA ELECTRICA DE MEXICO 1", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "AV is address prefix (Avenida); INDUSTRIA ELECTRICA is generic; address-contaminated"}
+{"id": 100669317, "name": "A. Y. M. E. S. S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials A Y M E S with legal suffix; no distinctive firm core"}
+{"id": 114601449, "name": "W TRADING CO. S.A. DE C.V.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initial W with generic TRADING CO + legal; no distinctive firm core"}
+{"id": 114720580, "name": "W.Y. INTERNATIONAL INC.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials W Y with generic INTERNATIONAL + legal; no distinctive firm core"}
+{"id": 116743392, "name": "T & N DE MEXICO S DE RL", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials T N with geo DE MEXICO + legal; no distinctive firm core"}
+{"id": 121671360, "name": "SOUTH EAST MANUFACTURING, S DE", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "SOUTH EAST MANUFACTURING is entirely generic directional+activity; no distinctive firm core"}
+{"id": 122066876, "name": "A&P SOLUTION S.A. DE C.V", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials A&P with generic SOLUTION + legal; no distinctive firm core"}
+{"id": 122561860, "name": "T E R R A M A R M A R M O L, S .A.", "cat": "DIRTY_DATA", "verdict": "WRONG", "reason": "firm_core_in_dirty", "note": "TERRAMAR MARMOL (space-separated letters) is a real marble company name; distinctive proper name"}
+{"id": 123774346, "name": "S M FOODS S.A.C.", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials S M with generic FOODS + legal; no distinctive firm core"}
+{"id": 124380767, "name": "F&S MEXICO CORP S. DE R.L. D", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials F&S with geo MEXICO + generic CORP + truncated legal; no distinctive firm core"}
+{"id": 125762414, "name": "A&M SOLUTIONS LLC", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials A&M with generic SOLUTIONS + legal; no distinctive firm core"}
+{"id": 126527399, "name": "PL LOGISTICS CORP", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials PL with generic LOGISTICS CORP; no distinctive firm core"}
+{"id": 127393275, "name": "A&D TECNOLOGIAS SA DE CV", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials A&D with generic TECNOLOGIAS + legal; no distinctive firm core"}
+{"id": 127393362, "name": "ASYST TECNOLOGIAS DE MEXICO S. DE R", "cat": "DIRTY_DATA", "verdict": "WRONG", "reason": "firm_core_in_dirty", "note": "ASYST is a distinctive brand/company name; real company with Mexican operations"}
+{"id": 127393647, "name": "S & M FOODS SOCIEDAD ANONIMA", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials S M with generic FOODS + legal; no distinctive firm core"}
+{"id": 127393648, "name": "S M FOODS SOCIEDAD ANONIMA CERRADA", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials S M with generic FOODS + legal; no distinctive firm core"}
+{"id": 129570469, "name": "GRUPO INDUSTRIAL Y COMERCIAL DEL NO", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "GRUPO INDUSTRIAL Y COMERCIAL DEL NO(RTE) is entirely generic; no distinctive firm core"}
+{"id": 129570934, "name": "T S S INTERNACIONAL", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials T S S with generic INTERNACIONAL; no distinctive firm core"}
+{"id": 131299849, "name": "A. D. A. R. S.A. DE", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials A D A R with partial legal suffix; no distinctive firm core"}
+{"id": 131409084, "name": "S R S", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only three-letter initials; no distinctive firm core"}
+{"id": 131510065, "name": "L C S D C", "cat": "DIRTY_DATA", "verdict": "CORRECT", "reason": "address_only", "note": "only initials with legal abbreviation tokens; no distinctive firm core"}

@@ -13,6 +13,7 @@ from elasticsearch import Elasticsearch
 
 from config import DB_CONFIG, alias_for_country, RAW_TABLE_NAME, COLUMN_MAPPING, DEDUP_MIN_FINGERPRINT_TOKEN_LEN, MatchType
 from core.synonym_loader import get_all_country_codes
+from matching.db_io import table_identifier
 
 logger = logging.getLogger(__name__)
 
@@ -159,7 +160,7 @@ def _repoint_pg(cur, primary: str, secondaries: list[str], country: str) -> int:
             "{mt} = CASE WHEN {mt} = %s THEN %s ELSE {mt} END "
             "WHERE {master} = ANY(%s) AND {country} = %s"
         ).format(
-            table=psycopg2.sql.Identifier(RAW_TABLE_NAME),
+            table=table_identifier(RAW_TABLE_NAME),
             master=psycopg2.sql.Identifier(col_master),
             mt=psycopg2.sql.Identifier(col_mt),
             country=psycopg2.sql.Identifier(col_country),

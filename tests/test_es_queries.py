@@ -52,8 +52,8 @@ def test_canonical_exact_fallback_analyzer_for_unknown_country():
 
 
 
-def test_fuzzy_phrase_has_slop():
-    q = es_queries.FUZZY_PHRASE("apple trading", "US")
+def test_phrase_slop_has_slop():
+    q = es_queries.PHRASE_SLOP("apple trading", "US")
     must = q["query"]["bool"]["must"]
     nested = next(c["nested"] for c in must if "nested" in c)
     phrase = nested["query"]["match_phrase"]["variations.name"]
@@ -67,7 +67,7 @@ def test_all_queries_include_country_filter():
     # TOKEN_COVERAGE requires es (no es → MATCH_NONE by design); test only es-independent stages.
     fns = [
         lambda: es_queries.CANONICAL_EXACT(name, country),
-        lambda: es_queries.FUZZY_PHRASE(name, country),
+        lambda: es_queries.PHRASE_SLOP(name, country),
     ]
     for fn in fns:
         assert _get_country_filter(fn()) == country, f"{fn} country filter eksik"
@@ -84,10 +84,10 @@ def _es_returning(tokens):
 
 
 def test_core_gate_blocks_single_char_residue():
-    """Tek-harfe çöken çekirdek ('M S.A.'→'m') CANONICAL_EXACT ve FUZZY_PHRASE'de MATCH_NONE.
+    """Tek-harfe çöken çekirdek ('M S.A.'→'m') CANONICAL_EXACT ve PHRASE_SLOP'de MATCH_NONE.
     TOKEN_COVERAGE kendi fingerprint gate'ini kullanır (ayrı test); buradan çıkarıldı."""
     es = _es_returning(["m"])
-    for fn in (es_queries.CANONICAL_EXACT, es_queries.FUZZY_PHRASE):
+    for fn in (es_queries.CANONICAL_EXACT, es_queries.PHRASE_SLOP):
         es_queries.clear_token_count_cache()
         assert fn("M S.A. DE C.V.", "MX", es=es) == es_queries.MATCH_NONE, fn.__name__
 
@@ -95,7 +95,7 @@ def test_core_gate_blocks_single_char_residue():
 def test_core_gate_allows_distinctive_brand():
     """Gerçek marka (>=2-char alfabetik çekirdek) tüm stage'lerde geçer."""
     es = _es_returning(["siemens"])
-    for fn in (es_queries.CANONICAL_EXACT, es_queries.TOKEN_COVERAGE, es_queries.FUZZY_PHRASE):
+    for fn in (es_queries.CANONICAL_EXACT, es_queries.TOKEN_COVERAGE, es_queries.PHRASE_SLOP):
         es_queries.clear_token_count_cache()
         assert fn("SIEMENS S.A. DE C.V.", "MX", es=es) != es_queries.MATCH_NONE, fn.__name__
 
@@ -105,7 +105,7 @@ def test_core_gate_two_char_brand_preserved():
     es_queries.clear_token_count_cache()
     assert es_queries.TOKEN_COVERAGE("VF OUTDOOR", "MX", es=_es_returning(["vf", "outdoor"])) != es_queries.MATCH_NONE
     es_queries.clear_token_count_cache()
-    assert es_queries.FUZZY_PHRASE("3M", "MX", es=_es_returning(["3m"])) != es_queries.MATCH_NONE
+    assert es_queries.PHRASE_SLOP("3M", "MX", es=_es_returning(["3m"])) != es_queries.MATCH_NONE
 
 
 def test_core_gate_numeric_only_blocked_in_fuzzy_stages():
@@ -115,17 +115,17 @@ def test_core_gate_numeric_only_blocked_in_fuzzy_stages():
     es_queries.clear_token_count_cache()
     assert es_queries.TOKEN_COVERAGE("#N/A 300", "MX", es=es) == es_queries.MATCH_NONE
     es_queries.clear_token_count_cache()
-    assert es_queries.FUZZY_PHRASE("#N/A 300", "MX", es=es) == es_queries.MATCH_NONE
+    assert es_queries.PHRASE_SLOP("#N/A 300", "MX", es=es) == es_queries.MATCH_NONE
 
 
 def test_generic_core_gate_blocks_solo_generic_word():
     """Jenerik-kelime magnet fix: stripped çekirdek YALNIZCA jenerik iş-kelimesi ('trading',
-    'importaciones', 'inversiones', 'group') ise CANONICAL_EXACT ve FUZZY_PHRASE'de MATCH_NONE.
+    'importaciones', 'inversiones', 'group') ise CANONICAL_EXACT ve PHRASE_SLOP'de MATCH_NONE.
     TOKEN_COVERAGE kendi fingerprint gate'ini kullanır (generic-word blocking bu stage'de
     _has_distinctive_core yerine fingerprint+canonical_full üzerinden gelir)."""
     for word in ("trading", "importaciones", "inversiones", "group"):
         es = _es_returning([word])
-        for fn in (es_queries.CANONICAL_EXACT, es_queries.FUZZY_PHRASE):
+        for fn in (es_queries.CANONICAL_EXACT, es_queries.PHRASE_SLOP):
             es_queries.clear_token_count_cache()
             assert fn(f"L M {word.upper()} S.A.", "PE", es=es) == es_queries.MATCH_NONE, \
                 f"{fn.__name__} salt-jenerik '{word}' çekirdeğini bloklamalı"
@@ -143,14 +143,14 @@ def test_generic_core_gate_allows_brand_plus_generic():
 
 
 def test_core_gate_inert_without_es():
-    """es yoksa FUZZY_PHRASE guard devre dışı — mevcut davranış korunur.
+    """es yoksa PHRASE_SLOP guard devre dışı — mevcut davranış korunur.
     TOKEN_COVERAGE es olmadan MATCH_NONE döner (canonical_full exact-match gerektiriyor)."""
     assert es_queries.TOKEN_COVERAGE("M S.A.", "MX") == es_queries.MATCH_NONE
-    assert es_queries.FUZZY_PHRASE("M S.A.", "MX") != es_queries.MATCH_NONE
+    assert es_queries.PHRASE_SLOP("M S.A.", "MX") != es_queries.MATCH_NONE
 
 
 # ── Çözüm A: ayırt-edici-çekirdek COVERAGE gate (Round-4, clean_analyzer) ──
-# FUZZY_PHRASE / TOKEN_COVERAGE'a ES-side clean_analyzer token_count eşitlik filtresi:
+# PHRASE_SLOP / TOKEN_COVERAGE'a ES-side clean_analyzer token_count eşitlik filtresi:
 # kısa/kesik isim (SPM ⊂ SPM FLOW CONTROL) farklı core-count → master'a giremez.
 
 def _core_filter_terms(q):
@@ -166,11 +166,11 @@ def _core_filter_terms(q):
     return terms
 
 
-def test_fuzzy_phrase_adds_core_coverage_filter():
-    """es verildiğinde FUZZY_PHRASE'e STRIPPED core-count term filtresi eklenir."""
+def test_phrase_slop_adds_core_coverage_filter():
+    """es verildiğinde PHRASE_SLOP'e STRIPPED core-count term filtresi eklenir."""
     es_queries.clear_token_count_cache()
     es = _es_returning(["spm"])  # 1 ayırt edici token
-    q = es_queries.FUZZY_PHRASE("SPM", "MX", es=es)
+    q = es_queries.PHRASE_SLOP("SPM", "MX", es=es)
     assert q != es_queries.MATCH_NONE
     assert 1 in _core_filter_terms(q)
 
@@ -179,13 +179,13 @@ def test_core_coverage_count_matches_distinctive_token_count():
     """Filtre değeri STRIPPED ayırt-edici token sayısına eşit (çok-token brand)."""
     es_queries.clear_token_count_cache()
     es = _es_returning(["flow", "control", "spm"])  # 3 token
-    q = es_queries.FUZZY_PHRASE("SPM FLOW CONTROL", "MX", es=es)
+    q = es_queries.PHRASE_SLOP("SPM FLOW CONTROL", "MX", es=es)
     assert 3 in _core_filter_terms(q)
 
 
 def test_core_coverage_inert_without_es():
-    """es yoksa FUZZY_PHRASE core-coverage filtresi eklenmez (graceful)."""
-    q = es_queries.FUZZY_PHRASE("apple trading", "US")
+    """es yoksa PHRASE_SLOP core-coverage filtresi eklenmez (graceful)."""
+    q = es_queries.PHRASE_SLOP("apple trading", "US")
     assert _core_filter_terms(q) == []
 
 

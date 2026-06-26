@@ -12,7 +12,7 @@ class MatchType:
     CANONICAL_EXACT = "CANONICAL_EXACT"
     STRIPPED_EXACT = "STRIPPED_EXACT"
     SUFFIX_FUZZY = "SUFFIX_FUZZY"
-    FUZZY_PHRASE = "FUZZY_PHRASE"
+    PHRASE_SLOP = "PHRASE_SLOP"
     TOKEN_COVERAGE = "TOKEN_COVERAGE"
     PHONETIC_MATCH = "PHONETIC_MATCH"
     NGRAM_MATCH = "NGRAM_MATCH"
@@ -40,7 +40,7 @@ DB_CONFIG = {
 }
 
 # --- Tablo ve sütun ayarları ---
-RAW_TABLE_NAME = "p7_firms_v2"
+RAW_TABLE_NAME = "p7_firms_v2_mx"
 
 # Yalnızca tek ülke işlenecekse kodu (örn. "mx"); None = tüm ülkeler.
 COUNTRY_CODE_FILTER = None
@@ -69,8 +69,8 @@ AUTO_CREATE_UPDATE_COLUMNS = True
 ES_HOST = "http://localhost:9200"
 
 # --- Elasticsearch index isimlendirme (per-country) ---
-INDEX_PREFIX = "living_companies"
-INDEX_VERSION = "v3"
+INDEX_PREFIX = "p7_companies"
+INDEX_VERSION = "v1"
 
 
 def index_for_country(country_code: str) -> str:
@@ -100,10 +100,11 @@ NEW_MASTER_SUBBATCH_SIZE = 200
 # olduğundan görünürlük tekil-akışla aynıdır → sonuç değişmez, round-trip azalır.
 # 1 = eski kayıt-başına davranış. Büyütmek refresh'i seyrekleştirir (fuzzy varyant
 # recall'ını etkileyebilir → ölçerek artır).
-MATCH_BATCH_SIZE = 50
+MATCH_BATCH_SIZE = 1
 
 # --- ES skor / log ---
-LOG_ALL_STAGES = False  # Her stage sonucunu (başarısız dahil) logla
+LOG_ALL_STAGES = False   # Her stage sonucunu (başarısız dahil) logla
+ENABLE_STAGE_LOG = True  # match_stages_log + match_audit yazımını aç/kapat
 
 # --- Eşik değerleri ---
 SUFFIX_FUZZY_SCORE = 85  # Sonuç skoru (normalize tier)
@@ -179,7 +180,7 @@ MATCH_CORE_FUZZY_REQUIRE_ALPHA = True  # loose stage'lerde çekirdek alfabetik o
 # (salt-sayı loose eşleşmede güvenilmez; STRIPPED_EXACT hariç)
 
 # --- Ayırt-edici-çekirdek COVERAGE gate ---
-# FUZZY_PHRASE / TOKEN_COVERAGE'da eşleşen master'ın STRIPPED çekirdek token sayısı,
+# PHRASE_SLOP / TOKEN_COVERAGE'da eşleşen master'ın STRIPPED çekirdek token sayısı,
 # sorgunun çekirdek sayısına EŞİT olmalı (ES-side term filtresi). Böylece kısa/kesik
 # isim (SPM ⊂ SPM FLOW CONTROL) farklı sayı taşıdığından master'a giremez →
 # subset/truncation over-merge ES tarafında elenir. Yan-etki: gerçekten-kesik-ama-aynı
@@ -211,9 +212,9 @@ STAGES = [
     {
         # min_score 9.0 denendi/geri alındı (recall 8/10→4/10); over-merge çekirdek-
         # coverage gate (ENABLE_CORE_COVERAGE_GATE) ile çözüldüğünden 5.0'da bırakıldı.
-        "name": "FUZZY_PHRASE",
+        "name": "PHRASE_SLOP",
         "order": 2,
-        "query_fn": "FUZZY_PHRASE",
+        "query_fn": "PHRASE_SLOP",
         "min_score": 5.0,
         "enabled": True,
         "index_variation": False,

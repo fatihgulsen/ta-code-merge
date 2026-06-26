@@ -73,6 +73,7 @@ def report(conn, sample_per_reason: int = 8, only_unprocessed: bool = True) -> d
     import psycopg2.sql
     from psycopg2.extras import DictCursor
     from config import RAW_TABLE_NAME, COLUMN_MAPPING
+    from matching.db_io import table_identifier
 
     col_name = COLUMN_MAPPING["company_name"]
     col_country = COLUMN_MAPPING["country_code"]
@@ -85,7 +86,7 @@ def report(conn, sample_per_reason: int = 8, only_unprocessed: bool = True) -> d
         psycopg2.sql.SQL("SELECT {n}, {c} FROM {t} WHERE {w}").format(
             n=psycopg2.sql.Identifier(col_name),
             c=psycopg2.sql.Identifier(col_country),
-            t=psycopg2.sql.Identifier(RAW_TABLE_NAME),
+            t=table_identifier(RAW_TABLE_NAME),
             w=where,
         )
     )

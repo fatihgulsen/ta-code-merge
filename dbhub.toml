@@ -1,0 +1,31 @@
+# ============================================================================
+# DBHub Çoklu Veritabanı ve MCP Araç Yapılandırması
+# Not: Hot Reload desteklenir. Dosyayı kaydettiğinizde servis yeniden başlamadan güncellenir.
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# 1. VERİTABANI KAYNAKLARI (SOURCES)
+# ----------------------------------------------------------------------------
+
+# PostgreSQL: Market Calculus (Mevcut Ana Veritabanınız)
+[[sources]]
+id = "market_calculus"
+type = "postgres"
+dsn = "postgres://postgres:postgres@localhost:5432/market_calculus?sslmode=disable"
+query_timeout = 60 # Sorgu zaman aşımı (saniye)
+
+# ----------------------------------------------------------------------------
+# 2. ARAÇ VE GÜVENLİK KURALLARI (TOOLS)
+# ----------------------------------------------------------------------------
+
+# Market Calculus için Salt-Okunur SQL Çalıştırma Aracı
+[[tools]]
+name = "execute_sql"
+source = "market_calculus"
+readonly = true         # Sadece SELECT, SHOW, DESCRIBE ve EXPLAIN komutlarına izin verir
+max_rows = 1000         # Bellek şişmesini önlemek için maksimum dönecek satır sayısı
+
+# Market Calculus için Şema Keşif Aracı (AI'ın tabloları anlamasını sağlar)
+[[tools]]
+name = "search_objects"
+source = "market_calculus"

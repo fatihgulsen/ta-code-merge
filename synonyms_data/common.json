@@ -4,7 +4,7 @@
 
   "legal_suffixes": [
     "corporation,corp,corp.,incorporated,inc,inc.=>corp.",
-    "company,co,co.,comp=>co.",
+    "company,co,co.,comp,compania=>co.",
     "limited liability company,llc,l.l.c,l.l.c.,limited liability=>llc",
     "limited partnership,lp,l.p,l.p.,ltd partnership=>lp",
     "limited liability partnership,llp,l.l.p,l.l.p.=>llp",
@@ -12,7 +12,7 @@
     "unlimited company,unlimited,ultd=>unlimited",
     "private limited company,pvt ltd,pvt. ltd.,private ltd,lim,ltd,limited,ltd.,ltda,limitada=>ltd.",
     "limited,ltd,ltd.,limited.,limted,limted.,ltdl,ltda=>ltd.",
-    "pvt,private,priv,prvt=>pvt",
+    "pvt,private,priv,prvt,pte=>pvt",
     "sole proprietorship,sole prop,individual,sole trader,sole proprietor,proprietor=>sole proprietor",
     "cooperative,coop,co-op,co op=>cooperative",
     "partnership,partners,p.ship,ptnrs=>partnership",

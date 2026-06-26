@@ -64,10 +64,10 @@ def test_suffix_fuzzy_constants_exist():
 
 
 def test_stage_order():
-    """Plan 4: CANONICAL_EXACT (1) → FUZZY_PHRASE (2) → TOKEN_COVERAGE (3)."""
+    """Plan 4: CANONICAL_EXACT (1) → PHRASE_SLOP (2) → TOKEN_COVERAGE (3)."""
     stages_by_name = {s["name"]: s["order"] for s in config.STAGES}
     assert stages_by_name["CANONICAL_EXACT"] == 1
-    assert stages_by_name["FUZZY_PHRASE"] == 2
+    assert stages_by_name["PHRASE_SLOP"] == 2
     assert stages_by_name["TOKEN_COVERAGE"] == 3
 
 
@@ -120,7 +120,7 @@ def test_business_descriptors_in_synonyms():
 
 
 def test_stage_index_variation_plan4():
-    """Plan 4: CANONICAL_EXACT indexes variations; FUZZY_PHRASE and TOKEN_COVERAGE do not."""
+    """Plan 4: CANONICAL_EXACT indexes variations; PHRASE_SLOP and TOKEN_COVERAGE do not."""
     from config import STAGES
 
     by_name = {s["name"]: s for s in STAGES}
@@ -128,7 +128,7 @@ def test_stage_index_variation_plan4():
     assert by_name["CANONICAL_EXACT"]["index_variation"] is True
 
     # Loose stages remain False
-    for stage_name in ("FUZZY_PHRASE", "TOKEN_COVERAGE"):
+    for stage_name in ("PHRASE_SLOP", "TOKEN_COVERAGE"):
         assert by_name[stage_name]["index_variation"] is False
 
 
@@ -162,4 +162,4 @@ def test_enable_dirty_data_flag_default_true():
 def test_stages_only_canonical_fuzzy_coverage():
     from config import STAGES
     names = {s["name"] for s in STAGES}
-    assert names == {"CANONICAL_EXACT", "FUZZY_PHRASE", "TOKEN_COVERAGE"}
+    assert names == {"CANONICAL_EXACT", "PHRASE_SLOP", "TOKEN_COVERAGE"}

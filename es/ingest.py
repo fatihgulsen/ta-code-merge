@@ -36,11 +36,12 @@ def pipeline_name(country_code: str) -> str:
     return f"company_name_{country_code.lower()}"
 
 
-def _build_clean_script(country_code: str) -> str:
+def _build_clean_script() -> str:
     """Painless script: variations array'indeki her name için light_clean uygular.
 
     Temizlenmiş name'leri variations'a yazar.
     Painless'te /regex/ literal kullanılır; f-string yerine raw string tercih edilir.
+    Script country-agnostiktir; country-specific işlem ES analyzer zincirinde yapılır.
     """
     script_parts = [
         # Null kontrolü
@@ -63,8 +64,8 @@ def _build_clean_script(country_code: str) -> str:
         r"  text = /\bto\s+(the\s+)?order\s+of\b/.matcher(text).replaceAll('');",
         # 4. Ampersand normalizasyonu
         r"  text = /\s*&\s*/.matcher(text).replaceAll(' and ');",
-        # 5. Ozel karakter temizligi
-        r"  text = /[^\w\s&.\-]/.matcher(text).replaceAll(' ');",
+        # 5. Ozel karakter temizligi (&, adım 4'te zaten "and"e döndü — whitelist'e gerek yok)
+        r"  text = /[^\w\s.\-]/.matcher(text).replaceAll(' ');",
         # 6. Cift bosluk temizligi
         r"  text = /\s+/.matcher(text).replaceAll(' ').trim();",
         # 7. Ardisik-tekrar token dedup: 'RICARD RICARD' -> 'RICARD'.
@@ -108,7 +109,7 @@ def build_pipeline_body(country_code: str) -> dict:
             {
                 "script": {
                     "description": f"light_clean for {country_code.upper()}",
-                    "source": _build_clean_script(country_code),
+                    "source": _build_clean_script(),
                 }
             },
         ],

@@ -95,7 +95,7 @@ The engine executes queries stage-by-stage inside a single `msearch` packet. The
 | Order | Stage Name | Query Type (`es/queries.py`) | Min Score | Description |
 | :---: | :--- | :--- | :---: | :--- |
 | **1** | `CANONICAL_EXACT` | `match_phrase` on canonical variations (`variations[].name`). | `3.0` | Exact full-form matching (order-sensitive). No token deletion. |
-| **2** | `FUZZY_PHRASE` | Fuzzy match on phrase tokens with typo tolerance. | `5.0` | Small word-level typos. Gated by distinctive-core check. |
+| **2** | `PHRASE_SLOP` | `match_phrase` on canonical variations with `slop=1` (word-order tolerant; no edit-distance/typo fuzziness). | `5.0` | Same canonical tokens in slightly different order / one intervening word. Gated by distinctive-core + token-count coverage. |
 | **3** | `TOKEN_COVERAGE` | Order-independent exact match: the full canonical token **multiset** must be identical on both sides (`variations.name.canonical_full` set-equality + `token_count` equality). | `3.0` | Names with no distinctive core (empty `fingerprint_analyzer`, or non-alpha) return MATCH_NONE. Old `operator:and` + `_core_coverage_filter` token_count proxy removed. |
 
 ---

@@ -58,19 +58,49 @@ def ensure_stage_log_table(conn) -> None:
     logger.info("match_stages_log tablosu hazır.")
 
 
+def _split_table_name(qualified: str) -> tuple[str | None, str]:
+    """'schema.table' → (schema, table); plain name → (None, name)."""
+    parts = qualified.split(".", 1)
+    return (parts[0], parts[1]) if len(parts) == 2 else (None, parts[0])
+
+
+def table_identifier(qualified: str) -> psycopg2.sql.Composed:
+    """Return a properly-quoted psycopg2 identifier for a plain or schema-qualified name."""
+    schema, table = _split_table_name(qualified)
+    if schema:
+        return psycopg2.sql.Identifier(schema, table)
+    return psycopg2.sql.Identifier(table)
+
+
 def validate_db_schema(conn) -> None:
     cursor = conn.cursor()
-    cursor.execute(
-        "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = %s);",
-        (RAW_TABLE_NAME,),
-    )
+    tbl_schema, tbl_name = _split_table_name(RAW_TABLE_NAME)
+
+    if tbl_schema:
+        cursor.execute(
+            "SELECT EXISTS (SELECT FROM information_schema.tables"
+            " WHERE table_schema = %s AND table_name = %s);",
+            (tbl_schema, tbl_name),
+        )
+    else:
+        cursor.execute(
+            "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = %s);",
+            (tbl_name,),
+        )
     if not cursor.fetchone()[0]:
         raise RuntimeError(f"HATA: '{RAW_TABLE_NAME}' tablosu bulunamadı!")
 
-    cursor.execute(
-        "SELECT column_name FROM information_schema.columns WHERE table_name = %s;",
-        (RAW_TABLE_NAME,),
-    )
+    if tbl_schema:
+        cursor.execute(
+            "SELECT column_name FROM information_schema.columns"
+            " WHERE table_schema = %s AND table_name = %s;",
+            (tbl_schema, tbl_name),
+        )
+    else:
+        cursor.execute(
+            "SELECT column_name FROM information_schema.columns WHERE table_name = %s;",
+            (tbl_name,),
+        )
     existing_columns = {row[0] for row in cursor.fetchall()}
 
     for internal_name in MANDATORY_READ_COLUMNS:
@@ -97,7 +127,7 @@ def validate_db_schema(conn) -> None:
                 raise ValueError(f"Bilinmeyen sütun tipi: {col_type!r}")
             cursor.execute(
                 psycopg2.sql.SQL("ALTER TABLE {} ADD COLUMN {} {};").format(
-                    psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                    table_identifier(RAW_TABLE_NAME),
                     psycopg2.sql.Identifier(db_col),
                     psycopg2.sql.SQL(col_type),
                 )
@@ -129,7 +159,7 @@ def write_matched_to_pg(write_cursor, write_conn, matched: list[dict]) -> None:
             " FROM (VALUES %s) AS d(master_code, match_score, match_type, id)"
             " WHERE t.{} = d.id"
         ).format(
-            psycopg2.sql.Identifier(RAW_TABLE_NAME),
+            table_identifier(RAW_TABLE_NAME),
             psycopg2.sql.Identifier(col_master),
             psycopg2.sql.Identifier(col_score),
             psycopg2.sql.Identifier(col_type),

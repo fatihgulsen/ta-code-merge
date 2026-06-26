@@ -40,6 +40,7 @@ from config import (
     STAGES,
     MSEARCH_CHUNK_SIZE,
     LOG_ALL_STAGES,
+    ENABLE_STAGE_LOG,
     NEW_MASTER_SUBBATCH_SIZE,
     ENABLE_INPUT_FILTER,
     AUTO_DEDUP_PER_BATCH,
@@ -63,6 +64,7 @@ from matching.db_io import (
     validate_db_schema,
     write_matched_to_pg,
     write_stage_log,
+    table_identifier,
 )
 from matching.es_writer import (
     update_es_variations,
@@ -397,7 +399,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
                 " FROM (VALUES %s) AS d(master_code, match_score, match_type, id)"
                 " WHERE t.{} = d.id"
             ).format(
-                psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                table_identifier(RAW_TABLE_NAME),
                 psycopg2.sql.Identifier(col_master),
                 psycopg2.sql.Identifier(col_score),
                 psycopg2.sql.Identifier(col_type),
@@ -405,16 +407,17 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
             ),
             pg_updates,
         )
-        execute_values(
-            write_cursor,
-            """
-            INSERT INTO match_stages_log
-                (input_id, input_name, country_code, stage_name, stage_order,
-                 matched, master_id, es_score)
-            VALUES %s
-            """,
-            log_rows,
-        )
+        if ENABLE_STAGE_LOG:
+            execute_values(
+                write_cursor,
+                """
+                INSERT INTO match_stages_log
+                    (input_id, input_name, country_code, stage_name, stage_order,
+                     matched, master_id, es_score)
+                VALUES %s
+                """,
+                log_rows,
+            )
         write_conn.commit()
         logger.info(f"  NEW_MASTER sub-batch: {len(chunk)} yeni firma olusturuldu.")
 
@@ -427,25 +430,26 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
                 if canonical_stage.get("index_variation", True):
                     update_es_variations(es, found_in_es)
                 # CANONICAL_EXACT olarak logla (NEW_MASTER önce yakalandı)
-                for r in found_in_es:
-                    execute_values(
-                        write_cursor,
-                        """INSERT INTO match_stages_log
-                            (input_id, input_name, country_code, stage_name, stage_order,
-                            matched, master_id, es_score) VALUES %s""",
-                        [
-                            (
-                                r["row_id"],
-                                r["raw_name"],
-                                r["country"],
-                                "CANONICAL_EXACT",
-                                _canonical_exact_stage_order,
-                                True,
-                                r["master_id"],
-                                r["es_score"],
-                            )
-                        ],
-                    )
+                if ENABLE_STAGE_LOG:
+                    for r in found_in_es:
+                        execute_values(
+                            write_cursor,
+                            """INSERT INTO match_stages_log
+                                (input_id, input_name, country_code, stage_name, stage_order,
+                                matched, master_id, es_score) VALUES %s""",
+                            [
+                                (
+                                    r["row_id"],
+                                    r["raw_name"],
+                                    r["country"],
+                                    "CANONICAL_EXACT",
+                                    _canonical_exact_stage_order,
+                                    True,
+                                    r["master_id"],
+                                    r["es_score"],
+                                )
+                            ],
+                        )
                 write_conn.commit()
                 logger.info(
                     f"  NEW_MASTER arasi ES eslesmesi: {len(found_in_es)} kayit mevcut master'a baglandi."
@@ -462,7 +466,7 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
                 " FROM (VALUES %s) AS d(mc, ms, mt, md, id)"
                 " WHERE t.{} = d.id"
             ).format(
-                psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                table_identifier(RAW_TABLE_NAME),
                 psycopg2.sql.Identifier(col_master),
                 psycopg2.sql.Identifier(col_score),
                 psycopg2.sql.Identifier(col_type),
@@ -471,13 +475,14 @@ def create_new_masters(es, write_cursor, write_conn, records: list[dict]) -> Non
             ),
             duplicate_updates,
         )
-        execute_values(
-            write_cursor,
-            """INSERT INTO match_stages_log
-                (input_id, input_name, country_code, stage_name, stage_order,
-                 matched, master_id, es_score) VALUES %s""",
-            duplicate_logs,
-        )
+        if ENABLE_STAGE_LOG:
+            execute_values(
+                write_cursor,
+                """INSERT INTO match_stages_log
+                    (input_id, input_name, country_code, stage_name, stage_order,
+                     matched, master_id, es_score) VALUES %s""",
+                duplicate_logs,
+            )
         write_conn.commit()
 
         # Duplicate varyasyonlarini ES master doc'a ekle
@@ -530,7 +535,8 @@ def process_all_data() -> None:
 
     try:
         validate_db_schema(read_conn)
-        ensure_stage_log_table(write_conn)
+        if ENABLE_STAGE_LOG:
+            ensure_stage_log_table(write_conn)
 
         write_cursor = write_conn.cursor()
 
@@ -567,7 +573,7 @@ def process_all_data() -> None:
         count_cur = read_conn.cursor()
         count_cur.execute(
             psycopg2.sql.SQL("SELECT COUNT(*) FROM {table} WHERE {where}").format(
-                table=psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                table=table_identifier(RAW_TABLE_NAME),
                 where=where_clause,
             ),
             filter_params,
@@ -643,7 +649,7 @@ def process_all_data() -> None:
                     cols=psycopg2.sql.SQL(", ").join(
                         psycopg2.sql.Identifier(c) for c in select_cols
                     ),
-                    table=psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                    table=table_identifier(RAW_TABLE_NAME),
                     where=where_clause,
                     col_id=psycopg2.sql.Identifier(col_id),
                     batch=psycopg2.sql.Literal(BATCH_SIZE),
@@ -830,7 +836,7 @@ def process_all_data() -> None:
                             " FROM (VALUES %s) AS d(mc, ms, mt, md, id)"
                             " WHERE t.{} = d.id"
                         ).format(
-                            psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                            table_identifier(RAW_TABLE_NAME),
                             psycopg2.sql.Identifier(col_master),
                             psycopg2.sql.Identifier(COLUMN_MAPPING["match_score"]),
                             psycopg2.sql.Identifier(COLUMN_MAPPING["match_type"]),
@@ -839,20 +845,21 @@ def process_all_data() -> None:
                         ),
                         pg_updates,
                     )
-                    execute_values(
-                        write_cursor,
-                        """INSERT INTO match_stages_log
-                            (input_id, input_name, country_code, stage_name, stage_order,
-                             matched, master_id, es_score) VALUES %s""",
-                        log_rows,
-                    )
-                    execute_values(
-                        write_cursor,
-                        """INSERT INTO match_audit
-                            (input_id, input_name, country_code, final_master_id,
-                             final_stage_name, final_score, total_matched_stages) VALUES %s""",
-                        audit_rows,
-                    )
+                    if ENABLE_STAGE_LOG:
+                        execute_values(
+                            write_cursor,
+                            """INSERT INTO match_stages_log
+                                (input_id, input_name, country_code, stage_name, stage_order,
+                                 matched, master_id, es_score) VALUES %s""",
+                            log_rows,
+                        )
+                        execute_values(
+                            write_cursor,
+                            """INSERT INTO match_audit
+                                (input_id, input_name, country_code, final_master_id,
+                                 final_stage_name, final_score, total_matched_stages) VALUES %s""",
+                            audit_rows,
+                        )
                     write_conn.commit()
                     pg_updates.clear()
                     log_rows.clear()
@@ -868,7 +875,7 @@ def process_all_data() -> None:
                         " FROM (VALUES %s) AS d(mc, ms, mt, md, id)"
                         " WHERE t.{} = d.id"
                     ).format(
-                        psycopg2.sql.Identifier(RAW_TABLE_NAME),
+                        table_identifier(RAW_TABLE_NAME),
                         psycopg2.sql.Identifier(col_master),
                         psycopg2.sql.Identifier(COLUMN_MAPPING["match_score"]),
                         psycopg2.sql.Identifier(COLUMN_MAPPING["match_type"]),
@@ -877,13 +884,14 @@ def process_all_data() -> None:
                     ),
                     pg_updates,
                 )
-                execute_values(
-                    write_cursor,
-                    """INSERT INTO match_stages_log
-                        (input_id, input_name, country_code, stage_name, stage_order,
-                         matched, master_id, es_score) VALUES %s""",
-                    log_rows,
-                )
+                if ENABLE_STAGE_LOG:
+                    execute_values(
+                        write_cursor,
+                        """INSERT INTO match_stages_log
+                            (input_id, input_name, country_code, stage_name, stage_order,
+                             matched, master_id, es_score) VALUES %s""",
+                        log_rows,
+                    )
                 write_conn.commit()
 
             # NOT: Batch-sonu ES refresh'e gerek yok — her chunk sonunda (yukarıda)

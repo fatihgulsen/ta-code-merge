@@ -45,7 +45,7 @@ def test_clean_script_collapses_consecutive_dup_tokens():
     (R7 en yüksek skorlu hata: PERNOD RICARD ⇸ RICARD RICARD, score 27).
     Painless ES'te çalıştığından yapısal imza doğrulanır; davranış reindex G3'te."""
     from es.ingest import _build_clean_script
-    script = _build_clean_script("AR")
+    script = _build_clean_script()
     # Ardışık-tekrar dedup: önceki-token karşılaştırması ('prevTok') içermeli
     assert "prevTok" in script, "ardışık-tekrar token dedup mantığı (prevTok) bulunamadı"
 

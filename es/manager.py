@@ -299,10 +299,32 @@ def _create_country_index(es: Elasticsearch, cc: str, force_recreate: bool) -> N
     es.options(request_timeout=120).indices.create(index=physical, body=settings)
 
 
-def create_index(es: Elasticsearch, force_recreate: bool = False) -> None:
-    """Tüm ülkeler için per-country fiziksel index + alias oluşturur."""
+def create_index(
+    es: Elasticsearch,
+    force_recreate: bool = False,
+    only_codes: list[str] | None = None,
+) -> None:
+    """Per-country fiziksel index + alias oluşturur.
+
+    only_codes verilirse YALNIZCA o ülkeler (ör. ['ar', 'br']) için index kurulur;
+    diğer ülkelerin index'lerine dokunulmaz. Her per-country index kendi içinde
+    izole olduğundan (analyzer'lar o index'e gömülüdür) seçili reindex güvenlidir.
+    Geçersiz/bilinmeyen kodlar atlanır ve uyarılır.
+    """
     codes = get_all_country_codes()
-    print(f"{len(codes)} ulke icin per-country index olusturuluyor...")
+    if only_codes is not None:
+        want = {c.strip().lower() for c in only_codes if c.strip()}
+        filtered = [c for c in codes if c.lower() in want]
+        missing = sorted(want - {c.lower() for c in codes})
+        if missing:
+            print(f"UYARI: bilinmeyen ulke kodu atlandi: {', '.join(missing)}")
+        if not filtered:
+            print("Olusturulacak gecerli ulke yok; cikiliyor.")
+            return
+        codes = filtered
+        print(f"Yalnizca {len(codes)} ulke icin per-country index: {', '.join(codes)}")
+    else:
+        print(f"{len(codes)} ulke icin per-country index olusturuluyor...")
     created = 0
     for cc in codes:
         before = es.indices.exists(index=index_for_country(cc))
@@ -324,11 +346,22 @@ def create_index(es: Elasticsearch, force_recreate: bool = False) -> None:
 
 
 # ============================================================================
-# Doğrudan çalıştırılabilir: python -m es.manager [--force]
+# Doğrudan çalıştırılabilir:
+#   python -m es.manager [--force]                  # tüm ülkeler
+#   python -m es.manager --force --country ar,br    # yalnızca ar + br
+#   python -m es.manager --force --country=ar,br    # eşdeğer
 # ============================================================================
 if __name__ == "__main__":
     import sys
 
-    force = "--force" in sys.argv
+    argv = sys.argv[1:]
+    force = "--force" in argv
+    only_codes: list[str] | None = None
+    for i, arg in enumerate(argv):
+        if arg == "--country" and i + 1 < len(argv):
+            only_codes = argv[i + 1].split(",")
+        elif arg.startswith("--country="):
+            only_codes = arg.split("=", 1)[1].split(",")
+
     es = get_es_client()
-    create_index(es, force_recreate=force)
+    create_index(es, force_recreate=force, only_codes=only_codes)

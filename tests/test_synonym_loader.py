@@ -336,7 +336,7 @@ def test_load_synonyms_no_source_collision():
     Regresyon: common(=>ltd.) + br(=>ltda) 'ltda' kaynağını çiftliyordu; precedence
     (ülke > common, kaynak-dedup) bunu tekleştirir. Bkz. token_count invariant fix.
     """
-    for cc in ("AR", "BR", "MX", "PE", "__COMMON__"):
+    for cc in ("AR", "BR", "MX", "PE", "RU", "__COMMON__"):
         smap = _source_target_map(cc)
         collisions = {s: t for s, t in smap.items() if len(t) > 1}
         assert not collisions, f"{cc}: çift-token kaynakları: {collisions}"

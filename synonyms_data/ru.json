@@ -1,16 +1,30 @@
 {
-  "company_types": [
-    "общество с ограниченной ответственностью,obshchestvo s ogranichennoy otvetstvennostyu,ооо,о.о.о,o.o.o.,ooo=>ооо",
-    "акционерное общество,aktsionernoe obshchestvo,ао,а.о,a.o.,ao=>ао",
-    "публичное акционерное общество,publichnoe aktsionernoe obshchestvo,пао,п.а.о,pao=>пао",
-    "индивидуальное предприятие,индивидуальный предприниматель,individualnoe predpriyatie,ип,и.п,ip=>ип",
-    "коллективное предприятие,кп,к.п,kp=>кп",
-    "государственное предприятие,гп,г.п,gp=>гп",
-    "закрытое акционерное общество,zakrytoe ao,зао,з.а.о,zao=>зао",
-    "открытое акционерное общество,otkrytoe ao,оао,о.а.о,oao=>оао",
-    "товарищество,коммандитное товарищество,кт,к.т=>кт"
+  "legal_suffixes": [
+    "общество с ограниченной ответственностью,obshchestvo s ogranichennoy otvetstvennostyu,ооо,о.о.о,ooo,o.o.o=>ооо",
+    "акционерное общество,aktsionernoe obshchestvo,ао,а.о,ao,a.o=>ао",
+    "публичное акционерное общество,publichnoe aktsionernoe obshchestvo,пао,п.а.о,pao,p.a.o=>пао",
+    "индивидуальное предприятие,индивидуальный предприниматель,individualnoe predpriyatie,individualnyy predprinimatel,ип,и.п,ip,i.p=>ип",
+    "коллективное предприятие,kollektivnoe predpriyatie,кп,к.п,kp,k.p=>кп",
+    "государственное предприятие,gosudarstvennoe predpriyatie,гп,г.п,gp,g.p=>гп",
+    "закрытое акционерное общество,zakrytoe aktsionernoe obshchestvo,zakrytoe ao,зао,з.а.о,zao,z.a.o=>зао",
+    "открытое акционерное общество,otkrytoe aktsionernoe obshchestvo,otkrytoe ao,оао,о.а.о,oao,o.a.o=>оао",
+    "товарищество,коммандитное товарищество,tovarishchestvo,kommanditnoe tovarishchestvo,кт,к.т,kt,k.t=>кт"
   ],
-  "address_terms": [
+  "business_sectors": [
+    "торговая,торговый,торговое,torgovaya,torgovyy,торг,torg=>торговая",
+    "промышленная,промышленный,промышленное,promyshlennaya,promyshlennyy,пром,prom=>промышленная",
+    "строительная,строительный,строительное,stroitelnaya,stroitelnyy,строй,stroy=>строительная",
+    "транспортная,транспортный,транспорт,transportnaya,transport,трансп,transp=>транспортная",
+    "производственная,производственный,производство,proizvodstvennaya,proizvodstvo,произв,proizv=>производственная",
+    "нефтяная,нефтяной,нефть,neftyanaya,neft,нефте,nefte=>нефтяная",
+    "металлургическая,металлургический,металл,metallurgicheskaya,metall,метал,metal=>металлургическая",
+    "пищевая,пищевой,продуктовая,продукты,pishchevaya,produktovaya,продукт,produkt=>пищевая",
+    "технологическая,технологический,технологии,tekhnologicheskaya,tekhnologii,техно,tekhno=>технологическая",
+    "логистическая,логистический,логистика,logisticheskaya,logistika,логист,logist=>логистическая",
+    "страховая,страховой,страхование,strakhovaya,strakhovanie,страх,strakh=>страховая",
+    "инвестиционная,инвестиционный,инвестиции,investitsionnaya,investitsii,инвест,invest=>инвестиционная"
+  ],
+  "address_abbreviations": [
     "улица,ulitsa,ул.,ul=>ул.",
     "проспект,prospekt,пр.,pr=>пр.",
     "переулок,pereulok,пер.,per=>пер.",
@@ -32,6 +46,18 @@
     "область,oblast,обл.,obl=>обл.",
     "район,rayon,р-н,рн,rn=>р-н"
   ],
+  "articles": [
+    "и",
+    "i",
+    "по",
+    "po",
+    "на",
+    "na",
+    "для",
+    "dlya",
+    "amp",
+    "and"
+  ],
   "cities": [
     "москва,moscow,moskva,msk,mow=>москва",
     "санкт-петербург,saint petersburg,st. petersburg,sankt-peterburg,leningrad,ленинград,spb,led=>санкт-петербург",
@@ -50,5 +76,24 @@
     "волгоград,volgograd,stalingrad,сталинград,vog=>волгоград",
     "краснодар,krasnodar,krr=>краснодар",
     "владивосток,vladivostok,vvo=>владивосток"
+  ],
+  "non_firm_placeholders": [
+    "не указано",
+    "ne ukazano",
+    "нет данных",
+    "net dannykh",
+    "нет наименования",
+    "без названия",
+    "bez nazvaniya",
+    "физическое лицо",
+    "fizicheskoe litso",
+    "частное лицо",
+    "chastnoe litso",
+    "конечный потребитель",
+    "konechnyy potrebitel",
+    "не определено",
+    "ne opredeleno",
+    "прочие",
+    "prochie"
   ]
 }

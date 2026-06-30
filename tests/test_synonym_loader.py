@@ -314,3 +314,117 @@ def test_get_generic_tokens_union_excludes_brand():
     assert "trading" in g
     assert "the" in g
     assert "apex" not in g
+
+
+def _source_target_map(cc):
+    """load_synonyms_for_country çıktısını {source_token: set(target)} olarak parse eder."""
+    from collections import defaultdict
+    from core.synonym_loader import load_synonyms_for_country
+    smap = defaultdict(set)
+    for rule in load_synonyms_for_country(cc):
+        left, _, right = rule.partition("=>")
+        sources = [s.strip() for s in left.split(",") if s.strip()]
+        target = right.strip() if right else (sources[-1] if sources else "")
+        for s in sources:
+            smap[s].add(target)
+    return smap
+
+
+def test_load_synonyms_no_source_collision():
+    """Bir kaynak token >1 farklı kanonike gitmemeli (ES aynı-pozisyon çift-token üretmesin).
+
+    Regresyon: common(=>ltd.) + br(=>ltda) 'ltda' kaynağını çiftliyordu; precedence
+    (ülke > common, kaynak-dedup) bunu tekleştirir. Bkz. token_count invariant fix.
+    """
+    for cc in ("AR", "BR", "MX", "PE", "__COMMON__"):
+        smap = _source_target_map(cc)
+        collisions = {s: t for s, t in smap.items() if len(t) > 1}
+        assert not collisions, f"{cc}: çift-token kaynakları: {collisions}"
+
+
+def test_load_synonyms_country_overrides_common():
+    """Ülke kuralı common'ı geçersiz kılar: BR 'ltda' -> 'ltda' (common 'ltd.' DEĞİL)."""
+    br = _source_target_map("BR")
+    assert br["ltda"] == {"ltda"}
+    assert br["industrial"] == {"industrial"}
+    # common iç-çelişki temizliği: inc ve corp ayrı kanonik
+    common = _source_target_map("__COMMON__")
+    assert common["inc"] == {"inc."}
+    assert common["corp"] == {"corp."}
+
+
+# --- RU kanonik şema migrasyonu (2026-06-30) ---
+
+
+def test_ru_legal_suffixes_classified():
+    """RU legal formları legal_suffixes olarak sınıflandırılmalı (legacy company_types değil)."""
+    from core.synonym_loader import get_legal_suffix_tokens
+    tokens = get_legal_suffix_tokens("RU")
+    # Kiril kanonikler
+    for expected in ("ооо", "ао", "пао", "зао", "оао", "ип"):
+        assert expected in tokens, f"{expected!r} RU legal_suffixes'te yok"
+    # Latin transliterasyon source'ları da sınıflanmalı
+    for expected in ("ooo", "ao", "pao"):
+        assert expected in tokens, f"{expected!r} (Latin) RU legal_suffixes'te yok"
+    # Common İngilizce formlar hâlâ akmalı
+    assert "ltd" in tokens
+
+
+def test_ru_legal_regimes_stay_separate():
+    """Rus legal rejimleri farklı kanonik kalmalı (over-merge yok)."""
+    from core.synonym_loader import get_synonym_canonical_map
+    m = get_synonym_canonical_map("RU", ("legal_suffixes",))
+    assert m.get("ооо") == "ооо"
+    assert m.get("ао") == "ао"
+    assert m.get("зао") == "зао"
+    assert m.get("оао") == "оао"
+    # Latin source'lar da doğru Kiril kanonike gitmeli
+    assert m.get("ooo") == "ооо"
+    assert m.get("zao") == "зао"
+
+
+def test_ru_business_sectors_classified():
+    """RU sektör kelimeleri business_sectors olarak sınıflanmalı."""
+    from core.synonym_loader import get_business_sector_tokens
+    tokens = get_business_sector_tokens("RU")
+    for expected in ("торговая", "промышленная", "строительная", "транспортная"):
+        assert expected in tokens, f"{expected!r} RU business_sectors'te yok"
+    # Latin transliterasyon
+    assert "torgovaya" in tokens
+
+
+def test_ru_address_abbreviations_classified():
+    """RU adres terimleri address_abbreviations olarak sınıflanmalı (legacy address_terms değil)."""
+    from core.synonym_loader import get_address_tokens
+    toks = get_address_tokens("RU")
+    for expected in ("улица", "проспект", "дом"):
+        assert expected in toks, f"{expected!r} RU address'te yok"
+    assert "ул." in toks or "ул" in toks
+
+
+def test_ru_articles_classified():
+    """RU bağlaç/edatları article stopword olarak sınıflanmalı."""
+    from core.synonym_loader import get_article_stopwords
+    arts = get_article_stopwords("RU")
+    assert "и" in arts
+    assert "по" in arts
+    # Common articles hâlâ akmalı
+    assert "and" in arts
+
+
+def test_ru_non_firm_placeholders_classified():
+    """RU firma-olmayan placeholder'lar sınıflanmalı."""
+    from core.synonym_loader import get_non_firm_placeholders
+    ph = get_non_firm_placeholders("RU")
+    assert "не указано" in ph
+    assert "физическое лицо" in ph
+
+
+def test_ru_categories_disjoint():
+    """RU kategorileri ayrışık olmalı (legal ∩ sector = ∅)."""
+    from core.synonym_loader import (
+        get_business_sector_tokens,
+        get_legal_suffix_tokens,
+    )
+    overlap = get_business_sector_tokens("RU") & get_legal_suffix_tokens("RU")
+    assert not overlap, f"RU legal/sector çakışması: {sorted(overlap)}"

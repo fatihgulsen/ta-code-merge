@@ -53,23 +53,25 @@ def _extract_rules_from_file(filepath: Path) -> list[str]:
 @lru_cache(maxsize=128)
 def load_synonyms_for_country(country_code: str) -> tuple[str, ...]:
     """
-    Verilen ülke kodu için ES synonym listesi döner.
+    Verilen ülke kodu için ES synonym listesi döner (çift-token önleyici precedence ile).
+
+    Öncelik:  {country_code}.json  >  common.json + countries.json.
+    Bir kaynak (sol-taraf) token YALNIZCA en yüksek öncelikli kurala bağlanır; alt
+    seviyedeki kurallardan o token DÜŞÜRÜLÜR. Böylece ES synonym_graph aynı pozisyonda
+    birden çok kanonik token üretmez (token_count + canonical_full tutarlılığı korunur).
+    Örn. 'ltda' hem common(=>ltd.) hem br(=>ltda) kuralında olsa, BR için yalnızca
+    br kuralı kalır → tek token. Eski sürüm her ikisini de tutup ÇİFT token üretiyordu.
 
     Her zaman:  common.json + countries.json
-    + Varsa:    {country_code.lower()}.json
+    + Varsa:    {country_code.lower()}.json (ülke kuralları common'ı geçersiz kılar)
 
     Dönüş: tuple (lru_cache için hashable)
     """
-    rules: list[str] = []
-
-    for filename in COMMON_FILES:
-        path = SYNONYMS_DIR / filename
-        rules.extend(_extract_rules_from_file(path))
-
     country_file = SYNONYMS_DIR / f"{country_code.lower()}.json"
-    if country_file.exists():
-        rules.extend(_extract_rules_from_file(country_file))
-    elif country_code not in ("__COMMON__", "__common__"):
+    country_rules: list[str] = (
+        _extract_rules_from_file(country_file) if country_file.exists() else []
+    )
+    if not country_file.exists() and country_code not in ("__COMMON__", "__common__"):
         logger.warning(
             "Ulke '%s' icin synonym dosyasi bulunamadi (%s). "
             "Ortak synonymler (common) kullaniliyor.",
@@ -77,15 +79,40 @@ def load_synonyms_for_country(country_code: str) -> tuple[str, ...]:
             country_file.name,
         )
 
-    seen = set()
-    clean_rules = []
-    for rule in rules:
-        rule = rule.strip()
-        if rule and rule not in seen:
-            seen.add(rule)
-            clean_rules.append(rule)
+    common_rules: list[str] = []
+    for filename in COMMON_FILES:
+        common_rules.extend(_extract_rules_from_file(SYNONYMS_DIR / filename))
 
-    return tuple(clean_rules)
+    # Ülke kuralları ÖNCE işlenir (kazanır), sonra common. Sahiplenilen sol-taraf token
+    # alt-seviye kuraldan çıkarılır → tek kaynak → tek hedef → çift-token YOK.
+    claimed: set[str] = set()
+    seen: set[str] = set()
+    merged: list[str] = []
+    for rule in country_rules + common_rules:
+        rule = rule.strip()
+        if not rule:
+            continue
+        if "=>" in rule:
+            left, right = rule.split("=>", 1)
+            sources = [s.strip() for s in left.split(",") if s.strip()]
+            kept = [s for s in sources if s not in claimed]
+            if not kept:
+                continue  # tüm kaynaklar üst-öncelikçe sahiplenildi → kuralı düşür
+            claimed.update(kept)
+            new_rule = ",".join(kept) + "=>" + right.strip()
+        else:
+            # '=>' içermeyen eşdeğer-synonym grubu (kanonikleştirme kategorilerinde nadir)
+            sources = [s.strip() for s in rule.split(",") if s.strip()]
+            kept = [s for s in sources if s not in claimed]
+            if len(kept) < 2:
+                continue
+            claimed.update(kept)
+            new_rule = ",".join(kept)
+        if new_rule not in seen:
+            seen.add(new_rule)
+            merged.append(new_rule)
+
+    return tuple(merged)
 
 
 def _parse_category_tokens(paths: list, category: str) -> frozenset:

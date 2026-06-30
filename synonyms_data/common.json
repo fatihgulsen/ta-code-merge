@@ -3,7 +3,7 @@
   "_description": "Tum ulkelere yuklenen ortak synonym kurallari. Yalnizca evrensel Ingilizce hukuki formlar (Ltd, Inc, Corp, LLC, LLP) ve evrensel sektor kelimeleri burada yer alir. Ulkeye ozgu hukuki formlar (AB, AS, SA, GmbH, vb.) ilgili ulke dosyasinda tanimlanmalidir.",
 
   "legal_suffixes": [
-    "corporation,corp,corp.,incorporated,inc,inc.=>corp.",
+    "corporation,corp,corp.=>corp.",
     "company,co,co.,comp,compania=>co.",
     "limited liability company,llc,l.l.c,l.l.c.,limited liability=>llc",
     "limited partnership,lp,l.p,l.p.,ltd partnership=>lp",
@@ -18,8 +18,7 @@
     "partnership,partners,p.ship,ptnrs=>partnership",
     "brothers,bros,bros.,bro,hnos,hermanos=>bros.",
     "incorporated,inc,inc.,incp,incc=>inc.",
-    "gmbh,gmhb=>gmbh",
-    "corporation,corp,corp.=>corp"
+    "gmbh,gmhb=>gmbh"
   ],
 
   "business_sectors": [
